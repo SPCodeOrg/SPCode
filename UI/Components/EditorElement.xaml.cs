@@ -492,7 +492,7 @@ namespace Spedit.UI.Components
 			}
 		}
 
-        public void Close(bool ForcedToSave = false, bool CheckSavings = true)
+        public async void Close(bool ForcedToSave = false, bool CheckSavings = true)
         {
             regularyTimer.Stop();
             regularyTimer.Close();
@@ -512,9 +512,10 @@ namespace Spedit.UI.Components
                     }
                     else
                     {
-                        var Result = Program.MainWindow.ShowMessageAsync($"{Program.Translations.GetLanguage("SavingFile")} '" + Parent.Title.Trim(new char[] { '*' }) + "'", "", MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions);
-						Result.Wait();
-						if (Result.Result == MessageDialogResult.Affirmative)
+                        string title = $"{Program.Translations.GetLanguage("SavingFile")} '" + Parent.Title.Trim(new char[] { '*' }) + "'";
+                        string msg = "";
+                        MessageDialogResult Result = await Program.MainWindow.ShowMessageAsync(title, msg, MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions);
+                        if (Result == MessageDialogResult.Affirmative)
                         {
                             Save();
                         }
