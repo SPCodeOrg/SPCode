@@ -1,13 +1,6 @@
 #include <sourcemod>
 #include <sdktools>
 
-/**
- * @note #file is a somewhat recent discovery.
- * Instead of the full filepath, compile.exe will use
- * whatever name you supply here when printing errors/warnings.
- */
-#file "Enter plugin name here"
-
 #pragma semicolon 1
 
 #define PLUGIN_VERSION "0.00"

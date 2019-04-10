@@ -2,13 +2,6 @@
 #include <tf2_stocks>
 // ^ tf2_stocks.inc itself includes sdktools.inc and tf2.inc
 
-/**
- * @note #file is a somewhat recent discovery.
- * Instead of the full filepath, compile.exe will use
- * whatever name you supply here when printing errors/warnings.
- */
-#file "Enter plugin name here"
-
 #pragma semicolon 1
 #pragma newdecls required
 
