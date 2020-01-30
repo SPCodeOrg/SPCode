@@ -6,8 +6,6 @@
 
 #define PLUGIN_VERSION "0.00"
 
-EngineVersion g_engineversion;
-
 public Plugin myinfo = 
 {
 	name = "Name of plugin here!",
@@ -20,7 +18,7 @@ public Plugin myinfo =
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	// No need for the old GetGameFolderName setup.
-	g_engineversion = GetEngineVersion();
+	EngineVersion g_engineversion = GetEngineVersion();
 	if (g_engineversion != Engine_CSGO)
 	{
 		SetFailState("This plugin was made for use with Counter-Strike: Global Offensive only.");
