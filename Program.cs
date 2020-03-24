@@ -27,6 +27,8 @@ namespace Spedit
 
 		public static bool RCCKMade = false;
 		public static DiscordRpcClient discordClient = new DiscordRpcClient("692110664948514836");
+		public static Timestamps discordTime = Timestamps.Now;
+		
         [STAThread]
         public static void Main(string[] args)
         {
@@ -36,7 +38,8 @@ namespace Spedit
 	        // Set default presence
 	        discordClient.SetPresence(new RichPresence()
 	        {
-		        State = "Test of SourcePawn",
+		        State = "Idle",
+		        Timestamps = discordTime,
 		        Assets = new Assets()
 		        {
 			        LargeImageKey = "immagine",

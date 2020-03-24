@@ -175,16 +175,6 @@ namespace Spedit.UI
             if (SelectMe)
             {
 				layoutDocument.IsSelected = true;
-                Program.discordClient.SetPresence(new RichPresence()
-                {
-                    Details = "Doing SPEdit",
-                    State = $"Editing {name}",
-                    Assets = new Assets()
-                    {
-                        LargeImageKey = "immagine",
-                        LargeImageText = "Just a Prank",
-                    }
-                });
             }
         }
 
@@ -197,12 +187,12 @@ namespace Spedit.UI
                 ee.editor.Focus();
                 Program.discordClient.SetPresence(new RichPresence()
                 {
-                    Details = "Doing SPEdit",
+                    Timestamps = Program.discordTime,
                     State = $"Editing {Path.GetFileName(ee.FullFilePath)}",
                     Assets = new Assets()
                     {
                         LargeImageKey = "immagine",
-                        LargeImageText = "Just a Prank",
+                        LargeImageText = $"Editing {Path.GetFileName(ee.FullFilePath)}",
                     }
                 });
             }
