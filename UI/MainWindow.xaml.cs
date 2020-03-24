@@ -250,7 +250,7 @@ namespace Spedit.UI
 						{
 							if (SaveUnsaved == null)
 							{
-								var result = MessageBox.Show(this, Program.Translations.SavingUFiles, Program.Translations.Saving, MessageBoxButton.YesNo, MessageBoxImage.Question);
+                                var result = MessageBox.Show(this, Program.Translations.GetLanguage("SavingUFiles"), Program.Translations.GetLanguage("Saving"), MessageBoxButton.YesNo, MessageBoxImage.Question);
 								if (result == MessageBoxResult.Yes)
 								{
 									SaveUnsaved = true;
@@ -367,7 +367,7 @@ namespace Spedit.UI
             }
             if (ServerIsRunning)
             {
-                outString = $"{outString} ({Program.Translations.ServerRunning})";
+                outString = $"{outString} ({Program.Translations.GetLanguage("ServerRunning")})";
             }
             this.Title = outString;
         }
@@ -394,8 +394,8 @@ namespace Spedit.UI
             return -1;
         }
 
-        private ObservableCollection<string> compileButtonDict = new ObservableCollection<string>() { Program.Translations.CompileAll, Program.Translations.CompileCurr };
-        private ObservableCollection<string> actionButtonDict = new ObservableCollection<string>() { Program.Translations.Copy, Program.Translations.FTPUp, Program.Translations.StartServer };
-        private ObservableCollection<string> findReplaceButtonDict = new ObservableCollection<string>() { Program.Translations.Replace, Program.Translations.ReplaceAll };
+        private ObservableCollection<string> compileButtonDict = new ObservableCollection<string>() { Program.Translations.GetLanguage("CompileAll"), Program.Translations.GetLanguage("CompileCurr") };
+        private ObservableCollection<string> actionButtonDict = new ObservableCollection<string>() { Program.Translations.GetLanguage("Copy"), Program.Translations.GetLanguage("FTPUp"), Program.Translations.GetLanguage("StartServer") };
+        private ObservableCollection<string> findReplaceButtonDict = new ObservableCollection<string>() { Program.Translations.GetLanguage("Replace"), Program.Translations.GetLanguage("ReplaceAll") };
     }
 }
