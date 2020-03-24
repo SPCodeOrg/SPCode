@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.ComponentModel;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using DiscordRPC;
 using Xceed.Wpf.AvalonDock.Layout;
 using Spedit.Interop.Updater; //not delete!
 
@@ -174,6 +175,16 @@ namespace Spedit.UI
             if (SelectMe)
             {
 				layoutDocument.IsSelected = true;
+                Program.discordClient.SetPresence(new RichPresence()
+                {
+                    Details = "Doing SPEdit",
+                    State = $"Editing {name}",
+                    Assets = new Assets()
+                    {
+                        LargeImageKey = "immagine",
+                        LargeImageText = "Just a Prank",
+                    }
+                });
             }
         }
 
@@ -184,6 +195,16 @@ namespace Spedit.UI
             if (ee != null)
             {
                 ee.editor.Focus();
+                Program.discordClient.SetPresence(new RichPresence()
+                {
+                    Details = "Doing SPEdit",
+                    State = $"Editing {Path.GetFileName(ee.FullFilePath)}",
+                    Assets = new Assets()
+                    {
+                        LargeImageKey = "immagine",
+                        LargeImageText = "Just a Prank",
+                    }
+                });
             }
         }
 

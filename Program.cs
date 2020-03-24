@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Runtime;
+using DiscordRPC;
 
 namespace Spedit
 {
@@ -25,11 +26,23 @@ namespace Spedit
         public static UpdateInfo UpdateStatus;
 
 		public static bool RCCKMade = false;
-
+		public static DiscordRpcClient discordClient = new DiscordRpcClient("692110664948514836");
         [STAThread]
         public static void Main(string[] args)
         {
-            bool mutexReserved;
+	        // Init Discord RPC
+	        discordClient.Initialize();
+	        
+	        // Set default presence
+	        discordClient.SetPresence(new RichPresence()
+	        {
+		        State = "Test of SourcePawn",
+		        Assets = new Assets()
+		        {
+			        LargeImageKey = "immagine",
+		        }
+	        });
+	        bool mutexReserved;
             using (Mutex appMutex = new Mutex(true, "SpeditGlobalMutex", out mutexReserved))
             {
                 if (mutexReserved)
