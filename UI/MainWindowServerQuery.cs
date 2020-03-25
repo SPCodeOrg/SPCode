@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Threading.Tasks;
@@ -11,7 +9,7 @@ namespace Spedit.UI
 {
     public partial class MainWindow
     {
-        public void Server_Query()
+        private void Server_Query()
         {
             Config c = Program.Configs[Program.SelectedConfig];
             if (string.IsNullOrWhiteSpace(c.RConIP) || string.IsNullOrWhiteSpace(c.RConCommands))
@@ -30,18 +28,18 @@ namespace Spedit.UI
                     stringOutput.AppendLine(serverInfo.Name);
                     using (var rcon = server.GetControl(c.RConPassword))
                     {
-                        string[] cmds = ReplaceRconCMDVaraibles(c.RConCommands).Split('\n');
-                        for (int i = 0; i < cmds.Length; ++i)
+                        string[] cmds = ReplaceRconCMDVariables(c.RConCommands).Split('\n');
+                        foreach (var cmd in cmds)
                         {
-							Task t = Task.Run(() =>
-							{
-								string command = (cmds[i].Trim(new char[] { '\r' })).Trim();
-								if (!string.IsNullOrWhiteSpace(command))
-								{
-									stringOutput.AppendLine(rcon.SendCommand(command));
-								}
-							});
-							t.Wait();
+                            Task t = Task.Run(() =>
+                            {
+                                string command = (cmd.Trim('\r')).Trim();
+                                if (!string.IsNullOrWhiteSpace(command))
+                                {
+                                    stringOutput.AppendLine(rcon.SendCommand(command));
+                                }
+                            });
+                            t.Wait();
                         }
                     }
                 }
@@ -58,39 +56,39 @@ namespace Spedit.UI
             }
         }
 
-        private string ReplaceRconCMDVaraibles(string input)
+        private string ReplaceRconCMDVariables(string input)
         {
             if (compiledFileNames.Count < 1)
             { return input; }
-            if (input.IndexOf("{plugins_reload}") >= 0)
+            if (input.IndexOf("{plugins_reload}", StringComparison.Ordinal) >= 0)
             {
                 StringBuilder replacement = new StringBuilder();
                 replacement.AppendLine();
-                for (int i = 0; i < compiledFileNames.Count; ++i)
+                foreach (var fileName in compiledFileNames)
                 {
-                    replacement.Append("sm plugins reload " + StripSMXPostFix(compiledFileNames[i]) + ";");
+                    replacement.Append("sm plugins reload " + StripSMXPostFix(fileName) + ";");
                 }
                 replacement.AppendLine();
                 input = input.Replace("{plugins_reload}", replacement.ToString());
             }
-            if (input.IndexOf("{plugins_load}") >= 0)
+            if (input.IndexOf("{plugins_load}", StringComparison.Ordinal) >= 0)
             {
                 StringBuilder replacement = new StringBuilder();
                 replacement.AppendLine();
-                for (int i = 0; i < compiledFileNames.Count; ++i)
+                foreach (var fileName in compiledFileNames)
                 {
-                    replacement.Append("sm plugins load " + StripSMXPostFix(compiledFileNames[i]) + ";");
+                    replacement.Append("sm plugins load " + StripSMXPostFix(fileName) + ";");
                 }
                 replacement.AppendLine();
                 input = input.Replace("{plugins_load}", replacement.ToString());
             }
-            if (input.IndexOf("{plugins_unload}") >= 0)
+            if (input.IndexOf("{plugins_unload}", StringComparison.Ordinal) >= 0)
             {
                 StringBuilder replacement = new StringBuilder();
                 replacement.AppendLine();
-                for (int i = 0; i < compiledFileNames.Count; ++i)
+                foreach (var fileName in compiledFileNames)
                 {
-                    replacement.Append("sm plugins unload " + StripSMXPostFix(compiledFileNames[i]) + ";");
+                    replacement.Append("sm plugins unload " + StripSMXPostFix(fileName) + ";");
                 }
                 replacement.AppendLine();
                 input = input.Replace("{plugins_unload}", replacement.ToString());
