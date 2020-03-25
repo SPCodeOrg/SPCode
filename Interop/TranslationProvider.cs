@@ -26,7 +26,7 @@ namespace Spedit.Interop
             {
                 return language[langID];
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception($"{langID} is not a known language-phrase");
             }
