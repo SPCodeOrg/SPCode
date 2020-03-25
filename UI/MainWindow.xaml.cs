@@ -343,7 +343,7 @@ namespace Spedit.UI
 			}
 		}
 
-		private void UpdateWindowTitle()
+		public void UpdateWindowTitle()
         {
             EditorElement ee = GetCurrentEditorElement();
             string outString;
