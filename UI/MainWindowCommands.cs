@@ -1,10 +1,10 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using System.Diagnostics;
+using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Spedit.UI.Components;
 using Spedit.UI.Windows;
 using Spedit.Utils.SPSyntaxTidy;
 using System.Text;
-using System.Threading.Tasks;
 using Lysis;
 using System.IO;
 
@@ -12,21 +12,15 @@ namespace Spedit.UI
 {
     public partial class MainWindow
     {
-        public EditorElement GetCurrentEditorElement()
+        private EditorElement GetCurrentEditorElement()
         {
             EditorElement outElement = null;
-            if (DockingPane.SelectedContent != null)
+            if (DockingPane.SelectedContent?.Content != null)
             {
-                if (DockingPane.SelectedContent.Content != null)
+                var possElement = DockingManager.ActiveContent;
+                if (possElement is EditorElement element)
                 {
-                    var possElement = DockingManager.ActiveContent;
-                    if (possElement != null)
-                    {
-                        if (possElement is EditorElement)
-                        {
-                            outElement = (EditorElement)possElement;
-                        }
-                    }
+                    outElement = element;
                 }
             }
             return outElement;
@@ -34,11 +28,7 @@ namespace Spedit.UI
 
         public EditorElement[] GetAllEditorElements()
         {
-            if (this.EditorsReferences.Count < 1)
-            {
-                return null;
-            }
-            return this.EditorsReferences.ToArray();
+            return EditorsReferences.Count < 1 ? null : EditorsReferences.ToArray();
         }
 
         private void Command_New()
@@ -85,17 +75,20 @@ namespace Spedit.UI
             EditorElement ee = GetCurrentEditorElement();
             if (ee != null)
             {
-                SaveFileDialog sfd = new SaveFileDialog() { AddExtension = true, Filter = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|All Files (*.*)|*.*", OverwritePrompt = true, Title = Program.Translations.GetLanguage("SaveFileAs") };
-                sfd.FileName = ee.Parent.Title.Trim(new char[] { '*' });
-                var result = sfd.ShowDialog(this);
-                if (result.Value)
+                SaveFileDialog sfd = new SaveFileDialog
                 {
-                    if (!string.IsNullOrWhiteSpace(sfd.FileName))
-                    {
-                        ee.FullFilePath = sfd.FileName;
-                        ee.Save(true);
-                        BlendOverEffect.Begin();
-                    }
+                    AddExtension = true,
+                    Filter = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|All Files (*.*)|*.*",
+                    OverwritePrompt = true,
+                    Title = Program.Translations.GetLanguage("SaveFileAs"),
+                    FileName = ee.Parent.Title.Trim('*')
+                };
+                var result = sfd.ShowDialog(this);
+                if (result.Value && !string.IsNullOrWhiteSpace(sfd.FileName))
+                {
+                    ee.FullFilePath = sfd.FileName;
+                    ee.Save(true);
+                    BlendOverEffect.Begin();
                 }
             }
         }
@@ -109,10 +102,11 @@ namespace Spedit.UI
             }
             if (editors.Length > 0)
             {
-                for (int i = 0; i < editors.Length; ++i)
+                foreach (var editor in editors)
                 {
-                    editors[i].Save();
+                    editor.Save();
                 }
+
                 BlendOverEffect.Begin();
             }
         }
@@ -120,10 +114,7 @@ namespace Spedit.UI
         private void Command_Close()
         {
             EditorElement ee = GetCurrentEditorElement();
-            if (ee != null)
-            {
-                ee.Close();
-            }
+            ee?.Close();
         }
 
         private async void Command_CloseAll()
@@ -136,9 +127,9 @@ namespace Spedit.UI
             if (editors.Length > 0)
             {
                 bool UnsavedEditorsExisting = false;
-                for (int i = 0; i < editors.Length; ++i)
+                foreach (var editor in editors)
                 {
-                    UnsavedEditorsExisting |= editors[i].NeedsSave;
+                    UnsavedEditorsExisting |= editor.NeedsSave;
                 }
                 bool ForceSave = false;
                 if (UnsavedEditorsExisting)
@@ -147,9 +138,9 @@ namespace Spedit.UI
                     for (int i = 0; i < editors.Length; ++i)
                     {
                         if (i == 0)
-                        { str.Append(editors[i].Parent.Title.Trim(new char[] { '*' })); }
+                        { str.Append(editors[i].Parent.Title.Trim('*')); }
                         else
-                        { str.AppendLine(editors[i].Parent.Title.Trim(new char[] { '*' })); }
+                        { str.AppendLine(editors[i].Parent.Title.Trim('*')); }
                     }
                     var Result = await this.ShowMessageAsync(Program.Translations.GetLanguage("SaveFollow"), str.ToString(), MessageDialogStyle.AffirmativeAndNegative, this.MetroDialogOptions);
                     if (Result == MessageDialogResult.Affirmative)
@@ -157,9 +148,9 @@ namespace Spedit.UI
                         ForceSave = true;
                     }
                 }
-                for (int i = 0; i < editors.Length; ++i)
+                foreach (var editor in editors)
                 {
-                    editors[i].Close(ForceSave, ForceSave);
+                    editor.Close(ForceSave, ForceSave);
                 }
             }
         }
@@ -191,42 +182,30 @@ namespace Spedit.UI
         private void Command_Cut()
         {
             EditorElement ee = GetCurrentEditorElement();
-            if (ee != null)
-            {
-                ee.editor.Cut();
-            }
+            ee?.editor.Cut();
         }
 
         private void Command_Copy()
         {
             EditorElement ee = GetCurrentEditorElement();
-            if (ee != null)
-            {
-                ee.editor.Copy();
-            }
+            ee?.editor.Copy();
         }
 
         private void Command_Paste()
         {
             EditorElement ee = GetCurrentEditorElement();
-            if (ee != null)
-            {
-                ee.editor.Paste();
-            }
+            ee?.editor.Paste();
         }
 
         private void Command_FlushFoldingState(bool state)
         {
             EditorElement ee = GetCurrentEditorElement();
-            if (ee != null)
+            if (ee?.foldingManager != null)
             {
-                if (ee.foldingManager != null)
+                var foldings = ee.foldingManager.AllFoldings;
+                foreach (var folding in foldings)
                 {
-                    var foldings = ee.foldingManager.AllFoldings;
-                    foreach (var folding in foldings)
-                    {
-                        folding.IsFolded = state;
-                    }
+                    folding.IsFolded = state;
                 }
             }
         }
@@ -234,44 +213,26 @@ namespace Spedit.UI
         private void Command_JumpTo()
         {
             EditorElement ee = GetCurrentEditorElement();
-            if (ee != null)
-            {
-                ee.ToggleJumpGrid();
-            }
+            ee?.ToggleJumpGrid();
         }
 
         private void Command_SelectAll()
         {
             EditorElement ee = GetCurrentEditorElement();
-            if (ee != null)
-            {
-                ee.editor.SelectAll();
-            }
+            ee?.editor.SelectAll();
         }
 
 		private void Command_ToggleCommentLine()
 		{
 			EditorElement ee = GetCurrentEditorElement();
-			if (ee != null)
-			{
-				ee.ToggleCommentOnLine();
-			}
-		}
+            ee?.ToggleCommentOnLine();
+        }
 
         private void Command_TidyCode(bool All)
         {
-            EditorElement[] editors;
-            if (All)
+            var editors = All ? GetAllEditorElements() : new[] { GetCurrentEditorElement() };
+            foreach (var ee in editors)
             {
-                editors = GetAllEditorElements();
-            }
-            else
-            {
-                editors = new EditorElement[] { GetCurrentEditorElement() };
-            }
-            for (int i = 0; i < editors.Length; ++i)
-            {
-                EditorElement ee = editors[i];
                 if (ee != null)
                 {
                     ee.editor.Document.BeginUpdate();
@@ -284,30 +245,30 @@ namespace Spedit.UI
 
         private async void Command_Decompile(MainWindow win)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Sourcepawn Plugins (*.smx)|*.smx";
-            ofd.Title = Program.Translations.GetLanguage("ChDecomp");
-            var result = ofd.ShowDialog();
-            if (result.Value)
+            OpenFileDialog ofd = new OpenFileDialog
             {
-                if (!string.IsNullOrWhiteSpace(ofd.FileName))
+                Filter = "Sourcepawn Plugins (*.smx)|*.smx", Title = Program.Translations.GetLanguage("ChDecomp")
+            };
+            var result = ofd.ShowDialog();
+            
+            Debug.Assert(result != null, nameof(result) + " != null");
+            if (result.Value && !string.IsNullOrWhiteSpace(ofd.FileName))
+            {
+                FileInfo fInfo = new FileInfo(ofd.FileName);
+                if (fInfo.Exists)
                 {
-                    FileInfo fInfo = new FileInfo(ofd.FileName);
-                    if (fInfo.Exists)
+                    ProgressDialogController task = null;
+                    if (win != null)
                     {
-                        ProgressDialogController task = null;
-                        if (win != null)
-                        {
-                            task = await this.ShowProgressAsync(Program.Translations.GetLanguage("Decompiling"), fInfo.FullName, false, this.MetroDialogOptions);
-                            MainWindow.ProcessUITasks();
-                        }
-                        string destFile = fInfo.FullName + ".sp";
-                        File.WriteAllText(destFile, LysisDecompiler.Analyze(fInfo), Encoding.UTF8);
-                        TryLoadSourceFile(destFile, true, false);
-                        if (task != null)
-                        {
-                            await task.CloseAsync();
-                        }
+                        task = await this.ShowProgressAsync(Program.Translations.GetLanguage("Decompiling"), fInfo.FullName, false, this.MetroDialogOptions);
+                        MainWindow.ProcessUITasks();
+                    }
+                    string destFile = fInfo.FullName + ".sp";
+                    File.WriteAllText(destFile, LysisDecompiler.Analyze(fInfo), Encoding.UTF8);
+                    TryLoadSourceFile(destFile, true, false);
+                    if (task != null)
+                    {
+                        await task.CloseAsync();
                     }
                 }
             }

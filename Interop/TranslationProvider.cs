@@ -26,7 +26,7 @@ namespace Spedit.Interop
             {
                 return language[langID];
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception($"{langID} is not a known language-phrase");
             }
@@ -118,8 +118,8 @@ namespace Spedit.Interop
             language.Add("FoundInOff", "Found in offset {0} with length {1}");
             language.Add("FoundNothing", "Found nothing");
             language.Add("ReplacedOff", "Replaced in offset {0}");
-            language.Add("ReplacedOcc", "Replaced {0} occurences in {1} documents");
-            language.Add("OccFound", "occurences found");
+            language.Add("ReplacedOcc", "Replaced {0} occurrences in {1} documents");
+            language.Add("OccFound", "occurrences found");
             language.Add("EmptyPatt", "Empty search pattern");
             language.Add("NoValidRegex", "No valid regex pattern");
             language.Add("FailedCheck", "Failed to check");
@@ -149,7 +149,7 @@ namespace Spedit.Interop
             language.Add("CloseAll", "Close all");
             language.Add("Build", "Build");
             language.Add("CopyPlugin", "Copy Plugins");
-            language.Add("SendRCon", "Senc RCon commands");
+            language.Add("SendRCon", "Send RCon commands");
             language.Add("Config", "Configuration");
             language.Add("Edit", "Edit");
             language.Add("Undo", "Undo");
@@ -166,8 +166,8 @@ namespace Spedit.Interop
             language.Add("Tools", "Tools");
             language.Add("Options", "Options");
             language.Add("ParsedIncDir", "Parsed from include directory");
-            language.Add("OldAPIWeb", "Old API webside");
-            language.Add("NewAPIWeb", "New API webside");
+            language.Add("OldAPIWeb", "Old API website");
+            language.Add("NewAPIWeb", "New API website");
             language.Add("Reformatter", "Syntax reformatter");
             language.Add("ReformatCurr", "Reformat current");
             language.Add("ReformatAll", "Reformat all");
@@ -206,7 +206,7 @@ namespace Spedit.Interop
             language.Add("PeopleInv", "People involved");
             language.Add("Preview", "Preview");
             language.Add("NewFile", "New file");
-            language.Add("ConfigWrongPars", "The config was not able to parse a sourcepawn definiton.");
+            language.Add("ConfigWrongPars", "The config was not able to parse a sourcepawn definition.");
             language.Add("NoName", "no name");
             language.Add("PosLen", "(pos: {0} - len: {1})");
             language.Add("InheritedFrom", "inherited from");
@@ -264,7 +264,7 @@ namespace Spedit.Interop
             language.Add("OpenIncRec", "Open Includes Recursively");
             language.Add("AutoUpdate", "Search automatically for updates");
             language.Add("ShowToolbar", "Show toolbar");
-            language.Add("DynamicISAC", "Dynamic Autocompletition/Intellisense");
+            language.Add("DynamicISAC", "Dynamic Autocomplete/Intellisense");
             language.Add("DarkTheme", "Dark theme");
             language.Add("ThemeColor", "Theme Color");
             language.Add("LanguageStr", "Language");
@@ -272,7 +272,7 @@ namespace Spedit.Interop
             language.Add("FontSize", "Font size");
             language.Add("ScrollSpeed", "Scroll speed");
             language.Add("WordWrap", "Word wrap");
-            language.Add("AggIndentation", "Agressive Indentation");
+            language.Add("AggIndentation", "Aggressive Indentation");
             language.Add("ReformatAfterSem", "Reformatting line after semicolon");
             language.Add("TabsToSpace", "Replace tabs with spaces");
             language.Add("AutoCloseBrack", "Auto close brackets");
@@ -281,7 +281,7 @@ namespace Spedit.Interop
             language.Add("ShowTabs", "Show tabs");
             language.Add("IndentationSize", "Indentation size");
             language.Add("FontFamily", "Font");
-            language.Add("SyntaxHigh", "Syntaxhighlighting");
+            language.Add("SyntaxHigh", "Syntax Highlighting");
             language.Add("HighDeprecat", "Highlight deprecated (<1.7) syntax");
             language.Add("Compile", "Compile");
             language.Add("AutoSaveMin", "Auto save (min)");

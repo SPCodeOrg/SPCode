@@ -1,5 +1,4 @@
 ﻿using MahApps.Metro;
-using MahApps.Metro.Controls;
 using Spedit.UI.Components;
 using System;
 using System.Collections.Generic;
@@ -9,28 +8,30 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using DiscordRPC;
+using Spedit.Interop.Updater;
 using Xceed.Wpf.AvalonDock.Layout;
-using Spedit.Interop.Updater; //not delete!
+// using Spedit.Interop.Updater; //not delete! ?
 
 namespace Spedit.UI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow
     {
-        public List<EditorElement> EditorsReferences = new List<EditorElement>();
+        public readonly List<EditorElement> EditorsReferences = new List<EditorElement>();
 
-        Storyboard BlendOverEffect;
-        Storyboard FadeFindReplaceGridIn;
-        Storyboard FadeFindReplaceGridOut;
-        Storyboard EnableServerAnim;
-        Storyboard DisableServerAnim;
+        readonly Storyboard BlendOverEffect;
+        readonly Storyboard FadeFindReplaceGridIn;
+        readonly Storyboard FadeFindReplaceGridOut;
+        readonly Storyboard EnableServerAnim;
+        readonly Storyboard DisableServerAnim;
 
-		private bool FullyInitialized = false;
+		private readonly bool FullyInitialized;
 
         public MainWindow()
         {
@@ -55,12 +56,12 @@ namespace Spedit.UI
             {
                 Win_ToolBar.Height = double.NaN;
             }
-            this.MetroDialogOptions.AnimateHide = this.MetroDialogOptions.AnimateShow = false;
-            BlendOverEffect = (Storyboard)this.Resources["BlendOverEffect"];
-            FadeFindReplaceGridIn = (Storyboard)this.Resources["FadeFindReplaceGridIn"];
-            FadeFindReplaceGridOut = (Storyboard)this.Resources["FadeFindReplaceGridOut"];
-            EnableServerAnim = (Storyboard)this.Resources["EnableServerAnim"];
-            DisableServerAnim = (Storyboard)this.Resources["DisableServerAnim"];
+            MetroDialogOptions.AnimateHide = MetroDialogOptions.AnimateShow = false;
+            BlendOverEffect = (Storyboard)Resources["BlendOverEffect"];
+            FadeFindReplaceGridIn = (Storyboard)Resources["FadeFindReplaceGridIn"];
+            FadeFindReplaceGridOut = (Storyboard)Resources["FadeFindReplaceGridOut"];
+            EnableServerAnim = (Storyboard)Resources["EnableServerAnim"];
+            DisableServerAnim = (Storyboard)Resources["DisableServerAnim"];
 			ChangeObjectBrowserToDirectory(Program.OptionsObject.Program_ObjectBrowserDirectory);
 			Language_Translate(true);
 #if DEBUG
@@ -68,9 +69,9 @@ namespace Spedit.UI
 #endif
             if (Program.OptionsObject.LastOpenFiles != null)
             {
-                for (int i = 0; i < Program.OptionsObject.LastOpenFiles.Length; ++i)
+                foreach (var file in Program.OptionsObject.LastOpenFiles)
                 {
-                    TryLoadSourceFile(Program.OptionsObject.LastOpenFiles[i], false, true, false);
+                    TryLoadSourceFile(file, false);
                 }
             }
             string[] args = Environment.GetCommandLineArgs();
@@ -91,7 +92,7 @@ namespace Spedit.UI
             FileInfo fileInfo = new FileInfo(filePath);
             if (fileInfo.Exists)
             {
-                string extension = fileInfo.Extension.ToLowerInvariant().Trim(new char[] { '.', ' ' });
+                string extension = fileInfo.Extension.ToLowerInvariant().Trim('.', ' ');
                 if (extension == "sp" || extension == "inc" || extension == "txt" || extension == "cfg" || extension == "ini")
                 {
                     string finalPath = fileInfo.FullName;
@@ -106,14 +107,14 @@ namespace Spedit.UI
                     EditorElement[] editors = GetAllEditorElements();
                     if (editors != null)
                     {
-                        for (int i = 0; i < editors.Length; ++i)
+                        foreach (var editor in editors)
                         {
-                            if (editors[i].FullFilePath == finalPath)
+                            if (editor.FullFilePath == finalPath)
                             {
-								if (SelectMe)
-								{
-									editors[i].Parent.IsSelected = true;
-								}
+                                if (SelectMe)
+                                {
+                                    editor.Parent.IsSelected = true;
+                                }
                                 return true;
                             }
                         }
@@ -135,18 +136,20 @@ namespace Spedit.UI
                                     {
                                         fileName = fileName + ".inc";
                                     }
-                                    fileName = System.IO.Path.Combine(fileInfo.DirectoryName, fileName);
+                                    fileName = Path.Combine(fileInfo.DirectoryName ?? throw new NullReferenceException(), fileName);
                                     TryLoadSourceFile(fileName, false, Program.OptionsObject.Program_OpenIncludesRecursively);
                                 }
-                                catch (Exception) { }
+                                catch (Exception)
+                                {
+                                    // ignored
+                                }
                             }
                         }
                     }
                 }
                 else if (extension == "smx")
                 {
-                    LayoutDocument layoutDocument = new LayoutDocument();
-                    layoutDocument.Title = "DASM: " + fileInfo.Name;
+                    LayoutDocument layoutDocument = new LayoutDocument {Title = "DASM: " + fileInfo.Name};
                     DASMElement dasmElement = new DASMElement(fileInfo);
                     layoutDocument.Content = dasmElement;
                     DockingPane.Children.Add(layoutDocument);
@@ -161,14 +164,12 @@ namespace Spedit.UI
             return false;
         }
 
-        public void AddEditorElement(string filePath, string name, bool SelectMe)
+        private void AddEditorElement(string filePath, string name, bool SelectMe)
         {
-            LayoutDocument layoutDocument = new LayoutDocument();
-            layoutDocument.Title = name;
+            LayoutDocument layoutDocument = new LayoutDocument {Title = name};
             layoutDocument.Closing += layoutDocument_Closing;
             layoutDocument.ToolTip = filePath;
-            EditorElement editor = new EditorElement(filePath);
-            editor.Parent = layoutDocument;
+            EditorElement editor = new EditorElement(filePath) {Parent = layoutDocument};
             layoutDocument.Content = editor;
             EditorsReferences.Add(editor);
             DockingPane.Children.Add(layoutDocument);
@@ -200,72 +201,53 @@ namespace Spedit.UI
 
         private void DockingManager_DocumentClosing(object sender, Xceed.Wpf.AvalonDock.DocumentClosingEventArgs e)
         {
-            if (e.Document.Content is EditorElement)
-            {
-                ((EditorElement)e.Document.Content).Close();
-            }
+            (e.Document.Content as EditorElement)?.Close();
             UpdateWindowTitle();
         }
 
-        private void layoutDocument_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void layoutDocument_Closing(object sender, CancelEventArgs e)
         {
 			e.Cancel = true;
         }
 
-        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
-			if (backgroundParserThread != null)
-			{
-				backgroundParserThread.Abort();
-			}
-			if (parseDistributorTimer != null)
-			{
-				parseDistributorTimer.Stop();
-			}
-            if (ServerCheckThread != null)
-            {
-                ServerCheckThread.Abort(); //a join would not work, so we have to be..forcefully...
-            }
+            backgroundParserThread?.Abort();
+            parseDistributorTimer?.Stop();
+            ServerCheckThread?.Abort(); //a join would not work, so we have to be..forcefully...
             List<string> lastOpenFiles = new List<string>();
             EditorElement[] editors = GetAllEditorElements();
             bool? SaveUnsaved = null;
 			if (editors != null)
-			{
-				for (int i = 0; i < editors.Length; ++i)
-				{
-					if (File.Exists(editors[i].FullFilePath))
-					{
-						lastOpenFiles.Add(editors[i].FullFilePath);
-						if (editors[i].NeedsSave)
-						{
-							if (SaveUnsaved == null)
-							{
+            {
+                foreach (var editor in editors)
+                {
+                    if (File.Exists(editor.FullFilePath))
+                    {
+                        lastOpenFiles.Add(editor.FullFilePath);
+                        if (editor.NeedsSave)
+                        {
+                            if (SaveUnsaved == null)
+                            {
                                 var result = MessageBox.Show(this, Program.Translations.GetLanguage("SavingUFiles"), Program.Translations.GetLanguage("Saving"), MessageBoxButton.YesNo, MessageBoxImage.Question);
-								if (result == MessageBoxResult.Yes)
-								{
-									SaveUnsaved = true;
-								}
-								else
-								{
-									SaveUnsaved = false;
-								}
-							}
-							if (SaveUnsaved.Value)
-							{
-								editors[i].Close(true, true);
-							}
-							else
-							{
-								editors[i].Close(false, false);
-							}
-						}
-						else
-						{
-							editors[i].Close(false, false);
-						}
-					}
-				}
-			}
+                                SaveUnsaved = result == MessageBoxResult.Yes;
+                            }
+                            if (SaveUnsaved.Value)
+                            {
+                                editor.Close(true);
+                            }
+                            else
+                            {
+                                editor.Close(false, false);
+                            }
+                        }
+                        else
+                        {
+                            editor.Close(false, false);
+                        }
+                    }
+                }
+            }
             Program.OptionsObject.LastOpenFiles = lastOpenFiles.ToArray();
 #if !DEBUG
             if (Program.UpdateStatus.IsAvailable)
@@ -281,8 +263,9 @@ namespace Spedit.UI
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                this.Activate();
-                this.Focus();
+                Activate();
+                Focus();
+                Debug.Assert(files != null, nameof(files) + " != null");
                 for (int i = 0; i < files.Length; ++i)
                 {
                     TryLoadSourceFile(files[i], (i == 0), true, (i == 0));
@@ -290,10 +273,10 @@ namespace Spedit.UI
             }
         }
 
-        public static void ProcessUITasks()
+        private static void ProcessUITasks()
         {
             DispatcherFrame frame = new DispatcherFrame();
-            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new DispatcherOperationCallback(delegate(object parameter)
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new DispatcherOperationCallback(delegate
             {
                 frame.Continue = false;
                 return null;
@@ -314,17 +297,17 @@ namespace Spedit.UI
             {
                 return;
             }
-            for (int i = 0; i < editors.Length; ++i)
+            foreach (var editor in editors)
             {
-                if (editors[i].FullFilePath == fileName)
+                if (editor.FullFilePath == fileName)
                 {
-                    ((LayoutDocument)editors[i].Parent).IsSelected = true;
+                    editor.Parent.IsSelected = true;
                     int line = GetLineInteger(row.line);
-                    if (line > 0 && line <= editors[i].editor.LineCount)
+                    if (line > 0 && line <= editor.editor.LineCount)
                     {
-                        var lineObj = editors[i].editor.Document.Lines[line - 1];
-                        editors[i].editor.ScrollToLine(line - 1);
-                        editors[i].editor.Select(lineObj.Offset, lineObj.Length);
+                        var lineObj = editor.editor.Document.Lines[line - 1];
+                        editor.editor.ScrollToLine(line - 1);
+                        editor.editor.Select(lineObj.Offset, lineObj.Length);
                     }
                 }
             }
@@ -343,7 +326,7 @@ namespace Spedit.UI
 			}
 		}
 
-		private void UpdateWindowTitle()
+		public void UpdateWindowTitle()
         {
             EditorElement ee = GetCurrentEditorElement();
             string outString;
@@ -368,7 +351,7 @@ namespace Spedit.UI
             {
                 outString = $"{outString} ({Program.Translations.GetLanguage("ServerRunning")})";
             }
-            this.Title = outString;
+            Title = outString;
         }
 
         private int GetLineInteger(string lineStr)
@@ -385,8 +368,8 @@ namespace Spedit.UI
                     break;
                 }
             }
-            int line;
-            if (int.TryParse(lineStr.Substring(0, end + 1), out line))
+
+            if (int.TryParse(lineStr.Substring(0, end + 1), out var line))
             {
                 return line;
             }

@@ -6,11 +6,11 @@ namespace Spedit.Utils
 {
     public class FTP
     {
-        private string host = null;
-        private string user = null;
-        private string pass = null;
-        private FtpWebRequest ftpRequest = null;
-        private Stream ftpStream = null;
+        private string host;
+        private string user;
+        private string pass;
+        private FtpWebRequest ftpRequest;
+        private Stream ftpStream;
         private int bufferSize = 2048;
 
         public FTP(string hostIP, string userName, string password) { host = hostIP; user = userName; pass = password; }
@@ -36,7 +36,7 @@ namespace Spedit.Utils
 					requestUri.Append(remoteFile);
 				}
 			}
-            ftpRequest = (FtpWebRequest)FtpWebRequest.Create(requestUri.ToString());
+            ftpRequest = (FtpWebRequest)WebRequest.Create(requestUri.ToString());
             ftpRequest.Credentials = new NetworkCredential(user, pass);
             ftpRequest.UseBinary = true;
             ftpRequest.UsePassive = true;

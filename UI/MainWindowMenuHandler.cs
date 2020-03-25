@@ -1,5 +1,4 @@
-﻿using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
+﻿using MahApps.Metro.Controls.Dialogs;
 using Spedit.Interop.Updater;
 using Spedit.UI.Components;
 using Spedit.UI.Windows;
@@ -11,7 +10,7 @@ using System.Windows.Controls;
 
 namespace Spedit.UI
 {
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow
     {
         private void FileMenu_Open(object sender, RoutedEventArgs e)
         {
@@ -69,11 +68,11 @@ namespace Spedit.UI
             MenuItem menu = (MenuItem)sender;
             if (ee == null)
             {
-                for (int i = 0; i < menu.Items.Count; ++i)
+                foreach (var item in menu.Items)
                 {
-                    if (menu.Items[i] is MenuItem)
+                    if (item is MenuItem menuItem)
                     {
-                        ((MenuItem)menu.Items[i]).IsEnabled = false;
+                        menuItem.IsEnabled = false;
                     }
                 }
             }
@@ -249,7 +248,7 @@ namespace Spedit.UI
                 }
                 else
                 {
-                    this.ShowMessageAsync(Program.Translations.GetLanguage("VersUpToDate"), string.Format(Program.Translations.GetLanguage("VersionYour"), Assembly.GetEntryAssembly().GetName().Version.ToString())
+                    this.ShowMessageAsync(Program.Translations.GetLanguage("VersUpToDate"), string.Format(Program.Translations.GetLanguage("VersionYour"), Assembly.GetEntryAssembly()?.GetName().Version)
                         , MessageDialogStyle.Affirmative, this.MetroDialogOptions);
                 }
             }
@@ -264,7 +263,7 @@ namespace Spedit.UI
             }
             else
             {
-                Compile_SPScripts(true);
+                Compile_SPScripts();
             }
         }
 
@@ -273,7 +272,7 @@ namespace Spedit.UI
             int selected = CActionButton.SelectedIndex;
             if (selected == 0)
             {
-                Copy_Plugins(false);
+                Copy_Plugins();
             }
             else if (selected == 1)
             {

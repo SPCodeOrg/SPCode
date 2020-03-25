@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics;
 using SourcepawnCondenser;
 using SourcepawnCondenser.SourcemodDefinition;
 using System.Threading;
@@ -13,14 +10,14 @@ namespace Spedit.UI
 {
 	public partial class MainWindow
 	{
-		public ulong currentSMDefUID = 0;
+		private ulong currentSMDefUID;
 		Thread backgroundParserThread;
-		SMDefinition currentSMDef = null;
+		SMDefinition currentSMDef;
 		System.Timers.Timer parseDistributorTimer;
 
-		public void StartBackgroundParserThread()
+		private void StartBackgroundParserThread()
 		{
-			backgroundParserThread = new Thread(new ThreadStart(BackgroundParser_Worker));
+			backgroundParserThread = new Thread(BackgroundParser_Worker);
 			backgroundParserThread.Start();
 			parseDistributorTimer = new System.Timers.Timer(500.0);
 			parseDistributorTimer.Elapsed += ParseDistributorTimer_Elapsed;
@@ -32,18 +29,21 @@ namespace Spedit.UI
 			if (currentSMDefUID == 0) { return; }
 			EditorElement[] ee = null;
 			EditorElement ce = null;
-			this.Dispatcher.Invoke(() =>
+			Dispatcher?.Invoke(() =>
 			{
 				ee = GetAllEditorElements();
 				ce = GetCurrentEditorElement();
 			});
 			if (ee == null || ce == null) { return; } //this can happen!
+
+			Debug.Assert(ee != null, nameof(ee) + " != null");
 			foreach (var e in ee)
 			{
-				if (e.LastSMDefUpdateUID < currentSMDefUID) //wants an update of the SMDefintion
+				if (e.LastSMDefUpdateUID < currentSMDefUID) //wants an update of the SMDefinition
 				{
 					if (e == ce)
 					{
+						Debug.Assert(ce != null, nameof(ce) + " != null");
 						if (ce.ISAC_Open)
 						{
 							continue;
@@ -54,10 +54,10 @@ namespace Spedit.UI
 				}
 			}
 		}
-		
-		public SMFunction[] currentSMFunctions;
-		public ACNode[] currentACNodes;
-		public ISNode[] currentISNodes;
+
+		private SMFunction[] currentSMFunctions;
+		private ACNode[] currentACNodes;
+		private ISNode[] currentISNodes;
 
 		private void BackgroundParser_Worker()
 		{
@@ -75,8 +75,7 @@ namespace Spedit.UI
 							FileInfo fInfo = new FileInfo(ee[i].FullFilePath);
 							if (fInfo.Extension.Trim('.').ToLowerInvariant() == "inc")
 							{
-								var condenser = new Condenser(File.ReadAllText(fInfo.FullName), fInfo.Name);
-								definitions[i] = ((new Condenser(File.ReadAllText(fInfo.FullName), fInfo.Name)).Condense());
+								definitions[i] = (new Condenser(File.ReadAllText(fInfo.FullName), fInfo.Name).Condense());
 							}
 						}
 						currentSMDef = (Program.Configs[Program.SelectedConfig].GetSMDef()).ProduceTemporaryExpandedDefinition(definitions);
@@ -88,6 +87,7 @@ namespace Spedit.UI
 				}
 				Thread.Sleep(5000);
 			}
+			// ReSharper disable once FunctionNeverReturns
 		}
 	}
 }

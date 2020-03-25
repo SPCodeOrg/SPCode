@@ -8,7 +8,7 @@ namespace Spedit.Utils
 {
     public static class ManagedAES
     {
-		private static byte[] Salt = null;
+		private static byte[] Salt;
         public static string Encrypt(string plainText)
         {
             if (plainText.Length < 1)
@@ -17,7 +17,7 @@ namespace Spedit.Utils
             }
             try
             {
-                var symmetricKey = new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.Zeros };
+                var symmetricKey = new RijndaelManaged { Mode = CipherMode.CBC, Padding = PaddingMode.Zeros };
                 var encryptor = symmetricKey.CreateEncryptor(SaltKey(Program.OptionsObject.Program_CryptoKey), Encoding.ASCII.GetBytes("SPEdit.Utils.AES")); //so cool that this matches :D
                 byte[] cipherTextBytes;
                 using (var memoryStream = new MemoryStream())
@@ -32,7 +32,11 @@ namespace Spedit.Utils
                 }
                 return Convert.ToBase64String(cipherTextBytes);
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+	            // ignored
+            }
+
             return string.Empty;
         }
 
@@ -45,21 +49,25 @@ namespace Spedit.Utils
             try
 			{
 				byte[] cipherTextBytes = Convert.FromBase64String(encryptedText);
-                var symmetricKey = new RijndaelManaged() { Mode = CipherMode.CBC, Padding = PaddingMode.None };
+                var symmetricKey = new RijndaelManaged { Mode = CipherMode.CBC, Padding = PaddingMode.None };
                 var decryptor = symmetricKey.CreateDecryptor(SaltKey(Program.OptionsObject.Program_CryptoKey), Encoding.ASCII.GetBytes("SPEdit.Utils.AES"));
-				string outString = string.Empty;
+				string outString;
 				using (var memoryStream = new MemoryStream(cipherTextBytes))
 				{
 					using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
 					{
 						byte[] plainTextBytes = new byte[cipherTextBytes.Length];
 						int decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
-						outString = Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount).TrimEnd(new char[] { '\0' });
+						outString = Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount).TrimEnd('\0');
 					}
 				}
 				return outString;
 			}
-            catch (Exception) { }
+            catch (Exception)
+            {
+	            // ignored
+            }
+
             return string.Empty;
         }
 
@@ -74,8 +82,8 @@ namespace Spedit.Utils
 			byte[] buffer = new byte[16];
 			for (int i = 0; i < 16; ++i)
 			{
-				if (i < Salt.Length)
-					buffer[i] = (byte)((uint)key[i] ^ (uint)Salt[i]);
+				if (Salt != null && i < Salt.Length)
+					buffer[i] = (byte)(key[i] ^ (uint)Salt[i]);
 				else
 					buffer[i] = key[i];
 			}
@@ -102,13 +110,18 @@ namespace Spedit.Utils
 			{
 				var mbs = new ManagementObjectSearcher("Select ProcessorId From Win32_processor");
 				ManagementObjectCollection mbsList = mbs.Get();
-				foreach (ManagementObject mo in mbsList)
+				foreach (var o in mbsList)
 				{
+					var mo = (ManagementObject) o;
 					id = mo["ProcessorId"].ToString();
 					break;
 				}
 			}
-			catch (Exception) { }
+			catch (Exception)
+			{
+				// ignored
+			}
+
 			return id;
 		}
 		private static string diskId()
@@ -120,7 +133,11 @@ namespace Spedit.Utils
 				dsk.Get();
 				id = dsk["VolumeSerialNumber"].ToString();
 			}
-			catch (Exception) { }
+			catch (Exception)
+			{
+				// ignored
+			}
+
 			return id;
 		}
 	}

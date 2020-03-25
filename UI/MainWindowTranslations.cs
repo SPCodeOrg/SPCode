@@ -1,19 +1,10 @@
-﻿using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using Spedit.UI.Components;
-using Spedit.Utils;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Threading;
+﻿using Spedit.UI.Components;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
 
 namespace Spedit.UI
 {
-	public partial class MainWindow : MetroWindow
+	public partial class MainWindow
 	{
 		public void Language_Translate(bool Initial = false)
 		{
@@ -30,12 +21,9 @@ namespace Spedit.UI
 				EditorElement[] ee = GetAllEditorElements();
 				if (ee != null)
 				{
-					for (int i = 0; i < ee.Length; ++i)
+					foreach (var t in ee)
 					{
-						if (ee[i] != null)
-						{
-							ee[i].Language_Translate();
-						}
+						t?.Language_Translate();
 					}
 				}
 			}

@@ -1,7 +1,4 @@
-﻿using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using Spedit.UI.Components;
-using Spedit.Utils;
+﻿using Spedit.UI.Components;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,35 +6,34 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using System.Collections.ObjectModel;
 
 namespace Spedit.UI
 {
-	public partial class MainWindow : MetroWindow
+	public partial class MainWindow
 	{
 		private string CurrentObjectBrowserDirectory = string.Empty;
 		private void TreeViewOBItem_Expanded(object sender, RoutedEventArgs e)
 		{
 			object source = e.Source;
-			if (source is TreeViewItem)
+			if (!(source is TreeViewItem))
 			{
-				TreeViewItem item = (TreeViewItem)source;
-				ObjectBrowserTag itemInfo = (ObjectBrowserTag)item.Tag;
-				if (itemInfo.Kind == ObjectBrowserItemKind.Directory)
+				return;
+			}
+			TreeViewItem item = (TreeViewItem)source;
+			ObjectBrowserTag itemInfo = (ObjectBrowserTag)item.Tag;
+			if (itemInfo.Kind != ObjectBrowserItemKind.Directory || !Directory.Exists(itemInfo.Value))
+			{
+				return;
+			}
+
+			Debug.Assert(Dispatcher != null, nameof(Dispatcher) + " != null");
+			using (Dispatcher.DisableProcessing())
+			{
+				item.Items.Clear();
+				List<TreeViewItem> newItems = BuildDirectoryItems(itemInfo.Value);
+				foreach (var i in newItems)
 				{
-					if (!Directory.Exists(itemInfo.Value))
-					{
-						return;
-					}
-					using (var dd = Dispatcher.DisableProcessing())
-					{
-						item.Items.Clear();
-						List<TreeViewItem> newItems = BuildDirectoryItems(itemInfo.Value);
-						foreach (var i in newItems)
-						{
-							item.Items.Add(i);
-						}
-					}
+					item.Items.Add(i);
 				}
 			}
 		}
@@ -59,9 +55,8 @@ namespace Spedit.UI
 
 		private void TreeViewOBItemFile_DoubleClicked(object sender, RoutedEventArgs e)
 		{
-			if (sender is TreeViewItem)
+			if (sender is TreeViewItem item)
 			{
-				TreeViewItem item = (TreeViewItem)sender;
 				ObjectBrowserTag itemInfo = (ObjectBrowserTag)item.Tag;
 				if (itemInfo.Kind == ObjectBrowserItemKind.File)
 				{
@@ -72,7 +67,7 @@ namespace Spedit.UI
 
 		private void ListViewOBItem_SelectFile(object sender, RoutedEventArgs e)
 		{
-			if (sender is ListViewItem)
+			if (sender is ListViewItem item)
 			{
 				EditorElement ee = GetCurrentEditorElement();
 				if (ee != null)
@@ -80,31 +75,30 @@ namespace Spedit.UI
 					FileInfo fInfo = new FileInfo(ee.FullFilePath);
 					ChangeObjectBrowserToDirectory(fInfo.DirectoryName);
 				}
-				((ListViewItem)sender).IsSelected = false;
+				item.IsSelected = false;
 				ObjectBrowserButtonHolder.SelectedIndex = -1;
 			}
 		}
 		private void ListViewOBItem_SelectConfig(object sender, RoutedEventArgs e)
 		{
-			if (sender is ListViewItem)
+			if (sender is ListViewItem item)
 			{
 				var cc = Program.Configs[Program.SelectedConfig];
 				if (cc.SMDirectories.Length > 0)
 				{
 					ChangeObjectBrowserToDirectory(cc.SMDirectories[0]);
 				}
-				((ListViewItem)sender).IsSelected = false;
+				item.IsSelected = false;
 				ObjectBrowserButtonHolder.SelectedIndex = -1;
 			}
 		}
 		private void ListViewOBItem_SelectOBItem(object sender, RoutedEventArgs e)
 		{
-			if (sender is ListViewItem)
+			if (sender is ListViewItem viewItem)
 			{
 				object objectBrowserSelectedItem = ObjectBrowser.SelectedItem;
-				if (objectBrowserSelectedItem is TreeViewItem)
+				if (objectBrowserSelectedItem is TreeViewItem item)
 				{
-					TreeViewItem item = (TreeViewItem)objectBrowserSelectedItem;
 					ObjectBrowserTag itemInfo = (ObjectBrowserTag)item.Tag;
 					if (itemInfo.Kind == ObjectBrowserItemKind.Directory)
 					{
@@ -125,7 +119,7 @@ namespace Spedit.UI
 						ChangeObjectBrowserToDrives();
 					}
 				}
-				((ListViewItem)sender).IsSelected = false;
+				viewItem.IsSelected = false;
 				ObjectBrowserButtonHolder.SelectedIndex = -1;
 			}
 		}
@@ -160,7 +154,8 @@ namespace Spedit.UI
 			CurrentObjectBrowserDirectory = dir;
 			Program.OptionsObject.Program_ObjectBrowserDirectory = CurrentObjectBrowserDirectory;
 
-			using (var dd = Dispatcher.DisableProcessing())
+			Debug.Assert(Dispatcher != null, nameof(Dispatcher) + " != null");
+			using (Dispatcher.DisableProcessing())
 			{
 				ObjectBrowserDirBlock.Text = dir;
 				ObjectBrowser.Items.Clear();
@@ -182,7 +177,8 @@ namespace Spedit.UI
 		{
 			Program.OptionsObject.Program_ObjectBrowserDirectory = "0:";
 			DriveInfo[] drives = DriveInfo.GetDrives();
-			using (var dd = Dispatcher.DisableProcessing())
+			Debug.Assert(Dispatcher != null, nameof(Dispatcher) + " != null");
+			using (Dispatcher.DisableProcessing())
 			{
 				ObjectBrowserDirBlock.Text = string.Empty;
 				ObjectBrowser.Items.Clear();
@@ -190,16 +186,13 @@ namespace Spedit.UI
 				{
 					if (dInfo.IsReady && (dInfo.DriveType == DriveType.Fixed || dInfo.DriveType == DriveType.Removable))
 					{
-						if (dInfo.RootDirectory != null)
+						var tvi = new TreeViewItem()
 						{
-							var tvi = new TreeViewItem()
-							{
-								Header = BuildTreeViewItemContent(dInfo.Name, "iconmonstr-folder-13-16.png"),
-								Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.Directory, Value = dInfo.RootDirectory.FullName }
-							};
-							tvi.Items.Add("...");
-							ObjectBrowser.Items.Add(tvi);
-						}
+							Header = BuildTreeViewItemContent(dInfo.Name, "iconmonstr-folder-13-16.png"),
+							Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.Directory, Value = dInfo.RootDirectory.FullName }
+						};
+						tvi.Items.Add("...");
+						ObjectBrowser.Items.Add(tvi);
 					}
 				}
 			}
@@ -269,16 +262,13 @@ namespace Spedit.UI
 
 		private object BuildTreeViewItemContent(string headerString, string iconFile)
 		{
-			StackPanel stack = new StackPanel();
-			stack.Orientation = Orientation.Horizontal;
+			StackPanel stack = new StackPanel {Orientation = Orientation.Horizontal};
 			Image image = new Image();
 			string uriPath = $"/Spedit;component/Resources/{iconFile}";
 			image.Source = new BitmapImage(new Uri(uriPath, UriKind.Relative));
 			image.Width = 16;
 			image.Height = 16;
-			TextBlock lbl = new TextBlock();
-			lbl.Text = headerString;
-			lbl.Margin = new Thickness(2.0, 0.0, 0.0, 0.0);
+			TextBlock lbl = new TextBlock {Text = headerString, Margin = new Thickness(2.0, 0.0, 0.0, 0.0)};
 			stack.Children.Add(image);
 			stack.Children.Add(lbl);
 			return stack;

@@ -532,6 +532,7 @@ namespace Spedit.UI.Components
 				}
 			}
 			Parent = null; //to prevent a ring depency which disables the GC from work
+			Program.MainWindow.UpdateWindowTitle();
         }
 
         private void editor_TextChanged(object sender, EventArgs e)
