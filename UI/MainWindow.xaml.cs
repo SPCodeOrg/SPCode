@@ -333,6 +333,15 @@ namespace Spedit.UI
             if (ee == null)
             {
                 outString = "SPEdit";
+                Program.discordClient.SetPresence(new RichPresence()
+                {
+                    State = "Idle",
+                    Timestamps = Program.discordTime,
+                    Assets = new Assets()
+                    {
+                        LargeImageKey = "immagine",
+                    }
+                });
             }
             else
             {
