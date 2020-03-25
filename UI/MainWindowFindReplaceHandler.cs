@@ -241,12 +241,17 @@ namespace Spedit.UI
             Regex regex = GetSearchRegex();
             if (regex == null) { return; }
 
+            int count = 0;
+            int fileCount = 0;
+            
             string replaceString = ReplaceBox.Text;
             foreach (var editor in editors)
             {
                 MatchCollection mc = regex.Matches(editor.editor.Text);
                 if (mc.Count > 0)
                 {
+                    fileCount++;
+                    count += mc.Count;
                     editor.editor.BeginChange();
                     for (int j = mc.Count - 1; j >= 0; --j)
                     {
@@ -257,8 +262,8 @@ namespace Spedit.UI
                     editor.NeedsSave = true;
                 }
             }
-			//FindResultBlock.Text = "Replaced " + count.ToString() + " occurences in " + fileCount.ToString() + " documents";
-			FindResultBlock.Text = string.Format(Program.Translations.GetLanguage("ReplacedOcc, count, fileCount"));
+			// FindResultBlock.Text = "Replaced " + count.ToString() + " occurences in " + fileCount.ToString() + " documents";
+			FindResultBlock.Text = string.Format(Program.Translations.GetLanguage("ReplacedOcc"), count, fileCount);
         }
 
         private void Count()
