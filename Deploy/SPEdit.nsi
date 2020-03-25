@@ -65,10 +65,7 @@ CreateDirectory "$INSTDIR\sourcepawn\scripts"
 CreateDirectory "$INSTDIR\sourcepawn\temp"
 CreateDirectory "$INSTDIR\sourcepawn\templates"
 CreateDirectory "$INSTDIR\sourcepawn\configs"
-CreateDirectory "$INSTDIR\sourcepawn\configs\sm_1_8_5995_smlib_0_11"
-CreateDirectory "$INSTDIR\sourcepawn\configs\sm_1_8_5995"
-CreateDirectory "$INSTDIR\sourcepawn\configs\sm_one_six"
-
+CreateDirectory "$INSTDIR\sourcepawn\configs\sm_1_10_0_6478"
 File /r ".\sourcepawn"
 
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spedit" "DisplayName" "SPEdit - A lightweight sourcepawn editor"
