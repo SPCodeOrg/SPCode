@@ -1,33 +1,30 @@
-﻿using MahApps.Metro;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using Spedit.Interop;
-using Spedit.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Xml;
-using Microsoft.CSharp;
-using Microsoft.Win32;
+using MahApps.Metro;
+using MahApps.Metro.Controls.Dialogs;
+using Spedit.Interop;
+using Spedit.Utils;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Spedit.UI.Windows
 {
     /// <summary>
     /// Interaction logic for AboutWindow.xaml
     /// </summary>
-    public partial class ConfigWindow : MetroWindow
+    public partial class ConfigWindow
     {
-        private bool NeedsSMDefInvalidation = false;
-        private bool AllowChange = false;
+        private bool NeedsSMDefInvalidation;
+        private bool AllowChange;
 
         public ConfigWindow()
         {
@@ -35,9 +32,9 @@ namespace Spedit.UI.Windows
 			Language_Translate();
 			if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
 			{ ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor), ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme)); }
-			for (int i = 0; i < Program.Configs.Length; ++i)
+			foreach (var config in Program.Configs)
             {
-                ConfigListBox.Items.Add(new ListBoxItem() { Content = Program.Configs[i].Name });
+                ConfigListBox.Items.Add(new ListBoxItem { Content = config.Name });
             }
             ConfigListBox.SelectedIndex = Program.SelectedConfig;
         }
@@ -82,11 +79,10 @@ namespace Spedit.UI.Windows
 
         private void NewButton_Clicked(object sender, RoutedEventArgs e)
         {
-            Config c = new Config() { Name = "New Config", Standard = false, OptimizeLevel = 2, VerboseLevel = 1 };
-            List<Config> configList = new List<Config>(Program.Configs);
-            configList.Add(c);
+            Config c = new Config { Name = "New Config", Standard = false, OptimizeLevel = 2, VerboseLevel = 1 };
+            List<Config> configList = new List<Config>(Program.Configs) {c};
             Program.Configs = configList.ToArray();
-            ConfigListBox.Items.Add(new ListBoxItem() { Content = Program.Translations.GetLanguage("NewConfig")});
+            ConfigListBox.Items.Add(new ListBoxItem { Content = Program.Translations.GetLanguage("NewConfig")});
         }
 
         private void DeleteButton_Clicked(object sender, RoutedEventArgs e)
@@ -95,7 +91,7 @@ namespace Spedit.UI.Windows
             Config c = Program.Configs[index];
             if (c.Standard)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("CannotDelConf"), Program.Translations.GetLanguage("YCannotDelConf"), MessageDialogStyle.Affirmative, this.MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.GetLanguage("CannotDelConf"), Program.Translations.GetLanguage("YCannotDelConf"), MessageDialogStyle.Affirmative, MetroDialogOptions);
                 return;
             }
             List<Config> configList = new List<Config>(Program.Configs);
@@ -176,12 +172,16 @@ namespace Spedit.UI.Windows
         private void C_AutoCopy_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChange) { return; }
+
+            Debug.Assert(C_AutoCopy.IsChecked != null, "C_AutoCopy.IsChecked != null");
             Program.Configs[ConfigListBox.SelectedIndex].AutoCopy = C_AutoCopy.IsChecked.Value;
         }
 
         private void C_DeleteAfterCopy_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChange) { return; }
+
+            Debug.Assert(C_DeleteAfterCopy.IsChecked != null, "C_DeleteAfterCopy.IsChecked != null");
             Program.Configs[ConfigListBox.SelectedIndex].DeleteAfterCopy = C_DeleteAfterCopy.IsChecked.Value;
         }
 
@@ -227,8 +227,8 @@ namespace Spedit.UI.Windows
         private void C_RConPort_TextChanged(object sender, RoutedEventArgs e)
         {
             if (!AllowChange) { return; }
-            ushort newPort;
-            if (!ushort.TryParse(C_RConPort.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out newPort))
+
+            if (!ushort.TryParse(C_RConPort.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out var newPort))
             {
                 newPort = 27015;
                 C_RConPort.Text = "27015";
@@ -252,21 +252,20 @@ namespace Spedit.UI.Windows
         {
             if (NeedsSMDefInvalidation)
             {
-                for (int i = 0; i < Program.Configs.Length; ++i)
+                foreach (var config in Program.Configs)
                 {
-                    Program.Configs[i].InvalidateSMDef();
+                    config.InvalidateSMDef();
                 }
             }
             Program.MainWindow.FillConfigMenu();
             Program.MainWindow.ChangeConfig(Program.SelectedConfig);
             StringBuilder outString = new StringBuilder();
-            XmlWriterSettings settings = new XmlWriterSettings() { Indent = true, IndentChars = "\t", NewLineOnAttributes = false, OmitXmlDeclaration = true };
+            XmlWriterSettings settings = new XmlWriterSettings { Indent = true, IndentChars = "\t", NewLineOnAttributes = false, OmitXmlDeclaration = true };
             using (XmlWriter writer = XmlWriter.Create(outString, settings))
             {
                 writer.WriteStartElement("Configurations");
-                for (int i = 0; i < Program.Configs.Length; ++i)
+                foreach (var c in Program.Configs)
                 {
-                    Config c = Program.Configs[i];
                     writer.WriteStartElement("Config");
                     writer.WriteAttributeString("Name", c.Name);
                     StringBuilder SMDirOut = new StringBuilder();
@@ -349,32 +348,29 @@ namespace Spedit.UI.Windows
             set { }
             get
             {
-                if (this.textBoxButtonFolderCmd == null)
+                if (textBoxButtonFolderCmd == null)
                 {
-                    var cmd = new SimpleCommand();
-                    cmd.CanExecutePredicate = o =>
+                    var cmd = new SimpleCommand
                     {
-                        return true;
-                    };
-                    cmd.ExecuteAction = o =>
-                    {
-                        if (o is TextBox)
+                        CanExecutePredicate = o => true,
+                        ExecuteAction = o =>
                         {
-                            var dialog = new System.Windows.Forms.FolderBrowserDialog();
-                            var result = dialog.ShowDialog();
-                            if (result == System.Windows.Forms.DialogResult.OK)
+                            if (o is TextBox box)
                             {
-                                ((TextBox)o).Text = dialog.SelectedPath;
+                                var dialog = new FolderBrowserDialog();
+                                var result = dialog.ShowDialog();
+                                if (result == System.Windows.Forms.DialogResult.OK)
+                                {
+                                    box.Text = dialog.SelectedPath;
+                                }
                             }
                         }
                     };
-                    this.textBoxButtonFolderCmd = cmd;
+                    textBoxButtonFolderCmd = cmd;
                     return cmd;
                 }
-                else
-                {
-                    return textBoxButtonFolderCmd;
-                }
+
+                return textBoxButtonFolderCmd;
             }
         }
 
@@ -385,40 +381,42 @@ namespace Spedit.UI.Windows
             set { }
             get
             {
-                if (this.textBoxButtonFileCmd == null)
+                if (textBoxButtonFileCmd == null)
                 {
-                    var cmd = new SimpleCommand();
-                    cmd.CanExecutePredicate = o =>
+                    var cmd = new SimpleCommand
                     {
-                        return true;
-                    };
-                    cmd.ExecuteAction = o =>
-                    {
-                        if (o is TextBox)
+                        CanExecutePredicate = o => true,
+                        ExecuteAction = o =>
                         {
-                            var dialog = new OpenFileDialog();
-                            dialog.Filter = "Executables *.exe|*.exe|All Files *.*|*.*";
-                            dialog.Multiselect = false;
-                            dialog.CheckFileExists = true; dialog.CheckPathExists = true;
-                            dialog.Title = Program.Translations.GetLanguage("SelectExe");
-                            var result = dialog.ShowDialog();
-                            if (result.Value)
+                            if (o is TextBox box)
                             {
-                                FileInfo fInfo = new FileInfo(dialog.FileName);
-                                if (fInfo.Exists)
+                                var dialog = new OpenFileDialog
                                 {
-                                    ((TextBox)o).Text = fInfo.FullName;
+                                    Filter = "Executables *.exe|*.exe|All Files *.*|*.*",
+                                    Multiselect = false,
+                                    CheckFileExists = true,
+                                    CheckPathExists = true,
+                                    Title = Program.Translations.GetLanguage("SelectExe")
+                                };
+                                var result = dialog.ShowDialog();
+
+                                Debug.Assert(result != null, nameof(result) + " != null");
+                                if (result.Value)
+                                {
+                                    FileInfo fInfo = new FileInfo(dialog.FileName);
+                                    if (fInfo.Exists)
+                                    {
+                                        box.Text = fInfo.FullName;
+                                    }
                                 }
                             }
                         }
                     };
-                    this.textBoxButtonFileCmd = cmd;
+                    textBoxButtonFileCmd = cmd;
                     return cmd;
                 }
-                else
-                {
-                    return textBoxButtonFileCmd;
-                }
+
+                return textBoxButtonFileCmd;
             }
         }
 
@@ -435,16 +433,13 @@ namespace Spedit.UI.Windows
 
             public event EventHandler CanExecuteChanged
             {
-                add { CommandManager.RequerySuggested += value; }
-                remove { CommandManager.RequerySuggested -= value; }
+                add => CommandManager.RequerySuggested += value;
+                remove => CommandManager.RequerySuggested -= value;
             }
 
             public void Execute(object parameter)
             {
-                if (ExecuteAction != null)
-                {
-                    ExecuteAction(parameter);
-                }
+                ExecuteAction?.Invoke(parameter);
             }
         }
 

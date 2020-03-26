@@ -78,7 +78,7 @@ namespace Spedit
 			            {
 				            if (Configs[i].Name == OptionsObject.Program_SelectedConfig)
 				            {
-					            Program.SelectedConfig = i;
+					            SelectedConfig = i;
 					            break;
 				            }
 			            }

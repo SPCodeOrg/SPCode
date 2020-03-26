@@ -1,23 +1,23 @@
-﻿using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using Spedit.UI.Components;
-using Spedit.UI;
+﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using MahApps.Metro;
-using System;
+using MahApps.Metro.Controls.Dialogs;
+using Spedit.UI.Components;
 
 namespace Spedit.UI.Windows
 {
     /// <summary>
     /// Interaction logic for AboutWindow.xaml
     /// </summary>
-    public partial class OptionsWindow : MetroWindow
+    public partial class OptionsWindow
     {
-		string[] AvailableAccents = { "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald", "Teal", "Cyan", "Cobalt", "Indigo", "Violet", "Pink", "Magenta", "Crimson", "Amber",
+	    readonly string[] AvailableAccents = { "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald", "Teal", "Cyan", "Cobalt", "Indigo", "Violet", "Pink", "Magenta", "Crimson", "Amber",
 			"Yellow", "Brown", "Olive", "Steel", "Mauve", "Taupe", "Sienna" };
-        bool RestartTextIsShown = false;
-        bool AllowChanging = false;
+        bool RestartTextIsShown;
+        readonly bool AllowChanging;
+        
         public OptionsWindow()
         {
             InitializeComponent();
@@ -36,14 +36,16 @@ namespace Spedit.UI.Windows
                 Program.OptionsObject = new OptionsControl();
 				Program.OptionsObject.ReCreateCryptoKey();
                 Program.MainWindow.OptionMenuEntry.IsEnabled = false;
-                await this.ShowMessageAsync(Program.Translations.GetLanguage("RestartEditor"), Program.Translations.GetLanguage("YRestartEditor"), MessageDialogStyle.Affirmative, this.MetroDialogOptions);
-                this.Close();
+                await this.ShowMessageAsync(Program.Translations.GetLanguage("RestartEditor"), Program.Translations.GetLanguage("YRestartEditor"), MessageDialogStyle.Affirmative, MetroDialogOptions);
+                Close();
             }
         }
 
         private void HardwareAcc_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging) { return; }
+
+            Debug.Assert(HardwareAcc.IsChecked != null, "HardwareAcc.IsChecked != null");
             Program.OptionsObject.Program_UseHardwareAcceleration = HardwareAcc.IsChecked.Value;
             ToggleRestartText();
         }
@@ -51,6 +53,8 @@ namespace Spedit.UI.Windows
         private void UIAnimation_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging) { return; }
+
+            Debug.Assert(UIAnimation.IsChecked != null, "UIAnimation.IsChecked != null");
             Program.OptionsObject.UI_Animations = UIAnimation.IsChecked.Value;
             ToggleRestartText();
         }
@@ -58,48 +62,52 @@ namespace Spedit.UI.Windows
         private void AutoOpenInclude_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging) { return; }
+
+            Debug.Assert(OpenIncludes.IsChecked != null, "OpenIncludes.IsChecked != null");
             Program.OptionsObject.Program_OpenCustomIncludes = OpenIncludes.IsChecked.Value;
             OpenIncludesRecursive.IsEnabled = OpenIncludes.IsChecked.Value;
         }
         private void OpenIncludeRecursively_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging) { return; }
+
+            Debug.Assert(OpenIncludesRecursive.IsChecked != null, "OpenIncludesRecursive.IsChecked != null");
             Program.OptionsObject.Program_OpenIncludesRecursively = OpenIncludesRecursive.IsChecked.Value;
         }
 
         private void AutoUpdate_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging) { return; }
+
+            Debug.Assert(AutoUpdate.IsChecked != null, "AutoUpdate.IsChecked != null");
             Program.OptionsObject.Program_CheckForUpdates = AutoUpdate.IsChecked.Value;
         }
 
         private void ShowToolbar_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging) { return; }
+
+            Debug.Assert(ShowToolBar.IsChecked != null, "ShowToolBar.IsChecked != null");
             Program.OptionsObject.UI_ShowToolBar = ShowToolBar.IsChecked.Value;
-            if (Program.OptionsObject.UI_ShowToolBar)
-            {
-                Program.MainWindow.Win_ToolBar.Height = double.NaN;
-            }
-            else
-            {
-                Program.MainWindow.Win_ToolBar.Height = 0.0;
-            }
+            Program.MainWindow.Win_ToolBar.Height = Program.OptionsObject.UI_ShowToolBar 
+	            ? double.NaN : 
+	            0.0;
         }
 
 		private void DynamicISAC_Changed(object sender, RoutedEventArgs e)
 		{
 			if (!AllowChanging) { return; }
+
+			Debug.Assert(DynamicISAC.IsChecked != null, "DynamicISAC.IsChecked != null");
 			Program.OptionsObject.Program_DynamicISAC = DynamicISAC.IsChecked.Value;
 		}
 
 		private void DarkTheme_Changed(object sender, RoutedEventArgs e)
 		{
 			if (!AllowChanging) { return; }
-			if (DarkTheme.IsChecked.Value)
-			{ Program.OptionsObject.Program_Theme = "BaseDark"; }
-			else
-			{ Program.OptionsObject.Program_Theme = "BaseLight"; }
+
+			Debug.Assert(DarkTheme.IsChecked != null, "DarkTheme.IsChecked != null");
+			Program.OptionsObject.Program_Theme = DarkTheme.IsChecked.Value ? "BaseDark" : "BaseLight";
 			ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor), ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
 			ThemeManager.ChangeAppStyle(Program.MainWindow, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor), ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
 			ToggleRestartText(true);
@@ -121,9 +129,9 @@ namespace Spedit.UI.Windows
             EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
 			if (editors != null)
 			{
-				for (int i = 0; i < editors.Length; ++i)
+				foreach (var editor in editors)
 				{
-					editors[i].UpdateFontSize(size);
+					editor.UpdateFontSize(size);
 				}
 			}
         }
@@ -137,14 +145,16 @@ namespace Spedit.UI.Windows
         private void WordWrap_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging) { return; }
+
+            Debug.Assert(WordWrap.IsChecked != null, "WordWrap.IsChecked != null");
             bool wrapping = WordWrap.IsChecked.Value;
             Program.OptionsObject.Editor_WordWrap = wrapping;
             EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
 			if (editors != null)
 			{
-				for (int i = 0; i < editors.Length; ++i)
+				foreach (var editor in editors)
 				{
-					editors[i].editor.WordWrap = wrapping;
+					editor.editor.WordWrap = wrapping;
 				}
 			}
         }
@@ -152,52 +162,64 @@ namespace Spedit.UI.Windows
         private void AIndentation_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging) { return; }
+
+            Debug.Assert(AgressiveIndentation.IsChecked != null, "AgressiveIndentation.IsChecked != null");
             Program.OptionsObject.Editor_AgressiveIndentation = AgressiveIndentation.IsChecked.Value;
         }
 
         private void LineReformat_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging) { return; }
+
+            Debug.Assert(LineReformatting.IsChecked != null, "LineReformatting.IsChecked != null");
             Program.OptionsObject.Editor_ReformatLineAfterSemicolon = LineReformatting.IsChecked.Value;
         }
 
         private void TabToSpace_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging) { return; }
+
+            Debug.Assert(TabToSpace.IsChecked != null, "TabToSpace.IsChecked != null");
             bool replaceTabs = TabToSpace.IsChecked.Value;
             Program.OptionsObject.Editor_ReplaceTabsToWhitespace = replaceTabs;
             EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
             if (editors != null)
             {
-                for (int i = 0; i < editors.Length; ++i)
-                {
-                    editors[i].editor.Options.ConvertTabsToSpaces = replaceTabs;
-                }
+	            foreach (var editor in editors)
+	            {
+		            editor.editor.Options.ConvertTabsToSpaces = replaceTabs;
+	            }
             }
         }
 
 		private void AutoCloseBrackets_Changed(object sender, RoutedEventArgs e)
 		{
 			if (!AllowChanging) { return; }
+
+			Debug.Assert(AutoCloseBrackets.IsChecked != null, "AutoCloseBrackets.IsChecked != null");
 			Program.OptionsObject.Editor_AutoCloseBrackets = AutoCloseBrackets.IsChecked.Value;
 		}
 
 		private void AutoCloseStringChars_Changed(object sender, RoutedEventArgs e)
 		{
 			if (!AllowChanging) { return; }
+
+			Debug.Assert(AutoCloseStringChars.IsChecked != null, "AutoCloseStringChars.IsChecked != null");
 			Program.OptionsObject.Editor_AutoCloseStringChars = AutoCloseStringChars.IsChecked.Value;
 		}
 
 		private void ShowSpaces_Changed(object sender, RoutedEventArgs e)
 		{
 			if (!AllowChanging) { return; }
+
+			Debug.Assert(ShowSpaces.IsChecked != null, "ShowSpaces.IsChecked != null");
 			bool showSpacesValue = Program.OptionsObject.Editor_ShowSpaces = ShowSpaces.IsChecked.Value;
 			EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
 			if (editors != null)
 			{
-				for (int i = 0; i < editors.Length; ++i)
+				foreach (var editor in editors)
 				{
-					editors[i].editor.Options.ShowSpaces = showSpacesValue;
+					editor.editor.Options.ShowSpaces = showSpacesValue;
 				}
 			}
 		}
@@ -205,13 +227,15 @@ namespace Spedit.UI.Windows
 		private void ShowTabs_Changed(object sender, RoutedEventArgs e)
 		{
 			if (!AllowChanging) { return; }
+
+			Debug.Assert(ShowTabs.IsChecked != null, "ShowTabs.IsChecked != null");
 			bool showTabsValue = Program.OptionsObject.Editor_ShowTabs = ShowTabs.IsChecked.Value;
 			EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
 			if (editors != null)
 			{
-				for (int i = 0; i < editors.Length; ++i)
+				foreach (var editor in editors)
 				{
-					editors[i].editor.Options.ShowTabs = showTabsValue;
+					editor.editor.Options.ShowTabs = showTabsValue;
 				}
 			}
 		}
@@ -226,9 +250,9 @@ namespace Spedit.UI.Windows
             EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
 			if (editors != null)
 			{
-				for (int i = 0; i < editors.Length; ++i)
+				foreach (var editor in editors)
 				{
-					editors[i].editor.FontFamily = family;
+					editor.editor.FontFamily = family;
 				}
 			}
         }
@@ -236,13 +260,13 @@ namespace Spedit.UI.Windows
 		private void IndentationSize_Changed(object sender, RoutedEventArgs e)
 		{
 			if (!AllowChanging) { return; }
-			int indentationSizeValue = Program.OptionsObject.Editor_IndentationSize = (int)System.Math.Round(IndentationSize.Value);
+			int indentationSizeValue = Program.OptionsObject.Editor_IndentationSize = (int)Math.Round(IndentationSize.Value);
 			EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
 			if (editors != null)
 			{
-				for (int i = 0; i < editors.Length; ++i)
+				foreach (var editor in editors)
 				{
-					editors[i].editor.Options.IndentationSize = indentationSizeValue;
+					editor.editor.Options.IndentationSize = indentationSizeValue;
 				}
 			}
 		}
@@ -251,6 +275,8 @@ namespace Spedit.UI.Windows
 		private void HighlightDeprecateds_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging) { return; }
+
+            Debug.Assert(HighlightDeprecateds.IsChecked != null, "HighlightDeprecateds.IsChecked != null");
             Program.OptionsObject.SH_HighlightDeprecateds = HighlightDeprecateds.IsChecked.Value;
             ToggleRestartText();
         }
@@ -276,6 +302,8 @@ namespace Spedit.UI.Windows
 		private void HardwareSalts_Changed(object sender, RoutedEventArgs e)
 		{
 			if (!AllowChanging) { return; }
+
+			Debug.Assert(HardwareSalts.IsChecked != null, "HardwareSalts.IsChecked != null");
 			Program.OptionsObject.Program_UseHardwareSalts = HardwareSalts.IsChecked.Value;
 			Program.RCCKMade = false;
 			Program.OptionsObject.ReCreateCryptoKey();
@@ -292,11 +320,11 @@ namespace Spedit.UI.Windows
 				Program.OptionsObject.Editor_AutoSave = false;
 				if (editors != null)
 				{
-					for (int i = 0; i < editors.Length; ++i)
+					foreach (var editor in editors)
 					{
-						if (editors[i].AutoSaveTimer.Enabled)
+						if (editor.AutoSaveTimer.Enabled)
 						{
-							editors[i].AutoSaveTimer.Stop();
+							editor.AutoSaveTimer.Stop();
 						}
 					}
 				}
@@ -314,9 +342,9 @@ namespace Spedit.UI.Windows
 					Program.OptionsObject.Editor_AutoSaveInterval = (newIndex - 1) * 60;
 				if (editors != null)
 				{
-					for (int i = 0; i < editors.Length; ++i)
+					foreach (var editor in editors)
 					{
-						editors[i].StartAutoSaveTimer();
+						editor.StartAutoSaveTimer();
 					}
 				}
 			}
@@ -324,9 +352,9 @@ namespace Spedit.UI.Windows
 
 		private void LoadSettings()
         {
-			for (int i = 0; i < AvailableAccents.Length; ++i)
+			foreach (var accent in AvailableAccents)
 			{
-				AccentColor.Items.Add(AvailableAccents[i]);
+				AccentColor.Items.Add(accent);
 			}
             HardwareAcc.IsChecked = Program.OptionsObject.Program_UseHardwareAcceleration;
             UIAnimation.IsChecked = Program.OptionsObject.UI_Animations;
@@ -385,7 +413,7 @@ namespace Spedit.UI.Windows
 			ShowTabs.IsChecked = Program.OptionsObject.Editor_ShowTabs;
 			FontFamilyTB.Text = $"{Program.Translations.GetLanguage("FontFamily")} ({Program.OptionsObject.Editor_FontFamily}):";
             FontFamilyCB.SelectedValue = new FontFamily(Program.OptionsObject.Editor_FontFamily);
-			IndentationSize.Value = (double)Program.OptionsObject.Editor_IndentationSize;
+			IndentationSize.Value = Program.OptionsObject.Editor_IndentationSize;
 			HardwareSalts.IsChecked = Program.OptionsObject.Program_UseHardwareSalts;
             LoadSH();
         }

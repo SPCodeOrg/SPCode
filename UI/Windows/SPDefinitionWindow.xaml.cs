@@ -1,7 +1,9 @@
-﻿using MahApps.Metro.Controls;
+﻿using System;
+using MahApps.Metro.Controls;
 using SourcepawnCondenser.SourcemodDefinition;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,11 +17,10 @@ namespace Spedit.UI.Windows
     /// </summary>
     public partial class SPDefinitionWindow : MetroWindow
     {
-        SMDefinition def;
-
         SPDefEntry[] defArray;
         ListViewItem[] items;
         Timer searchTimer = new Timer(1000.0);
+        readonly Brush errorSearchBoxBrush = new SolidColorBrush(Color.FromArgb(0x50, 0xA0, 0x30, 0));
 
         public SPDefinitionWindow()
         {
@@ -28,32 +29,26 @@ namespace Spedit.UI.Windows
 			if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
 			{ ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor), ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme)); }
 			errorSearchBoxBrush.Freeze();
-            def = Program.Configs[Program.SelectedConfig].GetSMDef();
+			SMDefinition def = Program.Configs[Program.SelectedConfig].GetSMDef();
             if (def == null)
             {
                 MessageBox.Show(Program.Translations.GetLanguage("ConfigWrongPars"), Program.Translations.GetLanguage("Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 this.Close();
                 return;
             }
-            List<SPDefEntry> defList = new List<SPDefEntry>();
-            for (int i = 0; i < def.Functions.Count; ++i) { defList.Add((SPDefEntry)def.Functions[i]); }
-            for (int i = 0; i < def.Constants.Count; ++i) { defList.Add((SPDefEntry)def.Constants[i]); }
-			for (int i = 0; i < def.Enums.Count; ++i) { defList.Add((SPDefEntry)def.Enums[i]); }
-			for (int i = 0; i < def.Defines.Count; ++i) { defList.Add((SPDefEntry)def.Defines[i]); }
-			for (int i = 0; i < def.Structs.Count; ++i) { defList.Add((SPDefEntry)def.Structs[i]); }
-			for (int i = 0; i < def.Methodmaps.Count; ++i) { defList.Add((SPDefEntry)def.Methodmaps[i]); }
-			for (int i = 0; i < def.Typedefs.Count; ++i) { defList.Add((SPDefEntry)def.Typedefs[i]); }
-			foreach (var mm in def.Methodmaps)
-			{
-				for (int i = 0; i < mm.Methods.Count; ++i)
-				{
-					defList.Add((SPDefEntry)mm.Methods[i]);
-				}
-				for (int i = 0; i < mm.Fields.Count; ++i)
-				{
-					defList.Add((SPDefEntry)mm.Fields[i]);
-				}
-			}
+            List<SPDefEntry> defList = def.Functions.Cast<SPDefEntry>().ToList();
+            defList.AddRange(def.Constants.Cast<SPDefEntry>());
+            defList.AddRange(def.Enums.Cast<SPDefEntry>());
+            defList.AddRange(def.Defines.Cast<SPDefEntry>());
+            defList.AddRange(def.Structs.Cast<SPDefEntry>());
+            defList.AddRange(def.Methodmaps.Cast<SPDefEntry>());
+            defList.AddRange(def.Typedefs.Cast<SPDefEntry>());
+            
+            foreach (var mm in def.Methodmaps)
+            {
+	            defList.AddRange(mm.Methods.Cast<SPDefEntry>());
+	            defList.AddRange(mm.Fields.Cast<SPDefEntry>());
+            }
 			foreach (var e in defList)
 			{
 				if (string.IsNullOrWhiteSpace(e.Name))
@@ -61,7 +56,7 @@ namespace Spedit.UI.Windows
 					e.Name = $"--{Program.Translations.GetLanguage("NoName")}--";
 				}
 			}
-			defList.Sort((a, b) => { return string.Compare(a.Name, b.Name); });
+			defList.Sort((a, b) => String.CompareOrdinal(a.Name, b.Name));
             defArray = defList.ToArray();
             int defArrayLength = defArray.Length;
             items = new ListViewItem[defArrayLength];
@@ -87,122 +82,122 @@ namespace Spedit.UI.Windows
             object TagValue = item.Tag;
             if (TagValue != null)
             {
-                if (TagValue is SMFunction)
+	            if (TagValue is SMFunction sm1)
                 {
-                    var sm = (SMFunction)TagValue;
-                    SPNameBlock.Text = sm.Name;
-                    SPFullNameBlock.Text = sm.FullName;
-					SPFileBlock.Text = sm.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm.Index, sm.Length)})";
+	                SPNameBlock.Text = sm1.Name;
+                    SPFullNameBlock.Text = sm1.FullName;
+					SPFileBlock.Text = sm1.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm1.Index, sm1.Length)})";
 					SPTypeBlock.Text = "Function";
-					SPCommentBox.Text = sm.CommentString;
+					SPCommentBox.Text = sm1.CommentString;
                     return;
 				}
-				else if (TagValue is SMConstant)
-				{
-					var sm = (SMConstant)TagValue;
-					SPNameBlock.Text = sm.Name;
-					SPFullNameBlock.Text = string.Empty;
-					SPFileBlock.Text = sm.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm.Index, sm.Length)})";
-					SPTypeBlock.Text = "Constant";
-					SPCommentBox.Text = string.Empty;
-					return;
-				}
-				else if (TagValue is SMEnum)
-				{
-					var sm = (SMEnum)TagValue;
-					SPNameBlock.Text = sm.Name;
-					SPFullNameBlock.Text = string.Empty;
-					SPFileBlock.Text = sm.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm.Index, sm.Length)})";
-					SPTypeBlock.Text = "Enum " + sm.Entries.Length.ToString() + " entries";
-					StringBuilder outString = new StringBuilder();
-					for (int i = 0; i < sm.Entries.Length; ++i)
-					{
-						outString.Append((i.ToString() + ".").PadRight(5, ' '));
-						outString.AppendLine(sm.Entries[i]);
-					}
-					SPCommentBox.Text = outString.ToString();
-					return;
-				}
-				else if (TagValue is SMStruct)
-				{
-					var sm = (SMStruct)TagValue;
-					SPNameBlock.Text = sm.Name;
-					SPFullNameBlock.Text = string.Empty;
-					SPFileBlock.Text = sm.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm.Index, sm.Length)})";
-					SPTypeBlock.Text = "Struct";
-					SPCommentBox.Text = string.Empty;
-					return;
-				}
-				else if (TagValue is SMDefine)
-				{
-					var sm = (SMDefine)TagValue;
-					SPNameBlock.Text = sm.Name;
-					SPFullNameBlock.Text = string.Empty;
-					SPFileBlock.Text = sm.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm.Index, sm.Length)})";
-					SPTypeBlock.Text = "Definition";
-					SPCommentBox.Text = string.Empty;
-					return;
-				}
-				else if (TagValue is SMMethodmap)
-				{
-					var sm = (SMMethodmap)TagValue;
-					SPNameBlock.Text = sm.Name;
-					SPFullNameBlock.Text = $"{Program.Translations.GetLanguage("TypeStr")}: " + sm.Type + $" - {Program.Translations.GetLanguage("InheritedFrom")}: {sm.InheritedType}";
-					SPFileBlock.Text = sm.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm.Index, sm.Length)})";
-					SPTypeBlock.Text = "Methodmap " + sm.Methods.Count.ToString() + " methods - " + sm.Fields.Count.ToString() + " fields";
-					StringBuilder outString = new StringBuilder();
-					outString.AppendLine("Methods:");
-					foreach (var m in sm.Methods)
-					{
-						outString.AppendLine(m.FullName);
-					}
-					outString.AppendLine();
-					outString.AppendLine("Fields:");
-					foreach (var f in sm.Fields)
-					{
-						outString.AppendLine(f.FullName);
-					}
-					SPCommentBox.Text = outString.ToString();
-					return;
-				}
-				else if (TagValue is SMMethodmapMethod)
-				{
-					var sm = (SMMethodmapMethod)TagValue;
-					SPNameBlock.Text = sm.Name;
-					SPFullNameBlock.Text = sm.FullName;
-					SPFileBlock.Text = sm.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm.Index, sm.Length)})";
-					SPTypeBlock.Text = $"{Program.Translations.GetLanguage("MethodFrom")} {sm.MethodmapName}";
-					SPCommentBox.Text = sm.CommentString;
-					return;
-				}
-				else if (TagValue is SMMethodmapField)
-				{
-					var sm = (SMMethodmapField)TagValue;
-					SPNameBlock.Text = sm.Name;
-					SPFullNameBlock.Text = sm.FullName;
-					SPFileBlock.Text = sm.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm.Index, sm.Length)})";
-					SPTypeBlock.Text = $"{Program.Translations.GetLanguage("PropertyFrom")} {sm.MethodmapName}";
-					SPCommentBox.Text = string.Empty;
-					return;
-				}
-				else if (TagValue is SMTypedef)
-				{
-					var sm = (SMTypedef)TagValue;
-					SPNameBlock.Text = sm.Name;
-					SPFullNameBlock.Text = string.Empty;
-					SPFileBlock.Text = sm.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm.Index, sm.Length)})";
-					SPTypeBlock.Text = "Typedef/Typeset";
-					SPCommentBox.Text = sm.FullName;
-					return;
-				}
-				else if (TagValue is string)
-                {
-                    SPNameBlock.Text = (string)item.Content;
-                    SPFullNameBlock.Text = (string)TagValue;
-					SPFileBlock.Text = string.Empty;
-					SPCommentBox.Text = string.Empty;
-                    return;
-                }
+
+	            if (TagValue is SMConstant sm2)
+	            {
+		            SPNameBlock.Text = sm2.Name;
+		            SPFullNameBlock.Text = string.Empty;
+		            SPFileBlock.Text = sm2.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm2.Index, sm2.Length)})";
+		            SPTypeBlock.Text = "Constant";
+		            SPCommentBox.Text = string.Empty;
+		            return;
+	            }
+	            
+	            if (TagValue is SMEnum sm3)
+	            {
+		            SPNameBlock.Text = sm3.Name;
+		            SPFullNameBlock.Text = string.Empty;
+		            SPFileBlock.Text = sm3.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm3.Index, sm3.Length)})";
+		            SPTypeBlock.Text = "Enum " + sm3.Entries.Length.ToString() + " entries";
+		            StringBuilder outString = new StringBuilder();
+		            for (int i = 0; i < sm3.Entries.Length; ++i)
+		            {
+			            outString.Append((i.ToString() + ".").PadRight(5, ' '));
+			            outString.AppendLine(sm3.Entries[i]);
+		            }
+		            SPCommentBox.Text = outString.ToString();
+		            return;
+	            }
+	            
+	            if (TagValue is SMStruct sm4)
+	            {
+		            SPNameBlock.Text = sm4.Name;
+		            SPFullNameBlock.Text = string.Empty;
+		            SPFileBlock.Text = sm4.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm4.Index, sm4.Length)})";
+		            SPTypeBlock.Text = "Struct";
+		            SPCommentBox.Text = string.Empty;
+		            return;
+	            }
+	            
+	            if (TagValue is SMDefine sm5)
+	            {
+		            SPNameBlock.Text = sm5.Name;
+		            SPFullNameBlock.Text = string.Empty;
+		            SPFileBlock.Text = sm5.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm5.Index, sm5.Length)})";
+		            SPTypeBlock.Text = "Definition";
+		            SPCommentBox.Text = string.Empty;
+		            return;
+	            }
+	            
+	            if (TagValue is SMMethodmap sm6)
+	            {
+		            SPNameBlock.Text = sm6.Name;
+		            SPFullNameBlock.Text = $"{Program.Translations.GetLanguage("TypeStr")}: " + sm6.Type + $" - {Program.Translations.GetLanguage("InheritedFrom")}: {sm6.InheritedType}";
+		            SPFileBlock.Text = sm6.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm6.Index, sm6.Length)})";
+		            SPTypeBlock.Text = "Methodmap " + sm6.Methods.Count.ToString() + " methods - " + sm6.Fields.Count.ToString() + " fields";
+		            StringBuilder outString = new StringBuilder();
+		            outString.AppendLine("Methods:");
+		            foreach (var m in sm6.Methods)
+		            {
+			            outString.AppendLine(m.FullName);
+		            }
+		            outString.AppendLine();
+		            outString.AppendLine("Fields:");
+		            foreach (var f in sm6.Fields)
+		            {
+			            outString.AppendLine(f.FullName);
+		            }
+		            SPCommentBox.Text = outString.ToString();
+		            return;
+	            }
+	            
+	            if (TagValue is SMMethodmapMethod sm7)
+	            {
+		            SPNameBlock.Text = sm7.Name;
+		            SPFullNameBlock.Text = sm7.FullName;
+		            SPFileBlock.Text = sm7.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm7.Index, sm7.Length)})";
+		            SPTypeBlock.Text = $"{Program.Translations.GetLanguage("MethodFrom")} {sm7.MethodmapName}";
+		            SPCommentBox.Text = sm7.CommentString;
+		            return;
+	            }
+
+	            if (TagValue is SMMethodmapField sm8)
+	            {
+		            SPNameBlock.Text = sm8.Name;
+		            SPFullNameBlock.Text = sm8.FullName;
+		            SPFileBlock.Text = sm8.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm8.Index, sm8.Length)})";
+		            SPTypeBlock.Text = $"{Program.Translations.GetLanguage("PropertyFrom")} {sm8.MethodmapName}";
+		            SPCommentBox.Text = string.Empty;
+		            return;
+	            }
+	            
+	            if (TagValue is SMTypedef sm)
+	            {
+		            SPNameBlock.Text = sm.Name;
+		            SPFullNameBlock.Text = string.Empty;
+		            SPFileBlock.Text = sm.File + ".inc" + $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm.Index, sm.Length)})";
+		            SPTypeBlock.Text = "Typedef/Typeset";
+		            SPCommentBox.Text = sm.FullName;
+		            return;
+	            }
+	            
+	            if (TagValue is string value)
+	            {
+		            SPNameBlock.Text = (string)item.Content;
+		            SPFullNameBlock.Text = value;
+		            SPFileBlock.Text = string.Empty;
+		            SPCommentBox.Text = string.Empty;
+		            return;
+	            }
             }
             SPNameBlock.Text = (string)item.Content;
             SPFullNameBlock.Text = string.Empty;
@@ -218,10 +213,9 @@ namespace Spedit.UI.Windows
             searchTimer.Start();
         }
 
-		Brush errorSearchBoxBrush = new SolidColorBrush(Color.FromArgb(0x50, 0xA0, 0x30, 0));
         private void DoSearch()
         {
-            this.Dispatcher.Invoke(() =>
+            Dispatcher?.Invoke(() =>
                 {
                     int itemCount = defArray.Length;
                     string searchString = SPSearchBox.Text.ToLowerInvariant();
@@ -235,14 +229,7 @@ namespace Spedit.UI.Windows
                             SPBox.Items.Add(items[i]);
                         }
                     }
-                    if (foundOccurence)
-                    {
-                        SPSearchBox.Background = Brushes.Transparent;
-                    }
-                    else
-                    {
-                        SPSearchBox.Background = errorSearchBoxBrush;
-                    }
+                    SPSearchBox.Background = foundOccurence ? Brushes.Transparent : errorSearchBoxBrush;
                     SPProgress.IsIndeterminate = false;
                 });
         }
