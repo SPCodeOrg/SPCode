@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
@@ -182,65 +183,53 @@ namespace Spedit.UI.Components
                                     {
                                         var methodString = ISMatches[j].Groups["method"].Value;
                                         var found = false;
-                                        // Match for static methods.
-                                        foreach (var methodMap in methodMaps)
-                                        {
-                                            if (classString == methodMap.Name)
-                                            {
-                                                foreach (var method in methodMap.Methods)
-                                                {
-                                                    if (method.Name == methodString)
-                                                    {
-                                                        xPos = ISMatches[j].Groups["method"].Index +
-                                                               ISMatches[j].Groups["method"].Length;
-                                                        ForwardShowIS = true;
-                                                        ISFuncNameStr = method.FullName;
-                                                        ISFuncDescriptionStr = method.CommentString;
-                                                        ForceReSet = true;
-                                                        found = true;
-                                                        break;
-                                                    }
-                                                }
 
-                                                break;
-                                            }
+                                        // Match for static methods.
+                                        var staticMethodMap = methodMaps.FirstOrDefault(e => e.Name == classString);
+                                        var staticMethod =
+                                            staticMethodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
+                                        if (staticMethod != null)
+                                        {
+                                            xPos = ISMatches[j].Groups["method"].Index +
+                                                   ISMatches[j].Groups["method"].Length;
+                                            ForwardShowIS = true;
+                                            ISFuncNameStr = staticMethod.FullName;
+                                            ISFuncDescriptionStr = staticMethod.CommentString;
+                                            ForceReSet = true;
+                                            found = true;
                                         }
+
                                         if (!found)
                                         {
                                             // Many any methodmap, since the ide is not aware of the types
                                             foreach (var methodMap in methodMaps)
                                             {
-                                                Console.WriteLine(methodMap.Name);
-                                                foreach (var method in methodMap.Methods)
+                                                var method =
+                                                    methodMap.Methods.FirstOrDefault(e => e.Name == methodString);
+                                                if (method != null)
                                                 {
-                                                    if (method.Name == methodString)
-                                                    {
-                                                        xPos = ISMatches[j].Groups["method"].Index +
-                                                               ISMatches[j].Groups["method"].Length;
-                                                        ForwardShowIS = true;
-                                                        ISFuncNameStr = method.FullName;
-                                                        ISFuncDescriptionStr = method.CommentString;
-                                                        ForceReSet = true;
-                                                        found = true;
-                                                        break;
-                                                    }
+                                                    xPos = ISMatches[j].Groups["method"].Index +
+                                                           ISMatches[j].Groups["method"].Length;
+                                                    ForwardShowIS = true;
+                                                    ISFuncNameStr = method.FullName;
+                                                    ISFuncDescriptionStr = method.CommentString;
+                                                    ForceReSet = true;
                                                 }
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        foreach (var func in funcs)
-                                            if (testString == func.Name)
-                                            {
-                                                xPos = ISMatches[j].Groups["name"].Index +
-                                                       ISMatches[j].Groups["name"].Length;
-                                                ForwardShowIS = true;
-                                                ISFuncNameStr = func.FullName;
-                                                ISFuncDescriptionStr = func.CommentString;
-                                                ForceReSet = true;
-                                                break;
-                                            }
+                                        var func = funcs.FirstOrDefault(e => e.Name == testString);
+                                        if (func != null)
+                                        {
+                                            xPos = ISMatches[j].Groups["name"].Index +
+                                                   ISMatches[j].Groups["name"].Length;
+                                            ForwardShowIS = true;
+                                            ISFuncNameStr = func.FullName;
+                                            ISFuncDescriptionStr = func.CommentString;
+                                            ForceReSet = true;
+                                        }
                                     }
 
                                     break;
@@ -248,6 +237,7 @@ namespace Spedit.UI.Components
 
                             if (FoundMatch)
                             {
+                                // ReSharper disable once RedundantAssignment
                                 scopeLevel--; //i have no idea why this works...
                                 break;
                             }
