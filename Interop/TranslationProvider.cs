@@ -166,8 +166,8 @@ namespace Spedit.Interop
             language.Add("Tools", "Tools");
             language.Add("Options", "Options");
             language.Add("ParsedIncDir", "Parsed from include directory");
-            language.Add("OldAPIWeb", "Old API website");
-            language.Add("NewAPIWeb", "New API website");
+            language.Add("NewAPIWeb", "API Reference");
+            language.Add("BetaAPIWeb", "(BETA) API Reference");
             language.Add("Reformatter", "Syntax reformatter");
             language.Add("ReformatCurr", "Reformat current");
             language.Add("ReformatAll", "Reformat all");

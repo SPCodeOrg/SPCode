@@ -70,8 +70,8 @@
 		<tools>Werkzeuge</tools>
 		<options>Optionen</options>
 		<parsedincdir>Vom include-Pfad erkannt</parsedincdir>
-		<oldapiweb>Alte API Webseite</oldapiweb>
-		<newapiweb>Neue API Webseite</newapiweb>
+		<newapiweb>API Referenz</newapiweb>
+		<betaapiweb>(Beta) API Referenz</betaapiweb>
 		<reformatter>Syntax neu formatieren</reformatter>
 		<reformatcurr>Formatieren</reformatcurr>
 		<reformatall>Alle formatieren</reformatall>
@@ -265,8 +265,8 @@
 		<tools>Outils</tools>
 		<options>Options</options>
 		<parsedincdir>Analysé depuis le dossier 'include'</parsedincdir>
-		<oldapiweb>Ancienne API</oldapiweb>
-		<newapiweb>Nouvelle API</newapiweb>
+		<newapiweb>Ancienne API</newapiweb>
+		<betaapiweb>Nouvelle API</betaapiweb>
 		<reformatter>Reformatation de syntax</reformatter>
 		<reformatcurr>Reformater le document</reformatcurr>
 		<reformatall>Tout reformater</reformatall>
@@ -460,8 +460,8 @@
 		<tools>도구</tools>
 		<options>편집기 설정</options>
 		<parsedincdir>Include 디렉토리에서 분석</parsedincdir>
-		<oldapiweb>구 문법 API</oldapiweb>
-		<newapiweb>새 문법 API</newapiweb>
+		<newapiweb>구 문법 API</newapiweb>
+		<betaapiweb>새 문법 API</betaapiweb>
 		<reformatter>문법 정리</reformatter>
 		<reformatcurr>현재 문서의 문법 정리</reformatcurr>
 		<reformatall>모든 문서의 문법 정리</reformatall>
@@ -655,8 +655,8 @@
 		<tools>Verktyg</tools>
 		<options>Inställningar</options>
 		<parsedincdir>Kopierad från include mapp</parsedincdir>
-		<oldapiweb>Gammal API hemsida</oldapiweb>
-		<newapiweb>Ny API hemsida</newapiweb>
+		<newapiweb>Gammal API hemsida</newapiweb>
+		<betaapiweb>Ny API hemsida</betaapiweb>
 		<reformatter>Syntax omgörare</reformatter>
 		<reformatcurr>Omgör nuvarande</reformatcurr>
 		<reformatall>Omgör allt</reformatall>
@@ -850,8 +850,8 @@
 		<tools>Инструменты</tools>
 		<options>Настройки программы</options>
 		<parsedincdir>Установленный на ПК</parsedincdir>
-		<oldapiweb>Страница старого API</oldapiweb>
-		<newapiweb>Страница нового API</newapiweb>
+		<newapiweb>Страница старого API</newapiweb>
+		<betaapiweb>Страница нового API</betaapiweb>
 		<reformatter>Переформатирование синтаксиса</reformatter>
 		<reformatcurr>Переформатировать текущий</reformatcurr>
 		<reformatall>Переформатировать все</reformatall>
@@ -1045,8 +1045,8 @@
 		<tools>Ferramentas</tools>
 		<options>Opções</options>
 		<parsedincdir>Analisado do diretório include</parsedincdir>
-		<oldapiweb>Site da API antiga</oldapiweb>
-		<newapiweb>Novo site da API</newapiweb>
+		<newapiweb>Site da API antiga</newapiweb>
+		<betaapiweb>Novo site da API</betaapiweb>
 		<reformatter>Reformatar Sintaxe</reformatter>
 		<reformatcurr>Reformatar atual</reformatcurr>
 		<reformatall>Reformatar Tudo</reformatall>
@@ -1240,8 +1240,8 @@
 		<tools>Narzędzia</tools>
 		<options>Opcje</options>
 		<parsedincdir>Analiza składniowa z folderu include</parsedincdir>
-		<oldapiweb>Stare API</oldapiweb>
-		<newapiweb>Nowe API</newapiweb>
+		<newapiweb>Stare API</newapiweb>
+		<betaapiweb>Nowe API</betaapiweb>
 		<reformatter>Formatowanie składni</reformatter>
 		<reformatcurr>Formatuj bieżący</reformatcurr>
 		<reformatall>Formatuj wszystkie</reformatall>
@@ -1435,8 +1435,8 @@
 		<tools>Araçlar</tools>
 		<options>Ayarlar</options>
 		<parsedincdir>Vom include-Pfad erkannt</parsedincdir>
-		<oldapiweb>Eski API web sitesi</oldapiweb>
-		<newapiweb>Yeni API web sitesi</newapiweb>
+		<newapiweb>Eski API web sitesi</newapiweb>
+		<betaapiweb>Yeni API web sitesi</betaapiweb>
 		<reformatter>Biçimlendirme Sözdizimi yeni</reformatter>
 		<reformatcurr>biçim</reformatcurr>
 		<reformatall>Biçimlendirme tüm</reformatall>
@@ -1630,8 +1630,8 @@
 		<tools>工具</tools>
 		<options>选项</options>
 		<parsedincdir>从引用目录中转换</parsedincdir>
-		<oldapiweb>API帮助查询网站(旧版)</oldapiweb>
-		<newapiweb>API帮助查询网站(新版)</newapiweb>
+		<newapiweb>API帮助查询网站(旧版)</newapiweb>
+		<betaapiweb>API帮助查询网站(新版)</betaapiweb>
 		<reformatter>语法格式器</reformatter>
 		<reformatcurr>设置选定内容的格式</reformatcurr>
 		<reformatall>设置文档格式</reformatall>
@@ -1825,8 +1825,8 @@
 			<tools>工具</tools>
 			<options>選項</options>
 			<parsedincdir>從引用目錄中轉換</parsedincdir>
-			<oldapiweb>API幫助查詢網站(舊版)</oldapiweb>
-			<newapiweb>API幫助查詢網站(新版)</newapiweb>
+			<newapiweb>API幫助查詢網站(舊版)</newapiweb>
+			<betaapiweb>API幫助查詢網站(新版)</betaapiweb>
 			<reformatter>語法格式器</reformatter>
 			<reformatcurr>設置選定內容的格式</reformatcurr>
 			<reformatall>設置文檔格式</reformatall>
