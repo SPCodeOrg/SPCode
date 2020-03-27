@@ -47,11 +47,11 @@ namespace Spedit.UI.Components
                     {
                         if (indentation.Length > 0)
                         {
-                            indentation = indentation.Substring(0, indentation.Length - 1);
+                            indentation = indentation.Substring(0, indentation.Length) + "\t\n" + indentation.Substring(0, indentation.Length);
                         }
                         else
                         {
-                            indentation = string.Empty;
+                            indentation = "\t\n";
                         }
                     }
                     /*if (lastLineTextTrimmed == "{" && currentLineTextTrimmed != "}")
@@ -74,6 +74,7 @@ namespace Spedit.UI.Components
                 document.Replace(indentationSegment, indentation);
             }
         }
+
 
         public void IndentLines(TextDocument document, int beginLine, int endLine)
         { }
