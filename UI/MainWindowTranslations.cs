@@ -63,8 +63,8 @@ namespace Spedit.UI
 			MenuI_Tools.Header = Program.Translations.GetLanguage("Tools");
 			OptionMenuEntry.Header = Program.Translations.GetLanguage("Options");
 			MenuI_ParsedIncDir.Header = Program.Translations.GetLanguage("ParsedIncDir");
-			MenuI_OldApiWeb.Header = Program.Translations.GetLanguage("OldAPIWeb");
 			MenuI_NewApiWeb.Header = Program.Translations.GetLanguage("NewAPIWeb");
+			MenuI_BetaApiWeb.Header = Program.Translations.GetLanguage("BetaAPIWeb");
 			MenuI_Reformatter.Header = Program.Translations.GetLanguage("Reformatter");
 			MenuI_ReformattCurr.Header = Program.Translations.GetLanguage("ReformatCurr");
 			MenuI_ReformattAll.Header = Program.Translations.GetLanguage("ReformatAll");

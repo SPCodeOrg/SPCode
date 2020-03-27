@@ -69,8 +69,8 @@
 	<tools>Tools</tools>
 	<options>Options</options>
 	<parsedincdir>Parsed from include directory</parsedincdir>
-	<oldapiweb>Old API webside</oldapiweb>
-	<newapiweb>New API webside</newapiweb>
+	<newapiweb>API Reference</newapiweb>
+	<betaapiweb>(BETA) API Reference</betaapiweb>
 	<reformatter>Syntax reformatter</reformatter>
 	<reformatcurr>Reformat current</reformatcurr>
 	<reformatall>Reformat all</reformatall>

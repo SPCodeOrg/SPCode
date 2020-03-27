@@ -217,7 +217,7 @@ namespace Spedit.UI
 
         private void ReportBug_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(@"https://github.com/TheJelle/Spedit/issues/new"));
+            Process.Start(new ProcessStartInfo(@"https://github.com/Hexer10/Spedit/issues/new"));
         }
 
         private void UpdateCheck_Click(object sender, RoutedEventArgs e)

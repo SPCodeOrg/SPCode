@@ -103,10 +103,10 @@
                 <MenuItem Name="MenuI_Tools" Header="Tools">
                     <MenuItem Name="OptionMenuEntry" Header="Options" Click="Menu_OpenOptions" />
                     <Separator />
-                    <MenuItem Header="Sourcepawn API">
+                    <MenuItem Header="SourcePawn API">
                         <MenuItem Name="MenuI_ParsedIncDir" Header="Parsed from Include Directory" Click="Menu_OpenSPDef" />
-                        <MenuItem Name="MenuI_OldApiWeb" Header="Old Api Website" Click="Menu_OpenWebsiteFromTag" Tag="https://sm.alliedmods.net/api/" />
-                        <MenuItem Name="MenuI_NewApiWeb" Header="New Api Website" Click="Menu_OpenWebsiteFromTag" Tag="https://sm.alliedmods.net/new-api/" />
+                        <MenuItem Name="MenuI_NewApiWeb" Header="API Reference" Click="Menu_OpenWebsiteFromTag" Tag="https://sm.alliedmods.net/new-api/" />
+                        <MenuItem Name="MenuI_BetaApiWeb" Header="(BETA) API Reference" Click="Menu_OpenWebsiteFromTag" Tag="https://sourcemod.dev/" />
                     </MenuItem>
                     <MenuItem Name="MenuI_Reformatter" Header="Syntax Reformatter">
                         <MenuItem Name="MenuI_ReformattCurr" Header="Reformat Current" InputGestureText="Ctrl+R" Click="Menu_ReFormatCurrent" />
