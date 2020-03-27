@@ -199,13 +199,19 @@ namespace Spedit.UI.Components
                                             found = true;
                                         }
 
+                                        // Try to find declaration
                                         if (!found)
                                         {
-                                            // Many any methodmap, since the ide is not aware of the types
-                                            foreach (var methodMap in methodMaps)
+                                            var pattern =
+                                                $@"\b((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+))\s+({classString})\s*(;|=)";
+                                            var findDecl = new Regex(pattern, RegexOptions.Compiled);
+                                            var match = findDecl.Match(editor.Text);
+                                            var classMatch = match.Groups["class"].Value;
+                                            if (classMatch.Length > 0)
                                             {
+                                                var methodMap = methodMaps.FirstOrDefault(e => e.Name == classMatch);
                                                 var method =
-                                                    methodMap.Methods.FirstOrDefault(e => e.Name == methodString);
+                                                    methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
                                                 if (method != null)
                                                 {
                                                     xPos = ISMatches[j].Groups["method"].Index +
@@ -214,7 +220,29 @@ namespace Spedit.UI.Components
                                                     ISFuncNameStr = method.FullName;
                                                     ISFuncDescriptionStr = method.CommentString;
                                                     ForceReSet = true;
+                                                    found = true;
                                                 }
+                                            }
+                                        }
+
+                                        // Match the first found
+                                        if (!found)
+                                        {
+                                            // Many any methodmap, since the ide is not aware of the types
+                                            foreach (var methodMap in methodMaps)
+                                            {
+                                                var method =
+                                                    methodMap.Methods.FirstOrDefault(e => e.Name == methodString);
+
+                                                if (method == null)
+                                                    continue;
+
+                                                xPos = ISMatches[j].Groups["method"].Index +
+                                                       ISMatches[j].Groups["method"].Length;
+                                                ForwardShowIS = true;
+                                                ISFuncNameStr = method.FullName;
+                                                ISFuncDescriptionStr = method.CommentString;
+                                                ForceReSet = true;
                                             }
                                         }
                                     }
