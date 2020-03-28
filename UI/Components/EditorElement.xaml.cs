@@ -610,6 +610,9 @@ namespace Spedit.UI.Components
         {
             if (e.Text == "\n")
             {
+                if (editor.Document.TextLength < editor.CaretOffset+1)
+                    return;
+                
                 var segment = new AnchorSegment(editor.Document, editor.CaretOffset - 1, 2);
                 var text = editor.Document.GetText(segment);
                 if (text == "{}")

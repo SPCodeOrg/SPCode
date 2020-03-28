@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
@@ -284,17 +286,13 @@ namespace Spedit.UI.Windows
 		private void LanguageBox_Changed(object sender, RoutedEventArgs e)
 		{
 			if (!AllowChanging) { return; }
-			string selectedString = (string)LanguageBox.SelectedItem;
-			for (int i = 0; i < Program.Translations.AvailableLanguages.Length; ++i)
-			{
-				if (Program.Translations.AvailableLanguages[i] == selectedString)
-				{
-					Program.Translations.LoadLanguage(Program.Translations.AvailableLanguageIDs[i]);
-					Program.OptionsObject.Language = Program.Translations.AvailableLanguageIDs[i];
-					Program.MainWindow.Language_Translate();
-					break;
-				}
-			}
+			var originalSource = (ComboBox)e.OriginalSource;
+			var selectedItem = (ComboboxItem)originalSource.SelectedItem;
+			var lang = Program.Translations.AvailableLanguageIDs.FirstOrDefault(l => l == selectedItem.Value);
+
+			Program.Translations.LoadLanguage(lang);
+			Program.OptionsObject.Language = lang;
+			Program.MainWindow.Language_Translate();
 			Language_Translate();
 			ToggleRestartText(true);
 		}
@@ -378,7 +376,12 @@ namespace Spedit.UI.Windows
 			}
 			for (int i = 0; i < Program.Translations.AvailableLanguages.Length; ++i)
 			{
-				LanguageBox.Items.Add(Program.Translations.AvailableLanguages[i]);
+				var item = new ComboboxItem
+				{
+					Text = Program.Translations.AvailableLanguages[i],
+					Value = Program.Translations.AvailableLanguageIDs[i]
+				};
+				LanguageBox.Items.Add(item);
 				if (Program.OptionsObject.Language == Program.Translations.AvailableLanguageIDs[i])
 				{
 					LanguageBox.SelectedIndex = i;
@@ -465,5 +468,15 @@ namespace Spedit.UI.Windows
 			HighlightDeprecateds.Content = Program.Translations.GetLanguage("HighDeprecat");
 			AutoSaveBlock.Text = Program.Translations.GetLanguage("AutoSaveMin");
 		}
+    }
+    public class ComboboxItem
+    {
+	    public string Text { get; set; }
+	    public string Value { get; set; }
+
+	    public override string ToString()
+	    {
+		    return Text;
+	    }
     }
 }

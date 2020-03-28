@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Windows;
 
@@ -17,7 +18,7 @@ namespace Spedit.Interop
 		public bool IsDefault = true;
 
 
-        private Dictionary<string, string> language = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> language = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         public string GetLanguage(string langID)
         {
@@ -35,7 +36,6 @@ namespace Spedit.Interop
         public void LoadLanguage(string lang, bool Initial = false)
 		{
 			FillToEnglishDefaults();
-            Dictionary<string, string> language = new Dictionary<string, string>();
 			List<string> languageList = new List<string>();
 			List<string> languageIDList = new List<string>();
 			languageList.Add("English");
@@ -52,6 +52,7 @@ namespace Spedit.Interop
 					{
 						throw new Exception("No Root-Node: \"translations\" found");
 					}
+
 					XmlNode rootLangNode = null;
 					foreach (XmlNode childNode in document.ChildNodes[0].ChildNodes)
 					{
@@ -78,7 +79,7 @@ namespace Spedit.Interop
 							}
 							string nn = node.Name.ToLowerInvariant();
 							string nv = node.InnerText;
-                            language.Add(nn, nv);
+                            language[nn] = nv;
 						}
 					}
 				}
@@ -96,7 +97,8 @@ namespace Spedit.Interop
 
 		private void FillToEnglishDefaults()
 		{
-            language.Add("Language", "English");
+			language.Clear();
+			language.Add("Language", "English");
             language.Add("ServerRunning", "Server running");
             language.Add("Saving", "Saving");
             language.Add("SavingUFiles", "Save all unsaved files?");
@@ -258,7 +260,7 @@ namespace Spedit.Interop
             language.Add("RestartEdiFullEff", "Restart editor to take full effect...");
             language.Add("RestartEdiEff", "Restart editor to take effect...");
             language.Add("Program", "Program");
-            language.Add("HardwareAcc", "Use hardware acceleration (if available)");
+            language.Add("HardwareAcc", "Use hardware acceleration (if availablessss)");
             language.Add("UIAnim", "UI animations");
             language.Add("OpenInc", "Auto open includes");
             language.Add("OpenIncRec", "Open Includes Recursively");
