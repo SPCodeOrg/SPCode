@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media.Animation;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Editing;
+using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
 using SourcepawnCondenser.SourcemodDefinition;
 
@@ -228,7 +229,7 @@ namespace Spedit.UI.Components
                                         // Match the first found
                                         if (!found)
                                         {
-                                            // Many any methodmap, since the ide is not aware of the types
+                                            // Match any methodmap, since the ide is not aware of the types
                                             foreach (var methodMap in methodMaps)
                                             {
                                                 var method =

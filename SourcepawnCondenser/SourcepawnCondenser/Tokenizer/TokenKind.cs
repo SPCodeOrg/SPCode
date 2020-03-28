@@ -18,6 +18,7 @@
 		
 		FunctionIndicator,		//d
 		Constant,				//d
+		EnumStruct,
 		Enum,					//d
 		Struct,					//d
 		MethodMap,				//d

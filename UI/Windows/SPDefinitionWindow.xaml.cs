@@ -43,20 +43,22 @@ namespace Spedit.UI.Windows
             defList.AddRange(def.Structs.Cast<SPDefEntry>());
             defList.AddRange(def.Methodmaps.Cast<SPDefEntry>());
             defList.AddRange(def.Typedefs.Cast<SPDefEntry>());
-            
+            defList.AddRange(def.EnumStructs.Cast<SPDefEntry>());
             foreach (var mm in def.Methodmaps)
             {
 	            defList.AddRange(mm.Methods.Cast<SPDefEntry>());
 	            defList.AddRange(mm.Fields.Cast<SPDefEntry>());
             }
-			foreach (var e in defList)
+			foreach (var sm in def.EnumStructs)
 			{
-				if (string.IsNullOrWhiteSpace(e.Name))
-				{
-					e.Name = $"--{Program.Translations.GetLanguage("NoName")}--";
-				}
+				defList.AddRange(sm.Methods.Cast<SPDefEntry>());
+				defList.AddRange(sm.Fields.Cast<SPDefEntry>());
 			}
-			defList.Sort((a, b) => String.CompareOrdinal(a.Name, b.Name));
+            foreach (var e in defList.Where(e => string.IsNullOrWhiteSpace(e.Name)))
+			{
+				e.Name = $"--{Program.Translations.GetLanguage("NoName")}--";
+			}
+			defList.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
             defArray = defList.ToArray();
             int defArrayLength = defArray.Length;
             items = new ListViewItem[defArrayLength];
@@ -283,6 +285,11 @@ namespace Spedit.UI.Windows
 			public static explicit operator SPDefEntry(SMTypedef sm)
 			{
 				return new SPDefEntry() { Name = sm.Name, Entry = sm };
+			}
+
+			public static explicit operator SPDefEntry(SMEnumStruct sm)
+			{
+				return new SPDefEntry() { Name = sm.Name, Entry = sm};
 			}
 		}
     }

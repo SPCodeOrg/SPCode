@@ -22,7 +22,7 @@ namespace CondenserTest
 			InitializeComponent();
 			StringBuilder str = new StringBuilder();
 			List<string> files = new List<string>();
-			files.AddRange(Directory.GetFiles(@"C:\Users\Jelle\Desktop\coding\sm-scripting\_Sourcemod Plugins\1.7_5255", "*.inc", SearchOption.AllDirectories));
+			files.AddRange(Directory.GetFiles(@"D:\AlliedModders\includes", "*.inc", SearchOption.AllDirectories));
 			str.AppendLine(files.Count.ToString());
 			foreach (var f in files)
 			{
@@ -132,7 +132,7 @@ namespace CondenserTest
                 item.Items.Add(new TreeViewItem() { Header = "Length: " + cn.Length.ToString() });
                 cItem.Items.Add(item);
             }
-            termTree.Items.Add(cItem);
+            // termTree.Items.Add(cItem);
             TreeViewItem mItem = new TreeViewItem() { Header = "methodmaps (" + def.Methodmaps.Count.ToString() + ")", IsExpanded = expand };
             foreach (var m in def.Methodmaps)
             {
@@ -177,6 +177,49 @@ namespace CondenserTest
                 mItem.Items.Add(item);
             }
             termTree.Items.Add(mItem);
+            TreeViewItem eItem = new TreeViewItem() { Header = "EnumStructs (" + def.EnumStructs.Count.ToString() + ")", IsExpanded = expand };
+            foreach (var m in def.EnumStructs)
+            {
+                TreeViewItem item = new TreeViewItem() { Header = m.Name, IsExpanded = expand };
+                item.Tag = m;
+                item.MouseLeftButtonUp += ItemMM_MouseLeftButtonUp;
+                item.Items.Add(new TreeViewItem() { Header = "Index: " + m.Index.ToString(), Background = Brushes.LightGray });
+                item.Items.Add(new TreeViewItem() { Header = "Length: " + m.Length.ToString() });
+                // item.Items.Add(new TreeViewItem() { Header = "Type: " + m.Type, Background = Brushes.LightGray });
+                TreeViewItem subItem = new TreeViewItem() { Header = "Methods", Background = Brushes.LightGray };
+                for (int j = 0; j < m.Methods.Count; ++j)
+                {
+                    TreeViewItem subSubItem = new TreeViewItem() { Header = m.Methods[j].Name, Background = (j % 2 == 0) ? Brushes.LightGray : Brushes.White };
+                    subSubItem.Items.Add(new TreeViewItem() { Header = "Index: " + m.Methods[j].Index.ToString() });
+                    subSubItem.Items.Add(new TreeViewItem() { Header = "Length: " + m.Methods[j].Length.ToString(), Background = Brushes.LightGray });
+                    subSubItem.Items.Add(new TreeViewItem() { Header = "Comment: >>" + m.Methods[j].CommentString + "<<" });
+                    subSubItem.Items.Add(new TreeViewItem() { Header = "Return: " + m.Methods[j].ReturnType, Background = Brushes.LightGray });
+                    int k = 0;
+                    for (; k < m.Methods[j].MethodKind.Length; ++k)
+                    {
+                        subSubItem.Items.Add(new TreeViewItem() { Header = "MethodKind" + (k + 1).ToString() + ": " + m.Methods[j].MethodKind[k], Background = (k % 2 == 0) ? Brushes.LightGray : Brushes.White });
+                    }
+                    for (int l = 0; l < m.Methods[j].Parameters.Length; ++l)
+                    {
+                        ++k;
+                        subSubItem.Items.Add(new TreeViewItem() { Header = "Parameter" + (l + 1).ToString() + ": " + m.Methods[j].Parameters[l], Background = (k % 2 == 0) ? Brushes.LightGray : Brushes.White });
+                    }
+                    subItem.Items.Add(subSubItem);
+                }
+                item.Items.Add(subItem);
+                subItem = new TreeViewItem() { Header = "Fields" };
+                for (int j = 0; j < m.Fields.Count; ++j)
+                {
+                    TreeViewItem subSubItem = new TreeViewItem() { Header = m.Fields[j].Name, Background = (j % 2 == 0) ? Brushes.LightGray : Brushes.White };
+                    subSubItem.Items.Add(new TreeViewItem() { Header = "Index: " + m.Fields[j].Index.ToString() });
+                    subSubItem.Items.Add(new TreeViewItem() { Header = "Length: " + m.Fields[j].Length.ToString(), Background = Brushes.LightGray });
+                    //subSubItem.Items.Add(new TreeViewItem() { Header = "Type: " + m.Fields[j].Type });
+                    subItem.Items.Add(subSubItem);
+                }
+                item.Items.Add(subItem);
+                eItem.Items.Add(item);
+            }
+            termTree.Items.Add(eItem);
         }
 
 		private void ItemFunc_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

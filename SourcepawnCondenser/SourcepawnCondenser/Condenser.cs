@@ -46,6 +46,16 @@ namespace SourcepawnCondenser
 						continue;
 					}
 				}
+
+				if (ct.Kind == TokenKind.EnumStruct)
+				{
+					int newIndex = ConsumeSMEnumStruct();
+					if (newIndex != -1)
+					{
+						position = newIndex + 1;
+						continue;
+					}
+				}
 				if (ct.Kind == TokenKind.Enum)
 				{
 					int newIndex = ConsumeSMEnum();
