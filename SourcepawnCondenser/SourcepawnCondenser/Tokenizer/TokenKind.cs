@@ -26,6 +26,7 @@
 		PrePocessorDirective,	//d
 		TypeDef,				//d
 		TypeSet,				//d
+		New,
 
 		EOL,					//d
 		EOF,					//d

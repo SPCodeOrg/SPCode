@@ -20,6 +20,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public List<SMStruct> Structs = new List<SMStruct>();
         public List<SMTypedef> Typedefs = new List<SMTypedef>();
         public List<SMEnumStruct> EnumStructs = new List<SMEnumStruct>();
+        public List<SMVariable> Variables = new List<SMVariable>();
 
 
         /* Methodmaps */

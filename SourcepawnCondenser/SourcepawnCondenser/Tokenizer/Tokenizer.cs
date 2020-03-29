@@ -174,6 +174,28 @@ namespace SourcepawnCondenser.Tokenizer
                         continue;
                     }
                 }
+                
+                // TODO: Create a real char token
+                if (c == '\'' && i + 1 < sArrayLength)
+                {
+                    var startIndex = i;
+                    var endIndex = -1;
+                    for (var j = i + 1; j < sArrayLength; ++j)
+                        if (sArray[j] == '\'')
+                            if (sArray[j - 1] != '\\')
+                            {
+                                endIndex = j;
+                                break;
+                            }
+
+                    if (endIndex != -1)
+                    {
+                        token.Add(new Token(Source.Substring(startIndex, endIndex - startIndex + 1), TokenKind.Quote,
+                            startIndex));
+                        i = endIndex;
+                        continue;
+                    }
+                }
 
                 #endregion
 
@@ -263,6 +285,11 @@ namespace SourcepawnCondenser.Tokenizer
                             case "functag":
                             {
                                 token.Add(new Token(identString, TokenKind.TypeDef, startIndex));
+                                break;
+                            }
+                            case "new":
+                            {
+                                token.Add(new Token(identString, TokenKind.New, startIndex));
                                 break;
                             }
                             default:
