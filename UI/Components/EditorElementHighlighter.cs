@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -14,18 +14,14 @@ namespace Spedit.UI.Components
 {
     public class AeonEditorHighlighting : IHighlightingDefinition
     {
-        public AeonEditorHighlighting(IEnumerable<HighlightingColor> namedHighlightingColors)
-        {
-            NamedHighlightingColors = namedHighlightingColors;
-        }
-
         public string Name => "SM";
 
         public HighlightingRuleSet MainRuleSet
         {
             get
             {
-                var commentMarkerSet = new HighlightingRuleSet {Name = "CommentMarkerSet"};
+                var commentMarkerSet = new HighlightingRuleSet();
+                commentMarkerSet.Name = "CommentMarkerSet";
                 commentMarkerSet.Rules.Add(new HighlightingRule
                 {
                     Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
@@ -209,8 +205,8 @@ namespace Spedit.UI.Components
                 if (def.StructFieldStrings.Length > 0)
                     rs.Rules.Add(new HighlightingRule //Methods
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(
-                            def.StructFieldStrings.Select(e => e).ToArray()),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(
+                            def.StructFieldStrings.Select(e => e).ToArray(), true),
                         Color = new HighlightingColor
                             {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods)}
                     });
@@ -218,8 +214,8 @@ namespace Spedit.UI.Components
                 if (def.StructMethodStrings.Length > 0)
                     rs.Rules.Add(new HighlightingRule //Methods
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(
-                            def.StructMethodStrings.Select(e => e).ToArray()),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(
+                            def.StructMethodStrings.Select(e => e).ToArray(), true),
                         Color = new HighlightingColor
                             {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods)}
                     });
@@ -247,13 +243,14 @@ namespace Spedit.UI.Components
             return null;
         }
 
-        public IEnumerable<HighlightingColor> NamedHighlightingColors { get; }
+        public IEnumerable<HighlightingColor> NamedHighlightingColors { get; set; }
 
         public IDictionary<string, string> Properties
         {
             get
             {
-                var propertiesDictionary = new Dictionary<string, string> {{"DocCommentMarker", "///"}};
+                var propertiesDictionary = new Dictionary<string, string>();
+                propertiesDictionary.Add("DocCommentMarker", "///");
                 return propertiesDictionary;
             }
         }
@@ -276,7 +273,6 @@ namespace Spedit.UI.Components
 
         private SimpleHighlightingBrush(SerializationInfo info, StreamingContext context)
         {
-            // ReSharper disable once PossibleNullReferenceException
             brush = new SolidColorBrush((Color) ColorConverter.ConvertFromString(info.GetString("color")));
             brush.Freeze();
         }
@@ -298,7 +294,8 @@ namespace Spedit.UI.Components
 
         public override bool Equals(object obj)
         {
-            if (!(obj is SimpleHighlightingBrush other))
+            var other = obj as SimpleHighlightingBrush;
+            if (other == null)
                 return false;
             return brush.Color.Equals(other.brush.Color);
         }
@@ -317,10 +314,20 @@ namespace Spedit.UI.Components
 
             if (keywords.Length == 0) return new Regex("SPEdit_Error"); //hehe 
 
-            var UseAtomicRegex = keywords.All(t => char.IsLetterOrDigit(t[0]) && char.IsLetterOrDigit(t[t.Length - 1]));
+            var UseAtomicRegex = true;
+            for (var j = 0; j < keywords.Length; ++j)
+                if (!char.IsLetterOrDigit(keywords[j][0]) ||
+                    !char.IsLetterOrDigit(keywords[j][keywords[j].Length - 1]))
+                {
+                    UseAtomicRegex = false;
+                    break;
+                }
 
             var regexBuilder = new StringBuilder();
-            regexBuilder.Append(UseAtomicRegex ? @"\b(?>" : @"(");
+            if (UseAtomicRegex)
+                regexBuilder.Append(@"\b(?>");
+            else
+                regexBuilder.Append(@"(");
 
             var orderedKeyWords = new List<string>(keywords);
             var i = 0;
@@ -341,22 +348,29 @@ namespace Spedit.UI.Components
                 }
             }
 
-            regexBuilder.Append(UseAtomicRegex ? @")\b" : @")");
+            if (UseAtomicRegex)
+                regexBuilder.Append(@")\b");
+            else
+                regexBuilder.Append(@")");
 
             return new Regex(regexBuilder.ToString(), RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture);
         }
 
-        private static string[] ConvertToAtomicRegexAbleStringArray(IReadOnlyList<string> keywords)
+        public static string[] ConvertToAtomicRegexAbleStringArray(string[] keywords)
         {
-            return keywords.Where(t => t.Length > 0)
-                .Where(t => char.IsLetterOrDigit(t[0]) && char.IsLetterOrDigit(t[t.Length - 1]))
-                .ToArray();
+            var atomicRegexAbleList = new List<string>();
+            for (var j = 0; j < keywords.Length; ++j)
+                if (keywords[j].Length > 0)
+                    if (char.IsLetterOrDigit(keywords[j][0]) &&
+                        char.IsLetterOrDigit(keywords[j][keywords[j].Length - 1]))
+                        atomicRegexAbleList.Add(keywords[j]);
+
+            return atomicRegexAbleList.ToArray();
         }
 
-        /// Use this for class like matches (methodmaps and enumstructs atm)
-        public static Regex GetRegexFromKeywords2(IEnumerable<string> keywords)
+        public static Regex GetRegexFromKeywords2(string[] keywords)
         {
-            var regexBuilder = new StringBuilder(@"(?<=\b[^\s]+\.)(");
+            var regexBuilder = new StringBuilder(@"\b[^\s]+\.(");
             var i = 0;
             foreach (var keyword in keywords)
             {
