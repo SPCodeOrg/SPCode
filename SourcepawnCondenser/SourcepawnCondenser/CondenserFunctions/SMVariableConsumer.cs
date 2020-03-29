@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SourcepawnCondenser.SourcemodDefinition;
 using SourcepawnCondenser.Tokenizer;
 
@@ -7,8 +6,6 @@ namespace SourcepawnCondenser
 {
     public partial class Condenser
     {
-        private static string[] baseTypes = {"bool", "char", "float", "int", "any", "Handle"};
-
         private int ConsumeSMVariable()
         {
             if (position + 3 < length)
@@ -16,42 +13,93 @@ namespace SourcepawnCondenser
                 var startIndex = t[position].Index;
 
                 var varType = t[position].Value;
-                var varName = t[position + 1].Value;
-                var varValue = string.Empty;
+                string varName;
+                var size = new List<string>();
+                var dimensions = 0;
+                var index = -1;
 
-                if (t[position + 1].Kind != TokenKind.Identifier) //TODO: Add dynamic array match
-                    return -1;
+                // Dynamic array: "char[] x = new char[64];"
 
-
-                // Simple var match: "int x;"
-                if (t[position + 2].Kind == TokenKind.Semicolon)
+                if (t[position + 1].Kind == TokenKind.Character)
                 {
-                    def.Variables.Add(new SMVariable
+                    for (var i = 1; i < length; i += 2)
                     {
-                        Index = startIndex, Length = t[position + 2].Index - startIndex, File = FileName,
-                        Name = varName, Type = varType
-                    });
-                    return position + 2;
+                        index = i;
+                        if (t[position + i].Kind == TokenKind.Identifier)
+                            break;
+
+                        if (t[position + i].Value == "[" && t[position + i + 1].Value == "]")
+                        {
+                            dimensions++;
+                            continue;
+                        }
+
+                        return -1;
+                    }
+
+                    varName = t[position + index].Value;
+
+                    if (t[position + index + 1].Kind != TokenKind.Assignment ||
+                        t[position + index + 2].Kind != TokenKind.New || t[position + index + 3].Value != varType)
+                        return -1;
+
+                    for (var i = index + 4; i < length - 2; i += 3)
+                    {
+                        if (t[position + i].Kind == TokenKind.Semicolon)
+                        {
+                            def.Variables.Add(new SMVariable
+                            {
+                                Index = startIndex, Length = t[position + i].Index - startIndex,
+                                File = FileName,
+                                Name = varName, Type = varType, Dimensions = dimensions, Size = size,
+                            });
+                            return position + i;
+                        }
+
+                        if (t[position + i].Value == "[" &&
+                            (t[position + i + 1].Kind == TokenKind.Number ||
+                             t[position + i + 1].Kind == TokenKind.Identifier) &&
+                            t[position + i + 2].Value == "]")
+                        {
+                            size.Add(t[position + i + 1].Value);
+                            continue;
+                        }
+
+                        return -1;
+                    }
+
+                    return -1;
                 }
 
-                // Assign var match: "int x = 5"
-                if (t[position + 2].Kind == TokenKind.Assignment && t[position + 4].Kind == TokenKind.Semicolon)
-                    if (t[position + 3].Kind == TokenKind.Number || t[position + 3].Kind == TokenKind.Quote)
-                    {
+                if (t[position + 1].Kind != TokenKind.Identifier)
+                    return -1;
+
+                varName = t[position + 1].Value;
+
+                switch (t[position + 2].Kind)
+                {
+                    // Simple var match: "int x;"
+                    case TokenKind.Semicolon:
+                        def.Variables.Add(new SMVariable
+                        {
+                            Index = startIndex, Length = t[position + 2].Index - startIndex, File = FileName,
+                            Name = varName, Type = varType
+                        });
+                        return position + 2;
+                    // Assign var match: "int x = 5"
+                    case TokenKind.Assignment when t[position + 4].Kind == TokenKind.Semicolon &&
+                                                   (t[position + 3].Kind == TokenKind.Number ||
+                                                    t[position + 3].Kind == TokenKind.Quote):
                         def.Variables.Add(new SMVariable
                         {
                             Index = startIndex, Length = t[position + 4].Index - startIndex, File = FileName,
                             Name = varName, Type = varType, Value = t[position + 3].Value
                         });
                         return position + 4;
-                    }
+                }
 
 
                 // Array declaration match: "int x[3][3]...;"
-
-                var size = new List<string>();
-                var dimensions = 0;
-                var index = -1;
                 var requireAssign = false;
 
                 for (var i = 2; i < length;)
