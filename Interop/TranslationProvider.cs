@@ -260,7 +260,7 @@ namespace Spedit.Interop
             language.Add("RestartEdiFullEff", "Restart editor to take full effect...");
             language.Add("RestartEdiEff", "Restart editor to take effect...");
             language.Add("Program", "Program");
-            language.Add("HardwareAcc", "Use hardware acceleration (if availablessss)");
+            language.Add("HardwareAcc", "Use hardware acceleration (if available)");
             language.Add("UIAnim", "UI animations");
             language.Add("OpenInc", "Auto open includes");
             language.Add("OpenIncRec", "Open Includes Recursively");

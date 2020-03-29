@@ -14,14 +14,18 @@ namespace Spedit.UI.Components
 {
     public class AeonEditorHighlighting : IHighlightingDefinition
     {
+        public AeonEditorHighlighting(IEnumerable<HighlightingColor> namedHighlightingColors)
+        {
+            NamedHighlightingColors = namedHighlightingColors;
+        }
+
         public string Name => "SM";
 
         public HighlightingRuleSet MainRuleSet
         {
             get
             {
-                var commentMarkerSet = new HighlightingRuleSet();
-                commentMarkerSet.Name = "CommentMarkerSet";
+                var commentMarkerSet = new HighlightingRuleSet {Name = "CommentMarkerSet"};
                 commentMarkerSet.Rules.Add(new HighlightingRule
                 {
                     Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
@@ -197,41 +201,28 @@ namespace Spedit.UI.Components
                 if (def.MethodsStrings.Length > 0)
                     rs.Rules.Add(new HighlightingRule //Methods
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.MethodsStrings, true),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.MethodsStrings),
                         Color = new HighlightingColor
                             {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods)}
                     });
 
-                // TODO: Methodmaps are not implements in this way, but I couldnt find where they are defined
-                if (def.EnumStructStrings.Length > 0)
-                {
-                    rs.Rules.Add(new HighlightingRule //Methods
-                    {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.EnumStructStrings, true),
-                        Color = new HighlightingColor
-                            {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Types)}
-                    });
-                }
-                
                 if (def.StructFieldStrings.Length > 0)
-                {
                     rs.Rules.Add(new HighlightingRule //Methods
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.StructFieldStrings, true),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(
+                            def.StructFieldStrings.Select(e => e).ToArray()),
                         Color = new HighlightingColor
                             {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods)}
                     });
-                }
-                
+
                 if (def.StructMethodStrings.Length > 0)
-                {
                     rs.Rules.Add(new HighlightingRule //Methods
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.StructMethodStrings, true),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(
+                            def.StructMethodStrings.Select(e => e).ToArray()),
                         Color = new HighlightingColor
                             {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods)}
                     });
-                }
 
                 rs.Rules.Add(new HighlightingRule //unknown function calls
                 {
@@ -256,14 +247,13 @@ namespace Spedit.UI.Components
             return null;
         }
 
-        public IEnumerable<HighlightingColor> NamedHighlightingColors { get; set; }
+        public IEnumerable<HighlightingColor> NamedHighlightingColors { get; }
 
         public IDictionary<string, string> Properties
         {
             get
             {
-                var propertiesDictionary = new Dictionary<string, string>();
-                propertiesDictionary.Add("DocCommentMarker", "///");
+                var propertiesDictionary = new Dictionary<string, string> {{"DocCommentMarker", "///"}};
                 return propertiesDictionary;
             }
         }
@@ -286,6 +276,7 @@ namespace Spedit.UI.Components
 
         private SimpleHighlightingBrush(SerializationInfo info, StreamingContext context)
         {
+            // ReSharper disable once PossibleNullReferenceException
             brush = new SolidColorBrush((Color) ColorConverter.ConvertFromString(info.GetString("color")));
             brush.Freeze();
         }
@@ -307,8 +298,7 @@ namespace Spedit.UI.Components
 
         public override bool Equals(object obj)
         {
-            var other = obj as SimpleHighlightingBrush;
-            if (other == null)
+            if (!(obj is SimpleHighlightingBrush other))
                 return false;
             return brush.Color.Equals(other.brush.Color);
         }
@@ -327,20 +317,10 @@ namespace Spedit.UI.Components
 
             if (keywords.Length == 0) return new Regex("SPEdit_Error"); //hehe 
 
-            var UseAtomicRegex = true;
-            for (var j = 0; j < keywords.Length; ++j)
-                if (!char.IsLetterOrDigit(keywords[j][0]) ||
-                    !char.IsLetterOrDigit(keywords[j][keywords[j].Length - 1]))
-                {
-                    UseAtomicRegex = false;
-                    break;
-                }
+            var UseAtomicRegex = keywords.All(t => char.IsLetterOrDigit(t[0]) && char.IsLetterOrDigit(t[t.Length - 1]));
 
             var regexBuilder = new StringBuilder();
-            if (UseAtomicRegex)
-                regexBuilder.Append(@"\b(?>");
-            else
-                regexBuilder.Append(@"(");
+            regexBuilder.Append(UseAtomicRegex ? @"\b(?>" : @"(");
 
             var orderedKeyWords = new List<string>(keywords);
             var i = 0;
@@ -361,24 +341,33 @@ namespace Spedit.UI.Components
                 }
             }
 
-            if (UseAtomicRegex)
-                regexBuilder.Append(@")\b");
-            else
-                regexBuilder.Append(@")");
+            regexBuilder.Append(UseAtomicRegex ? @")\b" : @")");
 
             return new Regex(regexBuilder.ToString(), RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture);
         }
 
-        public static string[] ConvertToAtomicRegexAbleStringArray(string[] keywords)
+        private static string[] ConvertToAtomicRegexAbleStringArray(IReadOnlyList<string> keywords)
         {
-            var atomicRegexAbleList = new List<string>();
-            for (var j = 0; j < keywords.Length; ++j)
-                if (keywords[j].Length > 0)
-                    if (char.IsLetterOrDigit(keywords[j][0]) &&
-                        char.IsLetterOrDigit(keywords[j][keywords[j].Length - 1]))
-                        atomicRegexAbleList.Add(keywords[j]);
+            return keywords.Where(t => t.Length > 0)
+                .Where(t => char.IsLetterOrDigit(t[0]) && char.IsLetterOrDigit(t[t.Length - 1]))
+                .ToArray();
+        }
 
-            return atomicRegexAbleList.ToArray();
+        /// Use this for class like matches (methodmaps and enumstructs atm)
+        public static Regex GetRegexFromKeywords2(IEnumerable<string> keywords)
+        {
+            var regexBuilder = new StringBuilder(@"(?<=\b[^\s]+\.)(");
+            var i = 0;
+            foreach (var keyword in keywords)
+            {
+                if (i++ > 0)
+                    regexBuilder.Append("|");
+
+                regexBuilder.Append(keyword);
+            }
+
+            regexBuilder.Append(@")\b");
+            return new Regex(regexBuilder.ToString(), RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture);
         }
     }
 }

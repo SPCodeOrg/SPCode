@@ -123,11 +123,12 @@ namespace SourcepawnCondenser.SourcemodDefinition
             constantNames.Sort((a, b) => string.Compare(a, b));
             ConstantsStrings = constantNames.ToArray();
             var typeNames = new List<string>();
-            typeNames.Capacity = Enums.Count + Structs.Count + Methodmaps.Count;
+            typeNames.Capacity = Enums.Count + Structs.Count + Methodmaps.Count + EnumStructs.Count;
             typeNames.AddRange(Enums.Select(i => i.Name));
             typeNames.AddRange(Structs.Select(i => i.Name));
             typeNames.AddRange(Methodmaps.Select(i => i.Name));
             typeNames.AddRange(Typedefs.Select(i => i.Name));
+            typeNames.AddRange(EnumStructs.Select(i => i.Name));
             typeNames.Sort((a, b) => string.Compare(a, b));
             TypeStrings = typeNames.ToArray();
         }
