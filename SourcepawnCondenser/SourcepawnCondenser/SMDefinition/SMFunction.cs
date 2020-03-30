@@ -1,4 +1,6 @@
-﻿namespace SourcepawnCondenser.SourcemodDefinition
+﻿using System.Collections.Generic;
+
+namespace SourcepawnCondenser.SourcemodDefinition
 {
 	public class SMFunction
 	{
@@ -12,6 +14,8 @@
 		public string CommentString = string.Empty;
 		public string[] Parameters = new string[0];
 		public SMFunctionKind FunctionKind = SMFunctionKind.Unknown;
+		public List<SMVariable> FuncVariables = new List<SMVariable>();
+		public string Body = string.Empty;
 	}
 
 	public enum SMFunctionKind

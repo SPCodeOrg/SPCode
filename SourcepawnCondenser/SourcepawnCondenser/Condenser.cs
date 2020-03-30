@@ -15,12 +15,12 @@ namespace SourcepawnCondenser
         private readonly Token[] t;
         private int position;
 
-        public Condenser(string sourceCode, string fileName)
+        public Condenser(string sourceCode, string fileName, bool isSP = false)
         {
             t = Tokenizer.Tokenizer.TokenizeString(sourceCode, true).ToArray();
             position = 0;
             length = t.Length;
-            def = new SMDefinition();
+            def = new SMDefinition(isSP);
             source = sourceCode;
             if (fileName.EndsWith(".inc", StringComparison.InvariantCultureIgnoreCase))
                 fileName = fileName.Substring(0, fileName.Length - 4);
@@ -136,6 +136,12 @@ namespace SourcepawnCondenser
                     case TokenKind.Identifier:
                     {
                         var newIndex = ConsumeSMVariable();
+                        if (newIndex != -1)
+                        {
+                            position = newIndex + 1;
+                            continue;
+                        }
+                        newIndex = ConsumeSMFunction();
                         if (newIndex != -1)
                         {
                             position = newIndex + 1;

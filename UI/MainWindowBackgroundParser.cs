@@ -77,8 +77,13 @@ namespace Spedit.UI
 							{
 								definitions[i] = (new Condenser(File.ReadAllText(fInfo.FullName), fInfo.Name).Condense());
 							}
+
+							if (fInfo.Extension.Trim('.').ToLowerInvariant() == "sp")
+							{
+								definitions[i] = (new Condenser(File.ReadAllText(fInfo.FullName), fInfo.Name, true).Condense());
+							}
 						}
-						currentSMDef = (Program.Configs[Program.SelectedConfig].GetSMDef()).ProduceTemporaryExpandedDefinition(definitions);
+						currentSMDef = Program.Configs[Program.SelectedConfig].GetSMDef().ProduceTemporaryExpandedDefinition(definitions);
 						currentSMFunctions = currentSMDef.Functions.ToArray();
 						currentACNodes = currentSMDef.ProduceACNodes();
 						currentISNodes = currentSMDef.ProduceISNodes();
