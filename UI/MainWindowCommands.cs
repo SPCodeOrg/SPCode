@@ -12,7 +12,7 @@ namespace Spedit.UI
 {
     public partial class MainWindow
     {
-        private EditorElement GetCurrentEditorElement()
+        public EditorElement GetCurrentEditorElement()
         {
             EditorElement outElement = null;
             if (DockingPane.SelectedContent?.Content != null)

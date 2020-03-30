@@ -27,7 +27,6 @@ namespace SourcepawnCondenser.SourcemodDefinition
 
         /* Other */
         public string[] FunctionStrings = new string[0];
-        private bool isSP;
         public List<SMMethodmap> Methodmaps = new List<SMMethodmap>();
 
 
@@ -41,13 +40,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public string[] TypeStrings = new string[0];
         public List<SMVariable> Variables = new List<SMVariable>();
         public string[] VariableStrings = new string[0];
-
-        public SMDefinition(bool sp = false)
-        {
-            isSP = sp;
-        }
-
-
+        
         public void Sort()
         {
             try

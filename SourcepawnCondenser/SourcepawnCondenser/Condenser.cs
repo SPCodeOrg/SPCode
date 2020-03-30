@@ -15,12 +15,12 @@ namespace SourcepawnCondenser
         private readonly Token[] t;
         private int position;
 
-        public Condenser(string sourceCode, string fileName, bool isSP = false)
+        public Condenser(string sourceCode, string fileName)
         {
             t = Tokenizer.Tokenizer.TokenizeString(sourceCode, true).ToArray();
             position = 0;
             length = t.Length;
-            def = new SMDefinition(isSP);
+            def = new SMDefinition();
             source = sourceCode;
             if (fileName.EndsWith(".inc", StringComparison.InvariantCultureIgnoreCase))
                 fileName = fileName.Substring(0, fileName.Length - 4);
