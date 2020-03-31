@@ -197,6 +197,7 @@ namespace SourcepawnCondenser
                     {
                         FunctionKind = kind,
                         Index = t[startPosition].Index,
+                        EndPos = parameterDeclIndexEnd,
                         File = FileName,
                         Length = parameterDeclIndexEnd - t[startPosition].Index + 1,
                         Name = functionName,
@@ -228,6 +229,7 @@ namespace SourcepawnCondenser
                                 localVars = LocalVars.ConsumeSMVariableLocal(segment.ToArray(), FileName);
                                 def.Functions.Add(new SMFunction
                                 {
+                                    EndPos = t[nextOpenBraceTokenIndex + (i - nextOpenBraceTokenIndex) + 1].Index,
                                     FunctionKind = kind,
                                     Index = t[startPosition].Index,
                                     File = FileName,
@@ -248,6 +250,7 @@ namespace SourcepawnCondenser
 
             def.Functions.Add(new SMFunction
             {
+                EndPos = parameterDeclIndexEnd,
                 FunctionKind = kind,
                 Index = t[startPosition].Index,
                 File = FileName,

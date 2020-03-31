@@ -9,9 +9,9 @@ namespace SourcepawnCondenser
     {
         private readonly SMDefinition def;
 
-        private readonly string FileName = string.Empty;
+        private readonly string FileName;
         private readonly int length;
-        private readonly string source = string.Empty;
+        private readonly string source;
         private readonly Token[] t;
         private int position;
 
@@ -141,6 +141,8 @@ namespace SourcepawnCondenser
                             position = newIndex + 1;
                             continue;
                         }
+                        
+                        // If Variable is not found try function
                         newIndex = ConsumeSMFunction();
                         if (newIndex != -1)
                         {

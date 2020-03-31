@@ -6,6 +6,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
 	{
 		public int Index = -1;
 		public int Length = 0;
+		public int EndPos = -1;
 		public string File = string.Empty;
 
 		public string Name = string.Empty;
@@ -15,7 +16,6 @@ namespace SourcepawnCondenser.SourcemodDefinition
 		public string[] Parameters = new string[0];
 		public SMFunctionKind FunctionKind = SMFunctionKind.Unknown;
 		public List<SMVariable> FuncVariables = new List<SMVariable>();
-		public string Body = string.Empty;
 	}
 
 	public enum SMFunctionKind

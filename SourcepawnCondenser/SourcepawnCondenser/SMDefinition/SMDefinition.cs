@@ -39,8 +39,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public List<SMTypedef> Typedefs = new List<SMTypedef>();
         public string[] TypeStrings = new string[0];
         public List<SMVariable> Variables = new List<SMVariable>();
-        public string[] VariableStrings = new string[0];
-        
+
         public void Sort()
         {
             try
@@ -90,7 +89,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
             ProduceStringArrays();
         }
 
-        private void ProduceStringArrays()
+        private void ProduceStringArrays(int caret = -1, string text = "")
         {
             FunctionStrings = new string[Functions.Count];
             for (var i = 0; i < Functions.Count; ++i) FunctionStrings[i] = Functions[i].Name;
@@ -100,7 +99,6 @@ namespace SourcepawnCondenser.SourcemodDefinition
             var enumStructNames = new List<string>();
             var structMethodNames = new List<string>();
             var structFieldNames = new List<string>();
-            var varNames = new List<string>();
 
             foreach (var mm in Methodmaps)
             {
@@ -116,21 +114,28 @@ namespace SourcepawnCondenser.SourcemodDefinition
                 structFieldNames.AddRange(sm.Fields.Select(f => f.Name));
             }
 
-            foreach (var v in Variables) varNames.Add(v.Name);
-
             MethodsStrings = methodNames.ToArray();
             FieldStrings = fieldNames.ToArray();
             StructFieldStrings = structFieldNames.ToArray();
             StructMethodStrings = structMethodNames.ToArray();
             MethodmapsStrings = methodmapNames.ToArray();
             EnumStructStrings = enumStructNames.ToArray();
-            VariableStrings = varNames.ToArray();
 
             var constantNames = Constants.Select(i => i.Name).ToList();
             foreach (var e in Enums) constantNames.AddRange(e.Entries);
 
             constantNames.AddRange(Defines.Select(i => i.Name));
             constantNames.AddRange(Variables.Select(v => v.Name));
+
+            if (caret != -1)
+            {
+                var currentFunc = Functions.FirstOrDefault(e => e.Index < caret && caret <= e.EndPos && e.File.EndsWith(".sp"));
+                if (currentFunc != null)
+                {
+                    
+                    constantNames.AddRange(currentFunc.FuncVariables.Select(v => v.Name));
+                }
+            }
 
             constantNames.Sort(string.Compare);
             ConstantsStrings = constantNames.ToArray();
@@ -171,7 +176,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
             nodes.AddRange(ISNode.ConvertFromStringArray(FieldStrings, false, "• "));
             nodes.AddRange(ISNode.ConvertFromStringArray(StructFieldStrings, false, "• "));
 
-            nodes.AddRange(ISNode.ConvertFromStringArray(VariableStrings, false, "v "));
+            // nodes.AddRange(ISNode.ConvertFromStringArray(VariableStrings, false, "v "));
 
             nodes = nodes.Distinct(new ISNodeEqualityComparer()).ToList();
             nodes.Sort((a, b) => string.CompareOrdinal(a.EntryName, b.EntryName));
@@ -198,22 +203,16 @@ namespace SourcepawnCondenser.SourcemodDefinition
             }
         }
 
-        public SMDefinition ProduceTemporaryExpandedDefinition(SMDefinition[] definitions)
+        public SMDefinition ProduceTemporaryExpandedDefinition(SMDefinition[] definitions, int caret, string text)
         {
             var def = new SMDefinition();
-            try
-            {
                 def.MergeDefinitions(this);
-                for (var i = 0; i < definitions.Length; ++i)
-                    if (definitions[i] != null)
-                        def.MergeDefinitions(definitions[i]);
-                def.Sort();
-                def.ProduceStringArrays();
-            }
-            catch (Exception)
-            {
-            }
+                foreach (var definition in definitions)
+                    if (definition != null)
+                        def.MergeDefinitions(definition);
 
+                def.Sort();
+                def.ProduceStringArrays(caret, text);
             return def;
         }
 
@@ -221,7 +220,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         {
             public bool Equals(SMFunction left, SMFunction right)
             {
-                return left.Name == right.Name;
+                return left?.Name == right?.Name;
             }
 
             public int GetHashCode(SMFunction sm)
@@ -234,7 +233,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         {
             public bool Equals(SMEnum left, SMEnum right)
             {
-                return left.Name == right.Name;
+                return left?.Name == right?.Name;
             }
 
             public int GetHashCode(SMEnum sm)
@@ -247,7 +246,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         {
             public bool Equals(SMStruct left, SMStruct right)
             {
-                return left.Name == right.Name;
+                return left?.Name == right?.Name;
             }
 
             public int GetHashCode(SMStruct sm)
@@ -260,7 +259,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         {
             public bool Equals(SMDefine left, SMDefine right)
             {
-                return left.Name == right.Name;
+                return left?.Name == right?.Name;
             }
 
             public int GetHashCode(SMDefine sm)
@@ -273,7 +272,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         {
             public bool Equals(SMConstant left, SMConstant right)
             {
-                return left.Name == right.Name;
+                return left?.Name == right?.Name;
             }
 
             public int GetHashCode(SMConstant sm)
@@ -286,7 +285,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         {
             public bool Equals(SMMethodmap left, SMMethodmap right)
             {
-                return left.Name == right.Name;
+                return left?.Name == right?.Name;
             }
 
             public int GetHashCode(SMMethodmap sm)
@@ -307,7 +306,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         {
             public bool Equals(ISNode nodeA, ISNode nodeB)
             {
-                return nodeA.EntryName == nodeB.EntryName;
+                return nodeA?.EntryName == nodeB?.EntryName;
             }
 
             public int GetHashCode(ISNode node)
