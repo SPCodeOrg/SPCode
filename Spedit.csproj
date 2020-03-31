@@ -97,6 +97,10 @@
     <Reference Include="QueryMaster">
       <HintPath>QueryMaster\QueryMaster.dll</HintPath>
     </Reference>
+    <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106">
+      <HintPath>packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="smxdasm">
       <HintPath>App\smxdasm.dll</HintPath>
     </Reference>
