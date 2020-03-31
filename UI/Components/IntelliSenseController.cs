@@ -42,8 +42,10 @@ namespace Spedit.UI.Components
 
         public ulong LastSMDefUpdateUID = 0;
 
+        // TODO Add EnumStructs
         private SMMethodmap[] methodMaps;
-
+        private SMVariable[] smVariables;
+        
         private readonly Regex multilineCommentRegex = new Regex(@"/\*.*?\*/",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
 
@@ -70,12 +72,13 @@ namespace Spedit.UI.Components
             acEntrys = def.ProduceACNodes();
             isEntrys = def.ProduceISNodes();
             methodMaps = def.Methodmaps.ToArray();
+            smVariables = def.Variables.ToArray();
             AutoCompleteBox.ItemsSource = acEntrys;
             MethodAutoCompleteBox.ItemsSource = isEntrys;
         }
 
         public void InterruptLoadAutoCompletes(string[] FunctionStrings, SMFunction[] FunctionArray, ACNode[] acNodes,
-            ISNode[] isNodes)
+            ISNode[] isNodes, SMMethodmap[] newMethodMaps, SMVariable[] newVariables)
         {
             Dispatcher?.Invoke(() =>
             {
@@ -85,6 +88,8 @@ namespace Spedit.UI.Components
                 isEntrys = isNodes;
                 AutoCompleteBox.ItemsSource = acEntrys;
                 MethodAutoCompleteBox.ItemsSource = isEntrys;
+                methodMaps = newMethodMaps;
+                smVariables = newVariables;
             });
         }
 
@@ -210,6 +215,7 @@ namespace Spedit.UI.Components
                                             var classMatch = match.Groups["class"].Value;
                                             if (classMatch.Length > 0)
                                             {
+                                                
                                                 var methodMap = methodMaps.FirstOrDefault(e => e.Name == classMatch);
                                                 var method =
                                                     methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);

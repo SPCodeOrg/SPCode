@@ -56,7 +56,7 @@ namespace Spedit.UI
                     }
 
                     e.InterruptLoadAutoCompletes(currentSMDef.FunctionStrings, currentSMFunctions, currentACNodes,
-                        currentISNodes);
+                        currentISNodes, currentSMDef.Methodmaps.ToArray(), currentSMDef.Variables.ToArray());
                     e.LastSMDefUpdateUID = currentSMDefUID;
                 }
         }

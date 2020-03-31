@@ -39,6 +39,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public List<SMTypedef> Typedefs = new List<SMTypedef>();
         public string[] TypeStrings = new string[0];
         public List<SMVariable> Variables = new List<SMVariable>();
+        public List<string> currentVariables = new List<string>();
 
         public void Sort()
         {
@@ -131,11 +132,19 @@ namespace SourcepawnCondenser.SourcemodDefinition
             {
                 // TODO: This somewhat works, but somethings when in the end of a function it's buggy and doesnt find
                 // the correct function or it finds nothing at all. The addition is a small hack that sometimes works 
-                var currentFunc = currentFunctions.FirstOrDefault(e => e.Index < caret && caret <= e.EndPos+5 && e.File.EndsWith(".sp"));
+                var currentFunc = currentFunctions.FirstOrDefault(e =>
+                    e.Index < caret && caret <= e.EndPos + 5 && e.File.EndsWith(".sp"));
                 if (currentFunc != null)
                 {
-                    
                     constantNames.AddRange(currentFunc.FuncVariables.Select(v => v.Name));
+                    var stringParams = currentFunc.Parameters.Select(e => e.Split('=').First().Trim())
+                        .Select(e => e.Split(' ').Last()).Where(e => !string.IsNullOrWhiteSpace(e)).ToList();
+                    constantNames.AddRange(stringParams);
+                    currentVariables.AddRange(stringParams);
+                }
+                else
+                {
+                    currentVariables.Clear();
                 }
             }
 
@@ -205,16 +214,17 @@ namespace SourcepawnCondenser.SourcemodDefinition
             }
         }
 
-        public SMDefinition ProduceTemporaryExpandedDefinition(SMDefinition[] definitions, int caret, List<SMFunction> currentFunctions)
+        public SMDefinition ProduceTemporaryExpandedDefinition(SMDefinition[] definitions, int caret,
+            List<SMFunction> currentFunctions)
         {
             var def = new SMDefinition();
-                def.MergeDefinitions(this);
-                foreach (var definition in definitions)
-                    if (definition != null)
-                        def.MergeDefinitions(definition);
+            def.MergeDefinitions(this);
+            foreach (var definition in definitions)
+                if (definition != null)
+                    def.MergeDefinitions(definition);
 
-                def.Sort();
-                def.ProduceStringArrays(caret, currentFunctions);
+            def.Sort();
+            def.ProduceStringArrays(caret, currentFunctions);
             return def;
         }
 
