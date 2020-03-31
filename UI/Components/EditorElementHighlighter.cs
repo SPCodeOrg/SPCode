@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -202,11 +202,18 @@ namespace Spedit.UI.Components
                             {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods)}
                     });
 
+                if (def.FieldStrings.Length > 0)
+                    rs.Rules.Add(new HighlightingRule //Methods
+                    {
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.FieldStrings),
+                        Color = new HighlightingColor
+                            {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods)}
+                    });
+
                 if (def.StructFieldStrings.Length > 0)
                     rs.Rules.Add(new HighlightingRule //Methods
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(
-                            def.StructFieldStrings.Select(e => e).ToArray(), true),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.StructFieldStrings),
                         Color = new HighlightingColor
                             {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods)}
                     });
@@ -214,8 +221,8 @@ namespace Spedit.UI.Components
                 if (def.StructMethodStrings.Length > 0)
                     rs.Rules.Add(new HighlightingRule //Methods
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(
-                            def.StructMethodStrings.Select(e => e).ToArray(), true),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(
+                            def.StructMethodStrings),
                         Color = new HighlightingColor
                             {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods)}
                     });
@@ -370,7 +377,7 @@ namespace Spedit.UI.Components
 
         public static Regex GetRegexFromKeywords2(string[] keywords)
         {
-            var regexBuilder = new StringBuilder(@"\b[^\s]+\.(");
+            var regexBuilder = new StringBuilder(@"\b(?<=[^\s]+\.)(");
             var i = 0;
             foreach (var keyword in keywords)
             {
