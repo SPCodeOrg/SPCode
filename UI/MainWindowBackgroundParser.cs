@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Timers;
@@ -65,7 +66,7 @@ namespace Spedit.UI
             while (true)
             while (Program.OptionsObject.Program_DynamicISAC)
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(3000);
                 var ee = GetAllEditorElements();
                 var caret = -1;
                 var text = string.Empty;
@@ -73,6 +74,7 @@ namespace Spedit.UI
                 if (ee != null)
                 {
                     var definitions = new SMDefinition[ee.Length];
+                    List<SMFunction> currentFunctions = null;
                     for (var i = 0; i < ee.Length; ++i)
                     {
                         var fInfo = new FileInfo(ee[i].FullFilePath);
@@ -92,13 +94,14 @@ namespace Spedit.UI
                                     definitions[i1] =
                                         new Condenser(File.ReadAllText(fInfo.FullName), fInfo.Name)
                                             .Condense();
+                                    currentFunctions = definitions[i1].Functions;
                                 }
                             });
                         }
                     }
 
                     currentSMDef = Program.Configs[Program.SelectedConfig].GetSMDef()
-                        .ProduceTemporaryExpandedDefinition(definitions, caret, text);
+                        .ProduceTemporaryExpandedDefinition(definitions, caret, currentFunctions);
                     currentSMFunctions = currentSMDef.Functions.ToArray();
                     currentACNodes = currentSMDef.ProduceACNodes();
                     currentISNodes = currentSMDef.ProduceISNodes();

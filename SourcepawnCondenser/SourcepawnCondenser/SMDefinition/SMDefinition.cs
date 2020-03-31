@@ -89,7 +89,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
             ProduceStringArrays();
         }
 
-        private void ProduceStringArrays(int caret = -1, string text = "")
+        private void ProduceStringArrays(int caret = -1, List<SMFunction> currentFunctions = null)
         {
             FunctionStrings = new string[Functions.Count];
             for (var i = 0; i < Functions.Count; ++i) FunctionStrings[i] = Functions[i].Name;
@@ -127,9 +127,11 @@ namespace SourcepawnCondenser.SourcemodDefinition
             constantNames.AddRange(Defines.Select(i => i.Name));
             constantNames.AddRange(Variables.Select(v => v.Name));
 
-            if (caret != -1)
+            if (caret != -1 && currentFunctions != null)
             {
-                var currentFunc = Functions.FirstOrDefault(e => e.Index < caret && caret <= e.EndPos && e.File.EndsWith(".sp"));
+                // TODO: This somewhat works, but somethings when in the end of a function it's buggy and doesnt find
+                // the correct function or it finds nothing at all. The addition is a small hack that sometimes works 
+                var currentFunc = currentFunctions.FirstOrDefault(e => e.Index < caret && caret <= e.EndPos+5 && e.File.EndsWith(".sp"));
                 if (currentFunc != null)
                 {
                     
@@ -203,7 +205,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
             }
         }
 
-        public SMDefinition ProduceTemporaryExpandedDefinition(SMDefinition[] definitions, int caret, string text)
+        public SMDefinition ProduceTemporaryExpandedDefinition(SMDefinition[] definitions, int caret, List<SMFunction> currentFunctions)
         {
             var def = new SMDefinition();
                 def.MergeDefinitions(this);
@@ -212,7 +214,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
                         def.MergeDefinitions(definition);
 
                 def.Sort();
-                def.ProduceStringArrays(caret, text);
+                def.ProduceStringArrays(caret, currentFunctions);
             return def;
         }
 
