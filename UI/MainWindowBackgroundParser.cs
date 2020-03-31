@@ -69,7 +69,6 @@ namespace Spedit.UI
                 Thread.Sleep(3000);
                 var ee = GetAllEditorElements();
                 var caret = -1;
-                var text = string.Empty;
                 
                 if (ee != null)
                 {
@@ -90,7 +89,6 @@ namespace Spedit.UI
                                 if (ee[i1].IsLoaded)
                                 {
                                     caret = ee[i1].editor.CaretOffset;
-                                    text = ee[i1].editor.Text;
                                     definitions[i1] =
                                         new Condenser(File.ReadAllText(fInfo.FullName), fInfo.Name)
                                             .Condense();
