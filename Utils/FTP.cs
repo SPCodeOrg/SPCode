@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using System.Text;
 using Renci.SshNet;
 
 namespace Spedit.Utils

@@ -320,7 +320,10 @@ namespace SourcepawnCondenser
 
                     if (t[position + index + 1].Kind != TokenKind.Assignment ||
                         t[position + index + 2].Kind != TokenKind.New || t[position + index + 3].Value != varType)
+                    {
+                        position++;
                         continue;
+                    }
 
                     for (var i = index + 4; i < length - 2; i += 3)
                     {
