@@ -19,26 +19,28 @@ using Timer = System.Timers.Timer;
 
 namespace Spedit.UI.Components
 {
-	/// <summary>
-	///     Interaction logic for EditorElement.xaml
-	/// </summary>
-	public partial class EditorElement : UserControl
+    /// <summary>
+    ///     Interaction logic for EditorElement.xaml
+    /// </summary>
+    public partial class EditorElement : UserControl
     {
-        private string _FullFilePath = "";
-
-        private bool _NeedsSave;
-        public Timer AutoSaveTimer;
         private readonly BracketHighlightRenderer bracketHighlightRenderer;
         private readonly SPBracketSearcher bracketSearcher;
         private readonly ColorizeSelection colorizeSelection;
 
         private readonly Storyboard FadeJumpGridIn;
         private readonly Storyboard FadeJumpGridOut;
+        private readonly SPFoldingStrategy foldingStrategy;
+
+        private readonly Timer regularyTimer;
+        private string _FullFilePath = "";
+
+        private bool _NeedsSave;
+        public Timer AutoSaveTimer;
 
         private FileSystemWatcher fileWatcher;
 
         public FoldingManager foldingManager;
-        private readonly SPFoldingStrategy foldingStrategy;
 
         private bool isBlock;
 
@@ -46,8 +48,6 @@ namespace Spedit.UI.Components
 
         private double LineHeight;
         public new LayoutDocument Parent;
-
-        private readonly Timer regularyTimer;
         private bool SelectionIsHighlited;
         private bool WantFoldingUpdate;
 
@@ -80,9 +80,12 @@ namespace Spedit.UI.Components
             var fInfo = new FileInfo(filePath);
             if (fInfo.Exists)
             {
-                fileWatcher = new FileSystemWatcher(fInfo.DirectoryName) {IncludeSubdirectories = false};
-                fileWatcher.NotifyFilter = NotifyFilters.Size | NotifyFilters.LastWrite;
-                fileWatcher.Filter = "*" + fInfo.Extension;
+                fileWatcher = new FileSystemWatcher(fInfo.DirectoryName ?? throw new NullReferenceException())
+                {
+                    IncludeSubdirectories = false,
+                    NotifyFilter = NotifyFilters.Size | NotifyFilters.LastWrite,
+                    Filter = "*" + fInfo.Extension
+                };
                 fileWatcher.Changed += fileWatcher_Changed;
                 fileWatcher.EnableRaisingEvents = true;
             }
@@ -238,10 +241,9 @@ namespace Spedit.UI.Components
 
         private void JumpToNumber(object sender, RoutedEventArgs e)
         {
-            int num;
-            if (int.TryParse(JumpNumber.Text, out num))
+            if (int.TryParse(JumpNumber.Text, out var num))
             {
-                if (LineJump.IsChecked.Value)
+                if (LineJump.IsChecked != null && LineJump.IsChecked.Value)
                 {
                     num = Math.Max(1, Math.Min(num, editor.LineCount));
                     var line = editor.Document.GetLineByNumber(num);
@@ -273,7 +275,7 @@ namespace Spedit.UI.Components
             if (e == null) return;
             if (e.FullPath == _FullFilePath)
             {
-                var ReloadFile = false;
+                bool reloadFile;
                 if (_NeedsSave)
                 {
                     var result = MessageBox.Show(
@@ -281,14 +283,14 @@ namespace Spedit.UI.Components
                         Environment.NewLine + Program.Translations.GetLanguage("FileTryReload"),
                         Program.Translations.GetLanguage("FileChanged"), MessageBoxButton.YesNo,
                         MessageBoxImage.Asterisk);
-                    ReloadFile = result == MessageBoxResult.Yes;
+                    reloadFile = result == MessageBoxResult.Yes;
                 }
                 else //when the user didnt changed anything, we just reload the file since we are intelligent...
                 {
-                    ReloadFile = true;
+                    reloadFile = true;
                 }
 
-                if (ReloadFile)
+                if (reloadFile)
                     Dispatcher.Invoke(() =>
                     {
                         FileStream stream;
@@ -306,6 +308,7 @@ namespace Spedit.UI.Components
                             }
                             catch (Exception)
                             {
+                                // ignored
                             }
 
                             Thread.Sleep(
@@ -360,13 +363,14 @@ namespace Spedit.UI.Components
                 }
                 catch (Exception)
                 {
+                    // ignored
                 }
             }
         }
 
-        public void Save(bool Force = false)
+        public void Save(bool force = false)
         {
-            if (_NeedsSave || Force)
+            if (_NeedsSave || force)
             {
                 if (fileWatcher != null) fileWatcher.EnableRaisingEvents = false;
                 try
@@ -390,7 +394,7 @@ namespace Spedit.UI.Components
             }
         }
 
-        public void UpdateFontSize(double size, bool UpdateLineHeight = true)
+        public void UpdateFontSize(double size, bool updateLineHeight = true)
         {
             if (size > 2 && size < 31)
             {
@@ -398,34 +402,35 @@ namespace Spedit.UI.Components
                 StatusLine_FontSize.Text = size.ToString("n0") + $" {Program.Translations.GetLanguage("PtAbb")}";
             }
 
-            if (UpdateLineHeight) LineHeight = editor.TextArea.TextView.DefaultLineHeight;
+            if (updateLineHeight) LineHeight = editor.TextArea.TextView.DefaultLineHeight;
         }
 
         public void ToggleCommentOnLine()
         {
             var line = editor.Document.GetLineByOffset(editor.CaretOffset);
             var lineText = editor.Document.GetText(line.Offset, line.Length);
-            var leadinggWhiteSpaces = 0;
-            for (var i = 0; i < lineText.Length; ++i)
-                if (char.IsWhiteSpace(lineText[i]))
-                    leadinggWhiteSpaces++;
+            var leadingWhiteSpaces = 0;
+            foreach (var l in lineText)
+                if (char.IsWhiteSpace(l))
+                    leadingWhiteSpaces++;
                 else
                     break;
+
             lineText = lineText.Trim();
             if (lineText.Length > 1)
             {
                 if (lineText[0] == '/' && lineText[1] == '/')
-                    editor.Document.Remove(line.Offset + leadinggWhiteSpaces, 2);
+                    editor.Document.Remove(line.Offset + leadingWhiteSpaces, 2);
                 else
-                    editor.Document.Insert(line.Offset + leadinggWhiteSpaces, "//");
+                    editor.Document.Insert(line.Offset + leadingWhiteSpaces, "//");
             }
             else
             {
-                editor.Document.Insert(line.Offset + leadinggWhiteSpaces, "//");
+                editor.Document.Insert(line.Offset + leadingWhiteSpaces, "//");
             }
         }
 
-        public void DuplicateLine(bool down)
+        private void DuplicateLine(bool down)
         {
             var line = editor.Document.GetLineByOffset(editor.CaretOffset);
             var lineText = editor.Document.GetText(line.Offset, line.Length);
@@ -433,7 +438,7 @@ namespace Spedit.UI.Components
             if (down) editor.CaretOffset -= line.Length + 1;
         }
 
-        public void MoveLine(bool down)
+        private void MoveLine(bool down)
         {
             var line = editor.Document.GetLineByOffset(editor.CaretOffset);
             if (down)
@@ -498,9 +503,8 @@ namespace Spedit.UI.Components
 
             Program.MainWindow.EditorsReferences.Remove(this);
             var childs = Program.MainWindow.DockingPaneGroup.Children;
-            foreach (var c in childs)
-                if (c is LayoutDocumentPane)
-                    ((LayoutDocumentPane) c).Children.Remove(Parent);
+            foreach (var c in childs) (c as LayoutDocumentPane)?.Children.Remove(Parent);
+
             Parent = null; //to prevent a ring depency which disables the GC from work
             Program.MainWindow.UpdateWindowTitle();
         }
@@ -610,9 +614,9 @@ namespace Spedit.UI.Components
         {
             if (e.Text == "\n")
             {
-                if (editor.Document.TextLength < editor.CaretOffset+1)
+                if (editor.Document.TextLength < editor.CaretOffset + 1 || editor.CaretOffset < 3)
                     return;
-                
+
                 var segment = new AnchorSegment(editor.Document, editor.CaretOffset - 1, 2);
                 var text = editor.Document.GetText(segment);
                 if (text == "{}")
@@ -779,7 +783,7 @@ namespace Spedit.UI.Components
                 var text = CurrentContext.Document.GetText(line);
                 var start = 0;
                 int index;
-                while ((index = text.IndexOf(SelectionString, start)) >= 0)
+                while ((index = text.IndexOf(SelectionString, start, StringComparison.Ordinal)) >= 0)
                 {
                     ChangeLinePart(
                         lineStartOffset + index,
