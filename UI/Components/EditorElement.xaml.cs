@@ -530,11 +530,19 @@ namespace Spedit.UI.Components
                 if (e.Text == ";")
                     if (editor.CaretOffset >= 0)
                     {
+                        
                         var line = editor.Document.GetLineByOffset(editor.CaretOffset);
-                        var leadingIndentation =
-                            editor.Document.GetText(TextUtilities.GetLeadingWhitespace(editor.Document, line));
-                        var newLineStr = leadingIndentation + SPSyntaxTidy.TidyUp(editor.Document.GetText(line)).Trim();
-                        editor.Document.Replace(line, newLineStr);
+                        var text = editor.Document.GetText(line);
+
+                        // TODO: Poor way to fix this but atm I have no idea on how to fix this properly
+                        if (!text.Contains("for"))
+                        {
+                            var leadingIndentation =
+                                editor.Document.GetText(TextUtilities.GetLeadingWhitespace(editor.Document, line));
+                            var newLineStr = leadingIndentation +
+                                             SPSyntaxTidy.TidyUp(text).Trim();
+                            editor.Document.Replace(line, newLineStr);
+                        }
                     }
 
             switch (e.Text)
