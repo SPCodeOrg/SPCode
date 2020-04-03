@@ -138,7 +138,7 @@ namespace Spedit.UI.Components
                 rs.Rules.Add(new HighlightingRule //value types
                 {
                     Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
-                        {"bool", "char", "float", "int", "void", "any", "Handle"}),
+                        {"bool", "char", "float", "int", "void", "any", "Handle", "Function"}),
                     Color = new HighlightingColor
                         {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Types)}
                 });
