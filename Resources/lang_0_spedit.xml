@@ -1408,7 +1408,7 @@
     <erroruploadfile>Грешка приликом одпремања датотеке: {0} на {1}</erroruploadfile>
     <errorupload>Грешка приликом одпремања датотека</errorupload>
     <done>готово</done>
-    <file>Датотека</file>
+    <filestr>Датотека</filestr>
     <new>Нова</new>
     <open>Отвори</open>
     <save>Похрани</save>
@@ -1542,7 +1542,7 @@
     <scrollspeed>Брзина скруловања</scrollspeed>
     <wordwrap>Преломи линије у нови ред</wordwrap>
     <aggindentation>Агресивно удубљавање кода</aggindentation>
-    <reformataftersem>Форматирај линију после ;</reformataftersem>
+    <reformataftersem>Форматирај линију после &#59;</reformataftersem>
     <tabstospace>Замени табове размацима (спејсовима)</tabstospace>
     <autoclosebrack>Аутоматски затварај заграде</autoclosebrack>
     <autoclosestrchr>Аутоматски затварај стрингове и карактере</autoclosestrchr>
