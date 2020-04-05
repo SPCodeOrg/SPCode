@@ -1364,6 +1364,201 @@
     <obtextitem>Item Dir.</obtextitem>
     <errorfileerror>Compile error file could not be accessed.</errorfileerror>
 	</pl>
+  <sr>
+    <language>Српски</language>
+    <serverrunning>Сервер је покренут</serverrunning>
+    <saving>Похрањивање</saving>
+    <saveufiles>Похрани све не похрањене датотеке?</saveufiles>
+    <compileall>Компајлирај све</compileall>
+    <compilecurr>Компајлирај тренутни</compilecurr>
+    <copy>Умножи</copy>
+    <ftpup>FTP Одпремање</ftpup>
+    <startserver>Покрени Сервер</startserver>
+    <replace>Замени</replace>
+    <replaceall>Замени све</replaceall>
+    <opennewfile>Отвори нову датотеку</opennewfile>
+    <nofilopened>Нема отворених датотека.</nofilopened>
+    <nofileopenedcap>Ни једна од изабраних датотека не може бити отворена</nofileopenedcap>
+    <savefileas>Похрани датотеку као</savefileas>
+    <savefollow>Похрани следеће датотеке</savefollow>
+    <chdecomp>Изабери plugin за декомпајлацију</chdecomp>
+    <decompiling>Декомпајлација</decompiling>
+    <editconfig>Измени подешавања</editconfig>
+    <foundinoff>Нађено одступање {0} са дужином од {1}</foundinoff>
+    <foundnothing>Нема пронађених резултата</foundnothing>
+    <replacedoff>Замењено {0}</replacedoff>
+    <replacedocc>Замењено {0} ставки {1} у документима</replacedocc>
+    <occfound>пронађених понављања</occfound>
+    <emptypatt>Празан шаблон за претрагу</emptypatt>
+    <novalidregex>Regex шаблон није исправан</novalidregex>
+    <failedcheck>Провера нови ажурирања није успела</failedcheck>
+    <errorupdate>Грешка приликом провере за ажурирањем</errorupdate>
+    <versuptodate>Користите нај новију верзију програма</versuptodate>
+    <versionyour>Везија програма {0} је нај новија.</versionyour>
+    <details>Детаљи</details>
+    <compiling>Компајлирам</compiling>
+    <error>Грешка</error>
+    <spcompnotstarted>Програм spcomp.exe није покренут успешно.</spcompnotstarted>
+    <spcompnotfound>Програм spcomp.exe није пронађен.</spcompnotfound>
+    <copied>Умножено</copied>
+    <deleted>Избрисано</deleted>
+    <failcopy>Умножавање није успело</failcopy>
+    <nofilescopy>Ни једна датотека није умножена</nofilescopy>
+    <uploaded>Одпремљено</uploaded>
+    <erroruploadfile>Грешка приликом одпремања датотеке: {0} на {1}</erroruploadfile>
+    <errorupload>Грешка приликом одпремања датотека</errorupload>
+    <done>готово</done>
+    <file>Датотека</file>
+    <new>Нова</new>
+    <open>Отвори</open>
+    <save>Похрани</save>
+    <saveall>Похрани све</saveall>
+    <saveas>Похрани као</saveas>
+    <close>Затвори</close>
+    <closeall>Затвори све</closeall>
+    <build>Компајлирање</build>
+    <copyplugin>Умножи плагине</copyplugin>
+    <sendrcon>Пошаљи RCon команде</sendrcon>
+    <config>Конфигурација</config>
+    <edit>Уреди</edit>
+    <undo>Опозови радњу</undo>
+    <redo>Понови радњу</redo>
+    <cut>Исеци</cut>
+    <paste>Налепи</paste>
+    <folding>Преклопљени делови</folding>
+    <expandall>Рашири све</expandall>
+    <collapseall>Преклопи све</collapseall>
+    <jumpto>Иди на</jumpto>
+    <togglcomment>Укључи/Искључи коментаре</togglcomment>
+    <selectall>Изабери све</selectall>
+    <findreplace>Пронађи &amp; Замени</findreplace>
+    <tools>Алатке</tools>
+    <options>Опције</options>
+    <parsedincdir>Парсирано из include директоријума</parsedincdir>
+    <newapiweb>API Документација</newapiweb>
+    <betaapiweb>(BETA) API Документација</betaapiweb>
+    <reformatter>Фарматирање синтаксе</reformatter>
+    <reformatcurr>Форматирај тренутан</reformatcurr>
+    <reformatall>Форматирај све</reformatall>
+    <decompile>Декомпајлација</decompile>
+    <reportbuggit>Пријави багове на GitHub-у</reportbuggit>
+    <checkupdates>Провери ажурирања</checkupdates>
+    <about>О програму</about>
+    <filename>Име датотеке</filename>
+    <line>Линија</line>
+    <type>Тип</type>
+    <normalsearch>Нормална претрага</normalsearch>
+    <matchwhowords>Подударање целих речи</matchwhowords>
+    <advancsearch>Напредна претрага</advancsearch>
+    <regexsearch>Претрага коришћењем Regex шаблона</regexsearch>
+    <currdoc>Тренутни документи</currdoc>
+    <alldoc>Сви отворени документи</alldoc>
+    <find>Пронађи</find>
+    <count>Изброј</count>
+    <casesen>Осетљивост на мала и велика слова</casesen>
+    <multilineregex>Вишелинијски regex шаблон</multilineregex>
+    <errorfileloadproc>Грешка приликом учитавања и обраде датотеке</errorfileloadproc>
+    <notdissmethod>Дисасембловање методе {0} није успело: {1}</notdissmethod>
+    <dfilechanged>{0} је промењен.</dfilechanged>
+    <filechanged>Датотека је промењена</filechanged>
+    <filetryreload>Покушај са поновним учитавањем датотеке?</filetryreload>
+    <dsaveerror>Догодила се грешка приликом похрањивања!</dsaveerror>
+    <saveerror>Грешка похрањивања</saveerror>
+    <savingfile>Похрањујем датотеку</savingfile>
+    <ptabb>тачка</ptabb>
+    <colabb>Колона</colabb>
+    <lnabb>Линија</lnabb>
+    <lenabb>Дужина</lenabb>
+    <speditcap>пост Source Pawn уређивач</speditcap>
+    <writtenby>написан од стране: {0}</writtenby>
+    <license>Лиценце</license>
+    <peopleinv>Људи који су допринели пројекту</peopleinv>
+    <preview>Приказ</preview>
+    <newfile>Нова датотека</newfile>
+    <configwrongpars>The config was not able to parse a sourcepawn definiton.</configwrongpars>
+    <noname>без имена</noname>
+    <poslen>позиција: {0} - дужина: {1}</poslen>
+    <inheritedfr>наслеђен/о од</inheritedfr>
+    <methodfrom>Method из</methodfrom>
+    <propertyfrom>Property из</propertyfrom>
+    <search>претрага</search>
+    <delete>Обриши</delete>
+    <name>Име</name>
+    <scriptdir>Scripting директоријуми</scriptdir>
+    <delimitedwi>Раздвој са</delimitedwi>
+    <copydir>Умножи директоријум</copydir>
+    <serverexe>Извршна датотека сервера</serverexe>
+    <serverstartargs>Аргументи за покретање сервера</serverstartargs>
+    <prebuildcom>Команде командне линије пре компајлације</prebuildcom>
+    <postbuildcom>Команде командне линије после компајлације</postbuildcom>
+    <optimizelvl>Ниво оптимизације</optimizelvl>
+    <verboselvl>Verbose ниво</verboselvl>
+    <autocopy>Аутоматски умножи након компајлирања</autocopy>
+    <deleteoldsmx>Обриши старе .smx датотеке након умножавања</deleteoldsmx>
+    <ftphost>FTP IP адреса</ftphost>
+    <ftpuser>FTP корисник</ftpuser>
+    <ftppw>FTP лозинка</ftppw>
+    <ftpdir>FTP директоријум за одпремање</ftpdir>
+    <comeditordir>Директоријум у коме се налази SPEdit извршна датотека</comeditordir>
+    <comscriptdir>Директоријум скрипте за компајлацију</comscriptdir>
+    <comcopydir>Директоријум где се smx датотеке уможавају након компајлације</comcopydir>
+    <comscriptfile>Пун назив директоријума и датотеке скрипте</comscriptfile>
+    <comscriptname>Пун назив скрипте</comscriptname>
+    <compluginfile>Пун назив директоријума и датотеке компајловане скрипте</compluginfile>
+    <compluginname>Пун назив компајловане скрипте</compluginname>
+    <rconengine>Енџин RCon сервера</rconengine>
+    <rconip>IP адреса RCon сервера</rconip>
+    <rconport>Порт RCon сервера</rconport>
+    <rconpw>Лозинка RCon сервера</rconpw>
+    <rconcom>Команде RCon сервера</rconcom>
+    <compluginsreload>Поново учитај све компајловане плугине</compluginsreload>
+    <compluginsloas>Учитај све компајловане плугине</compluginsloas>
+    <compluginsunload>Избаци све компајловане плугине</compluginsunload>
+    <newconfig>Нова конфигурација</newconfig>
+    <cannotdelconf>Брисање конфигруације није успело!</cannotdelconf>
+    <ycannotdelconf>Не можете да обришете ову конфигурацију!</ycannotdelconf>
+    <selectexe>Изабери извршну датотеку</selectexe>
+    <cmdlinecom>Промењљиве командне линије</cmdlinecom>
+    <rconcmdlinecom>Промењљиве Rcon командне линије</rconcmdlinecom>
+    <resetoptions>Ресетуј опције на фабричка подешавања</resetoptions>
+    <resetoptques>Да ли сте стварно сигурни да желите да вратите опције на фабричка подешавања?</resetoptques>
+    <restarteditor>Поновно покретање уређивача</restarteditor>
+    <yrestarteditor>Поново покрените уређивач да би промене имале ефекта</yrestarteditor>
+    <restartedifulleff>Поново покрените уређивач да би промене имале ефекта...</restartedifulleff>
+    <restartedieff>Поново покрените уређивач да би промене имале ефекта...</restartedieff>
+    <program>Програм</program>
+    <hardwareacc>Користи хардверско убрзавање (ако је доступно)</hardwareacc>
+    <uianim>Анимације корисничког окружења</uianim>
+    <openinc>Аутоматски отварај инклудове</openinc>
+    <openincrec>Отвори инклудове рекурзивно</openincrec>
+    <autoupdate>Аутоматски проверавај доступност ажурирања</autoupdate>
+    <showtoolbar>Прикажи траку са алаткама</showtoolbar>
+    <dynamicisac>Динамичко Довршавање Кода/Intellisense</dynamicisac>
+    <darktheme>Тамна тема</darktheme>
+    <themecolor>Боја теме</themecolor>
+    <languagestr>Језик</languagestr>
+    <editor>Уређивач</editor>
+    <fontsize>Величина фонта</fontsize>
+    <scrollspeed>Брзина скруловања</scrollspeed>
+    <wordwrap>Преломи линије у нови ред</wordwrap>
+    <aggindentation>Агресивно удубљавање кода</aggindentation>
+    <reformataftersem>Форматирај линију после ;</reformataftersem>
+    <tabstospace>Замени табове размацима (спејсовима)</tabstospace>
+    <autoclosebrack>Аутоматски затварај заграде</autoclosebrack>
+    <autoclosestrchr>Аутоматски затварај стрингове и карактере</autoclosestrchr>
+    <showsapaces>Прикажи размаке</showsapaces>
+    <showtabs>Прикажи табове</showtabs>
+    <indentationsize>Величина дубине кода</indentationsize>
+    <fontfamily>Фонт</fontfamily>
+    <syntaxhigh>Означавање синтаксе</syntaxhigh>
+    <highdeprecat>Означи застарелу (&lt;1.7) синтаксу</highdeprecat>
+    <compile>Компајлирај</compile>
+    <autosavemin>Аутоматско похрањивање (у минутима)</autosavemin>
+    <obtextfile>Директоријум датотеке</obtextfile>
+    <obtextconfig>Директоријум за конфигурацију</obtextconfig>
+    <obtextitem>Директоријум ставке</obtextitem>
+    <errorfileerror>Грешка приликом компајлације датотеке</errorfileerror>
+  </sr>
 	<tr>
 		<language>Türkçe</language>
 		<serverrunning>Sunucu Çalışıyor</serverrunning>
