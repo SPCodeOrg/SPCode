@@ -1,4 +1,4 @@
-name: .NET Core
+name: Publish Release
 
 on:
   push:
@@ -23,6 +23,12 @@ jobs:
       with:
         dotnet-version: 3.1.100
         
+    # Nuget
+    - uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: '5.x'
+    - run: nuget restore Spedit.sln
+  
     # Setup MSBuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.0

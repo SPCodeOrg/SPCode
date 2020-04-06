@@ -1,0 +1,31 @@
+﻿name: Compile Solution
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Install the .NET Core workload
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.100
+
+      # Nuget
+      - uses: nuget/setup-nuget@v1
+      - run: nuget restore Spedit.sln
+
+      # Setup MSBuild
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v1.0.0
+
+
+      # Build Project
+      - name: Build Project
+        run: msbuild /p:Configuration=Release
