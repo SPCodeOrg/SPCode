@@ -30,7 +30,7 @@ jobs:
     
     # Build Project
     - name: Build Project
-      run: msbuild/p:Configuration=Release /p:Platform:"Any CPU"
+      run: msbuild /p:Configuration=Release /p:Platform:"Any CPU"
     
     # Zip Relase
     - name: Compress files # This would actually build your project, using zip for an example artifact
