@@ -23,13 +23,6 @@ jobs:
       with:
         dotnet-version: 3.1.100
         
-    - name: Find and Replace
-      uses: jacobtomlinson/gha-find-replace@master
-      with:
-        find: "{TAG-VERSION}"
-        replace: ${GITHUB_REF##*/}
-        include: "AssemblyInfo1.cs"  # Will match all README.md files in any nested directory
-
     # Setup MSBuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.0
