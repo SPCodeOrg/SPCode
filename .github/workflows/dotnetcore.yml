@@ -1,0 +1,66 @@
+name: .NET Core
+
+on:
+  push:
+    tags:
+    - '*'
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+
+    
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.100
+        
+    - name: Find and Replace
+      uses: jacobtomlinson/gha-find-replace@master
+      with:
+        find: "{TAG-VERSION}"
+        replace: ${GITHUB_REF##*/}
+        include: "AssemblyInfo1.cs"  # Will match all README.md files in any nested directory
+
+    # Setup MSBuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.0.0
+      
+    
+    # Build Project
+    - name: Build Project
+      run: msbuild/p:Configuration=Release /p:Platform:"Any CPU"
+    
+    # Zip Relase
+    - name: Compress files # This would actually build your project, using zip for an example artifact
+      run:  zip --junk-paths "SPEdit-${GITHUB_REF##*/}" bin/Release/*
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+      
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ./SPEdit-${GITHUB_REF##*/}.zip
+        asset_name: SPEdit-${GITHUB_REF##*/}.zip
+        asset_content_type: application/zip
