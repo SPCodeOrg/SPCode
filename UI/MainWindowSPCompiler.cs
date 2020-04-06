@@ -267,7 +267,7 @@ namespace Spedit.UI
                 foreach (var file in nonUploadedFiles)
                 {
                     var fileInfo = new FileInfo(file);
-                    if (!fileInfo.Exists)
+                    if (fileInfo.Exists)
                     {
                         string uploadDir;
                         if (string.IsNullOrWhiteSpace(c.FTPDir))
