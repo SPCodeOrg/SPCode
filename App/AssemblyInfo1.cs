@@ -33,5 +33,5 @@ using System.Resources;
 #if (DEBUG)
 [assembly: AssemblyVersion("1.12.*")]
 #else
-[assembly: AssemblyVersion("1.2.0.2")]
+[assembly: AssemblyVersion("1.3.4.7")]
 #endif
