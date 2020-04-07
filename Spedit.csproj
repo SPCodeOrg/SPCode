@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -11,7 +11,7 @@
         <AssemblyName>Spedit</AssemblyName>
         <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
-        <TargetFrameworkProfile/>
+        <TargetFrameworkProfile />
         <IsWebBootstrapper>false</IsWebBootstrapper>
         <PublishUrl>publish\</PublishUrl>
         <Install>true</Install>
@@ -53,26 +53,15 @@
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     </PropertyGroup>
     <PropertyGroup>
-        <StartupObject/>
+        <StartupObject />
     </PropertyGroup>
     <PropertyGroup>
         <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="app.config"/>
-        <None Include="App\App.config"/>
-        <None Include="Deploy\DotNetChecker.nsh"/>
-        <None Include="Deploy\FileAssociation.nsh"/>
-        <None Include="Deploy\SPEdit.nsi"/>
-        <None Include="packages.config"/>
-        <None Include="Resources\Misc\Templates\CSSCSGOTemplate.sp"/>
-        <None Include="Resources\Misc\Templates\EmptyScriptTemplate.sp"/>
-        <None Include="Resources\Misc\Templates\OldSyntaxCSSCSGOTemplate.sp"/>
-        <None Include="Resources\Misc\Templates\OldSyntaxScriptTemplate.sp"/>
-        <None Include="Resources\Misc\Templates\OldSyntaxTFTemplate.sp"/>
-        <None Include="Resources\Misc\Templates\ScriptTemplate.sp"/>
-        <None Include="Resources\Misc\Templates\SimpleScriptTemplate.sp"/>
-        <None Include="Resources\Misc\Templates\TFTemplate.sp"/>
+        <None Include="app.config" />
+        <None Include="App\App.config" />
+        <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
         <Reference Include="DiscordRPC, Version=1.0.150.0, Culture=neutral, PublicKeyToken=null">
@@ -99,21 +88,21 @@
             <HintPath>packages\MahApps.Metro.1.3.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
             <Private>True</Private>
         </Reference>
-        <Reference Include="PresentationCore"/>
-        <Reference Include="PresentationFramework"/>
+        <Reference Include="PresentationCore" />
+        <Reference Include="PresentationFramework" />
         <Reference Include="QueryMaster">
             <HintPath>QueryMaster\QueryMaster.dll</HintPath>
         </Reference>
         <Reference Include="smxdasm">
             <HintPath>App\smxdasm.dll</HintPath>
         </Reference>
-        <Reference Include="System"/>
-        <Reference Include="System.Drawing"/>
-        <Reference Include="System.Management"/>
-        <Reference Include="System.Windows.Forms"/>
-        <Reference Include="System.Xaml"/>
-        <Reference Include="System.XML"/>
-        <Reference Include="WindowsBase"/>
+        <Reference Include="System" />
+        <Reference Include="System.Drawing" />
+        <Reference Include="System.Management" />
+        <Reference Include="System.Windows.Forms" />
+        <Reference Include="System.Xaml" />
+        <Reference Include="System.XML" />
+        <Reference Include="WindowsBase" />
         <Reference Include="Xceed.Wpf.AvalonDock, Version=2.9.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
             <HintPath>packages\Extended.Wpf.Toolkit.2.9\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
             <Private>True</Private>
@@ -124,18 +113,18 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="App\AssemblyInfo1.cs"/>
-        <Compile Include="Interop\ConfigControl.cs"/>
-        <Compile Include="Interop\PipeInteropClient.cs"/>
-        <Compile Include="Interop\PipeInteropServer.cs"/>
-        <Compile Include="Interop\OptionsControl.cs"/>
-        <Compile Include="Interop\TranslationProvider.cs"/>
-        <Compile Include="Interop\Updater\UpdateCheck.cs"/>
-        <Compile Include="Interop\Updater\UpdateInfo.cs"/>
+        <Compile Include="App\AssemblyInfo1.cs" />
+        <Compile Include="Interop\ConfigControl.cs" />
+        <Compile Include="Interop\PipeInteropClient.cs" />
+        <Compile Include="Interop\PipeInteropServer.cs" />
+        <Compile Include="Interop\OptionsControl.cs" />
+        <Compile Include="Interop\TranslationProvider.cs" />
+        <Compile Include="Interop\Updater\UpdateCheck.cs" />
+        <Compile Include="Interop\Updater\UpdateInfo.cs" />
         <Compile Include="Interop\Updater\UpdateWindow.xaml.cs">
             <DependentUpon>UpdateWindow.xaml</DependentUpon>
         </Compile>
-        <Compile Include="Program.cs"/>
+        <Compile Include="Program.cs" />
         <Compile Include="Properties\Resources.Designer.cs">
             <AutoGen>True</AutoGen>
             <DesignTime>True</DesignTime>
@@ -150,29 +139,29 @@
         <Compile Include="UI\Components\EditorElement.xaml.cs">
             <DependentUpon>EditorElement.xaml</DependentUpon>
         </Compile>
-        <Compile Include="UI\Components\EditorElementBracketHighlighter.cs"/>
-        <Compile Include="UI\Components\DASMElementHighlighter.cs"/>
-        <Compile Include="UI\Components\EditorElementHighlighter.cs"/>
-        <Compile Include="UI\Components\EditorFoldingStrategy.cs"/>
-        <Compile Include="UI\Components\EditorIndetation.cs"/>
-        <Compile Include="UI\Components\IntelliSenseController.cs"/>
+        <Compile Include="UI\Components\EditorElementBracketHighlighter.cs" />
+        <Compile Include="UI\Components\DASMElementHighlighter.cs" />
+        <Compile Include="UI\Components\EditorElementHighlighter.cs" />
+        <Compile Include="UI\Components\EditorFoldingStrategy.cs" />
+        <Compile Include="UI\Components\EditorIndetation.cs" />
+        <Compile Include="UI\Components\IntelliSenseController.cs" />
         <Compile Include="UI\Interop\LanguageChooserWindow.xaml.cs">
             <DependentUpon>LanguageChooserWindow.xaml</DependentUpon>
         </Compile>
-        <Compile Include="UI\MainWindowBackgroundParser.cs"/>
-        <Compile Include="UI\MainWindowServerQuery.cs"/>
-        <Compile Include="UI\MainWindowSPCompiler.cs"/>
-        <Compile Include="UI\MainWindowCommands.cs"/>
+        <Compile Include="UI\MainWindowBackgroundParser.cs" />
+        <Compile Include="UI\MainWindowServerQuery.cs" />
+        <Compile Include="UI\MainWindowSPCompiler.cs" />
+        <Compile Include="UI\MainWindowCommands.cs" />
         <Compile Include="UI\MainWindow.xaml.cs">
             <DependentUpon>MainWindow.xaml</DependentUpon>
         </Compile>
-        <Compile Include="UI\MainWindowFindReplaceHandler.cs"/>
-        <Compile Include="UI\MainWindowInputHandler.cs"/>
-        <Compile Include="UI\MainWindowMenuHandler.cs"/>
-        <Compile Include="UI\MainWindowConfigHandler.cs"/>
-        <Compile Include="UI\MainWindowObjectBrowser.cs"/>
-        <Compile Include="UI\MainWindowTranslations.cs"/>
-        <Compile Include="UI\STheme\SMetroTheme.cs"/>
+        <Compile Include="UI\MainWindowFindReplaceHandler.cs" />
+        <Compile Include="UI\MainWindowInputHandler.cs" />
+        <Compile Include="UI\MainWindowMenuHandler.cs" />
+        <Compile Include="UI\MainWindowConfigHandler.cs" />
+        <Compile Include="UI\MainWindowObjectBrowser.cs" />
+        <Compile Include="UI\MainWindowTranslations.cs" />
+        <Compile Include="UI\STheme\SMetroTheme.cs" />
         <Compile Include="UI\Windows\ConfigWindow.xaml.cs">
             <DependentUpon>ConfigWindow.xaml</DependentUpon>
         </Compile>
@@ -182,17 +171,17 @@
         <Compile Include="UI\Windows\OptionsWindow.xaml.cs">
             <DependentUpon>OptionsWindow.xaml</DependentUpon>
         </Compile>
-        <Compile Include="UI\Windows\OptionsWindowHighlighting.cs"/>
+        <Compile Include="UI\Windows\OptionsWindowHighlighting.cs" />
         <Compile Include="UI\Windows\SPDefinitionWindow.xaml.cs">
             <DependentUpon>SPDefinitionWindow.xaml</DependentUpon>
         </Compile>
         <Compile Include="UI\Windows\AboutWindow.xaml.cs">
             <DependentUpon>AboutWindow.xaml</DependentUpon>
         </Compile>
-        <Compile Include="Utils\FTP.cs"/>
-        <Compile Include="Utils\ManagedAES.cs"/>
-        <Compile Include="Utils\SPSyntaxTidy\SPSyntaxTidy.cs"/>
-        <Compile Include="Utils\SPSyntaxTidy\SPTokenizer.cs"/>
+        <Compile Include="Utils\FTP.cs" />
+        <Compile Include="Utils\ManagedAES.cs" />
+        <Compile Include="Utils\SPSyntaxTidy\SPSyntaxTidy.cs" />
+        <Compile Include="Utils\SPSyntaxTidy\SPTokenizer.cs" />
     </ItemGroup>
     <ItemGroup>
         <Page Include="Interop\Updater\UpdateWindow.xaml">
@@ -249,14 +238,14 @@
         </Page>
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="Resources\AboutImages\AvalonDock.png"/>
-        <Resource Include="Resources\AboutImages\license.png"/>
-        <Resource Include="Resources\AboutImages\MahAppsMetro.png"/>
-        <Resource Include="Resources\AboutImages\SharpDevelop.png"/>
+        <Resource Include="Resources\AboutImages\AvalonDock.png" />
+        <Resource Include="Resources\AboutImages\license.png" />
+        <Resource Include="Resources\AboutImages\MahAppsMetro.png" />
+        <Resource Include="Resources\AboutImages\SharpDevelop.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="Resources\Icon.ico"/>
-        <Resource Include="Resources\Icon256x.png"/>
+        <Resource Include="Resources\Icon.ico" />
+        <Resource Include="Resources\Icon256x.png" />
     </ItemGroup>
     <ItemGroup>
         <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -276,247 +265,15 @@
         </BootstrapperPackage>
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="Resources\AboutImages\IconMonstr.png"/>
+        <Resource Include="Resources\AboutImages\IconMonstr.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="Resources\AboutImages\sourcemod.png"/>
-        <None Include="Deploy\GPLv3.txt"/>
-        <None Include="Deploy\icon.ico"/>
-        <Resource Include="Resources\AboutImages\smlib.png"/>
-        <Resource Include="Resources\AboutImages\alliedmodders.png"/>
+        <Resource Include="Resources\AboutImages\sourcemod.png" />
+        <Resource Include="Resources\AboutImages\smlib.png" />
+        <Resource Include="Resources\AboutImages\alliedmodders.png" />
         <None Include="Resources\Misc\Configurations\Configs.xml">
             <SubType>Designer</SubType>
         </None>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\admin.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\adminmenu.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\adt.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\adt_array.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\adt_stack.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\adt_trie.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\banning.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\basecomm.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\bitbuffer.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\clientprefs.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\clients.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\commandfilters.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\commandline.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\console.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\convars.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\core.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\cstrike.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\datapack.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\dbi.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\entity.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\entity_prop_stocks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\events.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\files.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\float.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\functions.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\geoip.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\halflife.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\handles.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\helpers.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\keyvalues.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\lang.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\logging.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\mapchooser.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\menus.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\nextmap.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\profiler.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\protobuf.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\regex.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdkhooks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools_client.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools_engine.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools_entinput.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools_entoutput.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools_functions.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools_gamerules.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools_hooks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools_sound.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools_stocks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools_stringtables.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools_tempents.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools_tempents_stocks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools_trace.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sdktools_voice.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sorting.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\sourcemod.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\spcomp.exe"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\string.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\testing.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\textparse.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\tf2.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\tf2_stocks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\timers.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\topmenus.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\usermessages.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\vector.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\version.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\include\version_auto.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven\spcomp.exe"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\admin.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\adminmenu.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\adt.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\adt_array.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\adt_stack.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\adt_trie.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\banning.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\basecomm.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\bitbuffer.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\clientprefs.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\clients.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\commandfilters.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\commandline.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\console.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\convars.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\core.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\cstrike.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\datapack.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\dbi.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\entity.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\entity_prop_stocks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\events.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\files.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\float.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\functions.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\geoip.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\halflife.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\handles.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\helpers.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\keyvalues.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\lang.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\logging.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\mapchooser.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\menus.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\nextmap.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\profiler.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\protobuf.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\regex.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdkhooks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools_client.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools_engine.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools_entinput.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools_entoutput.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools_functions.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools_gamerules.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools_hooks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools_sound.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools_stocks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools_stringtables.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools_tempents.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools_tempents_stocks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools_trace.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sdktools_voice.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\arrays.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\clients.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\colors.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\concommands.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\convars.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\crypt.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\debug.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\dynarrays.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\edicts.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\effects.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\entities.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\files.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\game.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\general.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\math.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\menus.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\server.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\sql.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\strings.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\teams.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\vehicles.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\weapons.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\smlib\world.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sorting.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\sourcemod.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\string.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\testing.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\textparse.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\tf2.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\tf2_stocks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\timers.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\topmenus.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\usermessages.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\vector.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\version.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\include\version_auto.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_seven_smlib_zero_nine_seven\spcomp.exe"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\admin.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\adminmenu.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\adt.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\adt_array.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\adt_stack.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\adt_trie.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\banning.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\basecomm.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\bitbuffer.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\clientprefs.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\clients.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\commandfilters.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\console.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\core.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\cstrike.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\datapack.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\dbi.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\entity.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\entity_prop_stocks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\events.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\files.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\float.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\functions.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\geoip.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\halflife.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\handles.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\helpers.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\keyvalues.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\lang.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\logging.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\mapchooser.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\menus.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\nextmap.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\profiler.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\protobuf.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\regex.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdkhooks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools_client.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools_engine.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools_entinput.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools_entoutput.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools_functions.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools_gamerules.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools_hooks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools_sound.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools_stocks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools_stringtables.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools_tempents.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools_tempents_stocks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools_trace.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sdktools_voice.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sorting.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\sourcemod.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\string.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\textparse.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\tf2.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\tf2_stocks.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\timers.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\topmenus.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\usermessages.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\vector.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\version.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\include\version_auto.inc"/>
-        <None Include="Resources\Misc\Configurations\sm_one_six\spcomp.exe"/>
-        <None Include="Resources\Misc\Templates\ExtensionIncludeTemplate.inc"/>
-        <None Include="Resources\Misc\Templates\IncludeTemplate.inc"/>
-        <None Include="Resources\Misc\Templates\NativeIncludeTemplate.inc"/>
-        <None Include="Resources\Misc\Templates\Templates.xml"/>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="Lysis\LysisForSpedit.csproj">
@@ -535,125 +292,213 @@
         </EmbeddedResource>
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockAnchorableBottom.png"/>
+        <Resource Include="UI\STheme\Images\DockAnchorableBottom.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockAnchorableLeft.png"/>
+        <Resource Include="UI\STheme\Images\DockAnchorableLeft.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockAnchorableRight.png"/>
+        <Resource Include="UI\STheme\Images\DockAnchorableRight.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockAnchorableTop.png"/>
+        <Resource Include="UI\STheme\Images\DockAnchorableTop.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableBottom.png"/>
+        <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableBottom.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableLeft.png"/>
+        <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableLeft.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableRight.png"/>
+        <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableRight.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableTop.png"/>
+        <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableTop.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentBottom.png"/>
+        <Resource Include="UI\STheme\Images\DockDocumentBottom.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentInside.png"/>
+        <Resource Include="UI\STheme\Images\DockDocumentInside.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentLeft.png"/>
+        <Resource Include="UI\STheme\Images\DockDocumentLeft.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentRight.png"/>
+        <Resource Include="UI\STheme\Images\DockDocumentRight.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentTop.png"/>
+        <Resource Include="UI\STheme\Images\DockDocumentTop.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockPaneEmpty.png"/>
+        <Resource Include="UI\STheme\Images\DockPaneEmpty.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockPaneLargeEmpty.png"/>
+        <Resource Include="UI\STheme\Images\DockPaneLargeEmpty.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\HTabGroup.png"/>
+        <Resource Include="UI\STheme\Images\HTabGroup.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\Locked.png"/>
+        <Resource Include="UI\STheme\Images\Locked.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinAutoHide.png"/>
+        <Resource Include="UI\STheme\Images\PinAutoHide.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinAutoHide_Black.png"/>
+        <Resource Include="UI\STheme\Images\PinAutoHide_Black.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinAutoHide_Dark.png"/>
+        <Resource Include="UI\STheme\Images\PinAutoHide_Dark.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinClose.png"/>
+        <Resource Include="UI\STheme\Images\PinClose.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinClose_Black.png"/>
+        <Resource Include="UI\STheme\Images\PinClose_Black.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinClose_Dark.png"/>
+        <Resource Include="UI\STheme\Images\PinClose_Dark.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinDocMenu.png"/>
+        <Resource Include="UI\STheme\Images\PinDocMenu.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinDocMenu_Black.png"/>
+        <Resource Include="UI\STheme\Images\PinDocMenu_Black.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinMaximize.png"/>
+        <Resource Include="UI\STheme\Images\PinMaximize.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinMaximize_Black.png"/>
+        <Resource Include="UI\STheme\Images\PinMaximize_Black.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinMaximize_Dark.png"/>
+        <Resource Include="UI\STheme\Images\PinMaximize_Dark.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinMenu.png"/>
+        <Resource Include="UI\STheme\Images\PinMenu.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinMenu_Black.png"/>
+        <Resource Include="UI\STheme\Images\PinMenu_Black.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinMenu_Dark.png"/>
+        <Resource Include="UI\STheme\Images\PinMenu_Dark.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinRestore.png"/>
+        <Resource Include="UI\STheme\Images\PinRestore.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinRestore_Black.png"/>
+        <Resource Include="UI\STheme\Images\PinRestore_Black.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinRestore_Dark.png"/>
+        <Resource Include="UI\STheme\Images\PinRestore_Dark.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="UI\STheme\Images\VTabGroup.png"/>
+        <Resource Include="UI\STheme\Images\VTabGroup.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="Resources\iconmonstr-file-5-16.png"/>
-        <Resource Include="Resources\iconmonstr-file-8-16.png"/>
-        <Resource Include="Resources\iconmonstr-folder-13-16.png"/>
+        <Resource Include="Resources\iconmonstr-file-5-16.png" />
+        <Resource Include="Resources\iconmonstr-file-8-16.png" />
+        <Resource Include="Resources\iconmonstr-folder-13-16.png" />
     </ItemGroup>
     <ItemGroup>
-        <Resource Include="Resources\iconmonstr-code-fork-1-20.png"/>
-        <Resource Include="Resources\iconmonstr-code-fork-2-20.png"/>
-        <Resource Include="Resources\iconmonstr-code-fork-4-20.png"/>
+        <Resource Include="Resources\iconmonstr-code-fork-1-20.png" />
+        <Resource Include="Resources\iconmonstr-code-fork-2-20.png" />
+        <Resource Include="Resources\iconmonstr-code-fork-4-20.png" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="Resources\lang_0_spedit.xml"/>
-        <Content Include="Resources\lang_0_spedit_entryTemplate.xml"/>
+        <ClInclude Include="Deploy\DotNetChecker.nsh" />
+        <ClInclude Include="Deploy\FileAssociation.nsh" />
+        <ClInclude Include="Deploy\GPLv3.txt" />
+        <ClInclude Include="Deploy\icon.ico" />
+        <ClInclude Include="Deploy\SPEdit.nsi" />
+        <ClInclude Include="Resources\lang_0_spedit.xml" />
+        <ClInclude Include="Resources\lang_0_spedit_entryTemplate.xml" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\spcomp.exe" />
+        <ClInclude Include="Resources\Misc\Templates\OldSyntaxTemplate_CSGO.sp" />
+        <ClInclude Include="Resources\Misc\Templates\OldSyntaxTemplate_CSS.sp" />
+        <ClInclude Include="Resources\Misc\Templates\OldSyntaxTemplate_Generic.sp" />
+        <ClInclude Include="Resources\Misc\Templates\OldSyntaxTemplate_TF2.sp" />
+        <ClInclude Include="Resources\Misc\Templates\Templates.xml" />
+        <ClInclude Include="Resources\Misc\Templates\Template_CSGO.sp" />
+        <ClInclude Include="Resources\Misc\Templates\Template_CSS.sp" />
+        <ClInclude Include="Resources\Misc\Templates\Template_Generic.sp" />
+        <ClInclude Include="Resources\Misc\Templates\Template_TF2.sp" />
     </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+    <ItemGroup>
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\admin.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adminmenu.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adt.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adt_array.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adt_stack.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adt_trie.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\banning.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\basecomm.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\bitbuffer.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\clientprefs.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\clients.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\commandfilters.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\commandline.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\console.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\convars.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\core.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\cstrike.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\datapack.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\dbi.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\entity.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\entity_prop_stocks.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\events.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\files.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\float.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\functions.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\geoip.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\halflife.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\handles.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\helpers.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\keyvalues.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\lang.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\logging.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\mapchooser.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\menus.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\nextmap.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\profiler.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\protobuf.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\regex.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdkhooks.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_client.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_engine.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_entinput.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_entoutput.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_functions.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_gamerules.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_hooks.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_sound.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_stocks.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_stringtables.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_tempents.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_tempents_stocks.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_trace.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_variant_t.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_voice.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sorting.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sourcemod.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\string.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\testing.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\textparse.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\tf2.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\tf2_stocks.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\timers.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\topmenus.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\usermessages.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\vector.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\version.inc" />
+        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\version_auto.inc" />
+        <ClInclude Include="Resources\Misc\Templates\ExtensionIncludeTemplate.inc" />
+        <ClInclude Include="Resources\Misc\Templates\IncludeTemplate.inc" />
+        <ClInclude Include="Resources\Misc\Templates\NativeIncludeTemplate.inc" />
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <PropertyGroup>
         <PreBuildEvent>
         </PreBuildEvent>
@@ -668,6 +513,11 @@
             C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Templates\*.*" ".\sourcepawn\templates\*.*" /e /y /q
             C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Configurations" ".\sourcepawn\configs" /e /y /q
             copy ".\..\..\Resources\lang_0_spedit.xml" ".\lang_0_spedit.xml" /y
+            copy ".\..\..\Deploy\SPEdit.nsi" ".\SPEdit.nsi" /y
+            copy ".\..\..\Deploy\DotNetChecker.nsh" ".\DotNetChecker.nsh" /y
+            copy ".\..\..\Deploy\FileAssociation.nsh" ".\FileAssociation.nsh" /y
+            copy ".\..\..\Deploy\GPLv3.txt" ".\GPLv3.txt" /y
+            copy ".\..\..\Deploy\icon.ico" ".\icon.ico" /y
         </PostBuildEvent>
     </PropertyGroup>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
