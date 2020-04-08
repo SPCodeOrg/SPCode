@@ -195,6 +195,8 @@ namespace Spedit.UI
                         progressTask.SetProgress(1.0);
                         CompileOutput.Text = stringOutput.ToString();
                         if (c.AutoCopy) Copy_Plugins(true);
+                        if (c.AutoUpload) FTPUpload_Plugins();
+                        if (c.AutoRCON) Server_Query();
                         if (CompileOutputRow.Height.Value < 11.0) CompileOutputRow.Height = new GridLength(200.0);
                     }
 

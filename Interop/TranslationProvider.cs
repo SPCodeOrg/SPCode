@@ -227,6 +227,8 @@ namespace Spedit.Interop
             language.Add("OptimizeLvl", "Optimization level");
             language.Add("VerboseLvl", "Verbose level");
             language.Add("AutoCopy", "Auto copy after compile");
+            language.Add("AutoUpload", "Auto upload .smx after Compile");
+            language.Add("AutoRCON", "Send RCON Commands after Compile");
             language.Add("DeleteOldSMX", "Delete old .smx after copy");
             language.Add("FTPHost", "FTP host");
             language.Add("FTPUser", "FTP user");
