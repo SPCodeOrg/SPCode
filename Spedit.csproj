@@ -519,7 +519,7 @@
             C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Configurations" ".\sourcepawn\configs" /e /y /q
             copy ".\..\..\Resources\lang_0_spedit.xml" ".\lang_0_spedit.xml" /y
             copy ".\..\..\Deploy\SPEdit.nsi" ".\SPEdit.nsi" /y
-            copy ".\..\..\Deploy\Compress.ps1" ".\Compress.ps1" /y
+            copy ".\..\..\Deploy\Compress.bat" ".\Compress.bat" /y
             copy ".\..\..\Deploy\DotNetChecker.nsh" ".\DotNetChecker.nsh" /y
             copy ".\..\..\Deploy\FileAssociation.nsh" ".\FileAssociation.nsh" /y
             copy ".\..\..\Deploy\GPLv3.txt" ".\GPLv3.txt" /y

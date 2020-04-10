@@ -207,7 +207,7 @@ namespace Spedit.UI
 
         private void layoutDocument_Closing(object sender, CancelEventArgs e)
         {
-			e.Cancel = true;
+            // e.Cancel = true;
         }
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
