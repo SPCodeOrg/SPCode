@@ -13,9 +13,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-      with:
-        fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-
     
     # Install the .NET Core workload
     - name: Install .NET Core
@@ -43,7 +40,7 @@ jobs:
       uses: joncloud/makensis-action@v1
       with:
         script-file: .\bin\Release\SPEdit.nsi
-        include-more-plugins: true 
+        include-custom-plugins-path: .\bin\Release\nsis-plugins 
         
     # Compress Portable Version
     - name: Compress Portable Version

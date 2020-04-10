@@ -429,6 +429,7 @@
         <ClInclude Include="Resources\Misc\Templates\Template_CSS.sp" />
         <ClInclude Include="Resources\Misc\Templates\Template_Generic.sp" />
         <ClInclude Include="Resources\Misc\Templates\Template_TF2.sp" />
+        <Content Include="Deploy\nsis-plugins\DotNetChecker.dll" />
     </ItemGroup>
     <ItemGroup>
         <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\admin.inc" />
@@ -515,6 +516,7 @@
             md ".\sourcepawn\temp"
             md ".\sourcepawn\scripts"
             md ".\sourcepawn\errorfiles"
+            md ".\nsis-plugins"
             C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Templates\*.*" ".\sourcepawn\templates\*.*" /e /y /q
             C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Configurations" ".\sourcepawn\configs" /e /y /q
             copy ".\..\..\Resources\lang_0_spedit.xml" ".\lang_0_spedit.xml" /y
@@ -524,6 +526,7 @@
             copy ".\..\..\Deploy\FileAssociation.nsh" ".\FileAssociation.nsh" /y
             copy ".\..\..\Deploy\GPLv3.txt" ".\GPLv3.txt" /y
             copy ".\..\..\Deploy\icon.ico" ".\icon.ico" /y
+            copy ".\..\..\Deploy\nsis-plugins\DotNetChecker.dll" ".\nsis-plugins\DotNetChecker.dll" /y
         </PostBuildEvent>
     </PropertyGroup>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
