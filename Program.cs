@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Runtime;
 using DiscordRPC;
-
+ 
 namespace Spedit
 {
     public static class Program
