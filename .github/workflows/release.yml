@@ -9,6 +9,8 @@ jobs:
   build:
 
     runs-on: windows-latest
+    env:
+      build-dir: ./bin/Release
 
     steps:
     - name: Checkout
@@ -38,10 +40,18 @@ jobs:
     - name: Build Project
       run: msbuild /p:Configuration=Release
     
-    # Zip Relase
-    - name: Compress files # This would actually build your project, using zip for an example artifact
-      run:  zip --junk-paths "SPEdit-${GITHUB_REF##*/}" bin/Release/*
-    
+    # Build Installer
+    - name: Build Installer (NSIS)
+      uses: joncloud/makensis-action@v1
+      with:
+        script-file: .\bin\Release\SPEdit.nsi
+        include-more-plugins: true 
+        
+    # Compress Portable Version
+    - name: Compress Portable Version
+      run: .\bin\Release\Compress.ps1
+      shell: powershell
+      
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -53,13 +63,25 @@ jobs:
         draft: false
         prerelease: false
       
-    - name: Upload Release Asset
-      id: upload-release-asset 
+      
+    - name: Upload Installer
+      id: upload-installer 
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./SPEdit-${GITHUB_REF##*/}.zip
-        asset_name: SPEdit-${GITHUB_REF##*/}.zip
+        asset_path: .\bin\Rlease\SPEdit.Installer.exe
+        asset_name: SPEdit.Installer.exe
+        asset_content_type: application/octet-stream
+        	
+    - name: Upload Portable
+      id: upload-portable 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: .\bin\Rlease\SPEdit.Portable.zip
+        asset_name: SPEdit.Portable.zip
         asset_content_type: application/zip
