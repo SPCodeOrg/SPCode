@@ -3,7 +3,7 @@
 !include "FileAssociation.nsh"
 
 Name "SPEdit"
-OutFile "SPEdit Installer.exe"
+OutFile "SPEdit.Installer.exe"
 
 InstallDir $APPDATA\spedit
 
