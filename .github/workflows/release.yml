@@ -72,7 +72,7 @@ jobs:
         asset_path: .\bin\Release\SPEdit.Installer.exe
         asset_name: SPEdit.Installer.exe
         asset_content_type: application/octet-stream
-        	
+
     - name: Upload Portable
       id: upload-portable 
       uses: actions/upload-release-asset@v1
