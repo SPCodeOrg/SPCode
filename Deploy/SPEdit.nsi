@@ -1,6 +1,7 @@
 !include "MUI2.nsh"
 !include "DotNetChecker.nsh"
 !include "FileAssociation.nsh"
+!addplugindir .\nsis-plugins
 
 Name "SPEdit"
 OutFile "SPEdit.Installer.exe"

@@ -39,8 +39,7 @@ jobs:
     - name: Build Installer (NSIS)
       uses: joncloud/makensis-action@v1
       with:
-        script-file: .\bin\Release\SPEdit.nsi
-        include-custom-plugins-path: .\bin\Release\nsis-plugins 
+        script-file: .\bin\Release\SPEdit.nsi 
         
     # Compress Portable Version
     - name: Compress Portable Version
