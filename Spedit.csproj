@@ -416,6 +416,7 @@
         <ClInclude Include="Deploy\GPLv3.txt" />
         <ClInclude Include="Deploy\icon.ico" />
         <ClInclude Include="Deploy\SPEdit.nsi" />
+        <Content Include="Deploy\Compress.ps1" />
         <ClInclude Include="Resources\lang_0_spedit.xml" />
         <ClInclude Include="Resources\lang_0_spedit_entryTemplate.xml" />
         <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\spcomp.exe" />
@@ -518,6 +519,7 @@
             C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Configurations" ".\sourcepawn\configs" /e /y /q
             copy ".\..\..\Resources\lang_0_spedit.xml" ".\lang_0_spedit.xml" /y
             copy ".\..\..\Deploy\SPEdit.nsi" ".\SPEdit.nsi" /y
+            copy ".\..\..\Deploy\Compress.ps1" ".\Compress.ps1" /y
             copy ".\..\..\Deploy\DotNetChecker.nsh" ".\DotNetChecker.nsh" /y
             copy ".\..\..\Deploy\FileAssociation.nsh" ".\FileAssociation.nsh" /y
             copy ".\..\..\Deploy\GPLv3.txt" ".\GPLv3.txt" /y
