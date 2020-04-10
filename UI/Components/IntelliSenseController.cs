@@ -376,22 +376,23 @@ namespace Spedit.UI.Components
                             endOffset = i;
                         }
 
-                        var length = startOffset - endOffset + 1;
+                        var length = startOffset - endOffset;
                         string replaceString;
                         if (AC_IsFuncC)
                         {
                             replaceString = ((ACNode) AutoCompleteBox.SelectedItem).EntryName;
                             if (acEntrys[AutoCompleteBox.SelectedIndex].IsExecuteable)
-                                replaceString = replaceString + "(";
+                                replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
                         }
                         else
                         {
                             replaceString = ((ISNode) MethodAutoCompleteBox.SelectedItem).EntryName;
                             if (isEntrys[MethodAutoCompleteBox.SelectedIndex].IsExecuteable)
-                                replaceString = replaceString + "(";
+                                replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
                         }
 
-                        editor.Document.Replace(endOffset, length, replaceString);
+                        editor.Document.Replace(endOffset, length+1, replaceString);
+                        editor.CaretOffset -= 1;
                         return true;
                     }
                     case Key.Up:
