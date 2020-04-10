@@ -1463,12 +1463,6 @@
                                                      Background="Transparent" 
                                                      BorderThickness="0"
                                                      MaxHeight="400">
-                                                <!--<ListBox.ItemContainerStyle>
-                                                    <Style TargetType="{x:Type ListBoxItem}">
-                                                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                                    </Style>
-                                                </ListBox.ItemContainerStyle>-->
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid>
@@ -1497,12 +1491,6 @@
                                                 Background="Transparent" 
                                                 BorderThickness="0" 
                                                 MaxHeight="400">
-                                                <!--<ListBox.ItemContainerStyle>
-                                                    <Style TargetType="{x:Type ListBoxItem}">
-                                                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                                    </Style>
-                                                </ListBox.ItemContainerStyle>-->
                                                 <ListBox.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid>

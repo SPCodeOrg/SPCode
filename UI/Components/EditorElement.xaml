@@ -93,24 +93,10 @@
                 <Grid>
                     <ListBox Name="AutoCompleteBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Column="0" Width="0"
                          Height="175" Background="Transparent" Opacity="1" Foreground="{DynamicResource BlackColorBrush}"
-                         ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden">
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListBoxItem}">
-                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
+                         ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" />
                     <ListBox Name="MethodAutoCompleteBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Column="0" Width="0"
-                             Height="175" Background="Transparent" Opacity="0" Foreground="{DynamicResource BlackColorBrush}"
-                             ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden">
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListBoxItem}">
-                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
+                         Height="175" Background="Transparent" Opacity="0" Foreground="{DynamicResource BlackColorBrush}"
+                         ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" />
                 </Grid>
             </Border>
         </Grid>

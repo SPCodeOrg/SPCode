@@ -19,15 +19,7 @@
     <Grid Margin="0,0,0,0">
         <Button Name="NewButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Width="75" Content="New" Click="NewButton_Clicked" />
         <Button Name="DeleteButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="120,5,0,0" Width="75" Content="Delete" Click="DeleteButton_Clicked" />
-        <ListBox Name="ConfigListBox" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,35,0,0" Width="200" SelectionChanged="ConfigListBox_SelectionChanged">
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                    <Setter Property="VerticalContentAlignment" Value="Center"/>
-                </Style>
-            </ListBox.ItemContainerStyle>
-        </ListBox>
-
+        <ListBox Name="ConfigListBox" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,35,0,0" Width="200" SelectionChanged="ConfigListBox_SelectionChanged" />
         <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="200,30,0,0" Height="5" IsHitTestVisible="False">
             <Rectangle.Fill>
                 <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
