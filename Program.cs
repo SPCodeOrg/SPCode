@@ -203,6 +203,8 @@ namespace Spedit
 			}
 		}
 
+		public static string Indentation => OptionsObject.Editor_ReplaceTabsToWhitespace ? new string(' ', OptionsObject.Editor_IndentationSize) : "\t";
+
 		private static void App_Startup(object sender, StartupEventArgs e)
 		{
 			MahApps.Metro.ThemeManager.DetectAppStyle(Application.Current);

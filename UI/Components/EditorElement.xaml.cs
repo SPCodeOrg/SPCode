@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -552,7 +552,7 @@ namespace Spedit.UI.Components
                         break;
 
                     editor.TextArea.Caret.Line -= 1;
-                    editor.TextArea.Caret.Column += 1;
+                    editor.TextArea.Caret.Column += Program.Indentation.Length;
                     isBlock = false;
                     break;
                 case "}":

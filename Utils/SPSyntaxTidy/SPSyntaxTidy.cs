@@ -42,7 +42,7 @@ namespace Spedit.Utils.SPSyntaxTidy
                     SingleIndentationSegmentScope = 0;
                     for (int j = 0; j < subIndentLevel; ++j)
                     {
-                        outString.Append('\t');
+                        outString.Append(Program.Indentation);
                     }
                     continue;
                 }

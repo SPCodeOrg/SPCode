@@ -34,24 +34,17 @@ namespace Spedit.UI.Components
                     }
                     if (lastLineLastNonWhitespaceChar == '{' && currentLineFirstNonWhitespaceChar != '}')
                     {
-                        if (Program.OptionsObject.Editor_ReplaceTabsToWhitespace)
-                        {
-                            indentation += new string(' ', Program.OptionsObject.Editor_IndentationSize);
-                        }
-                        else
-                        {
-                            indentation += "\t";
-                        }
+                        indentation += Program.Indentation;
                     }
                     else if (currentLineFirstNonWhitespaceChar == '}')
                     {
                         if (indentation.Length > 0)
                         {
-                            indentation = indentation.Substring(0, indentation.Length) + "\t\n" + indentation.Substring(0, indentation.Length);
+                            indentation = indentation.Substring(0, indentation.Length) + Program.Indentation + "\n" + indentation.Substring(0, indentation.Length);
                         }
                         else
                         {
-                            indentation = "\t\n";
+                            indentation = Program.Indentation + "\n";
                         }
                     }
                     /*if (lastLineTextTrimmed == "{" && currentLineTextTrimmed != "}")
