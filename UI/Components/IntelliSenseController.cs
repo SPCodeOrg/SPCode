@@ -6,7 +6,6 @@ using System.Windows.Input;
 using System.Windows.Media.Animation;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Editing;
-using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
 using SourcepawnCondenser.SourcemodDefinition;
 
@@ -378,21 +377,29 @@ namespace Spedit.UI.Components
 
                         var length = startOffset - endOffset;
                         string replaceString;
+                        var setCaret = false;
                         if (AC_IsFuncC)
                         {
                             replaceString = ((ACNode) AutoCompleteBox.SelectedItem).EntryName;
                             if (acEntrys[AutoCompleteBox.SelectedIndex].IsExecuteable)
+                            {
                                 replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
+                                setCaret = true;
+                            }
                         }
                         else
                         {
                             replaceString = ((ISNode) MethodAutoCompleteBox.SelectedItem).EntryName;
                             if (isEntrys[MethodAutoCompleteBox.SelectedIndex].IsExecuteable)
+                            {
                                 replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
+                                setCaret = true;
+                            }
                         }
 
                         editor.Document.Replace(endOffset, length+1, replaceString);
-                        editor.CaretOffset -= 1;
+                        if (setCaret)
+                            editor.CaretOffset -= 1;
                         return true;
                     }
                     case Key.Up:
