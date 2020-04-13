@@ -26,6 +26,40 @@ jobs:
         uses: microsoft/setup-msbuild@v1.0.0
 
 
-      # Build Project
-      - name: Build Project
-        run: msbuild /p:Configuration=Release
+      # Build Spedit
+      - name: Build Spedit
+        run: msbuild Spedit.csproj /p:Configuration=Release
+
+      # Build Installer
+      - name: Build Installer (NSIS)
+        uses: joncloud/makensis-action@v1
+        with:
+          script-file: .\bin\Release\SPEdit.nsi
+          
+      - name: Artifact Installer
+        uses: actions/upload-artifact@v1
+          with:
+            name: SPEdit.Installer.exe
+            path: .\bin\Release\SPEdit.Installer.exe
+          
+    
+      # Compress Portable Version
+      - name: Compress Portable Version
+        run: .\bin\Release\Compress.ps1
+        shell: powershell
+        
+      - name: Artifact Portable
+        uses: actions/upload-artifact@v1
+          with:
+            name: SPEdit.Portable.zip
+            path: .\bin\Release\SPEdit.Portable.zip
+            
+      # Build Updater
+      - name: Build Updater
+        run: msbuild Deploy\SpeditUpdater\SpeditUpdater.csproj /p:Configuration=Release
+        
+      - name: Artifact Updater
+        uses: actions/upload-artifact@v1
+          with:
+            name: SpeditUpdater.exe
+            path: .\Deploy\SpeditUpdater\bin\Release\SpeditUpdater.exe

@@ -31,9 +31,9 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.0
       
     
-    # Build Project
-    - name: Build Project
-      run: msbuild /p:Configuration=Release
+    # Build Spedit
+    - name: Build Spedit
+      run: msbuild Spedit.csproj /p:Configuration=Release
     
     # Build Installer
     - name: Build Installer (NSIS)
@@ -45,6 +45,10 @@ jobs:
     - name: Compress Portable Version
       run: .\bin\Release\Compress.ps1
       shell: powershell
+      
+    # Build Updater
+    - name: Build Updater
+      run: msbuild Deploy\SpeditUpdater\SpeditUpdater.csproj /p:Configuration=Release
       
     - name: Create Release
       id: create_release
@@ -79,3 +83,14 @@ jobs:
         asset_path: .\bin\Release\SPEdit.Portable.zip
         asset_name: SPEdit.Portable.zip
         asset_content_type: application/zip
+        
+    - name: Upload Updater
+      id: upload-updater
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: .\Deploy\SpeditUpdater\bin\Release\SpeditUpdater.exe
+        asset_name: SpeditUpdater.exe
+        asset_content_type: application/octet-stream
