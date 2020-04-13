@@ -35,7 +35,7 @@ Section "Program" prog01
 SectionIn 1 RO
 SetOutPath $INSTDIR
 
-!insertmacro CheckNetFramework 45
+!insertmacro CheckNetFramework 48
 
 
 File Spedit.exe
