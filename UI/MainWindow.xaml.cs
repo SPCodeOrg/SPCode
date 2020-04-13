@@ -249,6 +249,8 @@ namespace Spedit.UI
                 }
             }
             Program.OptionsObject.LastOpenFiles = lastOpenFiles.ToArray();
+            
+            Program.discordClient.Dispose();
 #if !DEBUG
             if (Program.UpdateStatus.IsAvailable)
             {

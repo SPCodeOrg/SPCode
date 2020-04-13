@@ -53,6 +53,7 @@ File Renci.SshNet.dll
 File Newtonsoft.Json.dll
 File DiscordRPC.dll
 File ControlzEx.dll
+File Octokit.dll
 
 File lang_0_spedit.xml
 File GPLv3.txt

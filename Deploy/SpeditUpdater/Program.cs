@@ -1,79 +1,65 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
 using System.Diagnostics;
-using System.Windows;
-using System.Windows.Forms;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
+using SpeditUpdater.Properties;
 
 namespace SpeditUpdater
 {
     public static class Program
     {
+        public delegate void InvokeDel();
+
         [STAThread]
         public static void Main()
         {
-            Process[] p = Process.GetProcessesByName("Spedit.exe");
-            if (p.Length > 0)
-            {
-                for (int i = 0; i < p.Length; ++i)
+            var processes = Process.GetProcessesByName("Spedit");
+            foreach (var process in processes)
+                try
                 {
-                    try
-                    {
-                        p[i].WaitForExit();
-                    }
-                    catch (Exception) { }
+                    process.WaitForExit();
                 }
-            }
+                catch (Exception)
+                {
+                    // ignored
+                }
+
+
             Application.EnableVisualStyles();
+            Thread.Sleep(2000);
             Application.SetCompatibleTextRenderingDefault(true);
-            UpdateMarquee um = new UpdateMarquee();
+            var um = new UpdateMarquee();
             um.Show();
             Application.DoEvents(); //execute Visual
-            Thread t = new Thread(new ParameterizedThreadStart(Worker));
+            var t = new Thread(Worker);
             t.Start(um);
             Application.Run(um);
         }
 
         private static void Worker(object arg)
         {
-            UpdateMarquee um = (UpdateMarquee)arg;
-            string zipFile = Path.Combine(Environment.CurrentDirectory, "updateZipFile.zip");
+            var um = (UpdateMarquee) arg;
+            var zipFile = Path.Combine(Environment.CurrentDirectory, "updateZipFile.zip");
 
-            byte[] zipFileContent = SpeditUpdater.Properties.Resources.spedit1_2_0_3Update;
+            var zipFileContent = Resources.Update;
 
             File.WriteAllBytes(zipFile, zipFileContent);
 
-            FileInfo zipInfo = new FileInfo(zipFile);
+            var zipInfo = new FileInfo(zipFile);
 
-            string extractPath = Environment.CurrentDirectory;
-            using (ZipArchive archieve = ZipFile.OpenRead(zipInfo.FullName))
+            using (var archive = ZipFile.OpenRead(zipInfo.FullName))
             {
-                var entries = archieve.Entries;
-                foreach (var entry in entries)
-                {
-                    string full = Path.Combine(extractPath, entry.FullName);
-                    FileInfo fInfo = new FileInfo(full);
-                    if (!Directory.Exists(fInfo.DirectoryName))
-                    {
-                        Directory.CreateDirectory(fInfo.DirectoryName);
-                    }
-                    entry.ExtractToFile(fInfo.FullName, true);
-                }
+                // Dont override the sourcemod files
+                var files = archive.Entries.Where(e => !e.FullName.StartsWith(@"sourcepawn\"));
+                foreach (var file in files) file.ExtractToFile(file.FullName, true);
             }
 
             zipInfo.Delete();
 
-            um.Invoke((InvokeDel)(() =>
-            {
-                um.SetToReadyState();
-            }));
+            um.Invoke((InvokeDel) (() => { um.SetToReadyState(); }));
         }
-
-        public delegate void InvokeDel();
     }
 }

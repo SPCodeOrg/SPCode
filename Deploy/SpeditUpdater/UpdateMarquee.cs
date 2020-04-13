@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using SpeditUpdater.Properties;
 
 namespace SpeditUpdater
 {
@@ -15,8 +9,8 @@ namespace SpeditUpdater
         public UpdateMarquee()
         {
             InitializeComponent();
-            Bitmap bmp = SpeditUpdater.Properties.Resources.IconPng;
-            pictureBox1.Image = (Image)bmp;
+            var bmp = Resources.IconPng;
+            pictureBox1.Image = bmp;
         }
 
         public void SetToReadyState()
@@ -24,12 +18,12 @@ namespace SpeditUpdater
             label1.Text = "SPEdit got updated!";
             progressBar1.Visible = false;
             button1.Visible = true;
-            this.UseWaitCursor = false;
+            UseWaitCursor = false;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

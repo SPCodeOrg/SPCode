@@ -9,8 +9,11 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Runtime;
+using System.Threading.Tasks;
 using DiscordRPC;
- 
+using Octokit;
+using Application = System.Windows.Application;
+
 namespace Spedit
 {
     public static class Program
@@ -125,7 +128,9 @@ namespace Spedit
 		            {
 			            if (OptionsObject.Program_CheckForUpdates)
 			            {
-				            UpdateCheck.Check(true);
+#pragma warning disable 4014
+				            UpdateCheck.Check();
+#pragma warning restore 4014
 			            }
 #endif
 			            app.Startup += App_Startup;
