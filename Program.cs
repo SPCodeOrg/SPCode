@@ -18,9 +18,7 @@ namespace Spedit
 {
     public static class Program
     {
-        public const string ProgramInternalVersion = "14";
-
-        public static MainWindow MainWindow;
+	    public static MainWindow MainWindow;
         public static OptionsControl OptionsObject;
 		public static TranslationProvider Translations;
         public static Config[] Configs;
