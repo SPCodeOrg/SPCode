@@ -201,7 +201,7 @@ namespace Spedit.UI
 
         private void DockingManager_DocumentClosing(object sender, Xceed.Wpf.AvalonDock.DocumentClosingEventArgs e)
         {
-            ((EditorElement) e.Document.Content).Close();
+            (e.Document.Content as EditorElement)?.Close();
             UpdateWindowTitle();
         }
 
