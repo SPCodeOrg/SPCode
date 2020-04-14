@@ -286,12 +286,15 @@ namespace Spedit.Interop
             language.Add("IndentationSize", "Indentation size");
             language.Add("FontFamily", "Font");
             language.Add("SyntaxHigh", "Syntax Highlighting");
-            language.Add("HighDeprecat", "Highlight deprecated (<1.7) syntax");
+            language.Add("HighDeprecat", "Highlight deprecated (<1.7) syntax - NOT SUPPORTED");
             language.Add("Compile", "Compile");
             language.Add("AutoSaveMin", "Auto save (min)");
             language.Add("OBTextFile", "File Dir.");
             language.Add("OBTextConfig", "Config Dir.");
             language.Add("OBTextItem", "Item Dir.");
-        }
+            language.Add("CopyingFiles", "Copying files");
+            language.Add("FTPUploading", "Uploading files");
+            language.Add("RCONCommand", "Seconding RCON Commands");
+		}
 	}
 }

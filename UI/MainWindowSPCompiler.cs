@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using MahApps.Metro.Controls.Dialogs;
 using Spedit.Utils;
@@ -102,7 +103,7 @@ namespace Spedit.UI
                         }
 
                         var file = filesToCompile[i];
-                        progressTask.SetMessage(file);
+                        progressTask.SetMessage($"{file} ({i}/{compileCount}) ");
                         ProcessUITasks();
                         var fileInfo = new FileInfo(file);
                         stringOutput.AppendLine(fileInfo.Name);
@@ -194,9 +195,30 @@ namespace Spedit.UI
                     {
                         progressTask.SetProgress(1.0);
                         CompileOutput.Text = stringOutput.ToString();
-                        if (c.AutoCopy) Copy_Plugins(true);
-                        if (c.AutoUpload) FTPUpload_Plugins();
-                        if (c.AutoRCON) Server_Query();
+                        if (c.AutoCopy)
+                        {
+                            progressTask.SetTitle(Program.Translations.GetLanguage("CopyingFiles"));
+                            progressTask.SetIndeterminate();
+                            await Task.Run(() => Copy_Plugins(true));
+                            progressTask.SetProgress(1.0);
+                        }
+
+                        if (c.AutoUpload)
+                        {
+                            progressTask.SetTitle(Program.Translations.GetLanguage("FTPUploading"));
+                            progressTask.SetIndeterminate();
+                            await Task.Run(FTPUpload_Plugins);
+                            progressTask.SetProgress(1.0);
+                        }
+
+                        if (c.AutoRCON)
+                        {
+                            progressTask.SetTitle(Program.Translations.GetLanguage("RCONCommand"));
+                            progressTask.SetIndeterminate();
+                            await Task.Run(Server_Query);
+                            progressTask.SetProgress(1.0);
+                        }
+
                         if (CompileOutputRow.Height.Value < 11.0) CompileOutputRow.Height = new GridLength(200.0);
                     }
 
@@ -248,11 +270,14 @@ namespace Spedit.UI
                         }
 
                     if (copyCount == 0) stringOutput.AppendLine(Program.Translations.GetLanguage("NoFilesCopy"));
-                    if (OvertakeOutString)
-                        CompileOutput.AppendText(stringOutput.ToString());
-                    else
-                        CompileOutput.Text = stringOutput.ToString();
-                    if (CompileOutputRow.Height.Value < 11.0) CompileOutputRow.Height = new GridLength(200.0);
+                    Dispatcher.Invoke(() =>
+                    {
+                        if (OvertakeOutString)
+                            CompileOutput.AppendText(stringOutput.ToString());
+                        else
+                            CompileOutput.Text = stringOutput.ToString();
+                        if (CompileOutputRow.Height.Value < 11.0) CompileOutputRow.Height = new GridLength(200.0);
+                    });
                 }
             }
         }
@@ -297,8 +322,11 @@ namespace Spedit.UI
             }
 
             stringOutput.AppendLine(Program.Translations.GetLanguage("Done"));
-            CompileOutput.Text = stringOutput.ToString();
-            if (CompileOutputRow.Height.Value < 11.0) CompileOutputRow.Height = new GridLength(200.0);
+            Dispatcher.Invoke(() =>
+            {
+                CompileOutput.Text = stringOutput.ToString();
+                if (CompileOutputRow.Height.Value < 11.0) CompileOutputRow.Height = new GridLength(200.0);
+            });
         }
 
         private void Server_Start()

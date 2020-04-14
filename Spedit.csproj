@@ -524,7 +524,7 @@
             md ".\sourcepawn\errorfiles"
             md ".\nsis-plugins"
             C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Templates\*.*" ".\sourcepawn\templates\*.*" /e /y /q
-            C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Configurations" ".\sourcepawn\configs" /e /y /q
+            C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Configurations" ".\sourcepawn\configs" /e /y /q /d
             copy ".\..\..\Resources\lang_0_spedit.xml" ".\lang_0_spedit.xml" /y
             copy ".\..\..\Deploy\SPEdit.nsi" ".\SPEdit.nsi" /y
             copy ".\..\..\Deploy\Compress.ps1" ".\Compress.ps1" /y
