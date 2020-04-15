@@ -16,7 +16,7 @@ namespace UpdaterTest
         public static async Task Main(string[] args)
         {
             var lat = await GetLatest();
-            var release = lat.Assets.First(e => e.Name == "SPEdit.Portable.zip");
+            var release = lat.Assets.First(e => e.Name == "SPCOde.Portable.zip");
             Console.WriteLine(release.Id);
             Console.WriteLine(release.Label);
             Console.WriteLine(release.Name);
@@ -28,7 +28,7 @@ namespace UpdaterTest
             try
             {
                 var latestVer = await GetLatest();
-                var release = latestVer.Assets.First(e => e.Name == "SPEdit.Portable.zip");
+                var release = latestVer.Assets.First(e => e.Name == "SPCode.Portable.zip");
                 Console.WriteLine(release.BrowserDownloadUrl);
 
                 using (var client = new WebClient())
@@ -79,7 +79,7 @@ namespace UpdaterTest
 
         private static async Task<Release> GetLatest()
         {
-            var client = new GitHubClient(new ProductHeaderValue("spedit-client"));
+            var client = new GitHubClient(new ProductHeaderValue("spcode-client"));
             var releases = await client.Repository.Release.GetAll("Hexer10", "Spcode");
             return releases[0];
         }

@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using DiscordRPC;
@@ -29,7 +30,7 @@ namespace Spcode
 		public static Timestamps discordTime = Timestamps.Now;
 		
         [STAThread]
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
 	        // Init Discord RPC
 	        discordClient.Initialize();
@@ -110,7 +111,7 @@ namespace Spcode
 		            }
 		            catch (Exception e)
 		            {
-			            File.WriteAllText("CRASH_" + Environment.TickCount.ToString() + ".txt", BuildExceptionString(e, "SPEDIT LOADING"));
+			            File.WriteAllText("CRASH_" + Environment.TickCount.ToString() + ".txt", BuildExceptionString(e, "SPCODE LOADING"));
 			            MessageBox.Show("An error occured while loading." + Environment.NewLine + "A crash report was written in the editor-directory.",
 				            "Error while Loading",
 				            MessageBoxButton.OK,
@@ -124,9 +125,7 @@ namespace Spcode
 		            {
 			            if (OptionsObject.Program_CheckForUpdates)
 			            {
-#pragma warning disable 4014
-				            UpdateCheck.Check();
-#pragma warning restore 4014
+				            await UpdateCheck.Check();
 			            }
 #endif
 			            app.Startup += App_Startup;
@@ -136,7 +135,7 @@ namespace Spcode
 		            }
 		            catch (Exception e)
 		            {
-			            File.WriteAllText("CRASH_" + Environment.TickCount.ToString() + ".txt", BuildExceptionString(e, "SPEDIT MAIN"));
+			            File.WriteAllText("CRASH_" + Environment.TickCount.ToString() + ".txt", BuildExceptionString(e, "SPCODE MAIN"));
 			            MessageBox.Show("An error occured." + Environment.NewLine + "A crash report was written in the editor-directory.",
 				            "Error",
 				            MessageBoxButton.OK,
