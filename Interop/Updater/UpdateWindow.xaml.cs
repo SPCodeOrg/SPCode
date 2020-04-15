@@ -6,7 +6,7 @@ using System.Threading;
 using System.Windows;
 using Octokit;
 
-namespace Spedit.Interop.Updater
+namespace Spcode.Interop.Updater
 {
     /// <summary>
     ///     Interaction logic for UpdateWindow.xaml
@@ -59,8 +59,8 @@ namespace Spedit.Interop.Updater
         private void UpdateDownloadWorker()
         {
 #if DEBUG
-            var asset = new ReleaseAsset("", 0, "", "SpeditUpdater.exe", "", "", "", 0, 0, DateTimeOffset.Now,
-                DateTimeOffset.Now, "https://hexah.net/SpeditUpdater.exe", null);
+            var asset = new ReleaseAsset("", 0, "", "SpcodeUpdater.exe", "", "", "", 0, 0, DateTimeOffset.Now,
+                DateTimeOffset.Now, "https://hexah.net/SpcodeUpdater.exe", null);
 #else
             var asset = updateInfo.Asset;
 #endif
@@ -93,7 +93,7 @@ namespace Spedit.Interop.Updater
             try
             {
                 Process.Start(new ProcessStartInfo
-                    {Arguments = "/C SpeditUpdater.exe", FileName = "cmd", WindowStyle = ProcessWindowStyle.Hidden});
+                    {Arguments = "/C SpcodeUpdater.exe", FileName = "cmd", WindowStyle = ProcessWindowStyle.Hidden});
                 Succeeded = true;
             }
             catch (Exception e)

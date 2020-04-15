@@ -1,5 +1,5 @@
 ﻿using MahApps.Metro;
-using Spedit.UI.Components;
+using Spcode.UI.Components;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,11 +12,11 @@ using System.Diagnostics;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using DiscordRPC;
-using Spedit.Interop.Updater;
+using Spcode.Interop.Updater;
 using Xceed.Wpf.AvalonDock.Layout;
-// using Spedit.Interop.Updater; //not delete! ?
+// using Spcode.Interop.Updater; //not delete! ?
 
-namespace Spedit.UI
+namespace Spcode.UI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -334,7 +334,7 @@ namespace Spedit.UI
             string outString;
             if (ee == null)
             {
-                outString = "SPEdit";
+                outString = "SPCode";
                 Program.discordClient.SetPresence(new RichPresence()
                 {
                     State = "Idle",
@@ -347,7 +347,7 @@ namespace Spedit.UI
             }
             else
             {
-                outString = ee.FullFilePath + " - SPEdit";
+                outString = ee.FullFilePath + " - SPCode";
             }
             if (ServerIsRunning)
             {

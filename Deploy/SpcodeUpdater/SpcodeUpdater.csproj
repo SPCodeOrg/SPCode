@@ -7,8 +7,8 @@
     <ProjectGuid>{402651FB-269B-4858-8D2A-6DF7E0B9A36E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpeditUpdater</RootNamespace>
-    <AssemblyName>SpeditUpdater</AssemblyName>
+    <RootNamespace>SpcodeUpdater</RootNamespace>
+    <AssemblyName>SpcodeUpdater</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Spedit.UI.Components
+namespace Spcode.UI.Components
 {
     public class DASMHighlighting : IHighlightingDefinition
     {

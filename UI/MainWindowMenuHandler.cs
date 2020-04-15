@@ -4,10 +4,10 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using Spedit.Interop.Updater;
-using Spedit.UI.Windows;
+using Spcode.Interop.Updater;
+using Spcode.UI.Windows;
 
-namespace Spedit.UI
+namespace Spcode.UI
 {
     public partial class MainWindow
     {
@@ -206,7 +206,7 @@ namespace Spedit.UI
 
         private void ReportBug_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(@"https://github.com/Hexer10/Spedit/issues/new"));
+            Process.Start(new ProcessStartInfo(@"https://github.com/Hexer10/Spcode/issues/new"));
         }
 
         private async void UpdateCheck_Click(object sender, RoutedEventArgs e)

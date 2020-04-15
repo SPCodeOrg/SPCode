@@ -1,6 +1,6 @@
-﻿<controls:MetroWindow x:Class="Spedit.UI.Windows.OptionsWindow"
+﻿<controls:MetroWindow x:Class="Spcode.UI.Windows.OptionsWindow"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:components="clr-namespace:Spedit.UI.Components"
+             xmlns:components="clr-namespace:Spcode.UI.Components"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 

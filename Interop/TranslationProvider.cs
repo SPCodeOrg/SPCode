@@ -8,7 +8,7 @@ using System.Linq;
 using System.Xml;
 using System.Windows;
 
-namespace Spedit.Interop
+namespace Spcode.Interop
 {
 	public class TranslationProvider
 	{
@@ -42,12 +42,12 @@ namespace Spedit.Interop
 			languageIDList.Add("");
 			lang = lang.Trim().ToLowerInvariant();
 			IsDefault = (string.IsNullOrEmpty(lang) || lang.ToLowerInvariant() == "en") && Initial;
-			if (File.Exists("lang_0_spedit.xml"))
+			if (File.Exists("lang_0_spcode.xml"))
 			{
 				try
 				{
 					XmlDocument document = new XmlDocument();
-					document.Load("lang_0_spedit.xml");
+					document.Load("lang_0_spcode.xml");
 					if (document.ChildNodes.Count < 1)
 					{
 						throw new Exception("No Root-Node: \"translations\" found");

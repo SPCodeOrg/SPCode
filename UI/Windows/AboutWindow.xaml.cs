@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using MahApps.Metro;
 
-namespace Spedit.UI.Windows
+namespace Spcode.UI.Windows
 {
     /// <summary>
     /// Interaction logic for AboutWindow.xaml
@@ -31,7 +31,7 @@ namespace Spedit.UI.Windows
           g.Background = gridBrush;
 				}
 			}
-			TitleBox.Text = $"SPEdit ({Assembly.GetEntryAssembly()?.GetName().Version}) - {Program.Translations.GetLanguage("SPEditCap")}";
+			TitleBox.Text = $"SPCode ({Assembly.GetEntryAssembly()?.GetName().Version}) - {Program.Translations.GetLanguage("SPEditCap")}";
             LicenseField.Text = LicenseString;
         }
 

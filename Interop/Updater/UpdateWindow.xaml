@@ -1,4 +1,4 @@
-﻿<mahapps:MetroWindow x:Class="Spedit.Interop.Updater.UpdateWindow"
+﻿<mahapps:MetroWindow x:Class="Spcode.Interop.Updater.UpdateWindow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:mahapps="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

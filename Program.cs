@@ -1,20 +1,18 @@
-﻿using Spedit.Interop;
-using Spedit.Interop.Updater;
-using Spedit.UI;
+﻿using Spcode.Interop;
+using Spcode.Interop.Updater;
+using Spcode.UI;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime;
 using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
-using System.Runtime;
-using System.Threading.Tasks;
 using DiscordRPC;
-using Octokit;
 using Application = System.Windows.Application;
 
-namespace Spedit
+namespace Spcode
 {
     public static class Program
     {
@@ -47,7 +45,7 @@ namespace Spedit
 		        }
 	        });
 	        bool mutexReserved;
-            using (new Mutex(true, "SpeditGlobalMutex", out mutexReserved))
+            using (new Mutex(true, "SpcodeGlobalMutex", out mutexReserved))
             {
 	            if (mutexReserved)
 	            {

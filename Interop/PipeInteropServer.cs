@@ -1,9 +1,9 @@
-﻿using Spedit.UI;
+﻿using Spcode.UI;
 using System;
 using System.IO.Pipes;
 using System.Text;
 
-namespace Spedit.Interop
+namespace Spcode.Interop
 {
     public class PipeInteropServer : IDisposable
     {
@@ -37,7 +37,7 @@ namespace Spedit.Interop
                 pipeServer.Close();
                 pipeServer = null;
             }
-            pipeServer = new NamedPipeServerStream("SpeditNamedPipeServer", PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+            pipeServer = new NamedPipeServerStream("SpcodeNamedPipeServer", PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
             pipeServer.BeginWaitForConnection(new AsyncCallback(PipeConnection_MessageIn), null);
         }
 

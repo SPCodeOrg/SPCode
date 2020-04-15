@@ -1,8 +1,8 @@
-﻿using Spedit.UI.Components;
+﻿using Spcode.UI.Components;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
 
-namespace Spedit.UI
+namespace Spcode.UI
 {
 	public partial class MainWindow
 	{

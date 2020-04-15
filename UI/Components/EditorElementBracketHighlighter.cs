@@ -9,7 +9,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
 using ICSharpCode.AvalonEdit.Document;
 
-namespace Spedit.UI.Components
+namespace Spcode.UI.Components
 {
     public class BracketHighlightRenderer : IBackgroundRenderer
     {

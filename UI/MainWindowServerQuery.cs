@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using QueryMaster;
 
-namespace Spedit.UI
+namespace Spcode.UI
 {
     public partial class MainWindow
     {

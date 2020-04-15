@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using SpeditUpdater.Properties;
+using SpcodeUpdater.Properties;
 
-namespace SpeditUpdater
+namespace SpcodeUpdater
 {
     public partial class UpdateMarquee : Form
     {
@@ -15,7 +15,7 @@ namespace SpeditUpdater
 
         public void SetToReadyState()
         {
-            label1.Text = "SPEdit got updated!";
+            label1.Text = "SPCode got updated!";
             progressBar1.Visible = false;
             button1.Visible = true;
             UseWaitCursor = false;

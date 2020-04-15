@@ -13,11 +13,11 @@ using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Rendering;
 using ICSharpCode.AvalonEdit.Utils;
 using MahApps.Metro.Controls.Dialogs;
-using Spedit.Utils.SPSyntaxTidy;
+using Spcode.Utils.SPSyntaxTidy;
 using Xceed.Wpf.AvalonDock.Layout;
 using Timer = System.Timers.Timer;
 
-namespace Spedit.UI.Components
+namespace Spcode.UI.Components
 {
     /// <summary>
     ///     Interaction logic for EditorElement.xaml

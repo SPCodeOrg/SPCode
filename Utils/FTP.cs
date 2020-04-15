@@ -3,7 +3,7 @@ using System.IO;
 using System.Net;
 using Renci.SshNet;
 
-namespace Spedit.Utils
+namespace Spcode.Utils
 {
     public class FTP
     {

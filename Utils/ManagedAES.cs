@@ -4,7 +4,7 @@ using System.Management;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Spedit.Utils
+namespace Spcode.Utils
 {
     public static class ManagedAES
     {

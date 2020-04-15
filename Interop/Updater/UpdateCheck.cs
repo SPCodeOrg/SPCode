@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Octokit;
 
-namespace Spedit.Interop.Updater
+namespace Spcode.Interop.Updater
 {
     public static class UpdateCheck
     {
@@ -64,7 +64,7 @@ namespace Spedit.Interop.Updater
         private static async Task<Release> GetLatest()
         {
             var client = new GitHubClient(new ProductHeaderValue("spedit-client"));
-            var releases = await client.Repository.Release.GetAll("Hexer10", "Spedit");
+            var releases = await client.Repository.Release.GetAll("Hexer10", "Spcode");
             return releases[0];
         }
     }

@@ -10,7 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using MahApps.Metro;
 
-namespace Spedit.UI.Windows
+namespace Spcode.UI.Windows
 {
     /// <summary>
     /// Interaction logic for AboutWindow.xaml

@@ -10,7 +10,7 @@ using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
 
-namespace Spedit.UI.Components
+namespace Spcode.UI.Components
 {
     public class AeonEditorHighlighting : IHighlightingDefinition
     {
