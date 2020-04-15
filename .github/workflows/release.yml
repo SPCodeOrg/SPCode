@@ -24,22 +24,22 @@ jobs:
       - uses: nuget/setup-nuget@v1
         with:
           nuget-version: '5.x'
-      - run: nuget restore Spedit.sln
+      - run: nuget restore Spcode.sln
 
       # Setup MSBuild
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v1.0.0
 
 
-      # Build Spedit
-      - name: Build Spedit
-        run: msbuild Spedit.csproj /p:Configuration=Release
+      # Build Spcode
+      - name: Build Spcode
+        run: msbuild Spcode.csproj /p:Configuration=Release
 
       # Build Installer
       - name: Build Installer (NSIS)
         uses: joncloud/makensis-action@v1
         with:
-          script-file: .\bin\Release\SPEdit.nsi
+          script-file: .\bin\Release\SPCode.nsi
 
       # Compress Portable Version
       - name: Compress Portable Version
@@ -48,7 +48,7 @@ jobs:
 
       # Build Updater
       - name: Build Updater
-        run: msbuild Deploy\SpeditUpdater\SpeditUpdater.csproj /p:Configuration=Release
+        run: msbuild Deploy\SpcodeUpdater\SpcodeUpdater.csproj /p:Configuration=Release
 
       - name: Create Release
         id: create_release
@@ -69,8 +69,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: .\bin\Release\SPEdit.Installer.exe
-          asset_name: SPEdit.Installer.exe
+          asset_path: .\bin\Release\SPCode.Installer.exe
+          asset_name: SPCode.Installer.exe
           asset_content_type: application/octet-stream
 
       - name: Upload Portable
@@ -80,8 +80,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: .\bin\Release\SPEdit.Portable.zip
-          asset_name: SPEdit.Portable.zip
+          asset_path: .\bin\Release\SPCode.Portable.zip
+          asset_name: SPCode.Portable.zip
           asset_content_type: application/zip
 
       - name: Upload Updater
@@ -91,6 +91,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: .\Deploy\SpeditUpdater\bin\Release\SpeditUpdater.exe
-          asset_name: SpeditUpdater.exe
+          asset_path: .\Deploy\SpcodeUpdater\bin\Release\SpcodeUpdater.exe
+          asset_name: SpcodeUpdater.exe
           asset_content_type: application/octet-stream
