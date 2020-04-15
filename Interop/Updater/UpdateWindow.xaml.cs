@@ -1,35 +1,32 @@
-﻿using MahApps.Metro.Controls;
-using System;
+﻿using System;
 using System.Diagnostics;
-using System.Threading;
 using System.IO;
 using System.Net;
+using System.Threading;
 using System.Windows;
+using Octokit;
 
-namespace Spedit.Interop.Updater
+namespace Spcode.Interop.Updater
 {
     /// <summary>
-    /// Interaction logic for UpdateWindow.xaml
+    ///     Interaction logic for UpdateWindow.xaml
     /// </summary>
-    public partial class UpdateWindow : MetroWindow
+    public partial class UpdateWindow
     {
-        private UpdateInfo updateInfo;
-
-        public bool Succeeded = false;
+        private readonly UpdateInfo updateInfo;
+        public bool Succeeded;
 
         public UpdateWindow()
         {
             InitializeComponent();
         }
+
         public UpdateWindow(UpdateInfo info)
         {
             updateInfo = info;
             InitializeComponent();
-            DescriptionBox.Text = updateInfo.Update_Info;
-            if (info.SkipDialog)
-            {
-                StartUpdate();
-            }
+            DescriptionBox.Text = updateInfo.Release.Body;
+            if (info.SkipDialog) StartUpdate();
         }
 
         private void ActionYesButton_Click(object sender, RoutedEventArgs e)
@@ -49,68 +46,64 @@ namespace Spedit.Interop.Updater
                 Close();
                 return;
             }
-            ActionYesButton.Visibility = System.Windows.Visibility.Hidden;
-            ActionNoButton.Visibility = System.Windows.Visibility.Hidden;
+
+            ActionYesButton.Visibility = Visibility.Hidden;
+            ActionNoButton.Visibility = Visibility.Hidden;
             Progress.IsActive = true;
-            MainLine.Text = "Updating to " + updateInfo.Update_StringVersion;
+            MainLine.Text = "Updating to " + updateInfo.Release.TagName;
             SubLine.Text = "Downloading Updater";
-            Thread t = new Thread(new ThreadStart(UpdateDownloadWorker));
+            var t = new Thread(UpdateDownloadWorker);
             t.Start();
         }
 
         private void UpdateDownloadWorker()
         {
-            if (File.Exists(updateInfo.Updater_File))
-            {
-                File.Delete(updateInfo.Updater_File);
-            }
+#if DEBUG
+            var asset = new ReleaseAsset("", 0, "", "SpcodeUpdater.exe", "", "", "", 0, 0, DateTimeOffset.Now,
+                DateTimeOffset.Now, "https://hexah.net/SpcodeUpdater.exe", null);
+#else
+            var asset = updateInfo.Asset;
+#endif
+            if (File.Exists(asset.Name)) File.Delete(asset.Name);
+
             try
             {
-                using (WebClient client = new WebClient())
+                using (var client = new WebClient())
                 {
-#if DEBUG
-                    client.Credentials = new NetworkCredential("sm", "sm_pw"); //heuheu :D 
-#endif
-                    client.DownloadFile(updateInfo.Updater_DownloadURL, updateInfo.Updater_File);
+                    client.DownloadFile(asset.BrowserDownloadUrl, asset.Name);
                 }
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error while downloading the updater." + Environment.NewLine + "Details: " + e.Message + Environment.NewLine + "$$$" + e.StackTrace,
+                MessageBox.Show(
+                    "Error while downloading the updater." + Environment.NewLine + "Details: " + e.Message +
+                    Environment.NewLine + "$$$" + e.StackTrace,
                     "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                this.Dispatcher.Invoke(() =>
-                {
-                    Close();
-                });
+                Dispatcher.Invoke(Close);
             }
+
             Thread.Sleep(100); //safety reasons
-            this.Dispatcher.Invoke(() =>
-            {
-                FinalizeUpdate();
-            });
+            Dispatcher.Invoke(FinalizeUpdate);
         }
 
         private void FinalizeUpdate()
         {
             SubLine.Text = "Starting Updater";
-            this.UpdateLayout();
+            UpdateLayout();
             try
             {
-                using (Process p = new Process())
-                {
-                    p.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
-                    p.StartInfo.UseShellExecute = true;
-                    p.StartInfo.Verb = "runas";
-                    p.StartInfo.FileName = updateInfo.Updater_File;
-                    p.Start();
-                }
+                Process.Start(new ProcessStartInfo
+                    {Arguments = "/C SpcodeUpdater.exe", FileName = "cmd", WindowStyle = ProcessWindowStyle.Hidden});
                 Succeeded = true;
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error while trying to start the updater." + Environment.NewLine + "Details: " + e.Message + Environment.NewLine + "$$$" + e.StackTrace,
+                MessageBox.Show(
+                    "Error while trying to start the updater." + Environment.NewLine + "Details: " + e.Message +
+                    Environment.NewLine + "$$$" + e.StackTrace,
                     "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
             Close();
         }
     }

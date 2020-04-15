@@ -3,7 +3,7 @@ using ICSharpCode.AvalonEdit.Indentation;
 using ICSharpCode.AvalonEdit.Rendering;
 using System.Windows.Media;
 
-namespace Spedit.UI.Components
+namespace Spcode.UI.Components
 {
     public class EditorIndetationStrategy : IIndentationStrategy
     {

@@ -2,7 +2,7 @@
 using ICSharpCode.AvalonEdit.Folding;
 using System.Collections.Generic;
 
-namespace Spedit.UI.Components
+namespace Spcode.UI.Components
 {
     public class SPFoldingStrategy
     {

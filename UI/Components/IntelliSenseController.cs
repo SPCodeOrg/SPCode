@@ -9,7 +9,7 @@ using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Rendering;
 using SourcepawnCondenser.SourcemodDefinition;
 
-namespace Spedit.UI.Components
+namespace Spcode.UI.Components
 {
     public partial class EditorElement
     {

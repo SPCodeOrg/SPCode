@@ -1,4 +1,4 @@
-﻿namespace SpeditUpdater
+﻿namespace SpcodeUpdater
 {
     partial class UpdateMarquee
     {

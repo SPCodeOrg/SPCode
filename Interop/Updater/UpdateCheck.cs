@@ -1,77 +1,39 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
 using System.Net;
-using System.Text;
-using System.Threading;
+using System.Reflection;
+using System.Threading.Tasks;
+using Octokit;
 
-namespace Spedit.Interop.Updater
+namespace Spcode.Interop.Updater
 {
     public static class UpdateCheck
     {
-        public static void Check(bool Asynchronous)
+        public static async Task Check()
         {
             if (Program.UpdateStatus != null)
-            {
                 if (Program.UpdateStatus.IsAvailable)
-                {
                     return;
-                }
-            }
-            if (Asynchronous)
-            {
-                Thread t = new Thread(new ThreadStart(CheckInternal));
-                t.Start();
-            }
-            else
-            {
-                CheckInternal();
-            }
+            await CheckInternal();
         }
 
-        private static void CheckInternal()
+        private static async Task CheckInternal()
         {
-            UpdateInfo info = new UpdateInfo();
+            var info = new UpdateInfo();
             try
             {
-                using (WebClient client = new WebClient())
+                var latestVer = await GetLatest();
+                if (!IsUpToDate(Assembly.GetEntryAssembly()?.GetName().Version, Version.Parse(latestVer.TagName)))
                 {
-#if DEBUG
-                    client.Credentials = new NetworkCredential("sm", "sm_pw"); //heuheu :D 
-                    string versionString = client.DownloadString("ftp://127.0.0.1/version_0.txt");
-#else
-                    string versionString = client.DownloadString("https://updater.spedit.info/version_0.txt");
-#endif
-                    string[] versionLines = versionString.Split('\n');
-                    string version = (versionLines[0].Trim()).Trim('\r');
-                    if (version != Program.ProgramInternalVersion)
+                    info.Release = latestVer;
+                    if (info.Asset == null)
                     {
-                        string destinationFileName = "updater_" + version + ".exe";
-                        string destinationFile = Path.Combine(Environment.CurrentDirectory, destinationFileName);
-                        info.IsAvailable = true;
-                        info.Updater_File = destinationFile;
-                        info.Updater_FileName = destinationFileName;
-#if DEBUG
-                        info.Updater_DownloadURL = "ftp://127.0.0.1/" + destinationFileName;
-#else
-                        info.Updater_DownloadURL = "https://updater.spedit.info/" + destinationFileName;
-#endif
-                        info.Update_Version = version;
-                        StringBuilder updateInfoString = new StringBuilder();
-                        if (versionLines.Length > 1)
-                        {
-                            info.Update_StringVersion = versionLines[1];
-                            for (int i = 1; i < versionLines.Length; ++i)
-                            {
-                                updateInfoString.AppendLine((versionLines[i].Trim()).Trim('\r'));
-                            }
-                        }
-                        info.Update_Info = updateInfoString.ToString();
+                        throw new Exception("Unable to find a valid asset!");
                     }
-                    else
-                    {
-                        info.IsAvailable = false;
-                    }
+                    info.IsAvailable = true;
+                }
+                else
+                {
+                    info.IsAvailable = false;
                 }
             }
             catch (Exception e)
@@ -80,13 +42,30 @@ namespace Spedit.Interop.Updater
                 info.GotException = true;
                 info.ExceptionMessage = e.Message;
             }
+
             lock (Program.UpdateStatus) //since multiple checks can occur, we'll wont override another ones...
             {
-                if (Program.UpdateStatus.WriteAble)
-                {
-                    Program.UpdateStatus = info;
-                }
+                if (Program.UpdateStatus.WriteAble) Program.UpdateStatus = info;
             }
+        }
+
+        
+        /*
+         * 0 -> Major
+         * 1 -> Minor
+         * 2 -> Build
+         * 3 -> Revision
+         */
+        private static bool IsUpToDate(Version currentVer, Version latestVer)
+        {
+            return currentVer.CompareTo(latestVer) >= 0;
+        }
+
+        private static async Task<Release> GetLatest()
+        {
+            var client = new GitHubClient(new ProductHeaderValue("spcode-client"));
+            var releases = await client.Repository.Release.GetAll("Hexer10", "Spcode");
+            return releases[0];
         }
     }
 }

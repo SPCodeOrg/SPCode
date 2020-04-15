@@ -1,4 +1,4 @@
-﻿using Spedit.UI.Components;
+﻿using Spcode.UI.Components;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
-namespace Spedit.UI
+namespace Spcode.UI
 {
 	public partial class MainWindow
 	{
@@ -264,7 +264,7 @@ namespace Spedit.UI
 		{
 			StackPanel stack = new StackPanel {Orientation = Orientation.Horizontal};
 			Image image = new Image();
-			string uriPath = $"/Spedit;component/Resources/{iconFile}";
+			string uriPath = $"/Spcode;component/Resources/{iconFile}";
 			image.Source = new BitmapImage(new Uri(uriPath, UriKind.Relative));
 			image.Width = 16;
 			image.Height = 16;

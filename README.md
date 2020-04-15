@@ -1,5 +1,5 @@
-# SPEdit
-#### _SPEdit - A lightweight sourcepawn editor._
+# SPCode
+#### _SPCode - A lightweight sourcepawn editor._
 
 [Thread in Alliedmodders](https://forums.alliedmods.net/showthread.php?t=259917)
 

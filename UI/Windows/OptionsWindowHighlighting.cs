@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Spedit.UI.Windows
+namespace Spcode.UI.Windows
 {
     public partial class OptionsWindow
     {

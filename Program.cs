@@ -1,23 +1,23 @@
-﻿using Spedit.Interop;
-using Spedit.Interop.Updater;
-using Spedit.UI;
+﻿using Spcode.Interop;
+using Spcode.Interop.Updater;
+using Spcode.UI;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Runtime;
 using DiscordRPC;
- 
-namespace Spedit
+using Application = System.Windows.Application;
+
+namespace Spcode
 {
     public static class Program
     {
-        public const string ProgramInternalVersion = "14";
-
-        public static MainWindow MainWindow;
+	    public static MainWindow MainWindow;
         public static OptionsControl OptionsObject;
 		public static TranslationProvider Translations;
         public static Config[] Configs;
@@ -30,7 +30,7 @@ namespace Spedit
 		public static Timestamps discordTime = Timestamps.Now;
 		
         [STAThread]
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
 	        // Init Discord RPC
 	        discordClient.Initialize();
@@ -46,7 +46,7 @@ namespace Spedit
 		        }
 	        });
 	        bool mutexReserved;
-            using (new Mutex(true, "SpeditGlobalMutex", out mutexReserved))
+            using (new Mutex(true, "SpcodeGlobalMutex", out mutexReserved))
             {
 	            if (mutexReserved)
 	            {
@@ -111,7 +111,7 @@ namespace Spedit
 		            }
 		            catch (Exception e)
 		            {
-			            File.WriteAllText("CRASH_" + Environment.TickCount.ToString() + ".txt", BuildExceptionString(e, "SPEDIT LOADING"));
+			            File.WriteAllText("CRASH_" + Environment.TickCount.ToString() + ".txt", BuildExceptionString(e, "SPCODE LOADING"));
 			            MessageBox.Show("An error occured while loading." + Environment.NewLine + "A crash report was written in the editor-directory.",
 				            "Error while Loading",
 				            MessageBoxButton.OK,
@@ -125,7 +125,7 @@ namespace Spedit
 		            {
 			            if (OptionsObject.Program_CheckForUpdates)
 			            {
-				            UpdateCheck.Check(true);
+				            await UpdateCheck.Check();
 			            }
 #endif
 			            app.Startup += App_Startup;
@@ -135,7 +135,7 @@ namespace Spedit
 		            }
 		            catch (Exception e)
 		            {
-			            File.WriteAllText("CRASH_" + Environment.TickCount.ToString() + ".txt", BuildExceptionString(e, "SPEDIT MAIN"));
+			            File.WriteAllText("CRASH_" + Environment.TickCount.ToString() + ".txt", BuildExceptionString(e, "SPCODE MAIN"));
 			            MessageBox.Show("An error occured." + Environment.NewLine + "A crash report was written in the editor-directory.",
 				            "Error",
 				            MessageBoxButton.OK,

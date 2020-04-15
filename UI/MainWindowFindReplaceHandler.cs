@@ -1,4 +1,4 @@
-﻿using Spedit.UI.Components;
+﻿using Spcode.UI.Components;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 
-namespace Spedit.UI
+namespace Spcode.UI
 {
     public partial class MainWindow
     {

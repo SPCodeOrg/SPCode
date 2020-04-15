@@ -1,29 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using Octokit;
 
-namespace Spedit.Interop.Updater
+namespace Spcode.Interop.Updater
 {
     public class UpdateInfo
     {
-        public bool WriteAble = true;
+        public string ExceptionMessage = string.Empty;
+
+        public bool GotException = false;
 
         public bool IsAvailable = false;
 
+        public Release Release = null;
+
         public bool SkipDialog = false;
+        public bool WriteAble = true;
 
-        public bool GotException = false;
-        public string ExceptionMessage = string.Empty;
-
-        public string Updater_DownloadURL = string.Empty;
-        public string Updater_FileName = string.Empty;
-        public string Updater_File = string.Empty;
-
-        public string Update_Version = string.Empty; //this version is used internally
-
-        public string Update_StringVersion = string.Empty; //this is, what the user will see
-        public string Update_Info = string.Empty;
+        public ReleaseAsset Asset => Release.Assets.FirstOrDefault(e => e.Name == "SpcodeUpdater.exe");
     }
 }

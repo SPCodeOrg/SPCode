@@ -13,11 +13,11 @@ using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Rendering;
 using ICSharpCode.AvalonEdit.Utils;
 using MahApps.Metro.Controls.Dialogs;
-using Spedit.Utils.SPSyntaxTidy;
+using Spcode.Utils.SPSyntaxTidy;
 using Xceed.Wpf.AvalonDock.Layout;
 using Timer = System.Timers.Timer;
 
-namespace Spedit.UI.Components
+namespace Spcode.UI.Components
 {
     /// <summary>
     ///     Interaction logic for EditorElement.xaml
@@ -494,15 +494,14 @@ namespace Spedit.UI.Components
                     {
                         var title = $"{Program.Translations.GetLanguage("SavingFile")} '" + Parent.Title.Trim('*') +
                                     "'";
-                        var msg = "";
-                        var Result = await Program.MainWindow.ShowMessageAsync(title, msg,
+                        var Result = await Program.MainWindow.ShowMessageAsync(title, "",
                             MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions);
                         if (Result == MessageDialogResult.Affirmative) Save();
                     }
                 }
 
             Program.MainWindow.EditorsReferences.Remove(this);
-            var childs = Program.MainWindow.DockingPaneGroup.Children;
+            // var childs = Program.MainWindow.DockingPaneGroup.Children;
           //  foreach (var c in childs) (c as LayoutDocumentPane)?.Children.Remove(Parent);
 
             Parent = null; //to prevent a ring depency which disables the GC from work

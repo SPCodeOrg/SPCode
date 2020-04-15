@@ -19,13 +19,47 @@ jobs:
 
       # Nuget
       - uses: nuget/setup-nuget@v1
-      - run: nuget restore Spedit.sln
+      - run: nuget restore Spcode.sln
 
       # Setup MSBuild
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v1.0.0
 
 
-      # Build Project
-      - name: Build Project
-        run: msbuild /p:Configuration=Release
+      # Build Spcode
+      - name: Build Spcode
+        run: msbuild Spcode.csproj /p:Configuration=Release
+
+      # Build Installer
+      - name: Build Installer (NSIS)
+        uses: joncloud/makensis-action@v1
+        with:
+          script-file: .\bin\Release\SPCode.nsi
+
+      - name: Artifact Installer
+        uses: actions/upload-artifact@v1
+        with:
+          name: SPCode.Installer.exe
+          path: .\bin\Release\SPCode.Installer.exe
+
+
+      # Compress Portable Version
+      - name: Compress Portable Version
+        run: .\bin\Release\Compress.ps1
+        shell: powershell
+
+      - name: Artifact Portable
+        uses: actions/upload-artifact@v1
+        with:
+          name: SPCode.Portable.zip
+          path: .\bin\Release\SPCode.Portable.zip
+
+      # Build Updater
+      - name: Build Updater
+        run: msbuild Deploy\SpcodeUpdater\SpcodeUpdater.csproj /p:Configuration=Release
+
+      - name: Artifact Updater
+        uses: actions/upload-artifact@v1
+        with:
+          name: SpcodeUpdater.exe
+          path: .\Deploy\SpcodeUpdater\bin\Release\SpcodeUpdater.exe

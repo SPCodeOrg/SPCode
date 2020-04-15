@@ -11,12 +11,12 @@ using System.Windows.Input;
 using System.Xml;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
-using Spedit.Interop;
-using Spedit.Utils;
+using Spcode.Interop;
+using Spcode.Utils;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using TextBox = System.Windows.Controls.TextBox;
 
-namespace Spedit.UI.Windows
+namespace Spcode.UI.Windows
 {
     /// <summary>
     ///     Interaction logic for AboutWindow.xaml

@@ -1,14 +1,14 @@
 ﻿using System.Diagnostics;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
-using Spedit.UI.Components;
-using Spedit.UI.Windows;
-using Spedit.Utils.SPSyntaxTidy;
+using Spcode.UI.Components;
+using Spcode.UI.Windows;
+using Spcode.Utils.SPSyntaxTidy;
 using System.Text;
 using Lysis;
 using System.IO;
 
-namespace Spedit.UI
+namespace Spcode.UI
 {
     public partial class MainWindow
     {

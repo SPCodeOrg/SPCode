@@ -7,9 +7,9 @@
     <ProjectGuid>{402651FB-269B-4858-8D2A-6DF7E0B9A36E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpeditUpdater</RootNamespace>
-    <AssemblyName>SpeditUpdater</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>SpcodeUpdater</RootNamespace>
+    <AssemblyName>SpcodeUpdater</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -39,19 +39,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Res\spedit1.0.1.0Update.zip" />
-    <None Include="Res\spedit1.0.2.0Update.zip" />
-    <None Include="Res\spedit1.0.3.0Update.zip" />
-    <None Include="Res\spedit1.0.3.1Update.zip" />
-    <None Include="Res\spedit1.0.3.2Update.zip" />
-    <None Include="Res\spedit1.1.0.0Update.zip" />
-    <None Include="Res\spedit1.1.1.0Update.zip" />
-    <None Include="Res\spedit1.1.2.0Update.zip" />
-    <None Include="Res\spedit1.1.3.0Update.zip" />
-    <None Include="Res\spedit1.2.0.0Update.zip" />
-    <None Include="Res\spedit1.2.0.1Update.zip" />
-    <None Include="Res\spedit1.2.0.2Update.zip" />
-    <None Include="Res\spedit1.2.0.3Update.zip" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -96,6 +83,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UpdateMarquee.af-ZA.resx">
       <DependentUpon>UpdateMarquee.cs</DependentUpon>
