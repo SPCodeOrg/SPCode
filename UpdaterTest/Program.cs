@@ -16,7 +16,7 @@ namespace UpdaterTest
         public static async Task Main(string[] args)
         {
             var lat = await GetLatest();
-            var release = lat.Assets.First(e => e.Name == "SPCOde.Portable.zip");
+            var release = lat.Assets.First(e => e.Name == "SPCode.Portable.zip");
             Console.WriteLine(release.Id);
             Console.WriteLine(release.Label);
             Console.WriteLine(release.Name);
