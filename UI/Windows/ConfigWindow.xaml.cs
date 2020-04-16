@@ -6,15 +6,14 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Xml;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Spcode.Interop;
 using Spcode.Utils;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
-using TextBox = System.Windows.Controls.TextBox;
 
 namespace Spcode.UI.Windows
 {
@@ -55,9 +54,14 @@ namespace Spcode.UI.Windows
                         {
                             if (o is TextBox box)
                             {
-                                var dialog = new FolderBrowserDialog();
+                                var dialog = new CommonOpenFileDialog();
+                                dialog.IsFolderPicker = true;
                                 var result = dialog.ShowDialog();
-                                if (result == System.Windows.Forms.DialogResult.OK) box.Text = dialog.SelectedPath;
+
+                                if (result == CommonFileDialogResult.Ok) box.Text = dialog.FileName;
+                                // var dialog = new FolderBrowserDialog();
+                                // var result = dialog.ShowDialog();
+                                // if (result == System.Windows.Forms.DialogResult.OK) box.Text = dialog.SelectedPath;
                             }
                         }
                     };
@@ -263,7 +267,7 @@ namespace Spcode.UI.Windows
             Debug.Assert(C_AutoUpload.IsChecked != null, "C_AutoUpload.IsChecked != null");
             Program.Configs[ConfigListBox.SelectedIndex].AutoRCON = C_AutoRCON.IsChecked.Value;
         }
-        
+
         private void C_DeleteAfterCopy_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChange) return;
@@ -402,7 +406,7 @@ namespace Spcode.UI.Windows
             VerboseBlock.Text = Program.Translations.GetLanguage("VerboseLvl");
             C_AutoCopy.Content = Program.Translations.GetLanguage("AutoCopy");
             C_AutoUpload.Content = Program.Translations.GetLanguage("AutoUpload");
-            C_AutoRCON.Content = Program.Translations.GetLanguage("AutoRCON"); 
+            C_AutoRCON.Content = Program.Translations.GetLanguage("AutoRCON");
             C_DeleteAfterCopy.Content = Program.Translations.GetLanguage("DeleteOldSMX");
             FTPHostBlock.Text = Program.Translations.GetLanguage("FTPHost");
             FTPUserBlock.Text = Program.Translations.GetLanguage("FTPUser");

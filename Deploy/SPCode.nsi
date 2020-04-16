@@ -54,6 +54,8 @@ File Newtonsoft.Json.dll
 File DiscordRPC.dll
 File ControlzEx.dll
 File Octokit.dll
+File Microsoft.WindowsAPICodePack.dll
+File Microsoft.WindowsAPICodePack.Shell.dll
 
 File lang_0_spcode.xml
 File GPLv3.txt
@@ -137,7 +139,8 @@ Delete $INSTDIR\SourcepawnCondenser.dll
 Delete $INSTDIR\Renci.SshNet.dll
 Delete $INSTDIR\Newtonsoft.Json.dll
 Delete $INSTDIR\DiscordRPC.dll
-
+Delete $INSTDIR\Microsoft.WindowsAPICodePack.dll
+Delete $INSTDIR\Microsoft.WindowsAPICodePack.Shell.dll
 
 Delete $INSTDIR\lang_0_spcode.xml
 Delete $INSTDIR\GPLv3.txt
