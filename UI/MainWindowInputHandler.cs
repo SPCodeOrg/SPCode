@@ -49,6 +49,12 @@ namespace Spcode.UI
                             e.Handled = true;
                             break;
                         }
+                        case Key.F:
+                        {
+                            Command_OpenSPDef();
+                            e.Handled = true;
+                            break;
+                        }
                     }
                 else if (!e.KeyboardDevice.IsKeyDown(Key.RightAlt))
                     switch (e.Key)

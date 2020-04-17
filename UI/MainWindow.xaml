@@ -104,7 +104,7 @@
                     <MenuItem Name="OptionMenuEntry" Header="Options" Click="Menu_OpenOptions" />
                     <Separator />
                     <MenuItem Header="SourcePawn API">
-                        <MenuItem Name="MenuI_ParsedIncDir" Header="Parsed from Include Directory" Click="Menu_OpenSPDef" />
+                        <MenuItem Name="MenuI_ParsedIncDir" Header="Parsed from Include Directory" InputGestureText="Ctrl+Shift+F" Click="Menu_OpenSPDef" />
                         <MenuItem Name="MenuI_NewApiWeb" Header="API Reference" Click="Menu_OpenWebsiteFromTag" Tag="https://sm.alliedmods.net/new-api/" />
                         <MenuItem Name="MenuI_BetaApiWeb" Header="(BETA) API Reference" Click="Menu_OpenWebsiteFromTag" Tag="https://sourcemod.dev/" />
                     </MenuItem>

@@ -252,5 +252,11 @@ namespace Spcode.UI
                 }
             }
         }
+
+        private void Command_OpenSPDef()
+        {
+            var spDefinitionWindow = new SPDefinitionWindow {Owner = this, ShowInTaskbar = false};
+            spDefinitionWindow.ShowDialog();
+        }
     }
 }
