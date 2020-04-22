@@ -521,6 +521,8 @@ namespace Spcode.UI.Components
             EvaluateIntelliSense();
             var result = bracketSearcher.SearchBracket(editor.Document, editor.CaretOffset);
             bracketHighlightRenderer.SetHighlight(result);
+            //TODO: Remove this in release
+            StatusLine_Work.Text = editor.CaretOffset.ToString();
         }
 
         private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
