@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Timers;
@@ -14,9 +16,9 @@ namespace Spcode.UI.Windows
     /// <summary>
     ///     Interaction logic for AboutWindow.xaml
     /// </summary>
-    public partial class SPDefinitionWindow : MetroWindow
+    public partial class SPDefinitionWindow
     {
-        private readonly SPDefEntry[] defArray;
+        private readonly SMBaseDefinition[] defArray;
         private readonly Brush errorSearchBoxBrush = new SolidColorBrush(Color.FromArgb(0x50, 0xA0, 0x30, 0));
         private readonly ListViewItem[] items;
         private readonly Timer searchTimer = new Timer(1000.0);
@@ -38,25 +40,26 @@ namespace Spcode.UI.Windows
                 return;
             }
 
-            var defList = new List<SPDefEntry>();
-            defList.AddRange(def.Functions.Select(t => (SPDefEntry) t));
-            defList.AddRange(def.Constants.Select(t => (SPDefEntry) t));
-            defList.AddRange(def.Enums.Select(t => (SPDefEntry) t));
-            defList.AddRange(def.Defines.Select(t => (SPDefEntry) t));
-            defList.AddRange(def.Structs.Select(t => (SPDefEntry) t));
-            defList.AddRange(def.Methodmaps.Select(t => (SPDefEntry) t));
-            defList.AddRange(def.Typedefs.Select(t => (SPDefEntry) t));
-            defList.AddRange(def.EnumStructs.Select(t => (SPDefEntry) t));
+            var defList = new List<SMBaseDefinition>();
+            defList.AddRange(def.Functions);
+            defList.AddRange(def.Constants);
+            defList.AddRange(def.Enums);
+            defList.AddRange(def.Defines);
+            defList.AddRange(def.Structs);
+            defList.AddRange(def.Methodmaps);
+            defList.AddRange(def.Typedefs);
+            defList.AddRange(def.EnumStructs);
+            defList.AddRange(def.Variables);
             foreach (var mm in def.Methodmaps)
             {
-                defList.AddRange(mm.Methods.Select(t => (SPDefEntry) t));
-                defList.AddRange(mm.Fields.Select(t => (SPDefEntry) t));
+                defList.AddRange(mm.Methods);
+                defList.AddRange(mm.Fields);
             }
 
             foreach (var es in def.EnumStructs)
             {
-                defList.AddRange(es.Methods.Select(t => (SPDefEntry) t));
-                defList.AddRange(es.Fields.Select(t => (SPDefEntry) t));
+                defList.AddRange(es.Methods);
+                defList.AddRange(es.Fields);
             }
 
             foreach (var e in defList.Where(e => string.IsNullOrWhiteSpace(e.Name)))
@@ -67,7 +70,7 @@ namespace Spcode.UI.Windows
             items = new ListViewItem[defArrayLength];
             for (var i = 0; i < defArrayLength; ++i)
             {
-                items[i] = new ListViewItem {Content = defArray[i].Name, Tag = defArray[i].Entry};
+                items[i] = new ListViewItem {Content = defArray[i].Name, Tag = defArray[i]};
                 SPBox.Items.Add(items[i]);
             }
 
@@ -95,7 +98,7 @@ namespace Spcode.UI.Windows
                     SPFileBlock.Text = sm1.File + ".inc" +
                                        $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm1.Index, sm1.Length)})";
                     SPTypeBlock.Text = "Function";
-                    SPCommentBox.Text = sm1.CommentString;
+                    SPCommentBox.Text = "comment:::" + sm1.CommentString + "\nKIND:::: " + sm1.FunctionKind;
                     return;
                 }
 
@@ -218,6 +221,21 @@ namespace Spcode.UI.Windows
             SPCommentBox.Text = string.Empty;
         }
 
+        private void SPFunctionsListBox_DoubleClick(object sender, RoutedEventArgs e)
+        {
+            var item = (ListViewItem) SPBox.SelectedItem;
+            if (item == null) return;
+
+            Close();
+            var sm = (SMBaseDefinition) item.Tag;
+            var config = Program.Configs[Program.SelectedConfig].SMDirectories.First();
+            Program.MainWindow.TryLoadSourceFile(Path.GetFullPath(Path.Combine(config, "include", sm.File)) + ".inc", true, false, true);
+            var ee = Program.MainWindow.GetCurrentEditorElement();
+            Debug.Assert(ee != null);
+            ee.editor.TextArea.Caret.Offset = sm.Index;
+            ee.editor.TextArea.Caret.BringCaretToView();
+        }
+
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             SPProgress.IsIndeterminate = true;
@@ -252,72 +270,6 @@ namespace Spcode.UI.Windows
             {
                 return;
             }*/
-        }
-
-        private class SPDefEntry
-        {
-            public object Entry;
-            public string Name;
-
-            public static implicit operator SPDefEntry(SMFunction func)
-            {
-                return new SPDefEntry {Name = func.Name, Entry = func};
-            }
-
-            public static implicit operator SPDefEntry(SMConstant sm)
-            {
-                return new SPDefEntry {Name = sm.Name, Entry = sm};
-            }
-
-            public static implicit operator SPDefEntry(SMDefine sm)
-            {
-                return new SPDefEntry {Name = sm.Name, Entry = sm};
-            }
-
-            public static implicit operator SPDefEntry(SMEnum sm)
-            {
-                return new SPDefEntry {Name = sm.Name, Entry = sm};
-            }
-
-            public static implicit operator SPDefEntry(SMStruct sm)
-            {
-                return new SPDefEntry {Name = sm.Name, Entry = sm};
-            }
-
-            public static implicit operator SPDefEntry(SMMethodmap sm)
-            {
-                return new SPDefEntry {Name = sm.Name, Entry = sm};
-            }
-
-            public static implicit operator SPDefEntry(SMMethodmapMethod sm)
-            {
-                return new SPDefEntry {Name = sm.Name, Entry = sm};
-            }
-
-            public static implicit operator SPDefEntry(SMMethodmapField sm)
-            {
-                return new SPDefEntry {Name = sm.Name, Entry = sm};
-            }
-
-            public static implicit operator SPDefEntry(SMTypedef sm)
-            {
-                return new SPDefEntry {Name = sm.Name, Entry = sm};
-            }
-
-            public static implicit operator SPDefEntry(SMEnumStruct sm)
-            {
-                return new SPDefEntry {Name = sm.Name, Entry = sm};
-            }
-
-            public static implicit operator SPDefEntry(SMEnumStructMethod sm)
-            {
-                return new SPDefEntry {Name = sm.Name, Entry = sm};
-            }
-
-            public static implicit operator SPDefEntry(SMEnumStructField sm)
-            {
-                return new SPDefEntry {Name = sm.Name, Entry = sm};
-            }
         }
     }
 }
