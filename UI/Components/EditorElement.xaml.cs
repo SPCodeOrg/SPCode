@@ -1,18 +1,24 @@
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Rendering;
 using ICSharpCode.AvalonEdit.Utils;
 using MahApps.Metro.Controls.Dialogs;
+using SourcepawnCondenser.SourcemodDefinition;
 using Spcode.Utils.SPSyntaxTidy;
 using Xceed.Wpf.AvalonDock.Layout;
 using Timer = System.Timers.Timer;
@@ -67,16 +73,20 @@ namespace Spcode.UI.Components
             FadeJumpGridIn = (Storyboard) Resources["FadeJumpGridIn"];
             FadeJumpGridOut = (Storyboard) Resources["FadeJumpGridOut"];
 
+            editor.CaptureMouse();
+
             KeyDown += EditorElement_KeyDown;
 
             editor.TextArea.Caret.PositionChanged += Caret_PositionChanged;
             editor.TextArea.SelectionChanged += TextArea_SelectionChanged;
             editor.TextArea.PreviewKeyDown += TextArea_PreviewKeyDown;
+
+            editor.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(TextArea_MouseDown), true);
+
             editor.PreviewMouseWheel += PrevMouseWheel;
             editor.MouseDown += editor_MouseDown;
             editor.TextArea.TextEntered += TextArea_TextEntered;
             editor.TextArea.TextEntering += TextArea_TextEntering;
-
             var fInfo = new FileInfo(filePath);
             if (fInfo.Exists)
             {
@@ -156,6 +166,106 @@ namespace Spcode.UI.Components
             StartAutoSaveTimer();
 
             CompileBox.IsChecked = filePath.EndsWith(".sp");
+        }
+
+        private async void TextArea_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl)) return;
+            var word = GetWordAtMousePosition(e);
+            Debug.Print($"The word: {word}");
+            if (word.Trim().Length == 0) return;
+
+            e.Handled = true;
+            var smDef = Program.Configs[Program.SelectedConfig].GetSMDef();
+            var sm = (SMBaseDefinition) smDef.Functions.FirstOrDefault(i => i.Name == word);
+            
+            sm ??= smDef.Constants.FirstOrDefault(i =>
+                i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+
+            sm ??= smDef.Defines.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+
+            sm ??= smDef.Enums.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+
+            foreach (var smEnum in smDef.Enums)
+            {
+                var str = smEnum.Entries.FirstOrDefault(
+                    i => i.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+                
+                if (str == null) continue;
+                sm = smEnum;
+                break;
+            } 
+            
+            
+            //TODO: Match EnumStruct and MethodMaps Fields and Methods
+            sm ??= smDef.EnumStructs.FirstOrDefault(i =>
+                i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+
+            sm ??= smDef.Methodmaps.FirstOrDefault(
+                i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+
+            sm ??= smDef.Structs.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+
+            sm ??= smDef.Typedefs.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+
+            sm ??= smDef.Variables.FirstOrDefault(i =>
+                i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+
+            Debug.Print($"Function {word} found with {sm}!");
+
+            if (sm == null)
+            {
+                Debug.Print("Definition not found!");
+                return;
+            }
+
+            var config = Program.Configs[Program.SelectedConfig].SMDirectories.First();
+            var file = Path.GetFullPath(Path.Combine(config, "include", sm.File)) + ".inc";
+            var result = Program.MainWindow.TryLoadSourceFile(file,
+                true, false, true);
+            if (!result)
+            {
+                Debug.Print("File {file} not found!");
+                return;
+            }
+
+            var newEditor = Program.MainWindow.GetCurrentEditorElement();
+            Debug.Assert(newEditor != null);
+            newEditor.editor.TextArea.Caret.Offset = sm.Index;
+            newEditor.editor.TextArea.Caret.BringCaretToView();
+            await Task.Delay(100);
+            newEditor.editor.TextArea.Selection =
+                Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
+        }
+
+        private string GetWordAtMousePosition(MouseEventArgs e)
+        {
+            var mousePosition = editor.GetPositionFromPoint(e.GetPosition(this));
+
+            if (mousePosition == null)
+                return string.Empty;
+
+            var line = mousePosition.Value.Line;
+            var column = mousePosition.Value.Column;
+            var offset = editor.TextArea.Document.GetOffset(line, column);
+
+            if (offset >= editor.TextArea.Document.TextLength)
+                offset--;
+
+            int offsetStart = TextUtilities.GetNextCaretPosition(editor.TextArea.Document, offset,
+                LogicalDirection.Backward, CaretPositioningMode.WordBorder);
+            int offsetEnd = TextUtilities.GetNextCaretPosition(editor.TextArea.Document, offset,
+                LogicalDirection.Forward, CaretPositioningMode.WordBorder);
+
+            if (offsetEnd == -1 || offsetStart == -1)
+                return string.Empty;
+
+            var currentChar = editor.TextArea.Document.GetText(offset, 1);
+
+            if (string.IsNullOrWhiteSpace(currentChar))
+                return string.Empty;
+
+            return editor.TextArea.Document.GetText(offsetStart, offsetEnd - offsetStart);
         }
 
         public string FullFilePath
@@ -502,7 +612,7 @@ namespace Spcode.UI.Components
 
             Program.MainWindow.EditorsReferences.Remove(this);
             // var childs = Program.MainWindow.DockingPaneGroup.Children;
-          //  foreach (var c in childs) (c as LayoutDocumentPane)?.Children.Remove(Parent);
+            //  foreach (var c in childs) (c as LayoutDocumentPane)?.Children.Remove(Parent);
 
             Parent = null; //to prevent a ring depency which disables the GC from work
             Program.MainWindow.UpdateWindowTitle();
@@ -522,7 +632,7 @@ namespace Spcode.UI.Components
             var result = bracketSearcher.SearchBracket(editor.Document, editor.CaretOffset);
             bracketHighlightRenderer.SetHighlight(result);
             //TODO: Remove this in release
-            StatusLine_Work.Text = editor.CaretOffset.ToString();
+            // StatusLine_Work.Text = editor.CaretOffset.ToString();
         }
 
         private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
@@ -531,7 +641,6 @@ namespace Spcode.UI.Components
                 if (e.Text == ";")
                     if (editor.CaretOffset >= 0)
                     {
-                        
                         var line = editor.Document.GetLineByOffset(editor.CaretOffset);
                         var text = editor.Document.GetText(line);
 
@@ -660,6 +769,8 @@ namespace Spcode.UI.Components
 
         private void editor_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            e.Handled = true;
+            Console.WriteLine("PRESSED MOUSE DOWN");
             HideISAC();
         }
 

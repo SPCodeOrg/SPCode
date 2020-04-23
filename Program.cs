@@ -39,6 +39,11 @@ namespace Spcode
         [STAThread]
         public static void Main(string[] args)
         {
+#if DEBUG     
+            System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level =
+                System.Diagnostics.SourceLevels.Critical;
+#endif
+            
             // Init Discord RPC
             discordClient.Initialize();
 
