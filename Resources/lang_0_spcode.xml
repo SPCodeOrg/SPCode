@@ -1021,7 +1021,7 @@
         <done>Hecho</done>
         <file>Archivo</file>
         <new>Nuevo</new>
-        <open>Abierto</open>
+        <open>Abrir</open>
         <save>Guardar</save>
         <saveall>Guardar todo</saveall>
         <saveas>Guardar como...</saveas>
@@ -1054,8 +1054,8 @@
         <decompile>Decompilar</decompile>
         <reportbuggit>Reportar bug en GitHub</reportbuggit>
         <checkupdates>Buscar actualizaciones</checkupdates>
-        <about>Sobre</about>
-        <filename>Nombe del archivo</filename>
+        <about>Acerca de...</about>
+        <filename>Nombre del archivo</filename>
         <line>Línea</line>
         <type>Escribir</type>
         <normalsearch>Búsqueda normal</normalsearch>
@@ -1083,7 +1083,7 @@
         <speditcap>un editor liviano de SourcePawn</speditcap>
         <writtenby>Escrito por: {0}</writtenby>
         <license>Licencia</license>
-        <peopleinv>Personas envueltas</peopleinv>
+        <peopleinv>Personas involucradas</peopleinv>
         <preview>Previsualización</preview>
         <newfile>Nuevo archivo</newfile>
         <configwrongpars>La configuración no pudo analizar una definición de SourcePawn.</configwrongpars>
@@ -1099,13 +1099,13 @@
         <delimitedwi>Delimitar con</delimitedwi>
         <copydir>Copiar al directorio</copydir>
         <serverexe>Ejecutable del servidor</serverexe>
-        <serverstartargs>Parámetros de lanzamiento del servidor</serverstartargs>
+        <serverstartargs>Parámetros de lanzamiento</serverstartargs>
         <prebuildcom>Línea de comando Pre-Build</prebuildcom>
         <postbuildcom>Línea de comando Post-Build</postbuildcom>
         <optimizelvl>Nivel de optimización</optimizelvl>
         <verboselvl>Nivel de detalles</verboselvl>
-        <autocopy>Copiar automáticamente tras la compilación</autocopy>
-        <deleteoldsmx>Eliminar el .smx antiguo tras la copia</deleteoldsmx>
+        <autocopy>Copiar tras compilar</autocopy>
+        <deleteoldsmx>Eliminar .smx antiguo</deleteoldsmx>
         <ftphost>Host del FTP</ftphost>
         <ftpuser>Usuario del FTP</ftpuser>
         <ftppw>Contraseña del FTP</ftppw>
