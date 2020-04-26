@@ -975,6 +975,201 @@
         <obtextitem>Item Dir.</obtextitem>
         <errorfileerror>Compile error file could not be accessed.</errorfileerror>
     </ru>
+      <es>
+        <language>Español</language>
+        <serverrunning>Servidor en ejecución</serverrunning>
+        <saving>Guardar</saving>
+        <saveufiles>¿Guardar todos los archivos sin guardar?</saveufiles>
+        <compileall>Compilar todo</compileall>
+        <compilecurr>Compilar actual</compilecurr>
+        <copy>Copiar</copy>
+        <ftpup>Enviar FTP</ftpup>
+        <startserver>Iniciar servidor</startserver>
+        <replace>Reemplazar</replace>
+        <replaceall>Reemplazar todo</replaceall>
+        <opennewfile>Abrir nuevo archivo</opennewfile>
+        <nofilopened>Ningún archivo abierto.</nofilopened>
+        <nofileopenedcap>Ninguno de los archivos seleccionados puede ser abierto.</nofileopenedcap>
+        <savefileas>Guardar archivo como...</savefileas>
+        <savefollow>Guardar los siguientes archivos</savefollow>
+        <chdecomp>Selecciona un plugin para decompilar</chdecomp>
+        <decompiling>Decompilando...</decompiling>
+        <editconfig>Editar configuraciones</editconfig>
+        <foundinoff>Encontrado en offset {0} con longitud {1}</foundinoff>
+        <foundnothing>Sin resultados</foundnothing>
+        <replacedoff>Reemplazado en offset {0}</replacedoff>
+        <replacedocc>Reemplazadas {0} coincidencias en {1} documentos</replacedocc>
+        <occfound>Coincidencias encontradas</occfound>
+        <emptypatt>Patrón de búsqueda vacío</emptypatt>
+        <novalidregex>Patrón de RegEx inválido</novalidregex>
+        <failedcheck>Error al verificar</failedcheck>
+        <errorupdate>Error al buscar actualizaciones</errorupdate>
+        <versuptodate>Versión actualizada</versuptodate>
+        <versionyour>Su versión {0} está actualizada.</versionyour>
+        <details>Detalles</details>
+        <compiling>Compilando...</compiling>
+        <error>Error</error>
+        <spcompnotstarted>El compilador spcomp.exe no inició correctamente.</spcompnotstarted>
+        <spcompnotfound>Compilador spcomp.exe no encontrado.</spcompnotfound>
+        <copied>Copiado</copied>
+        <deleted>Eliminado</deleted>
+        <failcopy>Error al copiar</failcopy>
+        <nofilescopy>Ningún archivo copiado</nofilescopy>
+        <uploaded>Subido</uploaded>
+        <erroruploadfile>Error al subir el fichero {0} a {1}</erroruploadfile>
+        <errorupload>Error al subir los ficheros</errorupload>
+        <done>Hecho</done>
+        <file>Archivo</file>
+        <new>Nuevo</new>
+        <open>Abrir</open>
+        <save>Guardar</save>
+        <saveall>Guardar todo</saveall>
+        <saveas>Guardar como...</saveas>
+        <close>Cerrar</close>
+        <closeall>Cerrar todo</closeall>
+        <build>Construir</build>
+        <copyplugin>Copiar plugins</copyplugin>
+        <sendrcon>Enviar comandos RCON</sendrcon>
+        <config>Configuración</config>
+        <edit>Editar</edit>
+        <undo>Deshacer</undo>
+        <redo>Rehacer</redo>
+        <cut>Cortar</cut>
+        <paste>Pegar</paste>
+        <folding>Grupos</folding>
+        <expandall>Expandir todos</expandall>
+        <collapseall>Colapsar todos</collapseall>
+        <jumpto>Ir a...</jumpto>
+        <togglcomment>Comentar línea</togglcomment>
+        <selectall>Seleccionar todo</selectall>
+        <findreplace>Buscar &amp; Reemplazar</findreplace>
+        <tools>Herramientas</tools>
+        <options>Opciones</options>
+        <parsedincdir>Analizar el directorio include</parsedincdir>
+        <newapiweb>Sitio web de la API</newapiweb>
+        <betaapiweb>Sitio web beta de la API</betaapiweb>
+        <reformatter>Ajustar indentación</reformatter>
+        <reformatcurr>Ajustar actual</reformatcurr>
+        <reformatall>Ajustar todos</reformatall>
+        <decompile>Decompilar</decompile>
+        <reportbuggit>Reportar bug en GitHub</reportbuggit>
+        <checkupdates>Buscar actualizaciones</checkupdates>
+        <about>Acerca de...</about>
+        <filename>Nombre del archivo</filename>
+        <line>Línea</line>
+        <type>Escribir</type>
+        <normalsearch>Búsqueda normal</normalsearch>
+        <matchwhowords>Combinar palabras enteras</matchwhowords>
+        <advancsearch>Búsqueda avanzada...</advancsearch>
+        <regexsearch>Búsqueda con RegEx</regexsearch>
+        <currdoc>Documento actual</currdoc>
+        <alldoc>Todos los documentos abiertos</alldoc>
+        <find>Encontrar</find>
+        <count>Cuenta</count>
+        <casesen>Diferenciar mayúsculas</casesen>
+        <multilineregex>RegEx multilínea</multilineregex>
+        <errorfileloadproc>Error al cargar y procesar el archivo.</errorfileloadproc>
+        <notdissmethod>Error al desarmar el método {0}: {1}</notdissmethod>
+        <dfilechanged>{0} fue alterado.</dfilechanged>
+        <filechanged>Archivo alterado</filechanged>
+        <filetryreload>Intenta recargar el archivo.</filetryreload>
+        <dsaveerror>Ocurrió un error al guardar.</dsaveerror>
+        <saveerror>Guardar error</saveerror>
+        <savingfile>Guardando archivo...</savingfile>
+        <ptabb>pt</ptabb>
+        <colabb>Col</colabb>
+        <lnabb>Ln</lnabb>
+        <lenabb>len</lenabb>
+        <speditcap>un editor liviano de SourcePawn</speditcap>
+        <writtenby>Escrito por: {0}</writtenby>
+        <license>Licencia</license>
+        <peopleinv>Personas involucradas</peopleinv>
+        <preview>Previsualización</preview>
+        <newfile>Nuevo archivo</newfile>
+        <configwrongpars>La configuración no pudo analizar una definición de SourcePawn.</configwrongpars>
+        <noname>sin nombre</noname>
+        <poslen>pos: {0} - len: {1}</poslen>
+        <inheritedfr>Heredado de</inheritedfr>
+        <methodfrom>Método de</methodfrom>
+        <propertyfrom>Propiedad de</propertyfrom>
+        <search>Buscar</search>
+        <delete>Borrar</delete>
+        <name>Nombre</name>
+        <scriptdir>Directorios de scripting</scriptdir>
+        <delimitedwi>Delimitar con</delimitedwi>
+        <copydir>Copiar al directorio</copydir>
+        <serverexe>Ejecutable del servidor</serverexe>
+        <serverstartargs>Parámetros de lanzamiento</serverstartargs>
+        <prebuildcom>Línea de comando Pre-Build</prebuildcom>
+        <postbuildcom>Línea de comando Post-Build</postbuildcom>
+        <optimizelvl>Nivel de optimización</optimizelvl>
+        <verboselvl>Nivel de detalles</verboselvl>
+        <autocopy>Copiar tras compilar</autocopy>
+        <deleteoldsmx>Eliminar .smx antiguo</deleteoldsmx>
+        <ftphost>Host del FTP</ftphost>
+        <ftpuser>Usuario del FTP</ftpuser>
+        <ftppw>Contraseña del FTP</ftppw>
+        <ftpdir>Directorio del FTP</ftpdir>
+        <comeditordir>Directorio de los binarios de SPCode</comeditordir>
+        <comscriptdir>Directorio del script de compilación</comscriptdir>
+        <comcopydir>Directorio donde el .smx será copiado</comcopydir>
+        <comscriptfile>Directorio completo y nombre del script</comscriptfile>
+        <comscriptname>Nombre del script</comscriptname>
+        <compluginfile>Directorio completo y nombre del script compilado</compluginfile>
+        <compluginname>Nombre del script compilado</compluginname>
+        <rconengine>Motor RCON del servidor</rconengine>
+        <rconip>IP RCON del servidor</rconip>
+        <rconport>Puerto RCON del servidor</rconport>
+        <rconpw>Contraseña RCON del servidor</rconpw>
+        <rconcom>Comandos RCON del servidor</rconcom>
+        <compluginsreload>Recargar todos los plugins compilados</compluginsreload>
+        <compluginsloas>Cargar todos los plugins compilados</compluginsloas>
+        <compluginsunload>Desactivar todos los plugins compilados</compluginsunload>
+        <newconfig>Nueva configuración</newconfig>
+        <cannotdelconf>No es posibler eliminar esta configuración.</cannotdelconf>
+        <ycannotdelconf>No puedes eliminar esta configuración.</ycannotdelconf>
+        <selectexe>Seleccionar ejecutable...</selectexe>
+        <cmdlinecom>Variables de la línea de comandos</cmdlinecom>
+        <rconcmdlinecom>Variables de la línea de comandos RCON</rconcmdlinecom>
+        <resetoptions>Reniciar opciones predeterminadas</resetoptions>
+        <resetoptques>¿Deseas reiniciar las opciones predeterminadas?</resetoptques>
+        <restarteditor>Reinicie el programa.</restarteditor>
+        <yrestarteditor>Necesita reiniciar el programa para que los cambios surtan efecto.</yrestarteditor>
+        <restartedifulleff>Reinicie el programa para que los cambios surtan efecto...</restartedifulleff>
+        <restartedieff>Reinicie el programa para que los cambios surtan efecto...</restartedieff>
+        <program>Programa</program>
+        <hardwareacc>Usar aceleración de hardware (si está disponible)</hardwareacc>
+        <uianim>Animaciones de la interfaz</uianim>
+        <openinc>Abrir includes automáticamente</openinc>
+        <openincrec>Abrir Includes recursivamente</openincrec>
+        <autoupdate>Buscar actualizaciones automáticamente</autoupdate>
+        <showtoolbar>Mostrar barra de herramientas</showtoolbar>
+        <dynamicisac>Autocompletar dinámico / IntelliSense</dynamicisac>
+        <darktheme>Tema oscuro</darktheme>
+        <themecolor>Color del tema</themecolor>
+        <languagestr>Idioma</languagestr>
+        <editor>Editor</editor>
+        <fontsize>Tamaño de la fuente</fontsize>
+        <scrollspeed>Velocidad de desplazamiento</scrollspeed>
+        <wordwrap>Ajuste de texto</wordwrap>
+        <aggindentation>Indentación agresiva</aggindentation>
+        <reformataftersem>Ajustar línea tras ingresar semicolon</reformataftersem>
+        <tabstospace>Reemplazar sangrías por espacios</tabstospace>
+        <autoclosebrack>Cerrar paréntesis automáticamente</autoclosebrack>
+        <autoclosestrchr>Cerrar automáticamente strings, chars</autoclosestrchr>
+        <showsapaces>Mostrar espacios</showsapaces>
+        <showtabs>Mostrar sangrías</showtabs>
+        <indentationsize>Tamaño de indentación</indentationsize>
+        <fontfamily>Fuente</fontfamily>
+        <syntaxhigh>Destacar sintaxis</syntaxhigh>
+        <highdeprecat>Destacar sintaxis obsoleta (&lt; 1.7)</highdeprecat>
+        <compile>Compilar</compile>
+        <autosavemin>Guardado automático (mins)</autosavemin>
+        <obtextfile>Dir. de archivo</obtextfile>
+        <obtextconfig>Dir. de config</obtextconfig>
+        <obtextitem>Dir. de ítem</obtextitem>
+        <errorfileerror>El archivo de error de configuración es inaccesible.</errorfileerror>
+      </es>
     <pt>
         <language>Português</language>
         <serverrunning>Servidor em execução</serverrunning>
