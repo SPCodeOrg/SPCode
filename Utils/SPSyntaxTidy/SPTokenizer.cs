@@ -257,7 +257,7 @@ namespace Spcode.Utils.SPSyntaxTidy
                 }
 
                 if (c == '<' || c == '>' || c == '!' || c == '|' || c == '&' || c == '+' || c == '-' || c == '*' ||
-                    c == '/' || c == '^')
+                    c == '/' || c == '^' || c == '%')
                 {
                     if ((i + 1) < length)
                     {
