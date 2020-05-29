@@ -178,7 +178,7 @@ namespace Spcode.UI.Components
             e.Handled = true;
             var smDef = Program.Configs[Program.SelectedConfig].GetSMDef();
             var sm = (SMBaseDefinition) smDef.Functions.FirstOrDefault(i => i.Name == word);
-            
+
             sm ??= smDef.Constants.FirstOrDefault(i =>
                 i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
@@ -190,13 +190,13 @@ namespace Spcode.UI.Components
             {
                 var str = smEnum.Entries.FirstOrDefault(
                     i => i.Equals(word, StringComparison.InvariantCultureIgnoreCase));
-                
+
                 if (str == null) continue;
                 sm = smEnum;
                 break;
-            } 
-            
-            
+            }
+
+
             //TODO: Match EnumStruct and MethodMaps Fields and Methods
             sm ??= smDef.EnumStructs.FirstOrDefault(i =>
                 i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
@@ -770,7 +770,6 @@ namespace Spcode.UI.Components
         private void editor_MouseDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
-            Console.WriteLine("PRESSED MOUSE DOWN");
             HideISAC();
         }
 

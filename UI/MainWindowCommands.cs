@@ -216,10 +216,14 @@ namespace Spcode.UI
             foreach (var ee in editors)
                 if (ee != null)
                 {
+                    var currentCaret = ee.editor.TextArea.Caret.Offset;
+                    var currentLen = ee.editor.Text.Length;
                     ee.editor.Document.BeginUpdate();
                     var source = ee.editor.Text;
                     ee.editor.Document.Replace(0, source.Length, SPSyntaxTidy.TidyUp(source));
                     ee.editor.Document.EndUpdate();
+                    var diff = currentLen - ee.editor.Text.Length;
+                    ee.editor.TextArea.Caret.Offset = currentCaret + diff;
                 }
         }
 
