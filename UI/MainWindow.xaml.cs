@@ -186,15 +186,16 @@ namespace Spcode.UI
             {
                 ee.editor.Focus();
                 Program.discordClient.SetPresence(new RichPresence
-                {
-                    Timestamps = Program.discordTime,
-                    State = $"Editing {Path.GetFileName(ee.FullFilePath)}",
-                    Assets = new Assets
                     {
-                        LargeImageKey = "immagine",
-                        LargeImageText = $"Editing {Path.GetFileName(ee.FullFilePath)}"
-                    }
-                });
+                        Timestamps = Program.discordTime,
+                        State = $"Editing {Path.GetFileName(ee.FullFilePath)}",
+                        Assets = new Assets
+                        {
+                            LargeImageKey = "immagine",
+                            LargeImageText = $"Editing {Path.GetFileName(ee.FullFilePath)}"
+                        }
+                    });
+                
             }
         }
 
@@ -318,14 +319,14 @@ namespace Spcode.UI
             {
                 outString = "SPCode";
                 Program.discordClient.SetPresence(new RichPresence
-                {
-                    State = "Idle",
-                    Timestamps = Program.discordTime,
-                    Assets = new Assets
                     {
-                        LargeImageKey = "immagine"
-                    }
-                });
+                        State = "Idle",
+                        Timestamps = Program.discordTime,
+                        Assets = new Assets
+                        {
+                            LargeImageKey = "immagine"
+                        }
+                    });
             }
             else
             {

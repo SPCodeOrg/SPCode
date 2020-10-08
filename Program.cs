@@ -29,7 +29,7 @@ namespace Spcode
         public static UpdateInfo UpdateStatus;
 
         public static bool RCCKMade;
-        public static readonly DiscordRpcClient discordClient = new DiscordRpcClient("692110664948514836");
+        public static DiscordRpcClient discordClient = new DiscordRpcClient("692110664948514836");
         public static Timestamps discordTime = Timestamps.Now;
 
         public static string Indentation => OptionsObject.Editor_ReplaceTabsToWhitespace
@@ -43,20 +43,7 @@ namespace Spcode
             System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level =
                 System.Diagnostics.SourceLevels.Critical;
 #endif
-            
-            // Init Discord RPC
-            discordClient.Initialize();
 
-            // Set default presence
-            discordClient.SetPresence(new RichPresence
-            {
-                State = "Idle",
-                Timestamps = discordTime,
-                Assets = new Assets
-                {
-                    LargeImageKey = "immagine"
-                }
-            });
             bool mutexReserved;
             using (new Mutex(true, "SpcodeGlobalMutex", out mutexReserved))
             {
@@ -77,6 +64,24 @@ namespace Spcode
 #endif
                         UpdateStatus = new UpdateInfo();
                         OptionsObject = OptionsControlIOObject.Load(out var ProgramIsNew);
+                        
+                        if (OptionsObject.Program_DiscordPresence)
+                        {
+                            // Init Discord RPC
+                            discordClient.Initialize();
+
+                            // Set default presence
+                            discordClient.SetPresence(new RichPresence
+                            {
+                                State = "Idle",
+                                Timestamps = discordTime,
+                                Assets = new Assets
+                                {
+                                    LargeImageKey = "immagine"
+                                }
+                            });
+                        }
+                        
                         Translations = new TranslationProvider();
                         Translations.LoadLanguage(OptionsObject.Language, true);
                         foreach (var arg in args)
