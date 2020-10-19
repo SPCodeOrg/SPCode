@@ -114,6 +114,7 @@ namespace Spcode.UI
         private void Command_Close()
         {
             var ee = GetCurrentEditorElement();
+            if (ee == null) return;
             DockingPane.RemoveChild(ee.Parent);
             ee.Close();
         }
