@@ -1,531 +1,540 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-    <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{60D2BA42-B59B-4B49-928E-C0CDDE254917}</ProjectGuid>
-        <OutputType>WinExe</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>Spcode</RootNamespace>
-        <AssemblyName>Spcode</AssemblyName>
-        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-        <FileAlignment>512</FileAlignment>
-        <TargetFrameworkProfile />
-        <IsWebBootstrapper>false</IsWebBootstrapper>
-        <PublishUrl>publish\</PublishUrl>
-        <Install>true</Install>
-        <InstallFrom>Disk</InstallFrom>
-        <UpdateEnabled>false</UpdateEnabled>
-        <UpdateMode>Foreground</UpdateMode>
-        <UpdateInterval>7</UpdateInterval>
-        <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-        <UpdatePeriodically>false</UpdatePeriodically>
-        <UpdateRequired>false</UpdateRequired>
-        <MapFileExtensions>true</MapFileExtensions>
-        <ApplicationRevision>0</ApplicationRevision>
-        <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-        <UseApplicationTrust>false</UseApplicationTrust>
-        <BootstrapperEnabled>true</BootstrapperEnabled>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-        <LangVersion>latest</LangVersion>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <Prefer32Bit>false</Prefer32Bit>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <Prefer32Bit>false</Prefer32Bit>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    </PropertyGroup>
-    <PropertyGroup>
-        <StartupObject />
-    </PropertyGroup>
-    <PropertyGroup>
-        <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
-    </PropertyGroup>
-    <ItemGroup>
-        <None Include="app.config" />
-        <None Include="App\App.config" />
-        <None Include="packages.config" />
-    </ItemGroup>
-    <ItemGroup>
-        <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, PublicKeyToken=null">
-          <HintPath>packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="DiscordRPC, Version=1.0.150.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>packages\DiscordRichPresence.1.0.150\lib\net35\DiscordRPC.dll</HintPath>
-            <Private>True</Private>
-        </Reference>
-        <Reference Include="ICSharpCode.AvalonEdit, Version=6.0.1.278, Culture=neutral, PublicKeyToken=9cc39be672370310">
-          <HintPath>packages\AvalonEdit.6.0.1\lib\net45\ICSharpCode.AvalonEdit.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, PublicKeyToken=null">
-          <HintPath>packages\MahApps.Metro.1.6.5\lib\net45\MahApps.Metro.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="Microsoft.CSharp" />
-        <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-          <HintPath>packages\Windows7APICodePack-Core.1.1.0.0\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-          <HintPath>packages\Windows7APICodePack-Shell.1.1.0.0\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-          <HintPath>packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="Octokit, Version=0.46.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>packages\Octokit.0.46.0\lib\net46\Octokit.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106">
-            <HintPath>packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
-            <Private>True</Private>
-        </Reference>
-        <Reference Include="PresentationCore" />
-        <Reference Include="PresentationFramework" />
-        <Reference Include="QueryMaster">
-            <HintPath>QueryMaster\QueryMaster.dll</HintPath>
-        </Reference>
-        <Reference Include="smxdasm">
-            <HintPath>App\smxdasm.dll</HintPath>
-        </Reference>
-        <Reference Include="System" />
-        <Reference Include="System.Drawing" />
-        <Reference Include="System.Management" />
-        <Reference Include="System.Net.Http" />
-        <Reference Include="System.Windows.Forms" />
-        <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-          <HintPath>packages\ControlzEx.3.0.2.4\lib\net45\System.Windows.Interactivity.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="System.Xaml" />
-        <Reference Include="System.XML" />
-        <Reference Include="WindowsBase" />
-        <Reference Include="Xceed.Wpf.AvalonDock, Version=2.9.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-            <HintPath>packages\Extended.Wpf.Toolkit.2.9\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
-            <Private>True</Private>
-        </Reference>
-        <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=2.9.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-            <HintPath>packages\Extended.Wpf.Toolkit.2.9\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
-            <Private>True</Private>
-        </Reference>
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="App\AssemblyInfo1.cs" />
-        <Compile Include="Interop\ConfigControl.cs" />
-        <Compile Include="Interop\PipeInteropClient.cs" />
-        <Compile Include="Interop\PipeInteropServer.cs" />
-        <Compile Include="Interop\OptionsControl.cs" />
-        <Compile Include="Interop\TranslationProvider.cs" />
-        <Compile Include="Interop\Updater\UpdateCheck.cs" />
-        <Compile Include="Interop\Updater\UpdateInfo.cs" />
-        <Compile Include="Interop\Updater\UpdateWindow.xaml.cs">
-            <DependentUpon>UpdateWindow.xaml</DependentUpon>
-        </Compile>
-        <Compile Include="Program.cs" />
-        <Compile Include="Properties\Resources.Designer.cs">
-            <AutoGen>True</AutoGen>
-            <DesignTime>True</DesignTime>
-            <DependentUpon>Resources.resx</DependentUpon>
-        </Compile>
-        <Compile Include="UI\Components\ColorChangeControl.xaml.cs">
-            <DependentUpon>ColorChangeControl.xaml</DependentUpon>
-        </Compile>
-        <Compile Include="UI\Components\DASMElement.xaml.cs">
-            <DependentUpon>DASMElement.xaml</DependentUpon>
-        </Compile>
-        <Compile Include="UI\Components\EditorElement.xaml.cs">
-            <DependentUpon>EditorElement.xaml</DependentUpon>
-        </Compile>
-        <Compile Include="UI\Components\EditorElementBracketHighlighter.cs" />
-        <Compile Include="UI\Components\DASMElementHighlighter.cs" />
-        <Compile Include="UI\Components\EditorElementHighlighter.cs" />
-        <Compile Include="UI\Components\EditorFoldingStrategy.cs" />
-        <Compile Include="UI\Components\EditorIndetation.cs" />
-        <Compile Include="UI\Components\IntelliSenseController.cs" />
-        <Compile Include="UI\Interop\LanguageChooserWindow.xaml.cs">
-            <DependentUpon>LanguageChooserWindow.xaml</DependentUpon>
-        </Compile>
-        <Compile Include="UI\MainWindowBackgroundParser.cs" />
-        <Compile Include="UI\MainWindowServerQuery.cs" />
-        <Compile Include="UI\MainWindowSPCompiler.cs" />
-        <Compile Include="UI\MainWindowCommands.cs" />
-        <Compile Include="UI\MainWindow.xaml.cs">
-            <DependentUpon>MainWindow.xaml</DependentUpon>
-        </Compile>
-        <Compile Include="UI\MainWindowFindReplaceHandler.cs" />
-        <Compile Include="UI\MainWindowInputHandler.cs" />
-        <Compile Include="UI\MainWindowMenuHandler.cs" />
-        <Compile Include="UI\MainWindowConfigHandler.cs" />
-        <Compile Include="UI\MainWindowObjectBrowser.cs" />
-        <Compile Include="UI\MainWindowTranslations.cs" />
-        <Compile Include="UI\STheme\SMetroTheme.cs" />
-        <Compile Include="UI\Windows\ConfigWindow.xaml.cs">
-            <DependentUpon>ConfigWindow.xaml</DependentUpon>
-        </Compile>
-        <Compile Include="UI\Windows\NewFileWindow.xaml.cs">
-            <DependentUpon>NewFileWindow.xaml</DependentUpon>
-        </Compile>
-        <Compile Include="UI\Windows\OptionsWindow.xaml.cs">
-            <DependentUpon>OptionsWindow.xaml</DependentUpon>
-        </Compile>
-        <Compile Include="UI\Windows\OptionsWindowHighlighting.cs" />
-        <Compile Include="UI\Windows\SPDefinitionWindow.xaml.cs">
-            <DependentUpon>SPDefinitionWindow.xaml</DependentUpon>
-        </Compile>
-        <Compile Include="UI\Windows\AboutWindow.xaml.cs">
-            <DependentUpon>AboutWindow.xaml</DependentUpon>
-        </Compile>
-        <Compile Include="Utils\FTP.cs" />
-        <Compile Include="Utils\ManagedAES.cs" />
-        <Compile Include="Utils\SPSyntaxTidy\SPSyntaxTidy.cs" />
-        <Compile Include="Utils\SPSyntaxTidy\SPTokenizer.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <Page Include="Interop\Updater\UpdateWindow.xaml">
-            <SubType>Designer</SubType>
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Include="UI\Components\ColorChangeControl.xaml">
-            <SubType>Designer</SubType>
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Include="UI\Components\DASMElement.xaml">
-            <SubType>Designer</SubType>
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Include="UI\Components\EditorElement.xaml">
-            <SubType>Designer</SubType>
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Include="UI\Interop\LanguageChooserWindow.xaml">
-            <SubType>Designer</SubType>
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Include="UI\MainWindow.xaml">
-            <SubType>Designer</SubType>
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Include="UI\STheme\Brushes.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Include="UI\STheme\STheme.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Include="UI\Windows\ConfigWindow.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Include="UI\Windows\NewFileWindow.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Include="UI\Windows\OptionsWindow.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Include="UI\Windows\SPDefinitionWindow.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Include="UI\Windows\AboutWindow.xaml">
-            <SubType>Designer</SubType>
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="Resources\AboutImages\AvalonDock.png" />
-        <Resource Include="Resources\AboutImages\license.png" />
-        <Resource Include="Resources\AboutImages\MahAppsMetro.png" />
-        <Resource Include="Resources\AboutImages\SharpDevelop.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="Resources\Icon.ico" />
-        <Resource Include="Resources\Icon256x.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <BootstrapperPackage Include=".NETFramework,Version=v4.8">
-            <Visible>False</Visible>
-            <ProductName>Microsoft .NET Framework 4.8 %28x86 and x64%29</ProductName>
-            <Install>true</Install>
-        </BootstrapperPackage>
-        <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-            <Visible>False</Visible>
-            <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-            <Install>false</Install>
-        </BootstrapperPackage>
-        <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-            <Visible>False</Visible>
-            <ProductName>.NET Framework 3.5 SP1</ProductName>
-            <Install>false</Install>
-        </BootstrapperPackage>
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="Resources\AboutImages\IconMonstr.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="Resources\AboutImages\sourcemod.png" />
-        <Resource Include="Resources\AboutImages\smlib.png" />
-        <Resource Include="Resources\AboutImages\alliedmodders.png" />
-        <None Include="Resources\Misc\Configurations\Configs.xml">
-            <SubType>Designer</SubType>
-        </None>
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="Lysis\LysisForSpedit.csproj">
-            <Project>{a8d94e5a-0cdc-4f01-8801-5770b3ca2b5b}</Project>
-            <Name>LysisForSpedit</Name>
-        </ProjectReference>
-        <ProjectReference Include="SourcepawnCondenser\SourcepawnCondenser\SourcepawnCondenser.csproj">
-            <Project>{b4e00f2d-dd73-42c7-a0ca-ba92b2a05850}</Project>
-            <Name>SourcepawnCondenser</Name>
-        </ProjectReference>
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Include="Properties\Resources.resx">
-            <Generator>ResXFileCodeGenerator</Generator>
-            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockAnchorableBottom.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockAnchorableLeft.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockAnchorableRight.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockAnchorableTop.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableBottom.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableLeft.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableRight.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableTop.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentBottom.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentInside.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentLeft.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentRight.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockDocumentTop.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockPaneEmpty.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\DockPaneLargeEmpty.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\HTabGroup.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\Locked.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinAutoHide.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinAutoHide_Black.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinAutoHide_Dark.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinClose.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinClose_Black.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinClose_Dark.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinDocMenu.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinDocMenu_Black.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinMaximize.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinMaximize_Black.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinMaximize_Dark.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinMenu.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinMenu_Black.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinMenu_Dark.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinRestore.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinRestore_Black.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\PinRestore_Dark.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="UI\STheme\Images\VTabGroup.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="Resources\iconmonstr-file-5-16.png" />
-        <Resource Include="Resources\iconmonstr-file-8-16.png" />
-        <Resource Include="Resources\iconmonstr-folder-13-16.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <Resource Include="Resources\iconmonstr-code-fork-1-20.png" />
-        <Resource Include="Resources\iconmonstr-code-fork-2-20.png" />
-        <Resource Include="Resources\iconmonstr-code-fork-4-20.png" />
-    </ItemGroup>
-    <ItemGroup>
-        <ClInclude Include="Deploy\DotNetChecker.nsh" />
-        <ClInclude Include="Deploy\FileAssociation.nsh" />
-        <ClInclude Include="Deploy\GPLv3.txt" />
-        <ClInclude Include="Deploy\icon.ico" />
-        <ClInclude Include="Deploy\SPCode.nsi" />
-        <Content Include="Deploy\Compress.ps1" />
-        <ClInclude Include="Resources\lang_0_spcode.xml" />
-        <ClInclude Include="Resources\lang_0_spcode_entryTemplate.xml" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\spcomp.exe" />
-        <ClInclude Include="Resources\Misc\Templates\OldSyntaxTemplate_CSGO.sp" />
-        <ClInclude Include="Resources\Misc\Templates\OldSyntaxTemplate_CSS.sp" />
-        <ClInclude Include="Resources\Misc\Templates\OldSyntaxTemplate_Generic.sp" />
-        <ClInclude Include="Resources\Misc\Templates\OldSyntaxTemplate_TF2.sp" />
-        <ClInclude Include="Resources\Misc\Templates\Templates.xml" />
-        <ClInclude Include="Resources\Misc\Templates\Template_CSGO.sp" />
-        <ClInclude Include="Resources\Misc\Templates\Template_CSS.sp" />
-        <ClInclude Include="Resources\Misc\Templates\Template_Generic.sp" />
-        <ClInclude Include="Resources\Misc\Templates\Template_TF2.sp" />
-        <Content Include="Deploy\nsis-plugins\DotNetChecker.dll" />
-    </ItemGroup>
-    <ItemGroup>
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\admin.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adminmenu.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adt.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adt_array.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adt_stack.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adt_trie.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\banning.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\basecomm.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\bitbuffer.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\clientprefs.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\clients.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\commandfilters.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\commandline.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\console.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\convars.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\core.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\cstrike.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\datapack.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\dbi.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\entity.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\entity_prop_stocks.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\events.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\files.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\float.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\functions.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\geoip.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\halflife.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\handles.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\helpers.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\keyvalues.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\lang.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\logging.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\mapchooser.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\menus.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\nextmap.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\profiler.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\protobuf.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\regex.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdkhooks.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_client.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_engine.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_entinput.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_entoutput.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_functions.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_gamerules.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_hooks.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_sound.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_stocks.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_stringtables.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_tempents.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_tempents_stocks.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_trace.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_variant_t.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_voice.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sorting.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sourcemod.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\string.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\testing.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\textparse.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\tf2.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\tf2_stocks.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\timers.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\topmenus.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\usermessages.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\vector.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\version.inc" />
-        <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\version_auto.inc" />
-        <ClInclude Include="Resources\Misc\Templates\ExtensionIncludeTemplate.inc" />
-        <ClInclude Include="Resources\Misc\Templates\IncludeTemplate.inc" />
-        <ClInclude Include="Resources\Misc\Templates\NativeIncludeTemplate.inc" />
-    </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-    <PropertyGroup>
-        <PreBuildEvent>
-        </PreBuildEvent>
-    </PropertyGroup>
-    <PropertyGroup>
-        <PostBuildEvent>md ".\sourcepawn"
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{60D2BA42-B59B-4B49-928E-C0CDDE254917}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Spcode</RootNamespace>
+    <AssemblyName>Spcode</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="App\App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, PublicKeyToken=null">
+      <HintPath>packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DiscordRPC, Version=1.0.150.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>packages\DiscordRichPresence.1.0.150\lib\net35\DiscordRPC.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=6.0.1.278, Culture=neutral, PublicKeyToken=9cc39be672370310">
+      <HintPath>packages\AvalonEdit.6.0.1\lib\net45\ICSharpCode.AvalonEdit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MahApps.Metro, Version=1.6.5.1, Culture=neutral, PublicKeyToken=null">
+      <HintPath>packages\MahApps.Metro.1.6.5\lib\net45\MahApps.Metro.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>packages\Windows7APICodePack-Core.1.1.0.0\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>packages\Windows7APICodePack-Shell.1.1.0.0\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Octokit, Version=0.46.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>packages\Octokit.0.46.0\lib\net46\Octokit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106">
+      <HintPath>packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="QueryMaster">
+      <HintPath>QueryMaster\QueryMaster.dll</HintPath>
+    </Reference>
+    <Reference Include="smxdasm">
+      <HintPath>App\smxdasm.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>packages\ControlzEx.3.0.2.4\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.XML" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=2.9.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>packages\Extended.Wpf.Toolkit.2.9\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=2.9.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>packages\Extended.Wpf.Toolkit.2.9\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App\AssemblyInfo1.cs" />
+    <Compile Include="Interop\ConfigControl.cs" />
+    <Compile Include="Interop\PipeInteropClient.cs" />
+    <Compile Include="Interop\PipeInteropServer.cs" />
+    <Compile Include="Interop\OptionsControl.cs" />
+    <Compile Include="Interop\TranslationProvider.cs" />
+    <Compile Include="Interop\Updater\UpdateCheck.cs" />
+    <Compile Include="Interop\Updater\UpdateInfo.cs" />
+    <Compile Include="Interop\Updater\UpdateWindow.xaml.cs">
+      <DependentUpon>UpdateWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\ColorChangeControl.xaml.cs">
+      <DependentUpon>ColorChangeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\DASMElement.xaml.cs">
+      <DependentUpon>DASMElement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\EditorElement.xaml.cs">
+      <DependentUpon>EditorElement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Components\EditorElementBracketHighlighter.cs" />
+    <Compile Include="UI\Components\DASMElementHighlighter.cs" />
+    <Compile Include="UI\Components\EditorElementHighlighter.cs" />
+    <Compile Include="UI\Components\EditorFoldingStrategy.cs" />
+    <Compile Include="UI\Components\EditorIndetation.cs" />
+    <Compile Include="UI\Components\IntelliSenseController.cs" />
+    <Compile Include="UI\Interop\LanguageChooserWindow.xaml.cs">
+      <DependentUpon>LanguageChooserWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\MainWindowBackgroundParser.cs" />
+    <Compile Include="UI\MainWindowServerQuery.cs" />
+    <Compile Include="UI\MainWindowSPCompiler.cs" />
+    <Compile Include="UI\MainWindowCommands.cs" />
+    <Compile Include="UI\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\MainWindowFindReplaceHandler.cs" />
+    <Compile Include="UI\MainWindowInputHandler.cs" />
+    <Compile Include="UI\MainWindowMenuHandler.cs" />
+    <Compile Include="UI\MainWindowConfigHandler.cs" />
+    <Compile Include="UI\MainWindowObjectBrowser.cs" />
+    <Compile Include="UI\MainWindowTranslations.cs" />
+    <Compile Include="UI\STheme\SMetroTheme.cs" />
+    <Compile Include="UI\Windows\ConfigWindow.xaml.cs">
+      <DependentUpon>ConfigWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Windows\NewFileWindow.xaml.cs">
+      <DependentUpon>NewFileWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Windows\OptionsWindow.xaml.cs">
+      <DependentUpon>OptionsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Windows\OptionsWindowHighlighting.cs" />
+    <Compile Include="UI\Windows\SPDefinitionWindow.xaml.cs">
+      <DependentUpon>SPDefinitionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Windows\AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\FTP.cs" />
+    <Compile Include="Utils\ManagedAES.cs" />
+    <Compile Include="Utils\SPSyntaxTidy\SPSyntaxTidy.cs" />
+    <Compile Include="Utils\SPSyntaxTidy\SPTokenizer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Interop\Updater\UpdateWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\ColorChangeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\DASMElement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\EditorElement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Interop\LanguageChooserWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\STheme\Brushes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\STheme\STheme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Windows\ConfigWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Windows\NewFileWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Windows\OptionsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Windows\SPDefinitionWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Windows\AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\AboutImages\AvalonDock.png" />
+    <Resource Include="Resources\AboutImages\license.png" />
+    <Resource Include="Resources\AboutImages\MahAppsMetro.png" />
+    <Resource Include="Resources\AboutImages\SharpDevelop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icon.ico" />
+    <Resource Include="Resources\Icon256x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.8">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.8 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\AboutImages\IconMonstr.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\AboutImages\sourcemod.png" />
+    <Resource Include="Resources\AboutImages\smlib.png" />
+    <Resource Include="Resources\AboutImages\alliedmodders.png" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Resources\Misc\Configurations\Configs.xml">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Lysis\LysisForSpedit.csproj">
+      <Project>{a8d94e5a-0cdc-4f01-8801-5770b3ca2b5b}</Project>
+      <Name>LysisForSpedit</Name>
+    </ProjectReference>
+    <ProjectReference Include="SourcepawnCondenser\SourcepawnCondenser\SourcepawnCondenser.csproj">
+      <Project>{b4e00f2d-dd73-42c7-a0ca-ba92b2a05850}</Project>
+      <Name>SourcepawnCondenser</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockAnchorableBottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockAnchorableLeft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockAnchorableRight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockAnchorableTop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableBottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableLeft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableRight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockDocumentAsAnchorableTop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockDocumentBottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockDocumentInside.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockDocumentLeft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockDocumentRight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockDocumentTop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockPaneEmpty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\DockPaneLargeEmpty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\HTabGroup.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\Locked.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinAutoHide.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinAutoHide_Black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinAutoHide_Dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinClose.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinClose_Black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinClose_Dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinDocMenu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinDocMenu_Black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinMaximize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinMaximize_Black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinMaximize_Dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinMenu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinMenu_Black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinMenu_Dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinRestore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinRestore_Black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\PinRestore_Dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="UI\STheme\Images\VTabGroup.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\iconmonstr-file-5-16.png" />
+    <Resource Include="Resources\iconmonstr-file-8-16.png" />
+    <Resource Include="Resources\iconmonstr-folder-13-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\iconmonstr-code-fork-1-20.png" />
+    <Resource Include="Resources\iconmonstr-code-fork-2-20.png" />
+    <Resource Include="Resources\iconmonstr-code-fork-4-20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Deploy\DotNetChecker.nsh" />
+    <ClInclude Include="Deploy\FileAssociation.nsh" />
+    <ClInclude Include="Deploy\GPLv3.txt" />
+    <ClInclude Include="Deploy\icon.ico" />
+    <ClInclude Include="Deploy\SPCode.nsi" />
+    <Content Include="Deploy\Compress.ps1" />
+    <ClInclude Include="Resources\lang_0_spcode.xml" />
+    <ClInclude Include="Resources\lang_0_spcode_entryTemplate.xml" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\spcomp.exe" />
+    <ClInclude Include="Resources\Misc\Templates\OldSyntaxTemplate_CSGO.sp" />
+    <ClInclude Include="Resources\Misc\Templates\OldSyntaxTemplate_CSS.sp" />
+    <ClInclude Include="Resources\Misc\Templates\OldSyntaxTemplate_Generic.sp" />
+    <ClInclude Include="Resources\Misc\Templates\OldSyntaxTemplate_TF2.sp" />
+    <ClInclude Include="Resources\Misc\Templates\Templates.xml" />
+    <ClInclude Include="Resources\Misc\Templates\Template_CSGO.sp" />
+    <ClInclude Include="Resources\Misc\Templates\Template_CSS.sp" />
+    <ClInclude Include="Resources\Misc\Templates\Template_Generic.sp" />
+    <ClInclude Include="Resources\Misc\Templates\Template_TF2.sp" />
+    <Content Include="Deploy\nsis-plugins\DotNetChecker.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\admin.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adminmenu.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adt.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adt_array.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adt_stack.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\adt_trie.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\banning.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\basecomm.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\bitbuffer.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\clientprefs.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\clients.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\commandfilters.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\commandline.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\console.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\convars.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\core.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\cstrike.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\datapack.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\dbi.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\entity.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\entity_prop_stocks.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\events.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\files.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\float.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\functions.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\geoip.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\halflife.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\handles.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\helpers.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\keyvalues.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\lang.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\logging.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\mapchooser.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\menus.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\nextmap.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\profiler.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\protobuf.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\regex.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdkhooks.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_client.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_engine.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_entinput.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_entoutput.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_functions.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_gamerules.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_hooks.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_sound.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_stocks.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_stringtables.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_tempents.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_tempents_stocks.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_trace.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_variant_t.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sdktools_voice.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sorting.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\sourcemod.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\string.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\testing.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\textparse.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\tf2.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\tf2_stocks.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\timers.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\topmenus.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\usermessages.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\vector.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\version.inc" />
+    <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\version_auto.inc" />
+    <ClInclude Include="Resources\Misc\Templates\ExtensionIncludeTemplate.inc" />
+    <ClInclude Include="Resources\Misc\Templates\IncludeTemplate.inc" />
+    <ClInclude Include="Resources\Misc\Templates\NativeIncludeTemplate.inc" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>md ".\sourcepawn"
             md ".\sourcepawn\templates"
             md ".\sourcepawn\configs"
             md ".\sourcepawn\temp"
@@ -543,8 +552,8 @@
             copy ".\..\..\Deploy\icon.ico" ".\icon.ico" /y
             copy ".\..\..\Deploy\nsis-plugins\DotNetChecker.dll" ".\nsis-plugins\DotNetChecker.dll" /y
         </PostBuildEvent>
-    </PropertyGroup>
-    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.
     <Target Name="BeforeBuild">
     </Target>
