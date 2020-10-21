@@ -244,6 +244,8 @@ namespace Spcode.UI
                         }
                     }
 
+            Properties.Settings.Default.Save();
+
             Program.OptionsObject.LastOpenFiles = lastOpenFiles.ToArray();
 
             Program.discordClient.Dispose();

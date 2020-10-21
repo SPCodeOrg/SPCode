@@ -280,7 +280,7 @@ namespace Spcode.UI
                 MatchCollection mc = regex.Matches(editor.editor.Text);
                 count += mc.Count;
             }
-            FindResultBlock.Text = count.ToString() + Program.Translations.GetLanguage("OccFound");
+            FindResultBlock.Text = count.ToString() + " " + Program.Translations.GetLanguage("OccFound");
         }
 
         private Regex GetSearchRegex()
