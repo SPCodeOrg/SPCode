@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -18,6 +19,7 @@ using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Rendering;
 using ICSharpCode.AvalonEdit.Utils;
 using MahApps.Metro.Controls.Dialogs;
+using SourcepawnCondenser;
 using SourcepawnCondenser.SourcemodDefinition;
 using Spcode.Utils.SPSyntaxTidy;
 using Xceed.Wpf.AvalonDock.Layout;
@@ -631,8 +633,61 @@ namespace Spcode.UI.Components
             EvaluateIntelliSense();
             var result = bracketSearcher.SearchBracket(editor.Document, editor.CaretOffset);
             bracketHighlightRenderer.SetHighlight(result);
-            //TODO: Remove this in release
-            // StatusLine_Work.Text = editor.CaretOffset.ToString();
+
+
+            if (Program.OptionsObject.Program_DynamicISAC)
+            {
+                var ee = Program.MainWindow.GetAllEditorElements();
+                var ce = Program.MainWindow.GetCurrentEditorElement();
+
+                var caret = -1;
+
+                if (ee != null)
+                {
+                    var definitions = new SMDefinition[ee.Length];
+                    List<SMFunction> currentFunctions = null;
+                    for (var i = 0; i < ee.Length; ++i)
+                    {
+                        var el = ee[i];
+                        var fInfo = new FileInfo(el.FullFilePath);
+                        var text = el.editor.Document.Text;
+                        if (fInfo.Extension.Trim('.').ToLowerInvariant() == "inc")
+                            definitions[i] =
+                                new Condenser(text
+                                    , fInfo.Name).Condense();
+
+                        if (fInfo.Extension.Trim('.').ToLowerInvariant() == "sp")
+                        {
+                            if (el.IsLoaded)
+                            {
+                                caret = el.editor.CaretOffset;
+                                definitions[i] =
+                                    new Condenser(text, fInfo.Name)
+                                        .Condense();
+                                currentFunctions = definitions[i].Functions;
+                            }
+                        }
+                    }
+
+                    var smDef = Program.Configs[Program.SelectedConfig].GetSMDef()
+                        .ProduceTemporaryExpandedDefinition(definitions, caret, currentFunctions);
+                    var smFunctions = smDef.Functions.ToArray();
+                    var acNodes = smDef.ProduceACNodes();
+                    var isNodes = smDef.ProduceISNodes();
+
+                    foreach (var el in ee)
+                    {
+                        if (el == ce)
+                        {
+                            Debug.Assert(ce != null, nameof(ce) + " != null");
+                            if (ce.ISAC_Open) continue;
+                        }
+
+                        el.InterruptLoadAutoCompletes(smDef.FunctionStrings, smFunctions, acNodes,
+                            isNodes, smDef.Methodmaps.ToArray(), smDef.Variables.ToArray());
+                    }
+                }
+            }
         }
 
         private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)

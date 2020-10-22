@@ -12,6 +12,8 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public string[]
             ConstantsStrings = new string[0]; //ATTENTION: THIS IS NOT THE LIST OF ALL CONSTANTS - IT INCLUDES MUCH MORE
 
+        public List<string> currentVariables = new List<string>();
+
         //public string[] EnumStrings = new string[0]; NOT NEEDED
         //public string[] StructStrings = new string[0]; NOT NEEDED
         //public string[] DefinesStrings = new string[0]; NOT NEEDED
@@ -39,7 +41,6 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public List<SMTypedef> Typedefs = new List<SMTypedef>();
         public string[] TypeStrings = new string[0];
         public List<SMVariable> Variables = new List<SMVariable>();
-        public List<string> currentVariables = new List<string>();
 
         public void Sort()
         {
@@ -133,7 +134,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
                 // TODO: This somewhat works, but somethings when in the end of a function it's buggy and doesnt find
                 // the correct function or it finds nothing at all. The addition is a small hack that sometimes works 
                 var currentFunc = currentFunctions.FirstOrDefault(e =>
-                    e.Index < caret && caret <= e.EndPos + 5 && e.File.EndsWith(".sp"));
+                    e.Index < caret && caret <= e.EndPos);
                 if (currentFunc != null)
                 {
                     constantNames.AddRange(currentFunc.FuncVariables.Select(v => v.Name));
@@ -160,7 +161,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
             typeNames.AddRange(Typedefs.Select(i => i.Name));
             typeNames.AddRange(EnumStructs.Select(i => i.Name));
             typeNames.Sort(string.Compare);
-            TypeStrings = typeNames.ToArray();
+            TypeStrings = typeNames.Where(e => !string.IsNullOrWhiteSpace(e)).ToArray();
         }
 
         public ACNode[] ProduceACNodes()
