@@ -315,24 +315,24 @@ namespace Spcode.UI
 
         public void UpdateWindowTitle()
         {
-            var ee = GetCurrentEditorElement();
-            string outString;
-            if (ee == null)
+            var editor_elements = GetAllEditorElements();
+            string outString = "SPCode";
+            if (editor_elements == null)
             {
-                outString = "SPCode";
                 Program.discordClient.SetPresence(new RichPresence
+                {
+                    State = "Idle",
+                    Timestamps = Program.discordTime,
+                    Assets = new Assets
                     {
-                        State = "Idle",
-                        Timestamps = Program.discordTime,
-                        Assets = new Assets
-                        {
-                            LargeImageKey = "immagine"
-                        }
-                    });
+                        LargeImageKey = "immagine"
+                    }
+                });
             }
             else
             {
-                outString = ee.FullFilePath + " - SPCode";
+                var currentEditorElement = GetCurrentEditorElement();
+                outString = $"{currentEditorElement.FullFilePath} - {outString}";
             }
 
             if (ServerIsRunning) outString = $"{outString} ({Program.Translations.GetLanguage("ServerRunning")})";
