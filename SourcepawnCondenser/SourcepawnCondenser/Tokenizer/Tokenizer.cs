@@ -393,10 +393,16 @@ namespace SourcepawnCondenser.Tokenizer
 
                             var directiveString = Source.Substring(startIndex, endIndex - startIndex);
                             token.Add(new Token(directiveString, TokenKind.PrePocessorDirective, startIndex));
-                            i = endIndex - 1;
+                            for (var j = i + 1; j < sArrayLength; ++j)
+                                if (sArray[j] == '\n' || sArray[j] == '\r')
+                                {
+                                    i = j-1;
+                                    break;
+                                }
                             continue;
                         }
                     }
+
                 }
 
                 #endregion

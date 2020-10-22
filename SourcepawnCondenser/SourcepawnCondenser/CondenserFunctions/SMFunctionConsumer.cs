@@ -381,7 +381,8 @@ namespace SourcepawnCondenser
                     // Assign var match: "int x = 5"
                     case TokenKind.Assignment when t[position + 4].Kind == TokenKind.Semicolon &&
                                                    (t[position + 3].Kind == TokenKind.Number ||
-                                                    t[position + 3].Kind == TokenKind.Quote):
+                                                    t[position + 3].Kind == TokenKind.Quote ||
+                                                    t[position + 3].Kind == TokenKind.Identifier):
                         variables.Add(new SMVariable
                         {
                             Index = startIndex, Length = t[position + 4].Index - startIndex, File = FileName,

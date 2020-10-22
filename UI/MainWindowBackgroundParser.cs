@@ -13,12 +13,12 @@ namespace Spcode.UI
     public partial class MainWindow
     {
         private Thread backgroundParserThread;
-        private ACNode[] currentACNodes;
-        private ISNode[] currentISNodes;
-        private SMDefinition currentSMDef;
-        private ulong currentSMDefUID;
-
-        private SMFunction[] currentSMFunctions;
+        internal ACNode[] currentACNodes;
+        internal ISNode[] currentISNodes;
+        internal SMDefinition currentSMDef;
+        internal ulong currentSMDefUID;
+        internal SMFunction[] currentSMFunctions;
+        
         private Timer parseDistributorTimer;
 
         private void StartBackgroundParserThread()
@@ -63,7 +63,7 @@ namespace Spcode.UI
 
         private void BackgroundParser_Worker()
         {
-            while (true)
+            while (false)
             while (Program.OptionsObject.Program_DynamicISAC)
             {
                 Thread.Sleep(3000);

@@ -90,7 +90,7 @@ namespace Spcode.UI
                 if (!args[i].EndsWith("exe"))
                     TryLoadSourceFile(args[i], false, true, i == 0);
             sc.Close(TimeSpan.FromMilliseconds(500.0));
-            StartBackgroundParserThread();
+            // StartBackgroundParserThread();
             FullyInitialized = true;
         }
 
