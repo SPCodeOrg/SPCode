@@ -5,7 +5,7 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Spcode")]
+[assembly: AssemblyTitle("SPCode")]
 [assembly: AssemblyDescription("SPCode - a lightweight sourcepawn editor")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]

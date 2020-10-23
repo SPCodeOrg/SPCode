@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Spcode.UI.Components.DASMElement"
+﻿<UserControl x:Class="SPCode.UI.Components.DASMElement"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:controls="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

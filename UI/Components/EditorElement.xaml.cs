@@ -21,11 +21,11 @@ using ICSharpCode.AvalonEdit.Utils;
 using MahApps.Metro.Controls.Dialogs;
 using SourcepawnCondenser;
 using SourcepawnCondenser.SourcemodDefinition;
-using Spcode.Utils.SPSyntaxTidy;
+using SPCode.Utils.SPSyntaxTidy;
 using Xceed.Wpf.AvalonDock.Layout;
 using Timer = System.Timers.Timer;
 
-namespace Spcode.UI.Components
+namespace SPCode.UI.Components
 {
     /// <summary>
     ///     Interaction logic for EditorElement.xaml

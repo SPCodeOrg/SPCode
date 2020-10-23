@@ -4,7 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Windows.Media;
 
-namespace Spcode //leave this here instead of .Interop because of reasons...
+namespace SPCode //leave this here instead of .Interop because of reasons...
 {
     [Serializable]
     public class OptionsControl

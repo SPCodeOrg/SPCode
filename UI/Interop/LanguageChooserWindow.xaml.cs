@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using MahApps.Metro;
 
-namespace Spcode.UI.Interop
+namespace SPCode.UI.Interop
 {
 	/// <summary>
 	/// Interaction logic for LanguageChooserWindow.xaml

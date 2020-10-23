@@ -5,11 +5,11 @@ using System.Windows.Controls;
 using Lysis;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
-using Spcode.UI.Components;
-using Spcode.UI.Windows;
-using Spcode.Utils.SPSyntaxTidy;
+using SPCode.UI.Components;
+using SPCode.UI.Windows;
+using SPCode.Utils.SPSyntaxTidy;
 
-namespace Spcode.UI
+namespace SPCode.UI
 {
     public partial class MainWindow
     {

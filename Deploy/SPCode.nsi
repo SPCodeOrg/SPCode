@@ -38,7 +38,7 @@ SetOutPath $INSTDIR
 !insertmacro CheckNetFramework 48
 
 
-File Spcode.exe
+File SPCode.exe
 File MahApps.Metro.dll
 File ICSharpCode.AvalonEdit.dll
 File System.Windows.Interactivity.dll
@@ -77,7 +77,7 @@ File /r ".\sourcepawn"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayName" "SPCode - A lightweight sourcepawn editor"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "UninstallString" "$INSTDIR\uninstall.exe"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "InstallLocation" "$INSTDIR"
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayIcon" "$INSTDIR\Spcode.exe"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayIcon" "$INSTDIR\SPCode.exe"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "Publisher" "Hexah"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayVersion" "1.6.x.x"
 WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "NoModify" 1
@@ -90,33 +90,33 @@ SectionEnd
 
 Section "File Association (.sp)" prog02
 SectionIn 1
-${registerExtension} "$INSTDIR\Spcode.exe" ".sp" "Sourcepawn Script"
+${registerExtension} "$INSTDIR\SPCode.exe" ".sp" "Sourcepawn Script"
 System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
 SectionEnd
 
 
 Section "File Association (.inc)" prog03
 SectionIn 1
-${registerExtension} "$INSTDIR\Spcode.exe" ".inc" "Sourcepawn Include-File"
+${registerExtension} "$INSTDIR\SPCode.exe" ".inc" "Sourcepawn Include-File"
 System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
 SectionEnd
 
 
 Section "File Association (.smx)" prog04
 SectionIn 1
-${registerExtension} "$INSTDIR\Spcode.exe" ".smx" "Sourcemod Plugin"
+${registerExtension} "$INSTDIR\SPCode.exe" ".smx" "Sourcemod Plugin"
 System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
 SectionEnd
 
 
 Section "Desktop Shortcut" prog05
 SectionIn 1
-CreateShortCut "$DESKTOP\SPCode.lnk" "$INSTDIR\Spcode.exe" ""
+CreateShortCut "$DESKTOP\SPCode.lnk" "$INSTDIR\SPCode.exe" ""
 SectionEnd
 
 Section "Startmenu Shortcut" prog06
 SectionIn 1
-CreateShortCut "$SMPROGRAMS\SPCode.lnk" "$INSTDIR\Spcode.exe" ""
+CreateShortCut "$SMPROGRAMS\SPCode.lnk" "$INSTDIR\SPCode.exe" ""
 SectionEnd
 
 Section "Uninstall"
@@ -125,7 +125,7 @@ Delete $INSTDIR\uninstall.exe
 
 
 
-Delete $INSTDIR\Spcode.exe
+Delete $INSTDIR\SPCode.exe
 Delete $INSTDIR\MahApps.Metro.dll
 Delete $INSTDIR\ICSharpCode.AvalonEdit.dll
 Delete $INSTDIR\System.Windows.Interactivity.dll

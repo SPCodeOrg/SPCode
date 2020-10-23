@@ -11,12 +11,12 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using DiscordRPC;
 using MahApps.Metro;
-using Spcode.Interop;
-using Spcode.Interop.Updater;
-using Spcode.UI;
-using Spcode.UI.Interop;
+using SPCode.Interop;
+using SPCode.Interop.Updater;
+using SPCode.UI;
+using SPCode.UI.Interop;
 
-namespace Spcode
+namespace SPCode
 {
     public static class Program
     {
@@ -45,7 +45,7 @@ namespace Spcode
 #endif
 
             bool mutexReserved;
-            using (new Mutex(true, "SpcodeGlobalMutex", out mutexReserved))
+            using (new Mutex(true, "SPCodeGlobalMutex", out mutexReserved))
             {
                 if (mutexReserved)
                 {

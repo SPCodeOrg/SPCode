@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Spcode.Utils.SPSyntaxTidy
+namespace SPCode.Utils.SPSyntaxTidy
 {
 	public static class SPSyntaxTidy
     {

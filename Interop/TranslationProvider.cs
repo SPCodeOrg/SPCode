@@ -8,7 +8,7 @@ using System.Linq;
 using System.Xml;
 using System.Windows;
 
-namespace Spcode.Interop
+namespace SPCode.Interop
 {
 	public class TranslationProvider
 	{

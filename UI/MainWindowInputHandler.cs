@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace Spcode.UI
+namespace SPCode.UI
 {
     public partial class MainWindow
     {

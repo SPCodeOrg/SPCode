@@ -5,10 +5,10 @@ using System.Threading;
 using System.Timers;
 using SourcepawnCondenser;
 using SourcepawnCondenser.SourcemodDefinition;
-using Spcode.UI.Components;
+using SPCode.UI.Components;
 using Timer = System.Timers.Timer;
 
-namespace Spcode.UI
+namespace SPCode.UI
 {
     public partial class MainWindow
     {
