@@ -25,7 +25,7 @@ namespace Spcode.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1500")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public double Height {
             get {
                 return ((double)(this["Height"]));
@@ -37,7 +37,7 @@ namespace Spcode.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1500")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public double Width {
             get {
                 return ((double)(this["Width"]));
@@ -49,7 +49,7 @@ namespace Spcode.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("700")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public double Top {
             get {
                 return ((double)(this["Top"]));
@@ -61,7 +61,7 @@ namespace Spcode.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("700")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public double Left {
             get {
                 return ((double)(this["Left"]));

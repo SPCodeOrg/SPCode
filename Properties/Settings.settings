@@ -3,16 +3,16 @@
   <Profiles />
   <Settings>
     <Setting Name="Height" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">1500</Value>
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="Width" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">1500</Value>
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="Top" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">700</Value>
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="Left" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">700</Value>
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>
