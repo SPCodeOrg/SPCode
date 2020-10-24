@@ -12,10 +12,10 @@ using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using Spcode.Interop;
-using Spcode.Utils;
+using SPCode.Interop;
+using SPCode.Utils;
 
-namespace Spcode.UI.Windows
+namespace SPCode.UI.Windows
 {
     /// <summary>
     ///     Interaction logic for AboutWindow.xaml

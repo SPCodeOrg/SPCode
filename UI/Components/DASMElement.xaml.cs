@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 using System.IO;
 using smxdasm;
 
-namespace Spcode.UI.Components
+namespace SPCode.UI.Components
 {
     /// <summary>
     /// Interaction logic for DASMElement.xaml

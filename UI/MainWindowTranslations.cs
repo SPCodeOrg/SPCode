@@ -1,8 +1,8 @@
-﻿using Spcode.UI.Components;
+﻿using SPCode.UI.Components;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
 
-namespace Spcode.UI
+namespace SPCode.UI
 {
 	public partial class MainWindow
 	{

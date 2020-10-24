@@ -21,14 +21,14 @@ using System.Text;
 using Xceed.Wpf.AvalonDock.Themes;
 using System.Windows;
 
-namespace Spcode.UI.STheme
+namespace SPCode.UI.STheme
 {
     public class SMetroTheme : Theme
     {
         public override Uri GetResourceUri()
         {
             return new Uri(
-				"/Spcode;component/ui/stheme/stheme.xaml", 
+				"/SPCode;component/ui/stheme/stheme.xaml", 
                 UriKind.Relative);  
         }
     }

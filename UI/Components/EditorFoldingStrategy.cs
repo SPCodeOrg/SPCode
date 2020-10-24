@@ -2,7 +2,7 @@
 using ICSharpCode.AvalonEdit.Folding;
 using System.Collections.Generic;
 
-namespace Spcode.UI.Components
+namespace SPCode.UI.Components
 {
     public class SPFoldingStrategy
     {

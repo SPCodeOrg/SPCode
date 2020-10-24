@@ -11,7 +11,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
 using SourcepawnCondenser.SourcemodDefinition;
 
-namespace Spcode.UI.Components
+namespace SPCode.UI.Components
 {
     public class AeonEditorHighlighting : IHighlightingDefinition
     {

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spcode", "Spcode.csproj", "{60D2BA42-B59B-4B49-928E-C0CDDE254917}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPCode", "SPCode.csproj", "{60D2BA42-B59B-4B49-928E-C0CDDE254917}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B4E00F2D-DD73-42C7-A0CA-BA92B2A05850} = {B4E00F2D-DD73-42C7-A0CA-BA92B2A05850}
 		{A8D94E5A-0CDC-4F01-8801-5770B3CA2B5B} = {A8D94E5A-0CDC-4F01-8801-5770B3CA2B5B}

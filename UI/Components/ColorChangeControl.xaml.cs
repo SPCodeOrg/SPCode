@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Spcode.UI.Components
+namespace SPCode.UI.Components
 {
     /// <summary>
     /// Interaction logic for ColorChangeControl.xaml

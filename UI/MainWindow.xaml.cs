@@ -11,14 +11,14 @@ using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using DiscordRPC;
 using MahApps.Metro;
-using Spcode.Interop.Updater;
-using Spcode.UI.Components;
+using SPCode.Interop.Updater;
+using SPCode.UI.Components;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 
-// using Spcode.Interop.Updater; //not delete! ?
+// using SPCode.Interop.Updater; //not delete! ?
 
-namespace Spcode.UI
+namespace SPCode.UI
 {
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
@@ -169,7 +169,6 @@ namespace Spcode.UI
         private void AddEditorElement(string filePath, string name, bool SelectMe)
         {
             var layoutDocument = new LayoutDocument {Title = name};
-            layoutDocument.Closing += layoutDocument_Closing;
             layoutDocument.ToolTip = filePath;
             var editor = new EditorElement(filePath) {Parent = layoutDocument};
             layoutDocument.Content = editor;
@@ -181,33 +180,21 @@ namespace Spcode.UI
         private void DockingManager_ActiveContentChanged(object sender, EventArgs e)
         {
             UpdateWindowTitle();
-            var ee = GetCurrentEditorElement();
-            if (ee != null)
-            {
-                ee.editor.Focus();
-                Program.discordClient.SetPresence(new RichPresence
-                    {
-                        Timestamps = Program.discordTime,
-                        State = $"Editing {Path.GetFileName(ee.FullFilePath)}",
-                        Assets = new Assets
-                        {
-                            LargeImageKey = "immagine",
-                            LargeImageText = $"Editing {Path.GetFileName(ee.FullFilePath)}"
-                        }
-                    });
-                
-            }
         }
 
-        private void DockingManager_DocumentClosing(object sender, DocumentClosingEventArgs e)
+        private void DockingManager_DocumentClosed(object sender, DocumentClosedEventArgs e)
         {
             (e.Document.Content as EditorElement)?.Close();
+            var new_ee = GetCurrentEditorElement();
+            if (new_ee == null)
+            {
+                var er = EditorsReferences;
+                if (er.Count > 0)
+                {
+                    e.Document.Content = er[0];
+                }
+            }
             UpdateWindowTitle();
-        }
-
-        private void layoutDocument_Closing(object sender, CancelEventArgs e)
-        {
-            // e.Cancel = true;
         }
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
@@ -314,26 +301,27 @@ namespace Spcode.UI
         public void UpdateWindowTitle()
         {
             var ee = GetCurrentEditorElement();
-            string outString;
-            if (ee == null)
+            bool someEditorIsOpen = ee != null;
+            string outString = "Idle";
+            if (someEditorIsOpen)
             {
-                outString = "SPCode";
-                Program.discordClient.SetPresence(new RichPresence
-                    {
-                        State = "Idle",
-                        Timestamps = Program.discordTime,
-                        Assets = new Assets
-                        {
-                            LargeImageKey = "immagine"
-                        }
-                    });
-            }
-            else
-            {
-                outString = ee.FullFilePath + " - SPCode";
+                outString = ee.FullFilePath;
+                ee.editor.Focus();
             }
 
-            if (ServerIsRunning) outString = $"{outString} ({Program.Translations.GetLanguage("ServerRunning")})";
+            outString += " - SPCode";
+
+            Program.discordClient.SetPresence(new RichPresence
+            {
+                Timestamps = Program.discordTime,
+                State = someEditorIsOpen ? $"Editing {Path.GetFileName(ee.FullFilePath)}" : "Idle",
+                Assets = new Assets
+                {
+                    LargeImageKey = "immagine",
+                }
+            });
+
+            if (ServerIsRunning) outString = $"{outString} | ({Program.Translations.GetLanguage("ServerRunning")})";
             Title = outString;
         }
 

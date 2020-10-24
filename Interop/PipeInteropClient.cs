@@ -3,7 +3,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Text;
 
-namespace Spcode.Interop
+namespace SPCode.Interop
 {
     public static class PipeInteropClient
     {
@@ -18,7 +18,7 @@ namespace Spcode.Interop
                 stream.Write(stringLengthData, 0, stringLengthData.Length);
                 stream.Write(stringData, 0, stringData.Length);
             }
-			using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", "SpcodeNamedPipeServer", PipeDirection.Out, PipeOptions.Asynchronous))
+			using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", "SPCodeNamedPipeServer", PipeDirection.Out, PipeOptions.Asynchronous))
 			{
 				pipeClient.Connect(5000);
 				pipeClient.Write(array, 0, array.Length);

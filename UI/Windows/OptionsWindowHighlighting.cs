@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Spcode.UI.Windows
+namespace SPCode.UI.Windows
 {
     public partial class OptionsWindow
     {

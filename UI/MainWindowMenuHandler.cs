@@ -4,10 +4,10 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using Spcode.Interop.Updater;
-using Spcode.UI.Windows;
+using SPCode.Interop.Updater;
+using SPCode.UI.Windows;
 
-namespace Spcode.UI
+namespace SPCode.UI
 {
     public partial class MainWindow
     {
@@ -206,7 +206,7 @@ namespace Spcode.UI
 
         private void ReportBug_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(@"https://github.com/Hexer10/Spcode/issues/new"));
+            Process.Start(new ProcessStartInfo(@"https://github.com/Hexer10/SPCode/issues/new"));
         }
 
         private async void UpdateCheck_Click(object sender, RoutedEventArgs e)
