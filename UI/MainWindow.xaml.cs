@@ -311,16 +311,19 @@ namespace SPCode.UI
 
             outString += " - SPCode";
 
-            Program.discordClient.SetPresence(new RichPresence
+            if (Program.discordClient.IsInitialized)
             {
-                Timestamps = Program.discordTime,
-                State = someEditorIsOpen ? $"Editing {Path.GetFileName(ee.FullFilePath)}" : "Idle",
-                Assets = new Assets
+                Program.discordClient.SetPresence(new RichPresence
                 {
-                    LargeImageKey = "immagine",
-                }
-            });
-
+                    Timestamps = Program.discordTime,
+                    State = someEditorIsOpen ? $"Editing {Path.GetFileName(ee.FullFilePath)}" : "Idle",
+                    Assets = new Assets
+                    {
+                        LargeImageKey = "immagine",
+                    }
+                });
+            }
+            
             if (ServerIsRunning) outString = $"{outString} | ({Program.Translations.GetLanguage("ServerRunning")})";
             Title = outString;
         }
