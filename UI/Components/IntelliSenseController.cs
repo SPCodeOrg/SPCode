@@ -43,8 +43,7 @@ namespace Spcode.UI.Components
 
         // TODO Add EnumStructs
         private SMMethodmap[] methodMaps;
-        private SMVariable[] smVariables;
-        
+
         private readonly Regex multilineCommentRegex = new Regex(@"/\*.*?\*/",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
 
@@ -71,7 +70,6 @@ namespace Spcode.UI.Components
             acEntrys = def.ProduceACNodes();
             isEntrys = def.ProduceISNodes();
             methodMaps = def.Methodmaps.ToArray();
-            smVariables = def.Variables.ToArray();
             AutoCompleteBox.ItemsSource = acEntrys;
             MethodAutoCompleteBox.ItemsSource = isEntrys;
         }
@@ -88,7 +86,6 @@ namespace Spcode.UI.Components
                 AutoCompleteBox.ItemsSource = acEntrys;
                 MethodAutoCompleteBox.ItemsSource = isEntrys;
                 methodMaps = newMethodMaps;
-                smVariables = newVariables;
             });
         }
 
@@ -135,8 +132,10 @@ namespace Spcode.UI.Components
             {
                 if (c == '#')
                 {
-                    HideISAC();
-                    return;
+                    string[] prep = {"define", "pragma", "file", "if"};
+                    acEntrys = ACNode.ConvertFromStringArray(prep, false, "#").ToArray();
+                    // HideISAC();
+                    break;
                 }
 
                 if (!char.IsWhiteSpace(c)) break;
@@ -214,7 +213,6 @@ namespace Spcode.UI.Components
                                             var classMatch = match.Groups["class"].Value;
                                             if (classMatch.Length > 0)
                                             {
-                                                
                                                 var methodMap = methodMaps.FirstOrDefault(e => e.Name == classMatch);
                                                 var method =
                                                     methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
@@ -397,7 +395,7 @@ namespace Spcode.UI.Components
                             }
                         }
 
-                        editor.Document.Replace(endOffset, length+1, replaceString);
+                        editor.Document.Replace(endOffset, length + 1, replaceString);
                         if (setCaret)
                             editor.CaretOffset -= 1;
                         return true;

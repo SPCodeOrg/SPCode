@@ -212,8 +212,6 @@ namespace Spcode.UI
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
-            backgroundParserThread?.Abort();
-            parseDistributorTimer?.Stop();
             ServerCheckThread?.Abort(); //a join would not work, so we have to be..forcefully...
             var lastOpenFiles = new List<string>();
             var editors = GetAllEditorElements();
