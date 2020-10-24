@@ -9,7 +9,7 @@ using System.Xml;
 using MahApps.Metro;
 using Microsoft.Win32;
 
-namespace Spcode.UI.Windows
+namespace SPCode.UI.Windows
 {
     /// <summary>
     ///     Interaction logic for AboutWindow.xaml

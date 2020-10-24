@@ -6,7 +6,7 @@ using System.Threading;
 using System.Windows;
 using Octokit;
 
-namespace Spcode.Interop.Updater
+namespace SPCode.Interop.Updater
 {
     /// <summary>
     ///     Interaction logic for UpdateWindow.xaml
@@ -59,8 +59,8 @@ namespace Spcode.Interop.Updater
         private void UpdateDownloadWorker()
         {
 #if DEBUG
-            var asset = new ReleaseAsset("", 0, "", "SpcodeUpdater.exe", "", "", "", 0, 0, DateTimeOffset.Now,
-                DateTimeOffset.Now, "https://hexah.net/SpcodeUpdater.exe", null);
+            var asset = new ReleaseAsset("", 0, "", "SPCodeUpdater.exe", "", "", "", 0, 0, DateTimeOffset.Now,
+                DateTimeOffset.Now, "https://hexah.net/SPCodeUpdater.exe", null);
 #else
             var asset = updateInfo.Asset;
 #endif
@@ -93,7 +93,7 @@ namespace Spcode.Interop.Updater
             try
             {
                 Process.Start(new ProcessStartInfo
-                    {Arguments = "/C SpcodeUpdater.exe", FileName = "cmd", WindowStyle = ProcessWindowStyle.Hidden});
+                    {Arguments = "/C SPCodeUpdater.exe", FileName = "cmd", WindowStyle = ProcessWindowStyle.Hidden});
                 Succeeded = true;
             }
             catch (Exception e)

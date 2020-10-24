@@ -5,9 +5,9 @@ using System.IO;
 using System.Windows;
 using System.Xml;
 using SourcepawnCondenser.SourcemodDefinition;
-using Spcode.Utils;
+using SPCode.Utils;
 
-namespace Spcode.Interop
+namespace SPCode.Interop
 {
     public static class ConfigLoader
     {

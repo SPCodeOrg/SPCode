@@ -7,9 +7,9 @@ using System.Windows.Media;
 using DiscordRPC;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
-using Spcode.UI.Components;
+using SPCode.UI.Components;
 
-namespace Spcode.UI.Windows
+namespace SPCode.UI.Windows
 {
     /// <summary>
     /// Interaction logic for AboutWindow.xaml

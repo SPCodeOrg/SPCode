@@ -1,4 +1,4 @@
-﻿using Spcode.UI.Components;
+﻿using SPCode.UI.Components;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 
-namespace Spcode.UI
+namespace SPCode.UI
 {
     public partial class MainWindow
     {

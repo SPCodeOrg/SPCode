@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Octokit;
 
-namespace Spcode.Interop.Updater
+namespace SPCode.Interop.Updater
 {
     public class UpdateInfo
     {
@@ -16,6 +16,6 @@ namespace Spcode.Interop.Updater
         public bool SkipDialog = false;
         public bool WriteAble = true;
 
-        public ReleaseAsset Asset => Release.Assets.FirstOrDefault(e => e.Name == "SpcodeUpdater.exe");
+        public ReleaseAsset Asset => Release.Assets.FirstOrDefault(e => e.Name == "SPCodeUpdater.exe");
     }
 }

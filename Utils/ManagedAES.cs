@@ -4,7 +4,7 @@ using System.Management;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Spcode.Utils
+namespace SPCode.Utils
 {
     public static class ManagedAES
     {

@@ -1,9 +1,9 @@
-﻿using Spcode.UI;
+﻿using SPCode.UI;
 using System;
 using System.IO.Pipes;
 using System.Text;
 
-namespace Spcode.Interop
+namespace SPCode.Interop
 {
     public class PipeInteropServer : IDisposable
     {
@@ -37,7 +37,7 @@ namespace Spcode.Interop
                 pipeServer.Close();
                 pipeServer = null;
             }
-            pipeServer = new NamedPipeServerStream("SpcodeNamedPipeServer", PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+            pipeServer = new NamedPipeServerStream("SPCodeNamedPipeServer", PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
             pipeServer.BeginWaitForConnection(new AsyncCallback(PipeConnection_MessageIn), null);
         }
 

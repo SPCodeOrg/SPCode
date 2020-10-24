@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using QueryMaster;
 
-namespace Spcode.UI
+namespace SPCode.UI
 {
     public partial class MainWindow
     {

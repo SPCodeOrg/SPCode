@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Spcode.Utils.SPSyntaxTidy
+namespace SPCode.Utils.SPSyntaxTidy
 {
     public static class SPTokenizer
     {

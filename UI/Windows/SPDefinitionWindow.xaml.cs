@@ -11,7 +11,7 @@ using MahApps.Metro;
 using MahApps.Metro.Controls;
 using SourcepawnCondenser.SourcemodDefinition;
 
-namespace Spcode.UI.Windows
+namespace SPCode.UI.Windows
 {
     /// <summary>
     ///     Interaction logic for AboutWindow.xaml

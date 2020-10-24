@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using MahApps.Metro;
 
-namespace Spcode.UI.Windows
+namespace SPCode.UI.Windows
 {
     /// <summary>
     /// Interaction logic for AboutWindow.xaml
