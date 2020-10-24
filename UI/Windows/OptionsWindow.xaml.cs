@@ -425,17 +425,7 @@ namespace SPCode.UI.Windows
                 // Init Discord RPC
                 Program.discordClient.Initialize();
 
-
-                // Set default presence
-                Program.discordClient.SetPresence(new RichPresence
-                {
-                    State = "Idle",
-                    Timestamps = Program.discordTime,
-                    Assets = new Assets
-                    {
-                        LargeImageKey = "immagine"
-                    }
-                });
+                Program.MainWindow.UpdateWindowTitle();
             }
             else if (!val && Program.discordClient.IsInitialized)
             {
