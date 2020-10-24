@@ -30,4 +30,4 @@ using System.Resources;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.6.0.1")]
+[assembly: AssemblyVersion("1.6.1.0")]

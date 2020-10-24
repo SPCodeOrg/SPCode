@@ -50,6 +50,7 @@
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Julien 'Aeon' Kluge (Original creator of SPEdit)" FontWeight="Bold" FontSize="15" />
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Bara (Tester, Proposer, Contributor, Update Server, Domain)" FontWeight="Bold" FontSize="13" />
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Hexah (Maintainer, Italian translation)" FontWeight="Bold" FontSize="13" />
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Natanel-Shitrit  (Contributor)" FontWeight="Bold" FontSize="13" />
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- mev (Proposer, Contributor, Color-Sheme-Designer)" FontWeight="Bold" />
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- BAILOPAN (Proposer, Help)" />
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- necavi (Tester, Proposer, Contributor)" />
