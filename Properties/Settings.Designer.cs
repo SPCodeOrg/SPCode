@@ -25,10 +25,10 @@ namespace SPCode.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Height {
+        [global::System.Configuration.DefaultSettingValueAttribute("Auto")]
+        public string Height {
             get {
-                return ((double)(this["Height"]));
+                return ((string)(this["Height"]));
             }
             set {
                 this["Height"] = value;
@@ -37,10 +37,10 @@ namespace SPCode.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Width {
+        [global::System.Configuration.DefaultSettingValueAttribute("Auto")]
+        public string Width {
             get {
-                return ((double)(this["Width"]));
+                return ((string)(this["Width"]));
             }
             set {
                 this["Width"] = value;
@@ -49,10 +49,10 @@ namespace SPCode.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Top {
+        [global::System.Configuration.DefaultSettingValueAttribute("Auto")]
+        public string Top {
             get {
-                return ((double)(this["Top"]));
+                return ((string)(this["Top"]));
             }
             set {
                 this["Top"] = value;
@@ -61,10 +61,10 @@ namespace SPCode.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Left {
+        [global::System.Configuration.DefaultSettingValueAttribute("Auto")]
+        public string Left {
             get {
-                return ((double)(this["Left"]));
+                return ((string)(this["Left"]));
             }
             set {
                 this["Left"] = value;

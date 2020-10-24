@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Controls;
 using Lysis;
@@ -217,14 +218,47 @@ namespace SPCode.UI
             foreach (var ee in editors)
                 if (ee != null)
                 {
-                    var currentCaret = ee.editor.TextArea.Caret.Offset;
-                    var currentLen = ee.editor.Text.Length;
+                    int currentCaret = ee.editor.TextArea.Caret.Offset, numOfSpacesOrTabsBefore = 0;
+                    var line = ee.editor.Document.GetLineByOffset(currentCaret);
+                    int lineNumber = line.LineNumber;
+                    // 0 - start | any other - middle | -1 - EOS
+                    int curserLinePos = currentCaret == line.Offset ? 0 : currentCaret == line.EndOffset ? -1 : currentCaret - line.Offset;
+
+                    if (curserLinePos > 0) numOfSpacesOrTabsBefore = ee.editor.Document.GetText(line.Offset, curserLinePos).Count(c => c == ' ' || c == '\t');
+
+#if DEBUG
+                    Debug.WriteLine($"Curser offset before format: {currentCaret}");
+
+                    // Where is out curser?
+                    if (currentCaret == line.Offset)
+                        Debug.WriteLine("Curser is at the start of the line");
+                    else if (currentCaret == line.EndOffset)
+                        Debug.WriteLine("Curser is at the end of the line");
+                    else
+                        Debug.WriteLine("Curser is somewhere in the middle of the line");
+#endif
+                    // Formatting Start //
                     ee.editor.Document.BeginUpdate();
                     var source = ee.editor.Text;
                     ee.editor.Document.Replace(0, source.Length, SPSyntaxTidy.TidyUp(source));
                     ee.editor.Document.EndUpdate();
-                    var diff = currentLen - ee.editor.Text.Length;
-                    ee.editor.TextArea.Caret.Offset = currentCaret + diff;
+                    // Formatting End //
+
+                    line = ee.editor.Document.GetLineByNumber(lineNumber);
+                    int newCaretPos = line.Offset;
+                    if(curserLinePos == -1)
+                    {
+                        newCaretPos += line.Length;
+                    }
+                    else if(curserLinePos != 0)
+                    {
+                        int numOfSpacesOrTabsAfter = ee.editor.Document.GetText(line.Offset, curserLinePos).Count(c => c == ' ' || c == '\t');
+                        newCaretPos += curserLinePos + (numOfSpacesOrTabsAfter - numOfSpacesOrTabsBefore);
+#if DEBUG
+                        Debug.WriteLine($"Curser offset after format: {newCaretPos}");
+#endif
+                    }
+                    ee.editor.TextArea.Caret.Offset = newCaretPos;
                 }
         }
 
