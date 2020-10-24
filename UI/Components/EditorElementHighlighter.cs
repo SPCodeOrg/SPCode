@@ -185,7 +185,7 @@ namespace SPCode.UI.Components
                     if (smDef.Defines.Count > 0)
                         rs.Rules.Add(new HighlightingRule
                         {
-                            Regex = new Regex(string.Join("|", smDef.Defines.Select(e => "\\b" + e.Name + "\\b").ToArray())),
+                            Regex = new Regex(string.Join("|", smDef.Defines.Select(e => "\\b" + Regex.Escape(e.Name) + "\\b").ToArray())),
                             Color = new HighlightingColor
                                 {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants)}
                         });
