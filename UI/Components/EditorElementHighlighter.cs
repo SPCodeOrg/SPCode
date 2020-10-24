@@ -9,11 +9,21 @@ using System.Windows;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
+using SourcepawnCondenser.SourcemodDefinition;
 
 namespace Spcode.UI.Components
 {
     public class AeonEditorHighlighting : IHighlightingDefinition
     {
+
+        private SMDefinition smDef;
+        public AeonEditorHighlighting() {}
+
+        public AeonEditorHighlighting(SMDefinition smDef)
+        {
+            this.smDef = smDef;
+        }
+
         public string Name => "SM";
 
         public HighlightingRuleSet MainRuleSet
@@ -169,6 +179,17 @@ namespace Spcode.UI.Components
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     Color = new HighlightingColor {Foreground = stringBrush}
                 });
+
+                if (smDef != null)
+                {
+                    if (smDef.Defines.Count > 0)
+                        rs.Rules.Add(new HighlightingRule
+                        {
+                            Regex = new Regex(string.Join("|", smDef.Defines.Select(e => "\\b" + e.Name + "\\b").ToArray())),
+                            Color = new HighlightingColor
+                                {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants)}
+                        });
+                }
                 var def = Program.Configs[Program.SelectedConfig].GetSMDef();
                 if (def.TypeStrings.Length > 0)
                     rs.Rules.Add(new HighlightingRule //types
