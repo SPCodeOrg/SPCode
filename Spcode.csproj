@@ -172,7 +172,6 @@
     <Compile Include="UI\Interop\LanguageChooserWindow.xaml.cs">
       <DependentUpon>LanguageChooserWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\MainWindowBackgroundParser.cs" />
     <Compile Include="UI\MainWindowServerQuery.cs" />
     <Compile Include="UI\MainWindowSPCompiler.cs" />
     <Compile Include="UI\MainWindowCommands.cs" />

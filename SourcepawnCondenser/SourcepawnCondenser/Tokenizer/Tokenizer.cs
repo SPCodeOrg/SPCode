@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace SourcepawnCondenser.Tokenizer
 {
@@ -174,7 +176,7 @@ namespace SourcepawnCondenser.Tokenizer
                         continue;
                     }
                 }
-                
+
                 // TODO: Create a real char token
                 if (c == '\'' && i + 1 < sArrayLength)
                 {
@@ -393,16 +395,37 @@ namespace SourcepawnCondenser.Tokenizer
 
                             var directiveString = Source.Substring(startIndex, endIndex - startIndex);
                             token.Add(new Token(directiveString, TokenKind.PrePocessorDirective, startIndex));
+                            if (directiveString == "#define" && sArray[endIndex] == ' ')
+                            {
+                                var name = new StringBuilder();
+                                for (var j = endIndex+1; j < sArrayLength; ++j)
+                                {
+                                    if (sArray[j] == '\n' || sArray[j] == '\r')
+                                    {
+                                        i = j - 1;
+                                        break;
+                                    }
+
+                                    if (sArray[j] == ' ')
+                                    {
+                                        token.Add(
+                                            new Token(name.ToString(), TokenKind.Identifier, endIndex+1));
+                                        break;
+                                    }
+                                    name.Append(sArray[j]);
+                                }
+                            }
+
                             for (var j = i + 1; j < sArrayLength; ++j)
                                 if (sArray[j] == '\n' || sArray[j] == '\r')
                                 {
-                                    i = j-1;
+                                    i = j - 1;
                                     break;
                                 }
+
                             continue;
                         }
                     }
-
                 }
 
                 #endregion

@@ -2,6 +2,7 @@
 using SPCode.UI.Windows;
 using System.Windows;
 using System.Windows.Controls;
+using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace SPCode.UI
 {

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -16,6 +17,7 @@ using System.Windows.Media.Animation;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Folding;
+using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
 using ICSharpCode.AvalonEdit.Utils;
 using MahApps.Metro.Controls.Dialogs;
@@ -170,6 +172,36 @@ namespace SPCode.UI.Components
             CompileBox.IsChecked = filePath.EndsWith(".sp");
         }
 
+        public string FullFilePath
+        {
+            get => _FullFilePath;
+            set
+            {
+                var fInfo = new FileInfo(value);
+                _FullFilePath = fInfo.FullName;
+                Parent.Title = fInfo.Name;
+                if (fileWatcher != null) fileWatcher.Path = fInfo.DirectoryName;
+            }
+        }
+
+        public bool NeedsSave
+        {
+            get => _NeedsSave;
+            set
+            {
+                if (!(value ^ _NeedsSave)) //when not changed
+                    return;
+                _NeedsSave = value;
+                if (Parent != null)
+                {
+                    if (_NeedsSave)
+                        Parent.Title = "*" + Parent.Title;
+                    else
+                        Parent.Title = Parent.Title.Trim('*');
+                }
+            }
+        }
+
         private async void TextArea_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!Keyboard.IsKeyDown(Key.LeftCtrl)) return;
@@ -254,9 +286,9 @@ namespace SPCode.UI.Components
             if (offset >= editor.TextArea.Document.TextLength)
                 offset--;
 
-            int offsetStart = TextUtilities.GetNextCaretPosition(editor.TextArea.Document, offset,
+            var offsetStart = TextUtilities.GetNextCaretPosition(editor.TextArea.Document, offset,
                 LogicalDirection.Backward, CaretPositioningMode.WordBorder);
-            int offsetEnd = TextUtilities.GetNextCaretPosition(editor.TextArea.Document, offset,
+            var offsetEnd = TextUtilities.GetNextCaretPosition(editor.TextArea.Document, offset,
                 LogicalDirection.Forward, CaretPositioningMode.WordBorder);
 
             if (offsetEnd == -1 || offsetStart == -1)
@@ -268,36 +300,6 @@ namespace SPCode.UI.Components
                 return string.Empty;
 
             return editor.TextArea.Document.GetText(offsetStart, offsetEnd - offsetStart);
-        }
-
-        public string FullFilePath
-        {
-            get => _FullFilePath;
-            set
-            {
-                var fInfo = new FileInfo(value);
-                _FullFilePath = fInfo.FullName;
-                Parent.Title = fInfo.Name;
-                if (fileWatcher != null) fileWatcher.Path = fInfo.DirectoryName;
-            }
-        }
-
-        public bool NeedsSave
-        {
-            get => _NeedsSave;
-            set
-            {
-                if (!(value ^ _NeedsSave)) //when not changed
-                    return;
-                _NeedsSave = value;
-                if (Parent != null)
-                {
-                    if (_NeedsSave)
-                        Parent.Title = "*" + Parent.Title;
-                    else
-                        Parent.Title = Parent.Title.Trim('*');
-                }
-            }
         }
 
         private void AutoSaveTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -657,7 +659,6 @@ namespace SPCode.UI.Components
                                 , fInfo.Name).Condense();
 
                     if (fInfo.Extension.Trim('.').ToLowerInvariant() == "sp")
-                    {
                         if (el.IsLoaded)
                         {
                             caret = el.editor.CaretOffset;
@@ -666,7 +667,6 @@ namespace SPCode.UI.Components
                                     .Condense();
                             currentFunctions = definitions[i].Functions;
                         }
-                    }
                 }
 
                 var smDef = Program.Configs[Program.SelectedConfig].GetSMDef()
@@ -675,6 +675,7 @@ namespace SPCode.UI.Components
                 var acNodes = smDef.ProduceACNodes();
                 var isNodes = smDef.ProduceISNodes();
 
+                ce.editor.SyntaxHighlighting = new AeonEditorHighlighting(smDef);
                 foreach (var el in ee)
                 {
                     if (el == ce)
@@ -682,6 +683,7 @@ namespace SPCode.UI.Components
                         Debug.Assert(ce != null, nameof(ce) + " != null");
                         if (ce.ISAC_Open) continue;
                     }
+
 
                     el.InterruptLoadAutoCompletes(smDef.FunctionStrings, smFunctions, acNodes,
                         isNodes, smDef.Methodmaps.ToArray(), smDef.Variables.ToArray());
