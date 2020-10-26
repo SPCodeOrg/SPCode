@@ -224,7 +224,7 @@ namespace SPCode.UI
                     // 0 - start | any other - middle | -1 - EOS
                     int curserLinePos = currentCaret == line.Offset ? 0 : currentCaret == line.EndOffset ? -1 : currentCaret - line.Offset;
 
-                    if (curserLinePos > 0) numOfSpacesOrTabsBefore = ee.editor.Document.GetText(line.Offset, curserLinePos).Count(c => c == ' ' || c == '\t');
+                    if (curserLinePos > 0) numOfSpacesOrTabsBefore = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
 
 #if DEBUG
                     Debug.WriteLine($"Curser offset before format: {currentCaret}");
@@ -252,7 +252,7 @@ namespace SPCode.UI
                     }
                     else if(curserLinePos != 0)
                     {
-                        int numOfSpacesOrTabsAfter = ee.editor.Document.GetText(line.Offset, curserLinePos).Count(c => c == ' ' || c == '\t');
+                        int numOfSpacesOrTabsAfter = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
                         newCaretPos += curserLinePos + (numOfSpacesOrTabsAfter - numOfSpacesOrTabsBefore);
 #if DEBUG
                         Debug.WriteLine($"Curser offset after format: {newCaretPos}");
