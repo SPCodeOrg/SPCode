@@ -61,6 +61,8 @@ namespace SPCode.UI.Components
         private bool SelectionIsHighlited;
         private bool WantFoldingUpdate;
 
+        private static DateTime lastParsing;
+
         public EditorElement()
         {
             InitializeComponent();
@@ -522,7 +524,7 @@ namespace SPCode.UI.Components
         public void ToggleCommentOnLine()
         {
             var line = editor.Document.GetLineByOffset(editor.CaretOffset);
-            var lineText = editor.Document.GetText(line.Offset, line.Length);
+            var lineText = editor.Document.GetText(line);
             var leadingWhiteSpaces = 0;
             foreach (var l in lineText)
                 if (char.IsWhiteSpace(l))
@@ -547,7 +549,7 @@ namespace SPCode.UI.Components
         private void DuplicateLine(bool down)
         {
             var line = editor.Document.GetLineByOffset(editor.CaretOffset);
-            var lineText = editor.Document.GetText(line.Offset, line.Length);
+            var lineText = editor.Document.GetText(line);
             editor.Document.Insert(line.Offset, lineText + Environment.NewLine);
             if (down) editor.CaretOffset -= line.Length + 1;
         }
@@ -563,7 +565,7 @@ namespace SPCode.UI.Components
                 }
                 else
                 {
-                    var lineText = editor.Document.GetText(line.NextLine.Offset, line.NextLine.Length);
+                    var lineText = editor.Document.GetText(line.NextLine);
                     editor.Document.Remove(line.NextLine.Offset, line.NextLine.TotalLength);
                     editor.Document.Insert(line.Offset, lineText + Environment.NewLine);
                 }
@@ -578,7 +580,7 @@ namespace SPCode.UI.Components
                 {
                     var insertOffset = line.PreviousLine.Offset;
                     var relativeCaretOffset = editor.CaretOffset - line.Offset;
-                    var lineText = editor.Document.GetText(line.Offset, line.Length);
+                    var lineText = editor.Document.GetText(line);
                     editor.Document.Remove(line.Offset, line.TotalLength);
                     editor.Document.Insert(insertOffset, lineText + Environment.NewLine);
                     editor.CaretOffset = insertOffset + relativeCaretOffset;
@@ -636,9 +638,17 @@ namespace SPCode.UI.Components
             var result = bracketSearcher.SearchBracket(editor.Document, editor.CaretOffset);
             bracketHighlightRenderer.SetHighlight(result);
 
-
+            
             if (!Program.OptionsObject.Program_DynamicISAC || Program.MainWindow == null) return;
+            /*
+            Debug.WriteLineIf(lastParsing != null, $"Diffrence: {DateTime.Now - lastParsing}");
+            if (lastParsing != null && DateTime.Now - lastParsing < new TimeSpan(0, 0, 2))
+                return;
 
+            lastParsing = DateTime.Now;
+
+            Debug.WriteLine("Reparsing");
+            */
             var ee = Program.MainWindow.GetAllEditorElements();
             var ce = Program.MainWindow.GetCurrentEditorElement();
 
@@ -675,6 +685,7 @@ namespace SPCode.UI.Components
                 var acNodes = smDef.ProduceACNodes();
                 var isNodes = smDef.ProduceISNodes();
 
+                // Lags the hell out when typing a lot.
                 ce.editor.SyntaxHighlighting = new AeonEditorHighlighting(smDef);
                 foreach (var el in ee)
                 {
@@ -726,58 +737,45 @@ namespace SPCode.UI.Components
                     // editor.TextArea.IndentationStrategy.IndentLine(editor.Document, editor.Document.GetLineByOffset(editor.CaretOffset));
                     foldingStrategy.UpdateFoldings(foldingManager, editor.Document);
                     break;
+                case "(":
+                case "[":
                 case "{":
-                {
                     if (Program.OptionsObject.Editor_AutoCloseBrackets)
                     {
-                        editor.Document.Insert(editor.CaretOffset, "}");
+                        var line = editor.Document.GetLineByOffset(editor.CaretOffset);
+                        var lineText = editor.Document.GetText(line);
+
+                        // Don't auto close brackets when the user is in a comment or in a string.
+                        if ((lineText[0] == '/' && lineText[1] == '/') ||
+                            editor.Document.GetText(line.Offset, editor.CaretOffset - line.Offset).Count(c => c == '\"') % 2 == 1 ||
+                            editor.Document.GetText(line.Offset - 3, 1) == "\\") 
+                            break;
+
+                        // Getting the char ascii code with int cast and the string pos 0 (the char it self),
+                        // if it's a ( i need to add 1 to get the ascii code for closing bracket
+                        // for [ and { i need to add 2 to get the closing bracket ascii code
+                        char closingBracket = (char)((int)e.Text[0] + (e.Text == "(" ? 1 : 2));
+                        editor.Document.Insert(editor.CaretOffset, closingBracket.ToString());
                         editor.CaretOffset -= 1;
-                    }
 
-                    foldingStrategy.UpdateFoldings(foldingManager, editor.Document);
-                    break;
-                }
-                default:
-                {
-                    if (Program.OptionsObject.Editor_AutoCloseBrackets)
-                    {
-                        if (e.Text == "(")
-                        {
-                            editor.Document.Insert(editor.CaretOffset, ")");
-                            editor.CaretOffset -= 1;
-                        }
-                        else if (e.Text == "[")
-                        {
-                            editor.Document.Insert(editor.CaretOffset, "]");
-                            editor.CaretOffset -= 1;
-                        }
+                        // If it's a code block bracket we need to update the folding
+                        if (e.Text == "{")
+                            foldingStrategy.UpdateFoldings(foldingManager, editor.Document);
                     }
 
                     break;
-                }
             }
 
             if (Program.OptionsObject.Editor_AutoCloseStringChars)
             {
-                if (e.Text == "\"")
+                if (e.Text == "\"" || e.Text == "'")
                 {
                     var line = editor.Document.GetLineByOffset(editor.CaretOffset);
                     var lineText = editor.Document.GetText(line.Offset, editor.CaretOffset - line.Offset);
                     if (lineText.Length > 0)
                         if (lineText[Math.Max(lineText.Length - 2, 0)] != '\\')
                         {
-                            editor.Document.Insert(editor.CaretOffset, "\"");
-                            editor.CaretOffset -= 1;
-                        }
-                }
-                else if (e.Text == "'")
-                {
-                    var line = editor.Document.GetLineByOffset(editor.CaretOffset);
-                    var lineText = editor.Document.GetText(line.Offset, editor.CaretOffset - line.Offset);
-                    if (lineText.Length > 0)
-                        if (lineText[Math.Max(lineText.Length - 2, 0)] != '\\')
-                        {
-                            editor.Document.Insert(editor.CaretOffset, "'");
+                            editor.Document.Insert(editor.CaretOffset, e.Text);
                             editor.CaretOffset -= 1;
                         }
                 }
