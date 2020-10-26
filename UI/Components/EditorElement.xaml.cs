@@ -628,6 +628,8 @@ namespace SPCode.UI.Components
             NeedsSave = true;
         }
 
+        private Timer parseTimer;
+
         private void Caret_PositionChanged(object sender, EventArgs e)
         {
             StatusLine_Coloumn.Text = $"{Program.Translations.GetLanguage("ColAbb")} {editor.TextArea.Caret.Column}";
@@ -639,55 +641,71 @@ namespace SPCode.UI.Components
 
             if (!Program.OptionsObject.Program_DynamicISAC || Program.MainWindow == null) return;
 
+
+            if (parseTimer != null)
+            {
+                parseTimer.Enabled = false;
+                parseTimer.Close();
+            }
+
+            parseTimer = new Timer(500)
+            {
+                AutoReset = false,
+                Enabled = true,
+            };
+            parseTimer.Elapsed += ParseIncludes;
+        }
+
+        private static void ParseIncludes(object sender, EventArgs e)
+        {
             var ee = Program.MainWindow.GetAllEditorElements();
             var ce = Program.MainWindow.GetCurrentEditorElement();
 
             var caret = -1;
 
-            if (ee != null)
+            if (ee == null) return;
+
+            var definitions = new SMDefinition[ee.Length];
+            List<SMFunction> currentFunctions = null;
+            for (var i = 0; i < ee.Length; ++i)
             {
-                var definitions = new SMDefinition[ee.Length];
-                List<SMFunction> currentFunctions = null;
-                for (var i = 0; i < ee.Length; ++i)
-                {
-                    var el = ee[i];
-                    var fInfo = new FileInfo(el.FullFilePath);
-                    var text = el.editor.Document.Text;
-                    if (fInfo.Extension.Trim('.').ToLowerInvariant() == "inc")
-                        definitions[i] =
-                            new Condenser(text
-                                , fInfo.Name).Condense();
+                var el = ee[i];
+                var fInfo = new FileInfo(el.FullFilePath);
+                var text = el.editor.Document.Text;
+                if (fInfo.Extension.Trim('.').ToLowerInvariant() == "inc")
+                    definitions[i] =
+                        new Condenser(text
+                            , fInfo.Name).Condense();
 
-                    if (fInfo.Extension.Trim('.').ToLowerInvariant() == "sp")
-                        if (el.IsLoaded)
-                        {
-                            caret = el.editor.CaretOffset;
-                            definitions[i] =
-                                new Condenser(text, fInfo.Name)
-                                    .Condense();
-                            currentFunctions = definitions[i].Functions;
-                        }
-                }
-
-                var smDef = Program.Configs[Program.SelectedConfig].GetSMDef()
-                    .ProduceTemporaryExpandedDefinition(definitions, caret, currentFunctions);
-                var smFunctions = smDef.Functions.ToArray();
-                var acNodes = smDef.ProduceACNodes();
-                var isNodes = smDef.ProduceISNodes();
-
-                ce.editor.SyntaxHighlighting = new AeonEditorHighlighting(smDef);
-                foreach (var el in ee)
-                {
-                    if (el == ce)
+                if (fInfo.Extension.Trim('.').ToLowerInvariant() == "sp")
+                    if (el.IsLoaded)
                     {
-                        Debug.Assert(ce != null, nameof(ce) + " != null");
-                        if (ce.ISAC_Open) continue;
+                        caret = el.editor.CaretOffset;
+                        definitions[i] =
+                            new Condenser(text, fInfo.Name)
+                                .Condense();
+                        currentFunctions = definitions[i].Functions;
                     }
+            }
 
+            var smDef = Program.Configs[Program.SelectedConfig].GetSMDef()
+                .ProduceTemporaryExpandedDefinition(definitions, caret, currentFunctions);
+            var smFunctions = smDef.Functions.ToArray();
+            var acNodes = smDef.ProduceACNodes();
+            var isNodes = smDef.ProduceISNodes();
 
-                    el.InterruptLoadAutoCompletes(smDef.FunctionStrings, smFunctions, acNodes,
-                        isNodes, smDef.Methodmaps.ToArray(), smDef.Variables.ToArray());
+            ce.editor.SyntaxHighlighting = new AeonEditorHighlighting(smDef);
+            foreach (var el in ee)
+            {
+                if (el == ce)
+                {
+                    Debug.Assert(ce != null, nameof(ce) + " != null");
+                    if (ce.ISAC_Open) continue;
                 }
+
+
+                el.InterruptLoadAutoCompletes(smDef.FunctionStrings, smFunctions, acNodes,
+                    isNodes, smDef.Methodmaps.ToArray(), smDef.Variables.ToArray());
             }
         }
 
