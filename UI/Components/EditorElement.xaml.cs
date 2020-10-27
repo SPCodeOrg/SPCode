@@ -91,6 +91,8 @@ namespace SPCode.UI.Components
 
             editor.PreviewMouseWheel += PrevMouseWheel;
             editor.MouseDown += editor_MouseDown;
+            editor.Loaded += editor_Loaded;
+            
             editor.TextArea.TextEntered += TextArea_TextEntered;
             editor.TextArea.TextEntering += TextArea_TextEntering;
             var fInfo = new FileInfo(filePath);
@@ -137,7 +139,6 @@ namespace SPCode.UI.Components
 
             colorizeSelection = new ColorizeSelection();
             editor.TextArea.TextView.LineTransformers.Add(colorizeSelection);
-            ParseIncludes(null, null);
 
             LoadAutoCompletes();
 
@@ -172,6 +173,11 @@ namespace SPCode.UI.Components
             StartAutoSaveTimer();
 
             CompileBox.IsChecked = filePath.EndsWith(".sp");
+        }
+
+        private void editor_Loaded(object sender, RoutedEventArgs e)
+        {
+            ParseIncludes(sender, e);
         }
 
         public string FullFilePath
