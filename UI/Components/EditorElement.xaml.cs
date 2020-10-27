@@ -212,24 +212,84 @@ namespace SPCode.UI.Components
             if (word.Trim().Length == 0) return;
 
             e.Handled = true;
-            var smDef = Program.Configs[Program.SelectedConfig].GetSMDef();
+            // var smDef = currentSmDef ?? Program.Configs[Program.SelectedConfig].GetSMDef();
+            
+            /**** First try to match variables in the current file ***/
+            var sm = MatchDefinition(currentSmDef, word, e, true);
+            if (sm != null)
+            {
+                editor.TextArea.Caret.Offset = sm.Index;
+                editor.TextArea.Caret.BringCaretToView();
+                await Task.Delay(100);
+                editor.TextArea.Selection = Selection.Create(editor.TextArea, sm.Index, sm.Index + sm.Length);
+                return;
+            }
+
+            sm = MatchDefinition(Program.Configs[Program.SelectedConfig].GetSMDef(), word, e);
+            if (sm != null)
+            {
+                var config = Program.Configs[Program.SelectedConfig].SMDirectories.First();
+                var file = Path.GetFullPath(Path.Combine(config, "include", sm.File)) + ".inc";
+                var result = Program.MainWindow.TryLoadSourceFile(file,
+                    true, false, true);
+                if (!result)
+                {
+                    Debug.Print("File {file} not found!");
+                    return;
+                }
+
+                var newEditor = Program.MainWindow.GetCurrentEditorElement();
+                Debug.Assert(newEditor != null);
+                newEditor.editor.TextArea.Caret.Offset = sm.Index;
+                newEditor.editor.TextArea.Caret.BringCaretToView();
+                await Task.Delay(100);
+                newEditor.editor.TextArea.Selection =
+                    Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
+            }
+            
+
+        }
+        
+        private SMBaseDefinition MatchDefinition(SMDefinition smDef, string word, MouseButtonEventArgs e, bool currentFile = false)
+        {
+            var mousePosition = editor.GetPositionFromPoint(e.GetPosition(this));
+
+            if (mousePosition == null)
+                return null;
+
+            var line = mousePosition.Value.Line;
+            var column = mousePosition.Value.Column;
+            var offset = editor.TextArea.Document.GetOffset(line, column);
+
             var sm = (SMBaseDefinition) smDef.Functions.FirstOrDefault(i => i.Name == word);
 
-            sm ??= smDef.Constants.FirstOrDefault(i =>
-                i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
-
-            sm ??= smDef.Defines.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
-
-            sm ??= smDef.Enums.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
-
-            foreach (var smEnum in smDef.Enums)
+            if (currentFile)
             {
-                var str = smEnum.Entries.FirstOrDefault(
-                    i => i.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+                sm  ??= smDef.Functions.FirstOrDefault(func => func.Index <= offset && offset <= func.EndPos)
+                    ?.FuncVariables?.FirstOrDefault(i => i.Name.Equals(word));
+            }
 
-                if (str == null) continue;
-                sm = smEnum;
-                break;
+            sm ??= smDef.Variables.FirstOrDefault(i =>
+                i.Name.Equals(word));
+
+            sm ??= smDef.Constants.FirstOrDefault(i =>
+                i.Name.Equals(word));
+
+            sm ??= smDef.Defines.FirstOrDefault(i => i.Name.Equals(word));
+
+            sm ??= smDef.Enums.FirstOrDefault(i => i.Name.Equals(word));
+
+            if (sm == null)
+            {
+                foreach (var smEnum in smDef.Enums)
+                {
+                    var str = smEnum.Entries.FirstOrDefault(
+                        i => i.Equals(word));
+
+                    if (str == null) continue;
+                    sm = smEnum;
+                    break;
+                }
             }
 
 
@@ -244,34 +304,9 @@ namespace SPCode.UI.Components
 
             sm ??= smDef.Typedefs.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
-            sm ??= smDef.Variables.FirstOrDefault(i =>
-                i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+            // Debug.Print($"Function {word} found with {sm}!");
 
-            Debug.Print($"Function {word} found with {sm}!");
-
-            if (sm == null)
-            {
-                Debug.Print("Definition not found!");
-                return;
-            }
-
-            var config = Program.Configs[Program.SelectedConfig].SMDirectories.First();
-            var file = Path.GetFullPath(Path.Combine(config, "include", sm.File)) + ".inc";
-            var result = Program.MainWindow.TryLoadSourceFile(file,
-                true, false, true);
-            if (!result)
-            {
-                Debug.Print("File {file} not found!");
-                return;
-            }
-
-            var newEditor = Program.MainWindow.GetCurrentEditorElement();
-            Debug.Assert(newEditor != null);
-            newEditor.editor.TextArea.Caret.Offset = sm.Index;
-            newEditor.editor.TextArea.Caret.BringCaretToView();
-            await Task.Delay(100);
-            newEditor.editor.TextArea.Selection =
-                Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
+            return sm;
         }
 
         private string GetWordAtMousePosition(MouseEventArgs e)
@@ -657,13 +692,19 @@ namespace SPCode.UI.Components
             parseTimer.Elapsed += ParseIncludes;
         }
 
+        private SMDefinition currentSmDef;
+
+        public SMDefinition CurrentSmDef => currentSmDef;
+
         private void ParseIncludes(object sender, EventArgs e)
         {
             Dispatcher.Invoke(() =>
             {
+                if (Program.MainWindow == null) return;
+
                 var ee = Program.MainWindow.GetAllEditorElements();
                 var ce = Program.MainWindow.GetCurrentEditorElement();
-                
+
                 var caret = -1;
 
                 if (ee == null) return;
@@ -688,6 +729,15 @@ namespace SPCode.UI.Components
                                 new Condenser(text, fInfo.Name)
                                     .Condense();
                             currentFunctions = definitions[i].Functions;
+                            if (el == ce)
+                            {
+                                currentSmDef = definitions[i];
+                                var caret1 = caret;
+                                currentSmDef.currentFunction =
+                                    currentFunctions.FirstOrDefault(
+                                        func => func.Index <= caret1 && caret1 <= func.EndPos);
+
+                            }
                         }
                 }
 

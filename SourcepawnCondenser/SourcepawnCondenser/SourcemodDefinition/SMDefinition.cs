@@ -41,6 +41,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public List<SMTypedef> Typedefs = new List<SMTypedef>();
         public string[] TypeStrings = new string[0];
         public List<SMVariable> Variables = new List<SMVariable>();
+        public SMFunction currentFunction;
 
         public void Sort()
         {

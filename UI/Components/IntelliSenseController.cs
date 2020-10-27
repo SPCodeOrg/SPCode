@@ -39,8 +39,6 @@ namespace SPCode.UI.Components
 
         private int LastShowedLine = -1;
 
-        public ulong LastSMDefUpdateUID = 0;
-
         // TODO Add EnumStructs
         private SMMethodmap[] methodMaps;
 
@@ -89,6 +87,7 @@ namespace SPCode.UI.Components
             });
         }
 
+        private Regex methodExp = new Regex(@"(?<=\.)[A-Za-z_]\w*", RegexOptions.RightToLeft);
         private void EvaluateIntelliSense()
         {
             if (editor.SelectionLength > 0)
@@ -172,107 +171,105 @@ namespace SPCode.UI.Components
                     else if (text[i] == '(')
                     {
                         scopeLevel--;
-                        if (scopeLevel < 0)
-                        {
-                            var FoundMatch = false;
-                            var searchIndex = i;
-                            for (var j = 0; j < ISMatches.Count; ++j)
-                                if (searchIndex >= ISMatches[j].Index &&
-                                    searchIndex <= ISMatches[j].Index + ISMatches[j].Length)
+                        if (scopeLevel >= 0) continue;
+                        var FoundMatch = false;
+                        var searchIndex = i;
+                        for (var j = 0; j < ISMatches.Count; ++j)
+                            if (searchIndex >= ISMatches[j].Index &&
+                                searchIndex <= ISMatches[j].Index + ISMatches[j].Length)
+                            {
+                                FoundMatch = true;
+                                var testString = ISMatches[j].Groups["name"].Value;
+                                var classString = ISMatches[j].Groups["class"].Value;
+                                if (classString.Length > 0)
                                 {
-                                    FoundMatch = true;
-                                    var testString = ISMatches[j].Groups["name"].Value;
-                                    var classString = ISMatches[j].Groups["class"].Value;
-                                    if (classString.Length > 0)
+                                    var methodString = ISMatches[j].Groups["method"].Value;
+                                    var found = false;
+
+                                    // Match for static methods.
+                                    var staticMethodMap = methodMaps.FirstOrDefault(e => e.Name == classString);
+                                    var staticMethod =
+                                        staticMethodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
+                                    if (staticMethod != null)
                                     {
-                                        var methodString = ISMatches[j].Groups["method"].Value;
-                                        var found = false;
+                                        xPos = ISMatches[j].Groups["method"].Index +
+                                               ISMatches[j].Groups["method"].Length;
+                                        ForwardShowIS = true;
+                                        ISFuncNameStr = staticMethod.FullName;
+                                        ISFuncDescriptionStr = staticMethod.CommentString;
+                                        ForceReSet = true;
+                                        found = true;
+                                    }
 
-                                        // Match for static methods.
-                                        var staticMethodMap = methodMaps.FirstOrDefault(e => e.Name == classString);
-                                        var staticMethod =
-                                            staticMethodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
-                                        if (staticMethod != null)
+                                    // Try to find declaration
+                                    if (!found)
+                                    {
+                                        var pattern =
+                                            $@"\b((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+))\s+({classString})\s*(;|=)";
+                                        var findDecl = new Regex(pattern, RegexOptions.Compiled);
+                                        var match = findDecl.Match(editor.Text);
+                                        var classMatch = match.Groups["class"].Value;
+                                        if (classMatch.Length > 0)
                                         {
-                                            xPos = ISMatches[j].Groups["method"].Index +
-                                                   ISMatches[j].Groups["method"].Length;
-                                            ForwardShowIS = true;
-                                            ISFuncNameStr = staticMethod.FullName;
-                                            ISFuncDescriptionStr = staticMethod.CommentString;
-                                            ForceReSet = true;
-                                            found = true;
-                                        }
-
-                                        // Try to find declaration
-                                        if (!found)
-                                        {
-                                            var pattern =
-                                                $@"\b((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+))\s+({classString})\s*(;|=)";
-                                            var findDecl = new Regex(pattern, RegexOptions.Compiled);
-                                            var match = findDecl.Match(editor.Text);
-                                            var classMatch = match.Groups["class"].Value;
-                                            if (classMatch.Length > 0)
+                                            var methodMap = methodMaps.FirstOrDefault(e => e.Name == classMatch);
+                                            var method =
+                                                methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
+                                            if (method != null)
                                             {
-                                                var methodMap = methodMaps.FirstOrDefault(e => e.Name == classMatch);
-                                                var method =
-                                                    methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
-                                                if (method != null)
-                                                {
-                                                    xPos = ISMatches[j].Groups["method"].Index +
-                                                           ISMatches[j].Groups["method"].Length;
-                                                    ForwardShowIS = true;
-                                                    ISFuncNameStr = method.FullName;
-                                                    ISFuncDescriptionStr = method.CommentString;
-                                                    ForceReSet = true;
-                                                    found = true;
-                                                }
-                                            }
-                                        }
-
-                                        // Match the first found
-                                        if (!found)
-                                        {
-                                            // Match any methodmap, since the ide is not aware of the types
-                                            foreach (var methodMap in methodMaps)
-                                            {
-                                                var method =
-                                                    methodMap.Methods.FirstOrDefault(e => e.Name == methodString);
-
-                                                if (method == null)
-                                                    continue;
-
                                                 xPos = ISMatches[j].Groups["method"].Index +
                                                        ISMatches[j].Groups["method"].Length;
                                                 ForwardShowIS = true;
                                                 ISFuncNameStr = method.FullName;
                                                 ISFuncDescriptionStr = method.CommentString;
                                                 ForceReSet = true;
+                                                found = true;
                                             }
                                         }
                                     }
-                                    else
+
+                                    // Match the first found
+                                    if (!found)
                                     {
-                                        var func = funcs.FirstOrDefault(e => e.Name == testString);
-                                        if (func != null)
+                                        // Match any methodmap, since the ide is not aware of the types
+                                        foreach (var methodMap in methodMaps)
                                         {
-                                            xPos = ISMatches[j].Groups["name"].Index +
-                                                   ISMatches[j].Groups["name"].Length;
+                                            var method =
+                                                methodMap.Methods.FirstOrDefault(e => e.Name == methodString);
+
+                                            if (method == null)
+                                                continue;
+
+                                            xPos = ISMatches[j].Groups["method"].Index +
+                                                   ISMatches[j].Groups["method"].Length;
                                             ForwardShowIS = true;
-                                            ISFuncNameStr = func.FullName;
-                                            ISFuncDescriptionStr = func.CommentString;
+                                            ISFuncNameStr = method.FullName;
+                                            ISFuncDescriptionStr = method.CommentString;
                                             ForceReSet = true;
                                         }
                                     }
-
-                                    break;
+                                }
+                                else
+                                {
+                                    var func = funcs.FirstOrDefault(e => e.Name == testString);
+                                    if (func != null)
+                                    {
+                                        xPos = ISMatches[j].Groups["name"].Index +
+                                               ISMatches[j].Groups["name"].Length;
+                                        ForwardShowIS = true;
+                                        ISFuncNameStr = func.FullName;
+                                        ISFuncDescriptionStr = func.CommentString;
+                                        ForceReSet = true;
+                                    }
                                 }
 
-                            if (FoundMatch)
-                            {
-                                // ReSharper disable once RedundantAssignment
-                                scopeLevel--; //i have no idea why this works...
                                 break;
                             }
+
+                        if (FoundMatch)
+                        {
+                            // ReSharper disable once RedundantAssignment
+                            scopeLevel--; //i have no idea why this works...
+                            break;
                         }
                     }
 
