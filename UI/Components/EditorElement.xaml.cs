@@ -236,6 +236,7 @@ namespace SPCode.UI.Components
             {
                 var config = Program.Configs[Program.SelectedConfig].SMDirectories.First();
                 var file = Path.GetFullPath(Path.Combine(config, "include", sm.File)) + ".inc";
+                await Task.Delay(50);
                 var result = Program.MainWindow.TryLoadSourceFile(file,
                     true, false, true);
                 if (!result)
@@ -248,12 +249,9 @@ namespace SPCode.UI.Components
                 Debug.Assert(newEditor != null);
                 newEditor.editor.TextArea.Caret.Offset = sm.Index;
                 newEditor.editor.TextArea.Caret.BringCaretToView();
-                await Task.Delay(100);
                 newEditor.editor.TextArea.Selection =
                     Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
             }
-            
-
         }
         
         private SMBaseDefinition MatchDefinition(SMDefinition smDef, string word, MouseButtonEventArgs e, bool currentFile = false)
