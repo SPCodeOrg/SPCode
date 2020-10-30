@@ -234,13 +234,14 @@ namespace SPCode.UI.Components
             sm = MatchDefinition(Program.Configs[Program.SelectedConfig].GetSMDef(), word, e);
             if (sm != null)
             {
+                //TODO: Match definition for all the sm directories
                 var config = Program.Configs[Program.SelectedConfig].SMDirectories.First();
                 var file = Path.GetFullPath(Path.Combine(config, "include", sm.File)) + ".inc";
                 var result = Program.MainWindow.TryLoadSourceFile(file,
                     true, false, true);
                 if (!result)
                 {
-                    Debug.Print("File {file} not found!");
+                    Debug.Print($"File {file} not found!");
                     return;
                 }
 
@@ -699,8 +700,6 @@ namespace SPCode.UI.Components
         }
 
         private SMDefinition currentSmDef;
-
-        public SMDefinition CurrentSmDef => currentSmDef;
 
         private void ParseIncludes(object sender, EventArgs e)
         {
