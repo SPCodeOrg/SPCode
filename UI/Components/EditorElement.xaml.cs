@@ -237,7 +237,7 @@ namespace SPCode.UI.Components
                 //TODO: Match definition for all the sm directories
                 var config = Program.Configs[Program.SelectedConfig].SMDirectories.First();
                 var file = Path.GetFullPath(Path.Combine(config, "include", sm.File)) + ".inc";
-                await Task.Delay(50);
+                await Task.Delay(100);
                 var result = Program.MainWindow.TryLoadSourceFile(file,
                     true, false, true);
                 if (!result)
