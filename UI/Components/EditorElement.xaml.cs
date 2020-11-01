@@ -257,6 +257,9 @@ namespace SPCode.UI.Components
         
         private SMBaseDefinition MatchDefinition(SMDefinition smDef, string word, MouseButtonEventArgs e, bool currentFile = false)
         {
+            if (smDef == null)
+                return null;
+            
             var mousePosition = editor.GetPositionFromPoint(e.GetPosition(this));
 
             if (mousePosition == null)
