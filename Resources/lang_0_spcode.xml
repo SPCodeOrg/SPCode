@@ -1934,13 +1934,13 @@
         <wordwrap>Sözcük Kaydır</wordwrap>
         <aggindentation>Agresif girinti</aggindentation>
         <reformataftersem>Noktalı virgül ile hat reformasyon</reformataftersem>
-        <tabstospace>Girintileri boşluk ile değiştirmek</tabstospace>
+        <tabstospace>Girintileri boşluk ile değiştir</tabstospace>
         <autoclosebrack>Otomatik olarak parantezi kapat</autoclosebrack>
         <autoclosestrchr>Otomatik olarak dizeleri kapat</autoclosestrchr>
         <showsapaces>Boşlukları Göster</showsapaces>
         <showtabs>Girintileri Göster</showtabs>
-        <indentationsize>Satırbaşı büyüklüğü</indentationsize>
-        <fontfamily>Yazı Stili</fontfamily>
+        <indentationsize>Satır başı büyüklüğü</indentationsize>
+        <fontfamily>Yazı Tipi</fontfamily>
         <syntaxhigh>Sözdizimi vurgulama</syntaxhigh>
         <highdeprecat>Önerililen sözdizimi vurgulayın (&lt; 1.7)</highdeprecat>
         <compile>Derle</compile>
