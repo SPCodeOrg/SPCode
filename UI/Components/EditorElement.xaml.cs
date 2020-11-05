@@ -817,7 +817,7 @@ namespace SPCode.UI.Components
                         // Don't auto close brackets when the user is in a comment or in a string.
                         if ((lineText[0] == '/' && lineText[1] == '/') ||
                             editor.Document.GetText(line.Offset, editor.CaretOffset - line.Offset).Count(c => c == '\"') % 2 == 1 ||
-                            editor.Document.GetText(line.Offset - 3, 1) == "\\") 
+                            line.LineNumber != 1 && editor.Document.GetText(line.Offset - 3, 1) == "\\") 
                             break;
 
                         // Getting the char ascii code with int cast and the string pos 0 (the char it self),

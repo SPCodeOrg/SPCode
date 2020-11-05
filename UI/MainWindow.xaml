@@ -8,6 +8,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:stheme="clr-namespace:SPCode.UI.STheme"
              mc:Ignorable="d" 
+             WindowState="{Binding Source={x:Static p:Settings.Default}, Path=WindowState, Mode=TwoWay}"
              Height="{Binding Source={x:Static p:Settings.Default}, Path=Height, Mode=TwoWay}"
              Width="{Binding Source={x:Static p:Settings.Default}, Path=Width, Mode=TwoWay}"
              Left="{Binding Source={x:Static p:Settings.Default}, Path=Left, Mode=TwoWay}"
