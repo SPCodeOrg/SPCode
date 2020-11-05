@@ -1779,7 +1779,7 @@
         <foundnothing>Hiçbir şey bulunamadı</foundnothing>
         <replacedoff>Ofset değiştirir {0}</replacedoff>
         <replacedocc>{0} Eşleşme {1} belgelerde değiştirildi</replacedocc>
-        <occfound>Tane bulundu</occfound>
+        <occfound>Eşleşme bulundu</occfound>
         <emptypatt>Boş arama terimi</emptypatt>
         <novalidregex>Geçerli regex ifadesi değil</novalidregex>
         <failedcheck>Doğrulanamadı</failedcheck>
