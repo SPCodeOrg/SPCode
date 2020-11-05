@@ -1764,7 +1764,7 @@
         <compilecurr>Derle</compilecurr>
         <copy>Derle</copy>
         <ftpup>FTP Yükle</ftpup>
-        <startserver>Sunucu Başlar</startserver>
+        <startserver>Sunucu Başlat</startserver>
         <replace>Değiştir</replace>
         <replaceall>Herşeyi Değiştir</replaceall>
         <opennewfile>Yeni Dosya Aç</opennewfile>
@@ -1774,18 +1774,18 @@
         <savefollow>Aşağıdaki Dosyaları Kaydet</savefollow>
         <chdecomp>Decompile İçin Dosya Seçin</chdecomp>
         <decompiling>Decompile</decompiling>
-        <editconfig>Düzen Yapılandırma</editconfig>
+        <editconfig>Ayar Yapılandırma</editconfig>
         <foundinoff>Ofset ve uzunluğu {0} ile bulunan {1}</foundinoff>
         <foundnothing>Hiçbir şey bulunamadı</foundnothing>
         <replacedoff>Ofset değiştirir {0}</replacedoff>
-        <replacedocc>{0} olaylar {1} belgelerde yerini değiştir</replacedocc>
-        <occfound>Olaylar bulundu</occfound>
+        <replacedocc>{0} Eşleşme {1} belgelerde değiştirildi</replacedocc>
+        <occfound>Tane bulundu</occfound>
         <emptypatt>Boş arama terimi</emptypatt>
         <novalidregex>Geçerli regex ifadesi değil</novalidregex>
         <failedcheck>Doğrulanamadı</failedcheck>
         <errorupdate>Güncellemele hatası</errorupdate>
         <versuptodate>Güncel Sürüm</versuptodate>
-        <versionyour>Program sürümü {0} şu anda.</versionyour>
+        <versionyour>Program sürümü şu anda: {0}.</versionyour>
         <details>Detaylar</details>
         <compiling>Derle</compiling>
         <error>Hata</error>
@@ -1811,7 +1811,7 @@
         <copyplugin>Eklenti Kopyalandı</copyplugin>
         <sendrcon>Rcon Komutu Gönder</sendrcon>
         <config>Ayarlar</config>
-        <edit>Düzen</edit>
+        <edit>Düzenle</edit>
         <undo>Geri Al</undo>
         <redo>İleri Al</redo>
         <cut>Kes</cut>
@@ -1825,7 +1825,7 @@
         <findreplace>Bul &amp; Değiştir</findreplace>
         <tools>Araçlar</tools>
         <options>Ayarlar</options>
-        <parsedincdir>Vom include-Pfad erkannt</parsedincdir>
+        <parsedincdir>'include' Dosyalarınızda bulunanlar</parsedincdir>
         <newapiweb>Eski API web sitesi</newapiweb>
         <betaapiweb>Yeni API web sitesi</betaapiweb>
         <reformatter>Biçimlendirme Sözdizimi yeni</reformatter>
@@ -1833,7 +1833,7 @@
         <reformatall>Biçimlendirme tüm</reformatall>
         <decompile>Decompile</decompile>
         <reportbuggit>GitHub üzerinde hata bildir</reportbuggit>
-        <checkupdates>Güncelleme Denetler</checkupdates>
+        <checkupdates>Güncellemeleri Denetle</checkupdates>
         <about>Hakkında</about>
         <filename>Dosya İsimi</filename>
         <line>Satır</line>
@@ -1857,9 +1857,9 @@
         <saveerror>Kaydetme Hatası</saveerror>
         <savingfile>dosyayı kaydetmek</savingfile>
         <ptabb>pt</ptabb>
-        <colabb>Sp</colabb>
-        <lnabb>Zl</lnabb>
-        <lenabb>Lng</lenabb>
+        <colabb>Stn</colabb>
+        <lnabb>St</lnabb>
+        <lenabb>Uzunluk</lenabb>
         <speditcap>Kolay SourcePawn Editörü</speditcap>
         <writtenby>Yazar: {0}</writtenby>
         <license>Lisans</license>
@@ -1877,15 +1877,15 @@
         <name>İsim</name>
         <scriptdir>Script Dizini</scriptdir>
         <delimitedwi>Pay</delimitedwi>
-        <copydir>Kopyala Yol</copydir>
-        <serverexe>Sunucu yolu</serverexe>
+        <copydir>Kopyalama Dizini</copydir>
+        <serverexe>Sunucu Dizini</serverexe>
         <serverstartargs>Sunucu başlatma parametresi</serverstartargs>
         <prebuildcom>Pre-build komutları</prebuildcom>
         <postbuildcom>Post-build komutları</postbuildcom>
         <optimizelvl>optimizasyon</optimizelvl>
         <verboselvl>Ayrıntılı Seviye</verboselvl>
         <autocopy>Otomatik olarak derleme kopyalaması</autocopy>
-        <deleteoldsmx>Eski .SMX Dosyasını Sil</deleteoldsmx>
+        <deleteoldsmx>Eski .smx Dosyasını Sil</deleteoldsmx>
         <ftphost>FTP Sunucusu</ftphost>
         <ftpuser>FTP Kullanıcı Adı</ftpuser>
         <ftppw>FTP Şifre</ftppw>
@@ -1917,9 +1917,9 @@
         <yrestarteditor>Değişiklikleri uygulamak için editörü yeniden başlatmanız gerekir.</yrestarteditor>
         <restartedifulleff>Editör tam etkili olması için yeniden başlatın...</restartedifulleff>
         <restartedieff>Reset Seçenekleri</restartedieff>
-        <program>Programm</program>
+        <program>Program</program>
         <hardwareacc>Kullanım donanım hızlandırma (varsa)</hardwareacc>
-        <uianim>UI Animasyonları</uianim>
+        <uianim>Animasyonlar</uianim>
         <openinc>Otomatik kullanım Include</openinc>
         <openincrec>Include aç</openincrec>
         <autoupdate>Otomatik Güncelle</autoupdate>
@@ -1931,16 +1931,16 @@
         <editor>Editör</editor>
         <fontsize>Font Boyutu</fontsize>
         <scrollspeed>Kaydırma Hızı</scrollspeed>
-        <wordwrap>Kelime Sarma</wordwrap>
+        <wordwrap>Sözcük Kaydır</wordwrap>
         <aggindentation>Agresif girinti</aggindentation>
         <reformataftersem>Noktalı virgül ile hat reformasyon</reformataftersem>
-        <tabstospace>Sekmeleri boşluk ile değiştirmek</tabstospace>
+        <tabstospace>Girintileri boşluk ile değiştirmek</tabstospace>
         <autoclosebrack>Otomatik olarak parantezi kapat</autoclosebrack>
-        <autoclosestrchr>Otomatik olarak dizeleri, parantezleri kapat</autoclosestrchr>
+        <autoclosestrchr>Otomatik olarak dizeleri kapat</autoclosestrchr>
         <showsapaces>Boşlukları Göster</showsapaces>
-        <showtabs>Sekmeleri Göster</showtabs>
-        <indentationsize>Girinti büyüklüğü</indentationsize>
-        <fontfamily>Yazı</fontfamily>
+        <showtabs>Girintileri Göster</showtabs>
+        <indentationsize>Satırbaşı büyüklüğü</indentationsize>
+        <fontfamily>Yazı Stili</fontfamily>
         <syntaxhigh>Sözdizimi vurgulama</syntaxhigh>
         <highdeprecat>Önerililen sözdizimi vurgulayın (&lt; 1.7)</highdeprecat>
         <compile>Derle</compile>
@@ -1948,7 +1948,7 @@
         <obtextfile>File Dir.</obtextfile>
         <obtextconfig>Config Dir.</obtextconfig>
         <obtextitem>Item Dir.</obtextitem>
-        <errorfileerror>Compile error file could not be accessed.</errorfileerror>
+        <errorfileerror>Derleme hatası dosyaya erişilemedi.</errorfileerror>
     </tr>
     <zhCN>
         <language>简体中文</language>
