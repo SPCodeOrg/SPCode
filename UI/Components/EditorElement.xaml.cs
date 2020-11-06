@@ -61,8 +61,6 @@ namespace SPCode.UI.Components
         private bool SelectionIsHighlited;
         private bool WantFoldingUpdate;
 
-        private static DateTime lastParsing;
-
         public EditorElement()
         {
             InitializeComponent();
@@ -814,18 +812,20 @@ namespace SPCode.UI.Components
                         var line = editor.Document.GetLineByOffset(editor.CaretOffset);
                         var lineText = editor.Document.GetText(line);
 
-                        // Don't auto close brackets when the user is in a comment or in a string.
-                        if ((lineText[0] == '/' && lineText[1] == '/') ||
-                            editor.Document.GetText(line.Offset, editor.CaretOffset - line.Offset).Count(c => c == '\"') % 2 == 1 ||
-                            line.LineNumber != 1 && editor.Document.GetText(line.Offset - 3, 1) == "\\") 
-                            break;
+                        // Don't auto close brackets when the user is in a comment or in a string or a text is selected.
+                            if (editor.SelectionLength == 0 &&
+                                (lineText[0] == '/' && lineText[1] == '/') ||
+                                editor.Document.GetText(line.Offset, editor.CaretOffset - line.Offset).Count(c => c == '\"') % 2 == 1 ||
+                                line.LineNumber != 1 && editor.Document.GetText(line.Offset - 3, 1) == "\\")
+                                break;
 
                         // Getting the char ascii code with int cast and the string pos 0 (the char it self),
                         // if it's a ( i need to add 1 to get the ascii code for closing bracket
                         // for [ and { i need to add 2 to get the closing bracket ascii code
                         char closingBracket = (char)((int)e.Text[0] + (e.Text == "(" ? 1 : 2));
                         editor.Document.Insert(editor.CaretOffset, closingBracket.ToString());
-                        editor.CaretOffset -= 1;
+                        if (editor.SelectionLength == 0)
+                            editor.CaretOffset -= 1;
 
                         // If it's a code block bracket we need to update the folding
                         if (e.Text == "{")
@@ -833,35 +833,61 @@ namespace SPCode.UI.Components
                     }
 
                     break;
-            }
-
-            if (Program.OptionsObject.Editor_AutoCloseStringChars)
-            {
-                if (e.Text == "\"" || e.Text == "'")
-                {
-                    var line = editor.Document.GetLineByOffset(editor.CaretOffset);
-                    var lineText = editor.Document.GetText(line.Offset, editor.CaretOffset - line.Offset);
-                    if (lineText.Length > 0)
-                        if (lineText[Math.Max(lineText.Length - 2, 0)] != '\\')
+                case "\"":
+                case "'":
+                    if (Program.OptionsObject.Editor_AutoCloseStringChars)
+                    {
+                        var line = editor.Document.GetLineByOffset(editor.CaretOffset);
+                        var lineText = editor.Document.GetText(line.Offset, editor.CaretOffset - line.Offset);
+                        if (editor.SelectionLength > 0 || (lineText.Length > 0 && lineText[Math.Max(lineText.Length - 2, 0)] != '\\'))
                         {
                             editor.Document.Insert(editor.CaretOffset, e.Text);
-                            editor.CaretOffset -= 1;
+                            if (editor.SelectionLength == 0)
+                                editor.CaretOffset -= 1;
                         }
-                }
+                    }
+                    break;
             }
         }
 
         private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
         {
-            if (e.Text == "\n")
+            switch (e.Text)
             {
-                if (editor.Document.TextLength < editor.CaretOffset + 1 || editor.CaretOffset < 3)
+                default:
                     return;
 
-                var segment = new AnchorSegment(editor.Document, editor.CaretOffset - 1, 2);
-                var text = editor.Document.GetText(segment);
-                if (text == "{}")
-                    isBlock = true;
+                case "\n":
+                    if (editor.Document.TextLength < editor.CaretOffset + 1 || editor.CaretOffset < 3)
+                        return;
+
+                    var segment = new AnchorSegment(editor.Document, editor.CaretOffset - 1, 2);
+                    var text = editor.Document.GetText(segment);
+                    if (text == "{}")
+                        isBlock = true;
+                    return;
+
+                case "(":
+                case "[":
+                case "{":
+                    if (!Program.OptionsObject.Editor_AutoCloseBrackets)
+                        return; break;
+
+                case "\"":
+                case "'":
+                    if (!Program.OptionsObject.Editor_AutoCloseStringChars)
+                        return; break;
+            }
+
+            var selectionLength = editor.SelectionLength;
+            if (selectionLength > 0)
+            {
+                editor.Document.BeginUpdate();
+                editor.Document.Insert(editor.SelectionStart, e.Text);
+                editor.CaretOffset = editor.SelectionStart + editor.SelectionLength;
+                TextArea_TextEntered(sender, e);
+                e.Handled = true;
+                editor.Document.EndUpdate();
             }
         }
 
