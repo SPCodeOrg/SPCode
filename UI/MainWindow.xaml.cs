@@ -1,5 +1,6 @@
 ﻿using DiscordRPC;
 using MahApps.Metro;
+using SPCode.Interop.Updater;
 using SPCode.UI.Components;
 using System;
 using System.Collections.Generic;
