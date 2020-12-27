@@ -95,7 +95,7 @@ namespace SPCode.Utils
             byte[] buffer;
             using (MD5 md5Provider = new MD5CryptoServiceProvider())
             {
-                string inString = $"SPEditSalt {cpuId()}{diskId()}{Environment.ProcessorCount.ToString()}{(Environment.Is64BitOperatingSystem ? "T" : "F")}";
+                string inString = $"SPEditSalt {cpuId()}{diskId()}{Environment.ProcessorCount}{(Environment.Is64BitOperatingSystem ? "T" : "F")}";
                 UTF8Encoding encoder = new UTF8Encoding();
                 buffer = md5Provider.ComputeHash(encoder.GetBytes(inString));
             }
