@@ -1,9 +1,6 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
+using System.IO;
 
 namespace Lysis
 {
@@ -28,8 +25,8 @@ namespace Lysis
         }
     }
 
-	public abstract class PawnFile
-	{
+    public abstract class PawnFile
+    {
         protected Function[] functions_;
         protected Public[] publics_;
         protected Variable[] globals_;
@@ -47,7 +44,7 @@ namespace Lysis
                 return new SourcePawn.SourcePawnFile(vec);
             throw new Exception("not a .smx file!");
         }
-        
+
         public abstract string stringFromData(int address);
         public abstract float floatFromData(int address);
         public abstract int int32FromData(int address);
@@ -81,7 +78,7 @@ namespace Lysis
             }
             return null;
         }
-        
+
         public Function[] functions
         {
             get { return functions_; }
@@ -98,6 +95,6 @@ namespace Lysis
         {
             get;
         }
-	}
+    }
 }
 

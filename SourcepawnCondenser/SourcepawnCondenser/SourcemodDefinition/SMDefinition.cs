@@ -342,7 +342,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
             var length = strings.Length;
             for (var i = 0; i < length; ++i)
                 nodeList.Add(
-                    new ACNode {Name = prefix + strings[i], EntryName = strings[i], IsExecuteable = Executable});
+                    new ACNode { Name = prefix + strings[i], EntryName = strings[i], IsExecuteable = Executable });
             return nodeList;
         }
 
@@ -364,7 +364,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
             var length = strings.Length;
             for (var i = 0; i < length; ++i)
                 nodeList.Add(
-                    new ISNode {Name = prefix + strings[i], EntryName = strings[i], IsExecuteable = Executable});
+                    new ISNode { Name = prefix + strings[i], EntryName = strings[i], IsExecuteable = Executable });
             return nodeList;
         }
 

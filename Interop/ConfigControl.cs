@@ -1,11 +1,11 @@
-﻿using System;
+﻿using SourcepawnCondenser.SourcemodDefinition;
+using SPCode.Utils;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Xml;
-using SourcepawnCondenser.SourcemodDefinition;
-using SPCode.Utils;
 
 namespace SPCode.Interop
 {
@@ -45,12 +45,12 @@ namespace SPCode.Interop
                         var _ServerArgs = ReadAttributeStringSafe(ref node, "ServerArgs");
                         var _PostCmd = ReadAttributeStringSafe(ref node, "PostCmd");
                         var _PreCmd = ReadAttributeStringSafe(ref node, "PreCmd");
-                        
+
                         var IsStandardConfig = _Standard != "0" && !string.IsNullOrWhiteSpace(_Standard);
                         var _AutoCopy = _AutoCopyStr != "0" && !string.IsNullOrWhiteSpace(_AutoCopyStr);
                         var _AutoUpload = _AutoUploadStr != "0" && !string.IsNullOrWhiteSpace(_AutoUploadStr);
                         var _AutoRCON = _AutoRCONStr != "0" && !string.IsNullOrWhiteSpace(_AutoRCONStr);
-                        
+
                         int _OptimizationLevel = 2, _VerboseLevel = 1;
                         int subValue;
                         if (int.TryParse(ReadAttributeStringSafe(ref node, "OptimizationLevel", "2"), out subValue))
@@ -142,7 +142,7 @@ namespace SPCode.Interop
         public bool AutoCopy;
         public bool AutoUpload;
         public bool AutoRCON;
-        
+
         public string CopyDirectory = string.Empty;
 
         public bool DeleteAfterCopy;

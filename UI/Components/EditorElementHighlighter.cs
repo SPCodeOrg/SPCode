@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Rendering;
+using SourcepawnCondenser.SourcemodDefinition;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -7,9 +10,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Rendering;
-using SourcepawnCondenser.SourcemodDefinition;
 
 namespace SPCode.UI.Components
 {
@@ -17,7 +17,7 @@ namespace SPCode.UI.Components
     {
 
         private SMDefinition smDef;
-        public AeonEditorHighlighting() {}
+        public AeonEditorHighlighting() { }
 
         public AeonEditorHighlighting(SMDefinition smDef)
         {
@@ -44,16 +44,16 @@ namespace SPCode.UI.Components
                 });
                 var excludeInnerSingleLineComment = new HighlightingRuleSet();
                 excludeInnerSingleLineComment.Spans.Add(new HighlightingSpan
-                    {StartExpression = new Regex(@"\\"), EndExpression = new Regex(@".")});
+                { StartExpression = new Regex(@"\\"), EndExpression = new Regex(@".") });
                 var rs = new HighlightingRuleSet();
                 var commentBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Comments);
                 rs.Spans.Add(new HighlightingSpan //singleline comments
                 {
                     StartExpression = new Regex(@"//", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     EndExpression = new Regex(@"$", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
-                    SpanColor = new HighlightingColor {Foreground = commentBrush},
-                    StartColor = new HighlightingColor {Foreground = commentBrush},
-                    EndColor = new HighlightingColor {Foreground = commentBrush},
+                    SpanColor = new HighlightingColor { Foreground = commentBrush },
+                    StartColor = new HighlightingColor { Foreground = commentBrush },
+                    EndColor = new HighlightingColor { Foreground = commentBrush },
                     RuleSet = commentMarkerSet
                 });
                 rs.Spans.Add(new HighlightingSpan //multiline comments
@@ -62,9 +62,9 @@ namespace SPCode.UI.Components
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture | RegexOptions.Multiline),
                     EndExpression = new Regex(@"\*/",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture | RegexOptions.Multiline),
-                    SpanColor = new HighlightingColor {Foreground = commentBrush},
-                    StartColor = new HighlightingColor {Foreground = commentBrush},
-                    EndColor = new HighlightingColor {Foreground = commentBrush},
+                    SpanColor = new HighlightingColor { Foreground = commentBrush },
+                    StartColor = new HighlightingColor { Foreground = commentBrush },
+                    EndColor = new HighlightingColor { Foreground = commentBrush },
                     RuleSet = commentMarkerSet
                 });
                 var stringBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Strings);
@@ -73,9 +73,9 @@ namespace SPCode.UI.Components
                     StartExpression = new Regex(@"(?<!')""",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     EndExpression = new Regex(@"""", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
-                    SpanColor = new HighlightingColor {Foreground = stringBrush},
-                    StartColor = new HighlightingColor {Foreground = stringBrush},
-                    EndColor = new HighlightingColor {Foreground = stringBrush},
+                    SpanColor = new HighlightingColor { Foreground = stringBrush },
+                    StartColor = new HighlightingColor { Foreground = stringBrush },
+                    EndColor = new HighlightingColor { Foreground = stringBrush },
                     RuleSet = excludeInnerSingleLineComment
                 });
                 if (Program.OptionsObject.SH_HighlightDeprecateds)
@@ -85,28 +85,28 @@ namespace SPCode.UI.Components
                         Regex = new Regex(@"^\s*(decl|new)\s+([a-zA-z_][a-zA-z1-9_]*:)?",
                             RegexOptions.CultureInvariant | RegexOptions.Multiline | RegexOptions.ExplicitCapture),
                         Color = new HighlightingColor
-                            {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Deprecated)}
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Deprecated) }
                     });
                     rs.Rules.Add(new HighlightingRule //deprecated function declaration
                     {
                         Regex = new Regex(@"^(public|stock|forward)\s+[a-zA-z_][a-zA-z1-9_]*:",
                             RegexOptions.CultureInvariant | RegexOptions.Multiline | RegexOptions.ExplicitCapture),
                         Color = new HighlightingColor
-                            {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Deprecated)}
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Deprecated) }
                     });
                     rs.Rules.Add(new HighlightingRule //deprecated taggings (from std types)
                     {
                         Regex = new Regex(@"\b(bool|Float|float|Handle|String|char|void|int):",
                             RegexOptions.CultureInvariant | RegexOptions.Multiline | RegexOptions.ExplicitCapture),
                         Color = new HighlightingColor
-                            {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Deprecated)}
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Deprecated) }
                     });
                     rs.Rules.Add(new HighlightingRule //deprecated keywords
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
                             {"decl", "String", "Float", "functag", "funcenum"}),
                         Color = new HighlightingColor
-                            {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Deprecated)}
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Deprecated) }
                     });
                 }
 
@@ -116,13 +116,13 @@ namespace SPCode.UI.Components
                     Regex = new Regex(@"\#[a-zA-Z_][a-zA-Z0-9_]+",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     Color = new HighlightingColor
-                        {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_PreProcessor)}
+                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_PreProcessor) }
                 });
                 rs.Rules.Add(new HighlightingRule //type-values keywords
                 {
-                    Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[] {"sizeof", "true", "false", "null"}),
+                    Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[] { "sizeof", "true", "false", "null" }),
                     Color = new HighlightingColor
-                        {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_TypesValues)}
+                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_TypesValues) }
                 });
                 rs.Rules.Add(new HighlightingRule //main keywords
                 {
@@ -132,7 +132,7 @@ namespace SPCode.UI.Components
                         "new", "view_as", "delete"
                     }),
                     Color = new HighlightingColor
-                        {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Keywords)}
+                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Keywords) }
                 });
                 rs.Rules.Add(new HighlightingRule //context keywords
                 {
@@ -142,7 +142,7 @@ namespace SPCode.UI.Components
                         "function", "struct", "property", "get", "set", "typeset", "typedef", "this"
                     }),
                     Color = new HighlightingColor
-                        {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_ContextKeywords)}
+                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_ContextKeywords) }
                 });
 
                 rs.Rules.Add(new HighlightingRule //value types
@@ -150,13 +150,13 @@ namespace SPCode.UI.Components
                     Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
                         {"bool", "char", "float", "int", "void", "any", "Handle", "Function"}),
                     Color = new HighlightingColor
-                        {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Types)}
+                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Types) }
                 });
                 rs.Rules.Add(new HighlightingRule //char type
                 {
                     Regex = new Regex(@"'\\?.?'", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     Color = new HighlightingColor
-                        {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Chars)}
+                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Chars) }
                 });
                 rs.Rules.Add(new HighlightingRule //numbers
                 {
@@ -164,20 +164,20 @@ namespace SPCode.UI.Components
                         @"\b0[x][0-9a-fA-F]+|\b0[b][01]+|\b0[o][0-7]+|([+-]?\b[0-9]+(\.[0-9]+)?|\.[0-9]+)([eE][+-]?[0-9]+)?",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     Color = new HighlightingColor
-                        {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Numbers)}
+                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Numbers) }
                 });
                 rs.Rules.Add(new HighlightingRule //special characters
                 {
                     Regex = new Regex(@"[?.;()\[\]{}+\-/%*&<>^+~!|&]+",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     Color = new HighlightingColor
-                        {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_SpecialCharacters)}
+                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_SpecialCharacters) }
                 });
                 rs.Rules.Add(new HighlightingRule //std includes - string color!
                 {
                     Regex = new Regex(@"\s[<][\w\\/\-]+(\.[\w\-]+)?[>]",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
-                    Color = new HighlightingColor {Foreground = stringBrush}
+                    Color = new HighlightingColor { Foreground = stringBrush }
                 });
 
                 if (smDef != null)
@@ -187,7 +187,7 @@ namespace SPCode.UI.Components
                         {
                             Regex = new Regex(string.Join("|", smDef.Defines.Select(e => "\\b" + Regex.Escape(e.Name) + "\\b").ToArray())),
                             Color = new HighlightingColor
-                                {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants)}
+                            { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants) }
                         });
                 }
                 var def = Program.Configs[Program.SelectedConfig].GetSMDef();
@@ -196,7 +196,7 @@ namespace SPCode.UI.Components
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.TypeStrings, true),
                         Color = new HighlightingColor
-                            {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Types)}
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Types) }
                     });
 
                 if (def.ConstantsStrings.Length > 0)
@@ -204,7 +204,7 @@ namespace SPCode.UI.Components
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.ConstantsStrings, true),
                         Color = new HighlightingColor
-                            {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants)}
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants) }
                     });
 
                 if (def.FunctionStrings.Length > 0)
@@ -212,7 +212,7 @@ namespace SPCode.UI.Components
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.FunctionStrings, true),
                         Color = new HighlightingColor
-                            {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Functions)}
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Functions) }
                     });
 
                 if (def.MethodsStrings.Length > 0)
@@ -220,7 +220,7 @@ namespace SPCode.UI.Components
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.MethodsStrings),
                         Color = new HighlightingColor
-                            {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods)}
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
                     });
 
                 if (def.FieldStrings.Length > 0)
@@ -228,7 +228,7 @@ namespace SPCode.UI.Components
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.FieldStrings),
                         Color = new HighlightingColor
-                            {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods)}
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
                     });
 
                 if (def.StructFieldStrings.Length > 0)
@@ -236,7 +236,7 @@ namespace SPCode.UI.Components
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.StructFieldStrings),
                         Color = new HighlightingColor
-                            {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods)}
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
                     });
 
                 if (def.StructMethodStrings.Length > 0)
@@ -245,7 +245,7 @@ namespace SPCode.UI.Components
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords2(
                             def.StructMethodStrings),
                         Color = new HighlightingColor
-                            {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods)}
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
                     });
 
                 rs.Rules.Add(new HighlightingRule //unknown function calls
@@ -253,7 +253,7 @@ namespace SPCode.UI.Components
                     Regex = new Regex(@"\b\w+(?=\s*\()",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     Color = new HighlightingColor
-                        {Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_UnkownFunctions)}
+                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_UnkownFunctions) }
                 });
 
                 rs.Name = "MainRule";
@@ -301,7 +301,7 @@ namespace SPCode.UI.Components
 
         private SimpleHighlightingBrush(SerializationInfo info, StreamingContext context)
         {
-            brush = new SolidColorBrush((Color) ColorConverter.ConvertFromString(info.GetString("color")));
+            brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(info.GetString("color")));
             brush.Freeze();
         }
 

@@ -25,10 +25,10 @@ namespace SPCode.Interop
             pipeServer.Close();
         }
 
-		public void Dispose()
-		{
-			pipeServer.Close();
-		}
+        public void Dispose()
+        {
+            pipeServer.Close();
+        }
 
         private void StartInteropServer()
         {
@@ -51,7 +51,7 @@ namespace SPCode.Interop
             pipeServer.Read(byteBuffer, 0, length);
             string data = Encoding.UTF8.GetString(byteBuffer);
             string[] files = data.Split('|');
-			bool SelectIt = true;
+            bool SelectIt = true;
             for (int i = 0; i < files.Length; ++i)
             {
                 _window.Dispatcher.Invoke(() =>
@@ -61,8 +61,8 @@ namespace SPCode.Interop
                         if (_window.TryLoadSourceFile(files[i], SelectIt) && _window.WindowState == System.Windows.WindowState.Minimized)
                         {
                             _window.WindowState = System.Windows.WindowState.Normal;
-							SelectIt = false;
-						}
+                            SelectIt = false;
+                        }
                     }
                 });
             }

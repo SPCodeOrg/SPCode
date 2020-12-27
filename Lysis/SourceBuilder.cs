@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
+﻿using SourcePawn;
+using System;
 using System.Diagnostics;
-using SourcePawn;
+using System.Text;
 
 namespace Lysis
 {

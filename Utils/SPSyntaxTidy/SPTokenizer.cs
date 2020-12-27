@@ -23,7 +23,8 @@ namespace SPCode.Utils.SPSyntaxTidy
                 {
                     token.Add(new SPToken()
                     {
-                        Kind = SPTokenKind.Newline, Value = Environment.NewLine
+                        Kind = SPTokenKind.Newline,
+                        Value = Environment.NewLine
                     }); //add them before the whitestrip-killer will get them ^^
                     continue;
                 }
@@ -55,7 +56,8 @@ namespace SPCode.Utils.SPSyntaxTidy
                             {
                                 token.Add(new SPToken()
                                 {
-                                    Kind = SPTokenKind.Quote, Value = source.Substring(startIndex, j - startIndex + 1)
+                                    Kind = SPTokenKind.Quote,
+                                    Value = source.Substring(startIndex, j - startIndex + 1)
                                 });
                                 foundOccurence = true;
                                 i = j; //skip it in the main loop
@@ -66,7 +68,7 @@ namespace SPCode.Utils.SPSyntaxTidy
 
                     if (!foundOccurence)
                     {
-                        token.Add(new SPToken() {Kind = SPTokenKind.Quote, Value = source.Substring(startIndex)});
+                        token.Add(new SPToken() { Kind = SPTokenKind.Quote, Value = source.Substring(startIndex) });
                         /* We are doing this, because the reformatter is often called while formating a single line.
                          * When open quotes are there, we don't want them to be reformatted. So we tread them like
                          * closed ones.
@@ -89,7 +91,8 @@ namespace SPCode.Utils.SPSyntaxTidy
                             {
                                 token.Add(new SPToken()
                                 {
-                                    Kind = SPTokenKind.Quote, Value = source.Substring(startIndex, j - startIndex + 1)
+                                    Kind = SPTokenKind.Quote,
+                                    Value = source.Substring(startIndex, j - startIndex + 1)
                                 });
                                 foundOccurence = true;
                                 i = j;
@@ -198,7 +201,7 @@ namespace SPCode.Utils.SPSyntaxTidy
                         AllowGTOperator = AllowLTOperator = false;
                     }
 
-                    token.Add(new SPToken() {Kind = SPTokenKind.Name, Value = strValue});
+                    token.Add(new SPToken() { Kind = SPTokenKind.Name, Value = strValue });
                     continue;
                 }
 
@@ -208,13 +211,13 @@ namespace SPCode.Utils.SPSyntaxTidy
 
                 if (c == '{')
                 {
-                    token.Add(new SPToken() {Kind = SPTokenKind.BracketOpen, Value = "{"});
+                    token.Add(new SPToken() { Kind = SPTokenKind.BracketOpen, Value = "{" });
                     continue;
                 }
 
                 if (c == '}')
                 {
-                    token.Add(new SPToken() {Kind = SPTokenKind.BracketClose, Value = "}"});
+                    token.Add(new SPToken() { Kind = SPTokenKind.BracketClose, Value = "}" });
                     continue;
                 }
 
@@ -228,19 +231,19 @@ namespace SPCode.Utils.SPSyntaxTidy
                     {
                         if (buffer[i + 1] == '=')
                         {
-                            token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = "=="});
+                            token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = "==" });
                             i++;
                             continue;
                         }
                     }
 
-                    token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = "="});
+                    token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = "=" });
                     continue;
                 }
 
                 if (c == '?')
                 {
-                    token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = c.ToString()});
+                    token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = c.ToString() });
                     continue;
                 }
 
@@ -250,7 +253,7 @@ namespace SPCode.Utils.SPSyntaxTidy
                     {
                         if (buffer[i - 1] == ' ' || buffer[i - 1] == '\t')
                         {
-                            token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = ":"});
+                            token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = ":" });
                             continue;
                         }
                     }
@@ -263,7 +266,7 @@ namespace SPCode.Utils.SPSyntaxTidy
                     {
                         if (buffer[i + 1] == '=')
                         {
-                            token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = source.Substring(i, 2)});
+                            token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = source.Substring(i, 2) });
                             i++;
                             continue;
                         }
@@ -272,7 +275,7 @@ namespace SPCode.Utils.SPSyntaxTidy
                     if (c != '!' && c != '|' && c != '&' && c != '+' && c != '-' && c != '<' && c != '>'
                     ) //they can have another meaning so they are handled on their own
                     {
-                        token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = source.Substring(i, 1)});
+                        token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = source.Substring(i, 1) });
                         continue;
                     }
                 }
@@ -283,13 +286,13 @@ namespace SPCode.Utils.SPSyntaxTidy
                     {
                         if (buffer[i + 1] == '|')
                         {
-                            token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = "||"});
+                            token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = "||" });
                             ++i;
                             continue;
                         }
                     }
 
-                    token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = "|"});
+                    token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = "|" });
                     continue;
                 }
 
@@ -299,7 +302,7 @@ namespace SPCode.Utils.SPSyntaxTidy
                     {
                         if (buffer[i + 1] == '>')
                         {
-                            token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = ">>"});
+                            token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = ">>" });
                             ++i;
                             continue;
                         }
@@ -307,7 +310,7 @@ namespace SPCode.Utils.SPSyntaxTidy
 
                     if (AllowGTOperator)
                     {
-                        token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = ">"});
+                        token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = ">" });
                         continue;
                     }
                     else
@@ -322,7 +325,7 @@ namespace SPCode.Utils.SPSyntaxTidy
                     {
                         if (buffer[i + 1] == '<')
                         {
-                            token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = "<<"});
+                            token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = "<<" });
                             ++i;
                             continue;
                         }
@@ -330,7 +333,7 @@ namespace SPCode.Utils.SPSyntaxTidy
 
                     if (AllowLTOperator)
                     {
-                        token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = "<"});
+                        token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = "<" });
                         continue;
                     }
                     else
@@ -347,7 +350,7 @@ namespace SPCode.Utils.SPSyntaxTidy
                     {
                         if (buffer[i + 1] == '&')
                         {
-                            token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = "&&"});
+                            token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = "&&" });
                             ++i;
                             continue;
                         }
@@ -362,7 +365,7 @@ namespace SPCode.Utils.SPSyntaxTidy
 
                     if (canMatchSingle)
                     {
-                        token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = "&"});
+                        token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = "&" });
                         continue;
                     }
                 }
@@ -384,7 +387,7 @@ namespace SPCode.Utils.SPSyntaxTidy
 
                         if (isMatched)
                         {
-                            token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = "+"});
+                            token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = "+" });
                             continue;
                         }
                     }
@@ -407,7 +410,7 @@ namespace SPCode.Utils.SPSyntaxTidy
 
                         if (isMatched)
                         {
-                            token.Add(new SPToken() {Kind = SPTokenKind.Operator, Value = "-"});
+                            token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = "-" });
                             continue;
                         }
                     }
@@ -446,17 +449,17 @@ namespace SPCode.Utils.SPSyntaxTidy
 
                 if (c == ',')
                 {
-                    token.Add(new SPToken() {Kind = SPTokenKind.Comma, Value = ","});
+                    token.Add(new SPToken() { Kind = SPTokenKind.Comma, Value = "," });
                     continue;
                 }
 
                 if (c == ';')
                 {
-                    token.Add(new SPToken() {Kind = SPTokenKind.Semicolon, Value = ";"});
+                    token.Add(new SPToken() { Kind = SPTokenKind.Semicolon, Value = ";" });
                     continue;
                 }
 
-                token.Add(new SPToken() {Kind = SPTokenKind.Symbol, Value = c.ToString()});
+                token.Add(new SPToken() { Kind = SPTokenKind.Symbol, Value = c.ToString() });
 
                 #endregion
             }

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using SourcepawnCondenser.SourcemodDefinition;
+using SourcepawnCondenser.Tokenizer;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using SourcepawnCondenser.SourcemodDefinition;
-using SourcepawnCondenser.Tokenizer;
 
 namespace SourcepawnCondenser
 {
@@ -196,12 +196,15 @@ namespace SourcepawnCondenser
                             if (mStartIndex < mEndIndex)
                                 methods.Add(new SMEnumStructMethod
                                 {
-                                    Index = mStartIndex, Name = methodName, ReturnType = methodReturnValue,
+                                    Index = mStartIndex,
+                                    Name = methodName,
+                                    ReturnType = methodReturnValue,
                                     MethodKind = functionIndicators.ToArray(),
                                     Parameters = parameters.ToArray(),
                                     FullName = TrimFullname(source.Substring(mStartIndex, mEndIndex - mStartIndex + 1)),
                                     Length = mEndIndex - mStartIndex + 1,
-                                    CommentString = TrimComments(functionCommentString), MethodmapName = enumStructName,
+                                    CommentString = TrimComments(functionCommentString),
+                                    MethodmapName = enumStructName,
                                     File = FileName
                                 });
                         }
@@ -282,7 +285,9 @@ namespace SourcepawnCondenser
                 {
                     var mm = new SMEnumStruct
                     {
-                        Index = startIndex, Length = t[lastIndex].Index - startIndex + 1, Name = enumStructName,
+                        Index = startIndex,
+                        Length = t[lastIndex].Index - startIndex + 1,
+                        Name = enumStructName,
                         File = FileName,
                     };
                     mm.Methods.AddRange(methods);

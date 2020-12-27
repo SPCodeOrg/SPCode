@@ -10,10 +10,10 @@ namespace SPCode.UI.Components
         public char ClosingBrace { get; set; }
 
         public SPFoldingStrategy()
-		{
-			this.OpeningBrace = '{';
-			this.ClosingBrace = '}';
-		}
+        {
+            this.OpeningBrace = '{';
+            this.ClosingBrace = '}';
+        }
 
         public void UpdateFoldings(FoldingManager manager, TextDocument document)
         {

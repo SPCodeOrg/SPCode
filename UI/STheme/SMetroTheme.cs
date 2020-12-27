@@ -15,11 +15,7 @@
   **********************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xceed.Wpf.AvalonDock.Themes;
-using System.Windows;
 
 namespace SPCode.UI.STheme
 {
@@ -28,8 +24,8 @@ namespace SPCode.UI.STheme
         public override Uri GetResourceUri()
         {
             return new Uri(
-				"/SPCode;component/ui/stheme/stheme.xaml", 
-                UriKind.Relative);  
+                "/SPCode;component/ui/stheme/stheme.xaml",
+                UriKind.Relative);
         }
     }
 }

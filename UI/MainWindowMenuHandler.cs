@@ -1,11 +1,11 @@
-﻿using System;
+﻿using MahApps.Metro.Controls.Dialogs;
+using SPCode.Interop.Updater;
+using SPCode.UI.Windows;
+using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using SPCode.Interop.Updater;
-using SPCode.UI.Windows;
 
 namespace SPCode.UI
 {
@@ -17,11 +17,11 @@ namespace SPCode.UI
             var EditorsAreOpen = false;
             if (editors != null) EditorsAreOpen = editors.Length > 0;
             var EditorIsSelected = GetCurrentEditorElement() != null;
-            ((MenuItem) ((MenuItem) sender).Items[3]).IsEnabled = EditorIsSelected;
-            ((MenuItem) ((MenuItem) sender).Items[5]).IsEnabled = EditorIsSelected;
-            ((MenuItem) ((MenuItem) sender).Items[7]).IsEnabled = EditorIsSelected;
-            ((MenuItem) ((MenuItem) sender).Items[4]).IsEnabled = EditorsAreOpen;
-            ((MenuItem) ((MenuItem) sender).Items[8]).IsEnabled = EditorsAreOpen;
+            ((MenuItem)((MenuItem)sender).Items[3]).IsEnabled = EditorIsSelected;
+            ((MenuItem)((MenuItem)sender).Items[5]).IsEnabled = EditorIsSelected;
+            ((MenuItem)((MenuItem)sender).Items[7]).IsEnabled = EditorIsSelected;
+            ((MenuItem)((MenuItem)sender).Items[4]).IsEnabled = EditorsAreOpen;
+            ((MenuItem)((MenuItem)sender).Items[8]).IsEnabled = EditorsAreOpen;
         }
 
         private void Menu_New(object sender, RoutedEventArgs e)
@@ -62,7 +62,7 @@ namespace SPCode.UI
         private void EditMenu_Open(object sender, RoutedEventArgs e)
         {
             var ee = GetCurrentEditorElement();
-            var menu = (MenuItem) sender;
+            var menu = (MenuItem)sender;
             if (ee == null)
             {
                 foreach (var item in menu.Items)
@@ -75,7 +75,7 @@ namespace SPCode.UI
                 MenuI_Redo.IsEnabled = ee.editor.CanRedo;
                 for (var i = 2; i < menu.Items.Count; ++i)
                     if (menu.Items[i] is MenuItem)
-                        ((MenuItem) menu.Items[i]).IsEnabled = true;
+                        ((MenuItem)menu.Items[i]).IsEnabled = true;
             }
         }
 
@@ -167,25 +167,25 @@ namespace SPCode.UI
 
         private void Menu_OpenWebsiteFromTag(object sender, RoutedEventArgs e)
         {
-            var url = (string) ((MenuItem) sender).Tag;
+            var url = (string)((MenuItem)sender).Tag;
             Process.Start(new ProcessStartInfo(url));
         }
 
         private void Menu_About(object sender, RoutedEventArgs e)
         {
-            var aboutWindow = new AboutWindow {Owner = this, ShowInTaskbar = false};
+            var aboutWindow = new AboutWindow { Owner = this, ShowInTaskbar = false };
             aboutWindow.ShowDialog();
         }
 
         private void Menu_OpenSPDef(object sender, RoutedEventArgs e)
         {
-            var spDefinitionWindow = new SPDefinitionWindow {Owner = this, ShowInTaskbar = false};
+            var spDefinitionWindow = new SPDefinitionWindow { Owner = this, ShowInTaskbar = false };
             spDefinitionWindow.ShowDialog();
         }
 
         private void Menu_OpenOptions(object sender, RoutedEventArgs e)
         {
-            var optionsWindow = new OptionsWindow {Owner = this, ShowInTaskbar = false};
+            var optionsWindow = new OptionsWindow { Owner = this, ShowInTaskbar = false };
             optionsWindow.ShowDialog();
         }
 
@@ -215,7 +215,7 @@ namespace SPCode.UI
             var status = Program.UpdateStatus;
             if (status.IsAvailable)
             {
-                var uWindow = new UpdateWindow(status) {Owner = this};
+                var uWindow = new UpdateWindow(status) { Owner = this };
                 uWindow.ShowDialog();
                 if (uWindow.Succeeded)
                 {

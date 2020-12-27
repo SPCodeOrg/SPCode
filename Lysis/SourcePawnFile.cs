@@ -1,11 +1,8 @@
-﻿using System;
+﻿using Lysis;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.IO.Compression;
-using System.Diagnostics;
-using Lysis;
 
 namespace SourcePawn
 {
@@ -434,22 +431,22 @@ namespace SourcePawn
             switch (header_.compression)
             {
                 case Compression.Gzip:
-                {
-                    byte[] bits = new byte[header_.imagesize];
-                    for (int i = 0; i < header_.dataoffs; i++)
-                        bits[i] = binary[i];
+                    {
+                        byte[] bits = new byte[header_.imagesize];
+                        for (int i = 0; i < header_.dataoffs; i++)
+                            bits[i] = binary[i];
 
-                    int uncompressedSize = header_.imagesize - header_.dataoffs;
-                    int compressedSize = header_.disksize - header_.dataoffs;
-                    MemoryStream ms = new MemoryStream(binary, header_.dataoffs + 2, compressedSize - 2);
-                    DeflateStream gzip = new DeflateStream(ms, CompressionMode.Decompress);
+                        int uncompressedSize = header_.imagesize - header_.dataoffs;
+                        int compressedSize = header_.disksize - header_.dataoffs;
+                        MemoryStream ms = new MemoryStream(binary, header_.dataoffs + 2, compressedSize - 2);
+                        DeflateStream gzip = new DeflateStream(ms, CompressionMode.Decompress);
 
-					int actualSize = gzip.Read(bits, header_.dataoffs, uncompressedSize);
-					//Debug.Assert(actualSize == uncompressedSize, "uncompressed size mismatch, bad file?");
+                        int actualSize = gzip.Read(bits, header_.dataoffs, uncompressedSize);
+                        //Debug.Assert(actualSize == uncompressedSize, "uncompressed size mismatch, bad file?");
 
-                    binary = bits;
-                    break;
-                }
+                        binary = bits;
+                        break;
+                    }
             }
 
             // Read sections.
@@ -632,11 +629,11 @@ namespace SourcePawn
                     }
                 }
 
-                globals.Sort(delegate(Variable var1, Variable var2)
+                globals.Sort(delegate (Variable var1, Variable var2)
                 {
                     return var1.address - var2.address;
                 });
-                functions.Sort(delegate(Function fun1, Function fun2)
+                functions.Sort(delegate (Function fun1, Function fun2)
                 {
                     return (int)(fun1.address - fun2.address);
                 });
@@ -687,7 +684,7 @@ namespace SourcePawn
                         args[arg] = new Argument(type, argName, arg_tagid, argTag, dims);
                     }
 
-                    if ((int)index >+ natives_.Length)
+                    if ((int)index > +natives_.Length)
                         continue;
 
                     natives_[index].setDebugInfo(tagid, tag, args);

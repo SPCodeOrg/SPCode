@@ -1,8 +1,7 @@
-﻿using System;
-using System.Net;
+﻿using Octokit;
+using System;
 using System.Reflection;
 using System.Threading.Tasks;
-using Octokit;
 
 namespace SPCode.Interop.Updater
 {
@@ -49,7 +48,7 @@ namespace SPCode.Interop.Updater
             }
         }
 
-        
+
         /*
          * 0 -> Major
          * 1 -> Minor

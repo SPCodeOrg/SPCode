@@ -1,11 +1,11 @@
-﻿using System;
+﻿using SpcodeUpdater.Properties;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using SpcodeUpdater.Properties;
 
 namespace SpcodeUpdater
 {
@@ -41,7 +41,7 @@ namespace SpcodeUpdater
 
         private static void Worker(object arg)
         {
-            var um = (UpdateMarquee) arg;
+            var um = (UpdateMarquee)arg;
             var zipFile = Path.Combine(Environment.CurrentDirectory, "updateZipFile.zip");
 
             var zipFileContent = Resources.Update;
@@ -59,7 +59,7 @@ namespace SpcodeUpdater
 
             zipInfo.Delete();
 
-            um.Invoke((InvokeDel) (() => { um.SetToReadyState(); }));
+            um.Invoke((InvokeDel)(() => { um.SetToReadyState(); }));
         }
     }
 }

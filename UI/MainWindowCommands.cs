@@ -1,14 +1,13 @@
-﻿using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
-using Lysis;
+﻿using Lysis;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using SPCode.UI.Components;
 using SPCode.UI.Windows;
 using SPCode.Utils.SPSyntaxTidy;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace SPCode.UI
 {
@@ -33,7 +32,7 @@ namespace SPCode.UI
 
         private void Command_New()
         {
-            var nfWindow = new NewFileWindow {Owner = this, ShowInTaskbar = false};
+            var nfWindow = new NewFileWindow { Owner = this, ShowInTaskbar = false };
             nfWindow.ShowDialog();
         }
 
@@ -41,10 +40,13 @@ namespace SPCode.UI
         {
             var ofd = new OpenFileDialog
             {
-                AddExtension = true, CheckFileExists = true, CheckPathExists = true,
+                AddExtension = true,
+                CheckFileExists = true,
+                CheckPathExists = true,
                 Filter =
                     @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|Sourcemod Plugins (*.smx)|*.smx|All Files (*.*)|*.*",
-                Multiselect = true, Title = Program.Translations.GetLanguage("OpenNewFile")
+                Multiselect = true,
+                Title = Program.Translations.GetLanguage("OpenNewFile")
             };
             var result = ofd.ShowDialog(this);
             if (result.Value)
@@ -214,7 +216,7 @@ namespace SPCode.UI
 
         private void Command_TidyCode(bool All)
         {
-            var editors = All ? GetAllEditorElements() : new[] {GetCurrentEditorElement()};
+            var editors = All ? GetAllEditorElements() : new[] { GetCurrentEditorElement() };
             foreach (var ee in editors)
                 if (ee != null)
                 {
@@ -246,11 +248,11 @@ namespace SPCode.UI
 
                     line = ee.editor.Document.GetLineByNumber(lineNumber);
                     int newCaretPos = line.Offset;
-                    if(curserLinePos == -1)
+                    if (curserLinePos == -1)
                     {
                         newCaretPos += line.Length;
                     }
-                    else if(curserLinePos != 0)
+                    else if (curserLinePos != 0)
                     {
                         int numOfSpacesOrTabsAfter = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
                         newCaretPos += curserLinePos + (numOfSpacesOrTabsAfter - numOfSpacesOrTabsBefore);
@@ -266,7 +268,8 @@ namespace SPCode.UI
         {
             var ofd = new OpenFileDialog
             {
-                Filter = "Sourcepawn Plugins (*.smx)|*.smx", Title = Program.Translations.GetLanguage("ChDecomp")
+                Filter = "Sourcepawn Plugins (*.smx)|*.smx",
+                Title = Program.Translations.GetLanguage("ChDecomp")
             };
             var result = ofd.ShowDialog();
 
@@ -294,7 +297,7 @@ namespace SPCode.UI
 
         private void Command_OpenSPDef()
         {
-            var spDefinitionWindow = new SPDefinitionWindow {Owner = this, ShowInTaskbar = false};
+            var spDefinitionWindow = new SPDefinitionWindow { Owner = this, ShowInTaskbar = false };
             spDefinitionWindow.ShowDialog();
         }
     }

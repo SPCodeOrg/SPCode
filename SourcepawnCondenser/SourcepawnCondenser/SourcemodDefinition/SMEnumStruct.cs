@@ -7,7 +7,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public List<SMEnumStructField> Fields = new List<SMEnumStructField>();
         public List<SMEnumStructMethod> Methods = new List<SMEnumStructMethod>();
     }
-    
+
     public class SMEnumStructField : SMBaseDefinition
     {
         public string MethodmapName = string.Empty;

@@ -1,11 +1,8 @@
 // vim set: ts=4 sw=4 tw=99 et:
+using SourcePawn;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
 using System.IO;
-using SourcePawn;
 
 namespace Lysis
 {
@@ -99,7 +96,7 @@ namespace Lysis
         }
     }
 
-    
+
     public abstract class LControlInstruction : LInstruction
     {
         protected LBlock[] successors_;

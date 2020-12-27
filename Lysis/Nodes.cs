@@ -1,9 +1,7 @@
-﻿using System;
+﻿using SourcePawn;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using SourcePawn;
 
 namespace Lysis
 {
@@ -440,14 +438,14 @@ namespace Lysis
                 case VariableType.ArrayReference:
                 case VariableType.Reference:
                 case VariableType.Variadic:
-                {
-                    Variable global = file.lookupGlobal(value);
-                    if (global != null)
-                        return new DGlobal(global);
-                    if (tag.name == "String")
-                        return new DString(file.stringFromData(value));
-                    break;
-                }
+                    {
+                        Variable global = file.lookupGlobal(value);
+                        if (global != null)
+                            return new DGlobal(global);
+                        if (tag.name == "String")
+                            return new DString(file.stringFromData(value));
+                        break;
+                    }
             }
             return this;
         }
@@ -618,7 +616,7 @@ namespace Lysis
         {
             lir_ = lir;
         }
-        
+
         public override NodeType type
         {
             get { return NodeType.Switch; }

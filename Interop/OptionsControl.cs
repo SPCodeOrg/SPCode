@@ -222,7 +222,7 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
                         deserializedOptionsObj = formatter.Deserialize(fileStream);
                     }
 
-                    var oc = (OptionsControl) deserializedOptionsObj;
+                    var oc = (OptionsControl)deserializedOptionsObj;
                     oc.FillNullToDefaults();
                     ProgramIsNew = false;
                     return oc;

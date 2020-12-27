@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SourcePawn;
+using System;
 using System.IO;
-using Lysis;
-using SourcePawn;
+using System.Text;
 
 namespace Lysis
 {
@@ -79,11 +75,11 @@ namespace Lysis
             }
             string NoteString = @"/*" + Environment.NewLine + "** ATTENTION" + Environment.NewLine +
                 "** THE PRODUCED CODE, IS NOT ABLE TO COMPILE!" + Environment.NewLine +
-                "** THE DECOMPILER JUST TRIES TO GIVE YOU A POSSIBILITY" + Environment.NewLine + 
-                "** TO LOOK HOW A PLUGIN DOES IT'S JOB AND LOOK FOR" + Environment.NewLine + 
-                "** POSSIBLE MALICIOUS CODE." + Environment.NewLine + "**" + Environment.NewLine + 
+                "** THE DECOMPILER JUST TRIES TO GIVE YOU A POSSIBILITY" + Environment.NewLine +
+                "** TO LOOK HOW A PLUGIN DOES IT'S JOB AND LOOK FOR" + Environment.NewLine +
+                "** POSSIBLE MALICIOUS CODE." + Environment.NewLine + "**" + Environment.NewLine +
                 "** ALL CONVERSIONS ARE WRONG! AT EXAMPLE:" + Environment.NewLine +
-                "** SetEntityRenderFx(client, RenderFx 0);  →  SetEntityRenderFx(client, view_as<RenderFx>0);  →  SetEntityRenderFx(client, RENDERFX_NONE);" + 
+                "** SetEntityRenderFx(client, RenderFx 0);  →  SetEntityRenderFx(client, view_as<RenderFx>0);  →  SetEntityRenderFx(client, RENDERFX_NONE);" +
                 Environment.NewLine + "*/" + Environment.NewLine + Environment.NewLine;
             outString.Insert(0, NoteString);
             return outString.ToString();

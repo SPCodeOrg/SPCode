@@ -1,9 +1,9 @@
-﻿using System;
+﻿using SourcepawnCondenser.SourcemodDefinition;
+using SourcepawnCondenser.Tokenizer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SourcepawnCondenser.SourcemodDefinition;
-using SourcepawnCondenser.Tokenizer;
 
 namespace SourcepawnCondenser
 {
@@ -20,58 +20,58 @@ namespace SourcepawnCondenser
             switch (t[startPosition].Value)
             {
                 case "stock":
-                {
-                    if (startPosition + 1 < length)
-                        if (t[startPosition + 1].Kind == TokenKind.FunctionIndicator)
-                            if (t[startPosition + 1].Value == "static")
-                            {
-                                kind = SMFunctionKind.StockStatic;
-                                ++iteratePosition;
-                                break;
-                            }
+                    {
+                        if (startPosition + 1 < length)
+                            if (t[startPosition + 1].Kind == TokenKind.FunctionIndicator)
+                                if (t[startPosition + 1].Value == "static")
+                                {
+                                    kind = SMFunctionKind.StockStatic;
+                                    ++iteratePosition;
+                                    break;
+                                }
 
-                    kind = SMFunctionKind.Stock;
-                    break;
-                }
+                        kind = SMFunctionKind.Stock;
+                        break;
+                    }
                 case "native":
-                {
-                    kind = SMFunctionKind.Native;
-                    break;
-                }
+                    {
+                        kind = SMFunctionKind.Native;
+                        break;
+                    }
                 case "forward":
-                {
-                    kind = SMFunctionKind.Forward;
-                    break;
-                }
+                    {
+                        kind = SMFunctionKind.Forward;
+                        break;
+                    }
                 case "public":
-                {
-                    if (startPosition + 1 < length)
-                        if (t[startPosition + 1].Kind == TokenKind.FunctionIndicator)
-                            if (t[startPosition + 1].Value == "native")
-                            {
-                                kind = SMFunctionKind.PublicNative;
-                                ++iteratePosition;
-                                break;
-                            }
+                    {
+                        if (startPosition + 1 < length)
+                            if (t[startPosition + 1].Kind == TokenKind.FunctionIndicator)
+                                if (t[startPosition + 1].Value == "native")
+                                {
+                                    kind = SMFunctionKind.PublicNative;
+                                    ++iteratePosition;
+                                    break;
+                                }
 
-                    kind = SMFunctionKind.Public;
-                    break;
-                }
+                        kind = SMFunctionKind.Public;
+                        break;
+                    }
                 case "static":
-                {
-                    kind = SMFunctionKind.Static;
-                    break;
-                }
+                    {
+                        kind = SMFunctionKind.Static;
+                        break;
+                    }
                 case "normal":
-                {
-                    kind = SMFunctionKind.Normal;
-                    break;
-                }
+                    {
+                        kind = SMFunctionKind.Normal;
+                        break;
+                    }
                 default:
-                {
-                    functionReturnType = t[startPosition].Value;
-                    break;
-                }
+                    {
+                        functionReturnType = t[startPosition].Value;
+                        break;
+                    }
             }
 
             var functionCommentString = string.Empty;
@@ -188,7 +188,7 @@ namespace SourcepawnCondenser
             if (parameterDeclIndexEnd == -1) return -1;
 
             var localVars = new List<SMVariable>();
-            
+
             if (outTokenIndex + 1 < length)
             {
                 if (t[outTokenIndex + 1].Kind == TokenKind.Semicolon)
@@ -331,9 +331,13 @@ namespace SourcepawnCondenser
                         {
                             variables.Add(new SMVariable
                             {
-                                Index = startIndex, Length = t[position + i].Index - startIndex,
+                                Index = startIndex,
+                                Length = t[position + i].Index - startIndex,
                                 File = FileName,
-                                Name = varName, Type = varType, Dimensions = dimensions, Size = size
+                                Name = varName,
+                                Type = varType,
+                                Dimensions = dimensions,
+                                Size = size
                             });
                             continueNext = true;
                             position += i;
@@ -372,21 +376,28 @@ namespace SourcepawnCondenser
                     case TokenKind.Semicolon:
                         variables.Add(new SMVariable
                         {
-                            Index = startIndex, Length = t[position + 2].Index - startIndex, File = FileName,
-                            Name = varName, Type = varType
+                            Index = startIndex,
+                            Length = t[position + 2].Index - startIndex,
+                            File = FileName,
+                            Name = varName,
+                            Type = varType
                         });
                         position += 2;
                         continueNext = true;
                         break;
                     // Assign var match: "int x = 5"
                     case TokenKind.Assignment when (t[position + 3].Kind == TokenKind.Number ||
-                                                    t[position + 3].Kind == TokenKind.Quote  ||
+                                                    t[position + 3].Kind == TokenKind.Quote ||
                                                     t[position + 3].Kind == TokenKind.Identifier)
                                                     && t[position + 4].Kind == TokenKind.Semicolon:
                         variables.Add(new SMVariable
                         {
-                            Index = startIndex, Length = t[position + 4].Index - startIndex, File = FileName,
-                            Name = varName, Type = varType, Value = t[position + 3].Value
+                            Index = startIndex,
+                            Length = t[position + 4].Index - startIndex,
+                            File = FileName,
+                            Name = varName,
+                            Type = varType,
+                            Value = t[position + 3].Value
                         });
                         position += 4;
                         continueNext = true;
@@ -440,8 +451,13 @@ namespace SourcepawnCondenser
                 {
                     variables.Add(new SMVariable
                     {
-                        Index = startIndex, Length = t[position + index].Index - startIndex, File = FileName,
-                        Name = varName, Type = varType, Dimensions = dimensions, Size = size
+                        Index = startIndex,
+                        Length = t[position + index].Index - startIndex,
+                        File = FileName,
+                        Name = varName,
+                        Type = varType,
+                        Dimensions = dimensions,
+                        Size = size
                     });
                     position += index;
                     continue;
@@ -478,9 +494,13 @@ namespace SourcepawnCondenser
 
                         variables.Add(new SMVariable
                         {
-                            Index = startIndex, Length = t[position + index].Index - startIndex,
+                            Index = startIndex,
+                            Length = t[position + index].Index - startIndex,
                             File = FileName,
-                            Name = varName, Type = varType, Dimensions = dimensions, Size = size,
+                            Name = varName,
+                            Type = varType,
+                            Dimensions = dimensions,
+                            Size = size,
                             Value = "-1" //TODO: Add proper value
                         });
                     }
@@ -496,9 +516,13 @@ namespace SourcepawnCondenser
 
                         variables.Add(new SMVariable
                         {
-                            Index = startIndex, Length = t[position + index + 2].Index - startIndex,
+                            Index = startIndex,
+                            Length = t[position + index + 2].Index - startIndex,
                             File = FileName,
-                            Name = varName, Type = varType, Dimensions = dimensions, Size = size,
+                            Name = varName,
+                            Type = varType,
+                            Dimensions = dimensions,
+                            Size = size,
                             Value = t[position + index + 1].Value
                         });
                     }

@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SourcePawn;
 
 namespace Lysis
 {
@@ -16,7 +11,7 @@ namespace Lysis
 
     public class LogicChainConversionException : Exception
     {
-        public LogicChainConversionException(string message) : base (message)
+        public LogicChainConversionException(string message) : base(message)
         {
         }
     }

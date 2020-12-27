@@ -7,6 +7,6 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public string Type = string.Empty;
         public string Value = string.Empty;
         public int Dimensions = 0;
-        public List<string> Size = new List<string>(); 
+        public List<string> Size = new List<string>();
     }
 }

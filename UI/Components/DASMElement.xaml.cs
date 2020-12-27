@@ -1,19 +1,11 @@
-﻿using System;
+﻿using smxdasm;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.IO;
-using smxdasm;
 
 namespace SPCode.UI.Components
 {
@@ -89,7 +81,7 @@ namespace SPCode.UI.Components
             {
                 var section = section_;
                 var root = new TreeViewItem() { Header = section.Name };
-                root.Tag = new NodeData(delegate()
+                root.Tag = new NodeData(delegate ()
                 {
                     renderSectionHeaderDetail(section);
                     endDetailUpdate();
@@ -383,7 +375,7 @@ namespace SPCode.UI.Components
 
         private void renderCodeSection(TreeViewItem root, SmxCodeV1Section code)
         {
-            root.Tag = new NodeData(delegate()
+            root.Tag = new NodeData(delegate ()
             {
                 renderSectionHeaderDetail(code.SectionHeader);
                 addDetailLine("codesize = {0} bytes", code.Header.CodeSize);
@@ -397,7 +389,7 @@ namespace SPCode.UI.Components
 
             var node = new TreeViewItem() { Header = "cell view" };
             root.Items.Add(node);
-            node.Tag = new NodeData(delegate()
+            node.Tag = new NodeData(delegate ()
             {
                 renderHexView(code.Reader(), (int)code.Header.CodeSize);
             }, null);
@@ -427,7 +419,7 @@ namespace SPCode.UI.Components
                 var address = functionMap[pair.Key];
                 var snode = new TreeViewItem() { Header = pair.Key };
                 root.Items.Add(snode);
-                snode.Tag = new NodeData(delegate()
+                snode.Tag = new NodeData(delegate ()
                 {
                     renderCodeView(code, name, (int)address);
                 }, null);
@@ -436,7 +428,7 @@ namespace SPCode.UI.Components
 
         private void renderDataList(TreeViewItem root, SmxDataSection data)
         {
-            root.Tag = new NodeData(delegate()
+            root.Tag = new NodeData(delegate ()
             {
                 renderSectionHeaderDetail(data.SectionHeader);
                 addDetailLine("datasize = {0} bytes", data.Header.DataSize);
@@ -447,19 +439,19 @@ namespace SPCode.UI.Components
 
             var node = new TreeViewItem() { Header = "byte view" };
             root.Items.Add(node);
-            node.Tag = new NodeData(delegate()
+            node.Tag = new NodeData(delegate ()
             {
                 renderByteView(data.Reader(), (int)data.Header.DataSize);
             }, null);
             node = new TreeViewItem() { Header = "cell view" };
             root.Items.Add(node);
-            node.Tag = new NodeData(delegate()
+            node.Tag = new NodeData(delegate ()
             {
                 renderHexView(data.Reader(), (int)data.Header.DataSize);
             }, null);
             node = new TreeViewItem() { Header = "string analysis" };
             root.Items.Add(node);
-            node.Tag = new NodeData(delegate()
+            node.Tag = new NodeData(delegate ()
             {
                 renderStringAnalysis(data.Memory(), data.Reader(), (int)data.Header.DataSize);
             }, null);
@@ -473,7 +465,7 @@ namespace SPCode.UI.Components
                 var pubfun = publics[i];
                 var node = new TreeViewItem() { Header = (i.ToString() + ": " + pubfun.Name) };
                 root.Items.Add(node);
-                node.Tag = new NodeData(delegate()
+                node.Tag = new NodeData(delegate ()
                 {
                     startDetail("; public entry {0}", index);
                     addDetailLine("nameoffs = 0x{0:x} ; {1}", pubfun.nameoffs, pubfun.Name);
@@ -491,7 +483,7 @@ namespace SPCode.UI.Components
                 var pubvar = pubvars[i];
                 var node = new TreeViewItem() { Header = (i.ToString() + ": " + pubvar.Name) };
                 root.Items.Add(node);
-                node.Tag = new NodeData(delegate()
+                node.Tag = new NodeData(delegate ()
                 {
                     startDetail("; pubvar entry {0}", index);
                     addDetailLine("nameoffs = 0x{0:x} ; {1}", pubvar.nameoffs, pubvar.Name);
@@ -511,7 +503,7 @@ namespace SPCode.UI.Components
                     text += " (" + (tag.Flags & ~(TagFlags.Fixed)) + ")";
                 var node = new TreeViewItem() { Header = text };
                 root.Items.Add(node);
-                node.Tag = new NodeData(delegate()
+                node.Tag = new NodeData(delegate ()
                 {
                     startDetail("tag: 0x{0:x} ; flags = {1}", tag.Value, tag.Flags.ToString());
                     addDetailLine("nameoffs: 0x{0:x} ; {1}", tag.entry.nameoffs, tag.Name);
@@ -523,7 +515,7 @@ namespace SPCode.UI.Components
 
         private void renderDebugLines(TreeViewItem root, SmxDebugLinesTable lines)
         {
-            root.Tag = new NodeData(delegate()
+            root.Tag = new NodeData(delegate ()
             {
                 renderSectionHeaderDetail(lines.SectionHeader);
                 foreach (var line in lines.Entries)
@@ -542,7 +534,7 @@ namespace SPCode.UI.Components
                 var native = natives[i];
                 var node = new TreeViewItem() { Header = ("[" + i + "] " + native.Name) };
                 root.Items.Add(node);
-                node.Tag = new NodeData(delegate()
+                node.Tag = new NodeData(delegate ()
                 {
                     startDetail("index = {0}", index);
                     addDetailLine("nameoffs: 0x{0:x} ; {1}", native.nameoffs, native.Name);
@@ -553,7 +545,7 @@ namespace SPCode.UI.Components
 
         private void renderNamesList(TreeViewItem root, SmxNameTable names)
         {
-            root.Tag = new NodeData(delegate()
+            root.Tag = new NodeData(delegate ()
             {
                 renderSectionHeaderDetail(names.SectionHeader);
                 foreach (var offset in names.Extents)
@@ -566,7 +558,7 @@ namespace SPCode.UI.Components
 
         private void renderDebugFiles(TreeViewItem root, SmxDebugFilesTable files)
         {
-            root.Tag = new NodeData(delegate()
+            root.Tag = new NodeData(delegate ()
             {
                 renderSectionHeaderDetail(files.SectionHeader);
                 addDetailLine("--");
@@ -582,7 +574,7 @@ namespace SPCode.UI.Components
 
         private void renderDebugInfo(TreeViewItem root, SmxDebugInfoSection info)
         {
-            root.Tag = new NodeData(delegate()
+            root.Tag = new NodeData(delegate ()
             {
                 renderSectionHeaderDetail(info.SectionHeader);
                 addDetailLine("num_files = {0}", info.NumFiles);
@@ -653,7 +645,7 @@ namespace SPCode.UI.Components
 
         private void renderDebugFunction(SmxDebugSymbolsTable syms, TreeViewItem root, DebugSymbolEntry fun)
         {
-            root.Tag = new NodeData(delegate()
+            root.Tag = new NodeData(delegate ()
             {
                 renderSymbolDetail(fun);
             }, null);
@@ -673,7 +665,7 @@ namespace SPCode.UI.Components
                     args.Add(sym);
             }
 
-            args.Sort(delegate(DebugSymbolEntry e1, DebugSymbolEntry e2)
+            args.Sort(delegate (DebugSymbolEntry e1, DebugSymbolEntry e2)
             {
                 return e1.Address.CompareTo(e2.Address);
             });
@@ -682,13 +674,13 @@ namespace SPCode.UI.Components
                 var sym = sym_;
                 var node = new TreeViewItem() { Header = sym.Name };
                 root.Items.Add(node);
-                node.Tag = new NodeData(delegate()
+                node.Tag = new NodeData(delegate ()
                 {
                     renderSymbolDetail(sym);
                 }, null);
             }
 
-            locals.Sort(delegate(DebugSymbolEntry e1, DebugSymbolEntry e2)
+            locals.Sort(delegate (DebugSymbolEntry e1, DebugSymbolEntry e2)
             {
                 return e1.CodeStart.CompareTo(e2.CodeStart);
             });
@@ -697,7 +689,7 @@ namespace SPCode.UI.Components
                 var sym = sym_;
                 var node = new TreeViewItem() { Header = sym.Name };
                 root.Items.Add(node);
-                node.Tag = new NodeData(delegate()
+                node.Tag = new NodeData(delegate ()
                 {
                     renderSymbolDetail(sym);
                 }, null);
@@ -716,7 +708,7 @@ namespace SPCode.UI.Components
                     continue;
                 var node = new TreeViewItem() { Header = sym.Name };
                 root.Items.Add(node);
-                node.Tag = new NodeData(delegate()
+                node.Tag = new NodeData(delegate ()
                 {
                     renderSymbolDetail(sym);
                 }, null);
@@ -771,7 +763,7 @@ namespace SPCode.UI.Components
                 var native = native_;
                 var node = new TreeViewItem() { Header = native.Name };
                 root.Items.Add(node);
-                node.Tag = new NodeData(delegate()
+                node.Tag = new NodeData(delegate ()
                 {
                     renderDebugNative(native);
                 }, null);

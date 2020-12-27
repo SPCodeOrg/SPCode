@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
 
 namespace Lysis
 {
@@ -123,7 +120,7 @@ namespace Lysis
 
             // Okay, start reducing.
             LinkedList<RBlock> queue = new LinkedList<RBlock>(rblocks);
-            for (;;)
+            for (; ; )
             {
                 List<RBlock> deleteQueue = new List<RBlock>();
                 foreach (RBlock rblock in queue)
@@ -423,7 +420,7 @@ namespace Lysis
         public static NodeBlock EffectiveTarget(NodeBlock block)
         {
             NodeBlock target = block;
-            for (;;)
+            for (; ; )
             {
                 block = GetEmptyTarget(block);
                 if (block == null)

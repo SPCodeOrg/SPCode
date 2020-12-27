@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 
 namespace Lysis
 {
@@ -187,15 +183,15 @@ namespace Lysis
                 case VariableType.Array:
                     return new TypeUnit(new PawnType(var.tag), var.dims.Length);
                 case VariableType.Reference:
-                {
-                    TypeUnit tu = new TypeUnit(new PawnType(var.tag));
-                    return new TypeUnit(tu);
-                }
+                    {
+                        TypeUnit tu = new TypeUnit(new PawnType(var.tag));
+                        return new TypeUnit(tu);
+                    }
                 case VariableType.ArrayReference:
-                {
-                    TypeUnit tu = new TypeUnit(new PawnType(var.tag), var.dims.Length);
-                    return new TypeUnit(tu);
-                }
+                    {
+                        TypeUnit tu = new TypeUnit(new PawnType(var.tag), var.dims.Length);
+                        return new TypeUnit(tu);
+                    }
             }
             return null;
         }

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using DiscordRPC;
+using MahApps.Metro;
+using SPCode.UI.Components;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -9,10 +12,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
-using DiscordRPC;
-using MahApps.Metro;
-using SPCode.Interop.Updater;
-using SPCode.UI.Components;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 
@@ -72,11 +71,11 @@ namespace SPCode.UI
             ReplaceButton.SelectedIndex = 0;
             if (Program.OptionsObject.UI_ShowToolBar) Win_ToolBar.Height = double.NaN;
             MetroDialogOptions.AnimateHide = MetroDialogOptions.AnimateShow = false;
-            BlendOverEffect = (Storyboard) Resources["BlendOverEffect"];
-            FadeFindReplaceGridIn = (Storyboard) Resources["FadeFindReplaceGridIn"];
-            FadeFindReplaceGridOut = (Storyboard) Resources["FadeFindReplaceGridOut"];
-            EnableServerAnim = (Storyboard) Resources["EnableServerAnim"];
-            DisableServerAnim = (Storyboard) Resources["DisableServerAnim"];
+            BlendOverEffect = (Storyboard)Resources["BlendOverEffect"];
+            FadeFindReplaceGridIn = (Storyboard)Resources["FadeFindReplaceGridIn"];
+            FadeFindReplaceGridOut = (Storyboard)Resources["FadeFindReplaceGridOut"];
+            EnableServerAnim = (Storyboard)Resources["EnableServerAnim"];
+            DisableServerAnim = (Storyboard)Resources["DisableServerAnim"];
             ChangeObjectBrowserToDirectory(Program.OptionsObject.Program_ObjectBrowserDirectory);
             Language_Translate(true);
 #if DEBUG
@@ -152,7 +151,7 @@ namespace SPCode.UI
                 }
                 else if (extension == "smx")
                 {
-                    var layoutDocument = new LayoutDocument {Title = "DASM: " + fileInfo.Name};
+                    var layoutDocument = new LayoutDocument { Title = "DASM: " + fileInfo.Name };
                     var dasmElement = new DASMElement(fileInfo);
                     layoutDocument.Content = dasmElement;
                     DockingPane.Children.Add(layoutDocument);
@@ -168,9 +167,9 @@ namespace SPCode.UI
 
         private void AddEditorElement(string filePath, string name, bool SelectMe)
         {
-            var layoutDocument = new LayoutDocument {Title = name};
+            var layoutDocument = new LayoutDocument { Title = name };
             layoutDocument.ToolTip = filePath;
-            var editor = new EditorElement(filePath) {Parent = layoutDocument};
+            var editor = new EditorElement(filePath) { Parent = layoutDocument };
             layoutDocument.Content = editor;
             EditorsReferences.Add(editor);
             DockingPane.Children.Add(layoutDocument);
@@ -245,7 +244,7 @@ namespace SPCode.UI
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                var files = (string[]) e.Data.GetData(DataFormats.FileDrop);
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 Activate();
                 Focus();
                 Debug.Assert(files != null, nameof(files) + " != null");
@@ -267,7 +266,7 @@ namespace SPCode.UI
 
         private void ErrorResultGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var row = (ErrorDataGridRow) ErrorResultGrid.SelectedItem;
+            var row = (ErrorDataGridRow)ErrorResultGrid.SelectedItem;
             if (row == null) return;
             var fileName = row.file;
             var editors = GetAllEditorElements();
@@ -321,7 +320,7 @@ namespace SPCode.UI
                     }
                 });
             }
-            
+
             if (ServerIsRunning) outString = $"{outString} | ({Program.Translations.GetLanguage("ServerRunning")})";
             Title = outString;
         }

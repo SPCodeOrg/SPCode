@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using MahApps.Metro;
+using MahApps.Metro.Controls;
+using SourcepawnCondenser.SourcemodDefinition;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -7,9 +10,6 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using MahApps.Metro;
-using MahApps.Metro.Controls;
-using SourcepawnCondenser.SourcemodDefinition;
 
 namespace SPCode.UI.Windows
 {
@@ -70,7 +70,7 @@ namespace SPCode.UI.Windows
             items = new ListViewItem[defArrayLength];
             for (var i = 0; i < defArrayLength; ++i)
             {
-                items[i] = new ListViewItem {Content = defArray[i].Name, Tag = defArray[i]};
+                items[i] = new ListViewItem { Content = defArray[i].Name, Tag = defArray[i] };
                 SPBox.Items.Add(items[i]);
             }
 
@@ -87,7 +87,7 @@ namespace SPCode.UI.Windows
         {
             var obj = SPBox.SelectedItem;
             if (obj == null) return;
-            var item = (ListViewItem) obj;
+            var item = (ListViewItem)obj;
             var TagValue = item.Tag;
             if (TagValue != null)
             {
@@ -206,7 +206,7 @@ namespace SPCode.UI.Windows
 
                 if (TagValue is string value)
                 {
-                    SPNameBlock.Text = (string) item.Content;
+                    SPNameBlock.Text = (string)item.Content;
                     SPFullNameBlock.Text = value;
                     SPFileBlock.Text = string.Empty;
                     SPCommentBox.Text = string.Empty;
@@ -214,7 +214,7 @@ namespace SPCode.UI.Windows
                 }
             }
 
-            SPNameBlock.Text = (string) item.Content;
+            SPNameBlock.Text = (string)item.Content;
             SPFullNameBlock.Text = string.Empty;
             SPFileBlock.Text = string.Empty;
             SPTypeBlock.Text = string.Empty;
@@ -223,11 +223,11 @@ namespace SPCode.UI.Windows
 
         private void SPFunctionsListBox_DoubleClick(object sender, RoutedEventArgs e)
         {
-            var item = (ListViewItem) SPBox.SelectedItem;
+            var item = (ListViewItem)SPBox.SelectedItem;
             if (item == null) return;
 
             Close();
-            var sm = (SMBaseDefinition) item.Tag;
+            var sm = (SMBaseDefinition)item.Tag;
             var config = Program.Configs[Program.SelectedConfig].SMDirectories.First();
             Program.MainWindow.TryLoadSourceFile(Path.GetFullPath(Path.Combine(config, "include", sm.File)) + ".inc", true, false, true);
             var ee = Program.MainWindow.GetCurrentEditorElement();

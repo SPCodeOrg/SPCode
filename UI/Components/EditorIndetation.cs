@@ -1,7 +1,5 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Indentation;
-using ICSharpCode.AvalonEdit.Rendering;
-using System.Windows.Media;
 
 namespace SPCode.UI.Components
 {
