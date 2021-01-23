@@ -61,8 +61,6 @@ namespace SPCode.UI.Components
         private bool SelectionIsHighlited;
         private bool WantFoldingUpdate;
 
-        private static DateTime lastParsing;
-
         public EditorElement()
         {
             InitializeComponent();
@@ -886,7 +884,7 @@ namespace SPCode.UI.Components
             {
                 editor.Document.BeginUpdate();
                 editor.Document.Insert(editor.SelectionStart, e.Text);
-                int newCaretPos = editor.SelectionStart + editor.SelectionLength;
+                editor.CaretOffset = editor.SelectionStart + editor.SelectionLength;
                 TextArea_TextEntered(sender, e);
                 e.Handled = true;
                 editor.Document.EndUpdate();

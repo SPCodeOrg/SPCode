@@ -149,11 +149,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
     <Compile Include="UI\Components\ColorChangeControl.xaml.cs">
       <DependentUpon>ColorChangeControl.xaml</DependentUpon>
     </Compile>
@@ -294,10 +289,6 @@
     <Resource Include="Resources\AboutImages\sourcemod.png" />
     <Resource Include="Resources\AboutImages\smlib.png" />
     <Resource Include="Resources\AboutImages\alliedmodders.png" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <None Include="Resources\Misc\Configurations\Configs.xml">
       <SubType>Designer</SubType>
     </None>
