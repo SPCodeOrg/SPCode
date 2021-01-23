@@ -430,6 +430,7 @@
     <ClInclude Include="Deploy\GPLv3.txt" />
     <ClInclude Include="Deploy\icon.ico" />
     <ClInclude Include="Deploy\SPCode.nsi" />
+    <Content Include=".editorconfig" />
     <Content Include="Deploy\Compress.ps1" />
     <ClInclude Include="Resources\lang_0_spcode.xml" />
     <ClInclude Include="Resources\lang_0_spcode_entryTemplate.xml" />
