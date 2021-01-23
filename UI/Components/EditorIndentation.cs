@@ -3,7 +3,7 @@ using ICSharpCode.AvalonEdit.Indentation;
 
 namespace SPCode.UI.Components
 {
-    public class EditorIndetationStrategy : IIndentationStrategy
+    public class EditorIndentationStrategy : IIndentationStrategy
     {
         public void IndentLine(TextDocument document, DocumentLine line)
         {

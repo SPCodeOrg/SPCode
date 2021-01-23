@@ -70,7 +70,7 @@ namespace SPCode.UI.Components
 
             bracketSearcher = new SPBracketSearcher();
             bracketHighlightRenderer = new BracketHighlightRenderer(editor.TextArea.TextView);
-            editor.TextArea.IndentationStrategy = new EditorIndetationStrategy();
+            editor.TextArea.IndentationStrategy = new EditorIndentationStrategy();
 
             FadeJumpGridIn = (Storyboard)Resources["FadeJumpGridIn"];
             FadeJumpGridOut = (Storyboard)Resources["FadeJumpGridOut"];
