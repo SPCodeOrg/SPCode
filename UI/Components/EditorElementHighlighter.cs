@@ -112,8 +112,7 @@ namespace SPCode.UI.Components
 
                 rs.Rules.Add(new HighlightingRule //preprocessor keywords
                 {
-                    //Regex = RegexKeywordsHelper.GetRegexFromKeywords(new string[] { "#include", "#if", "#else", "#elif", "#endif", "#define", "#undef", "#pragma", "#endinput" }),
-                    Regex = new Regex(@"\#[a-zA-Z_][a-zA-Z0-9_]+",
+                    Regex = new Regex(@"\#\S+",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     Color = new HighlightingColor
                     { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_PreProcessor) }
