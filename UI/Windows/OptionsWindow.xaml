@@ -99,7 +99,7 @@
                             <ComboBoxItem Content="10" />
                             <ComboBoxItem Content="15" />
                         </ComboBox>
-                        <TextBlock Name="SyntaxHighBlock" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,238,0,0" Text="Syntaxhighlighting:" IsHitTestVisible="False" />
+                        <TextBlock Name="SyntaxHighBlock" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,238,0,0" Text="Syntax highlighting:" IsHitTestVisible="False" />
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,255,0,5">
 
                             <CheckBox Name="HighlightDeprecateds" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Content="Highlight Deprecated (&lt;1.7) Syntax" Checked="HighlightDeprecateds_Changed" Unchecked="HighlightDeprecateds_Changed" />

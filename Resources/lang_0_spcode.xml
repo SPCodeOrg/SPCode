@@ -185,7 +185,7 @@
         <showtabs>Tabs anzeigen</showtabs>
         <indentationsize>Einrückungsgröße</indentationsize>
         <fontfamily>Schriftart</fontfamily>
-        <syntaxhigh>Syntaxhighlighting</syntaxhigh>
+        <syntaxhigh>Syntax highlighting</syntaxhigh>
         <highdeprecat>Veraltete Syntax (&lt;1.7) anzeigen</highdeprecat>
         <compile>Kompilieren</compile>
         <autosavemin>Automatisches Speichern (Min)</autosavemin>
