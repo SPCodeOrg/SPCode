@@ -231,23 +231,24 @@ namespace SPCode.UI.Components
             if (sm != null)
             {
                 //TODO: Match definition for all the sm directories
-                var config = Program.Configs[Program.SelectedConfig].SMDirectories.First();
-                var file = Path.GetFullPath(Path.Combine(config, "include", sm.File)) + ".inc";
-                await Task.Delay(100);
-                var result = Program.MainWindow.TryLoadSourceFile(file,
-                    true, false, true);
-                if (!result)
-                {
-                    Debug.Print($"File {file} not found!");
-                    return;
-                }
+                var config = Program.Configs[Program.SelectedConfig].SMDirectories;
 
-                var newEditor = Program.MainWindow.GetCurrentEditorElement();
-                Debug.Assert(newEditor != null);
-                newEditor.editor.TextArea.Caret.Offset = sm.Index;
-                newEditor.editor.TextArea.Caret.BringCaretToView();
-                newEditor.editor.TextArea.Selection =
-                    Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
+                foreach (var cfg in config)
+                {
+                    var file = Path.GetFullPath(Path.Combine(cfg, sm.File)) + ".inc";
+                    await Task.Delay(100);
+                    var result = Program.MainWindow.TryLoadSourceFile(file, true, false, true);
+                    if (!result)
+                    {
+                        Debug.Print($"File {file} not found!");
+                        continue;
+                    }
+                    var newEditor = Program.MainWindow.GetCurrentEditorElement();
+                    Debug.Assert(newEditor != null);
+                    newEditor.editor.TextArea.Caret.Offset = sm.Index;
+                    newEditor.editor.TextArea.Caret.BringCaretToView();
+                    newEditor.editor.TextArea.Selection = Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
+                }
             }
         }
 
