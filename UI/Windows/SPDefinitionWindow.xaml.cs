@@ -224,16 +224,27 @@ namespace SPCode.UI.Windows
         private void SPFunctionsListBox_DoubleClick(object sender, RoutedEventArgs e)
         {
             var item = (ListViewItem)SPBox.SelectedItem;
-            if (item == null) return;
+            if (item == null)
+            {
+                return;
+            }
 
             Close();
+
             var sm = (SMBaseDefinition)item.Tag;
-            var config = Program.Configs[Program.SelectedConfig].SMDirectories.First();
-            Program.MainWindow.TryLoadSourceFile(Path.GetFullPath(Path.Combine(config, "include", sm.File)) + ".inc", true, false, true);
-            var ee = Program.MainWindow.GetCurrentEditorElement();
-            Debug.Assert(ee != null);
-            ee.editor.TextArea.Caret.Offset = sm.Index;
-            ee.editor.TextArea.Caret.BringCaretToView();
+            var config = Program.Configs[Program.SelectedConfig].SMDirectories;
+
+            foreach (var cfg in config)
+            {
+                if (Program.MainWindow.TryLoadSourceFile(Path.GetFullPath(Path.Combine(cfg, sm.File)) + ".inc", true, false, true))
+                {
+                    var ee = Program.MainWindow.GetCurrentEditorElement();
+                    Debug.Assert(ee != null);
+                    ee.editor.TextArea.Caret.Offset = sm.Index;
+                    ee.editor.TextArea.Caret.BringCaretToView();
+
+                }
+            }
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
