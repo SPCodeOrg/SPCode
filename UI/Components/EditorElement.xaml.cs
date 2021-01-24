@@ -206,17 +206,20 @@ namespace SPCode.UI.Components
             }
         }
 
+        #region Go To Definition (ctrl+click)
+
         private async void TextArea_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!Keyboard.IsKeyDown(Key.LeftCtrl)) return;
+
             var word = GetWordAtMousePosition(e);
             Debug.Print($"The word: {word}");
             if (word.Trim().Length == 0) return;
 
             e.Handled = true;
-            // var smDef = currentSmDef ?? Program.Configs[Program.SelectedConfig].GetSMDef();
 
-            /**** First try to match variables in the current file ***/
+            // First try to match variables in the current file
+
             var sm = MatchDefinition(currentSmDef, word, e, true);
             if (sm != null)
             {
@@ -227,15 +230,16 @@ namespace SPCode.UI.Components
                 return;
             }
 
+            // Now let's search across all scripting directories
+
             sm = MatchDefinition(Program.Configs[Program.SelectedConfig].GetSMDef(), word, e);
             if (sm != null)
             {
-                //TODO: Match definition for all the sm directories
                 var config = Program.Configs[Program.SelectedConfig].SMDirectories;
 
                 foreach (var cfg in config)
                 {
-                    var file = Path.GetFullPath(Path.Combine(cfg, sm.File)) + ".inc";
+                    var file = Path.GetFullPath(Path.Combine(cfg, "include", sm.File)) + ".inc";
                     await Task.Delay(100);
                     var result = Program.MainWindow.TryLoadSourceFile(file, true, false, true);
                     if (!result)
@@ -251,6 +255,8 @@ namespace SPCode.UI.Components
                 }
             }
         }
+
+        #endregion
 
         private SMBaseDefinition MatchDefinition(SMDefinition smDef, string word, MouseButtonEventArgs e, bool currentFile = false)
         {

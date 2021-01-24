@@ -236,7 +236,7 @@ namespace SPCode.UI.Windows
 
             foreach (var cfg in config)
             {
-                if (Program.MainWindow.TryLoadSourceFile(Path.GetFullPath(Path.Combine(cfg, sm.File)) + ".inc", true, false, true))
+                if (Program.MainWindow.TryLoadSourceFile(Path.GetFullPath(Path.Combine(cfg, "include", sm.File)) + ".inc", true, false, true))
                 {
                     var ee = Program.MainWindow.GetCurrentEditorElement();
                     Debug.Assert(ee != null);
