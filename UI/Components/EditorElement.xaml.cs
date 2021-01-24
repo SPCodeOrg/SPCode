@@ -273,22 +273,33 @@ namespace SPCode.UI.Components
             var column = mousePosition.Value.Column;
             var offset = editor.TextArea.Document.GetOffset(line, column);
 
+            // Begin attempting to match the supplied word with a definition
+
+            // functions
             var sm = (SMBaseDefinition)smDef.Functions.FirstOrDefault(i => i.Name == word);
 
+            // search in the same file if specified
             if (currentFile)
             {
-                sm ??= smDef.Functions.FirstOrDefault(func => func.Index <= offset && offset <= func.EndPos)
-                    ?.FuncVariables?.FirstOrDefault(i => i.Name.Equals(word));
+                sm ??= smDef.Functions.FirstOrDefault(
+                    func => func.Index <= offset && 
+                            offset <= func.EndPos)
+                    ?.FuncVariables?.FirstOrDefault(
+                        i => i.Name.Equals(word));
             }
 
+            // variables
             sm ??= smDef.Variables.FirstOrDefault(i =>
                 i.Name.Equals(word));
 
+            // constants
             sm ??= smDef.Constants.FirstOrDefault(i =>
                 i.Name.Equals(word));
 
+            // defines
             sm ??= smDef.Defines.FirstOrDefault(i => i.Name.Equals(word));
 
+            // enums
             sm ??= smDef.Enums.FirstOrDefault(i => i.Name.Equals(word));
 
             if (sm == null)
@@ -304,19 +315,19 @@ namespace SPCode.UI.Components
                 }
             }
 
-
-            //TODO: Match EnumStruct and MethodMaps Fields and Methods
+            // enum structs
             sm ??= smDef.EnumStructs.FirstOrDefault(i =>
                 i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
+            // methodmaps
             sm ??= smDef.Methodmaps.FirstOrDefault(
                 i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
+            // structs?
             sm ??= smDef.Structs.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
+            // typedefs
             sm ??= smDef.Typedefs.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
-
-            // Debug.Print($"Function {word} found with {sm}!");
 
             return sm;
         }
