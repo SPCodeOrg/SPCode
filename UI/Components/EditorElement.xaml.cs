@@ -207,7 +207,7 @@ namespace SPCode.UI.Components
         }
 
         #region Go To Definition (ctrl+click)
-
+        
         private async void TextArea_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!Keyboard.IsKeyDown(Key.LeftCtrl)) return;
@@ -218,21 +218,9 @@ namespace SPCode.UI.Components
 
             e.Handled = true;
 
-            // First try to match variables in the current file
+            // First search across all scripting directories
 
-            var sm = MatchDefinition(currentSmDef, word, e, true);
-            if (sm != null)
-            {
-                editor.TextArea.Caret.Offset = sm.Index;
-                editor.TextArea.Caret.BringCaretToView();
-                await Task.Delay(100);
-                editor.TextArea.Selection = Selection.Create(editor.TextArea, sm.Index, sm.Index + sm.Length);
-                return;
-            }
-
-            // Now let's search across all scripting directories
-
-            sm = MatchDefinition(Program.Configs[Program.SelectedConfig].GetSMDef(), word, e);
+            var sm = MatchDefinition(Program.Configs[Program.SelectedConfig].GetSMDef(), word, e);
             if (sm != null)
             {
                 var config = Program.Configs[Program.SelectedConfig].SMDirectories;
@@ -254,6 +242,18 @@ namespace SPCode.UI.Components
                     newEditor.editor.TextArea.Selection = Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
                     return;
                 }
+            }
+
+            // If not, try to match variables in the current file 
+            // (shit solution to fix some symbols getting read first inside of the file inaproppiately)
+
+            sm = MatchDefinition(currentSmDef, word, e, true);
+            if (sm != null)
+            {
+                editor.TextArea.Caret.Offset = sm.Index;
+                editor.TextArea.Caret.BringCaretToView();
+                await Task.Delay(100);
+                editor.TextArea.Selection = Selection.Create(editor.TextArea, sm.Index, sm.Index + sm.Length);
             }
         }
 
