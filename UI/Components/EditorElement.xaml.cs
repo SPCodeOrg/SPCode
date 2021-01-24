@@ -252,6 +252,7 @@ namespace SPCode.UI.Components
                     newEditor.editor.TextArea.Caret.Offset = sm.Index;
                     newEditor.editor.TextArea.Caret.BringCaretToView();
                     newEditor.editor.TextArea.Selection = Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
+                    return;
                 }
             }
         }
