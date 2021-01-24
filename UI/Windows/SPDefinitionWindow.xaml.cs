@@ -9,6 +9,7 @@ using System.Text;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace SPCode.UI.Windows
@@ -96,9 +97,9 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm1.Name;
                     SPFullNameBlock.Text = sm1.FullName;
                     SPFileBlock.Text = sm1.File + ".inc" +
-                                       $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm1.Index, sm1.Length)})";
+                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm1.Index, sm1.Length)}";
                     SPTypeBlock.Text = "Function";
-                    SPCommentBox.Text = "comment:::" + sm1.CommentString + "\nKIND:::: " + sm1.FunctionKind;
+                    SPCommentBox.Text = "Comment: " + sm1.CommentString + "\nType: " + sm1.FunctionKind;
                     return;
                 }
 
@@ -107,7 +108,7 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm2.Name;
                     SPFullNameBlock.Text = string.Empty;
                     SPFileBlock.Text = sm2.File + ".inc" +
-                                       $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm2.Index, sm2.Length)})";
+                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm2.Index, sm2.Length)}";
                     SPTypeBlock.Text = "Constant";
                     SPCommentBox.Text = string.Empty;
                     return;
@@ -118,7 +119,7 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm3.Name;
                     SPFullNameBlock.Text = string.Empty;
                     SPFileBlock.Text = sm3.File + ".inc" +
-                                       $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm3.Index, sm3.Length)})";
+                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm3.Index, sm3.Length)}";
                     SPTypeBlock.Text = "Enum " + sm3.Entries.Length + " entries";
                     var outString = new StringBuilder();
                     for (var i = 0; i < sm3.Entries.Length; ++i)
@@ -136,7 +137,7 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm4.Name;
                     SPFullNameBlock.Text = string.Empty;
                     SPFileBlock.Text = sm4.File + ".inc" +
-                                       $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm4.Index, sm4.Length)})";
+                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm4.Index, sm4.Length)}";
                     SPTypeBlock.Text = "Struct";
                     SPCommentBox.Text = string.Empty;
                     return;
@@ -147,7 +148,7 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm5.Name;
                     SPFullNameBlock.Text = string.Empty;
                     SPFileBlock.Text = sm5.File + ".inc" +
-                                       $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm5.Index, sm5.Length)})";
+                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm5.Index, sm5.Length)}";
                     SPTypeBlock.Text = "Definition";
                     SPCommentBox.Text = string.Empty;
                     return;
@@ -176,7 +177,7 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm7.Name;
                     SPFullNameBlock.Text = sm7.FullName;
                     SPFileBlock.Text = sm7.File + ".inc" +
-                                       $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm7.Index, sm7.Length)})";
+                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm7.Index, sm7.Length)}";
                     SPTypeBlock.Text = $"{Program.Translations.GetLanguage("MethodFrom")} {sm7.MethodmapName}";
                     SPCommentBox.Text = sm7.CommentString;
                     return;
@@ -187,7 +188,7 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm8.Name;
                     SPFullNameBlock.Text = sm8.FullName;
                     SPFileBlock.Text = sm8.File + ".inc" +
-                                       $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm8.Index, sm8.Length)})";
+                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm8.Index, sm8.Length)}";
                     SPTypeBlock.Text = $"{Program.Translations.GetLanguage("PropertyFrom")} {sm8.MethodmapName}";
                     SPCommentBox.Text = string.Empty;
                     return;
@@ -198,7 +199,7 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm.Name;
                     SPFullNameBlock.Text = string.Empty;
                     SPFileBlock.Text = sm.File + ".inc" +
-                                       $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm.Index, sm.Length)})";
+                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm.Index, sm.Length)}";
                     SPTypeBlock.Text = "Typedef/Typeset";
                     SPCommentBox.Text = sm.FullName;
                     return;
@@ -223,6 +224,19 @@ namespace SPCode.UI.Windows
 
         private void SPFunctionsListBox_DoubleClick(object sender, RoutedEventArgs e)
         {
+            GoToDefinition();
+        }
+
+        private void SPFunctionsListBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                GoToDefinition();
+            }
+        }
+
+        private void GoToDefinition()
+        {
             var item = (ListViewItem)SPBox.SelectedItem;
             if (item == null)
             {
@@ -242,7 +256,7 @@ namespace SPCode.UI.Windows
                     Debug.Assert(ee != null);
                     ee.editor.TextArea.Caret.Offset = sm.Index;
                     ee.editor.TextArea.Caret.BringCaretToView();
-
+                    return;
                 }
             }
         }
@@ -282,5 +296,7 @@ namespace SPCode.UI.Windows
                 return;
             }*/
         }
+
+
     }
 }
