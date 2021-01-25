@@ -319,10 +319,22 @@ namespace SPCode.UI.Components
             sm ??= smDef.EnumStructs.FirstOrDefault(i =>
                 i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
+            sm ??= smDef.EnumStructs.FirstOrDefault(
+                i => i.Fields.Any(j => j.Name == word));
+
+            sm ??= smDef.EnumStructs.FirstOrDefault(
+                i => i.Methods.Any(j => j.Name == word));
+
             // methodmaps
             sm ??= smDef.Methodmaps.FirstOrDefault(
                 i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
+            sm ??= smDef.Methodmaps.FirstOrDefault(
+                i => i.Fields.Any(j => j.Name == word));
+
+            sm ??= smDef.Methodmaps.FirstOrDefault(
+                i => i.Methods.Any(j => j.Name == word));
+            
             // structs?
             sm ??= smDef.Structs.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
