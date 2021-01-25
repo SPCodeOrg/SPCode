@@ -206,8 +206,6 @@ namespace SPCode.UI.Components
             }
         }
 
-        #region Go To Definition (ctrl+click)
-        
         private async void TextArea_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!Keyboard.IsKeyDown(Key.LeftCtrl)) return;
@@ -256,8 +254,6 @@ namespace SPCode.UI.Components
                 editor.TextArea.Selection = Selection.Create(editor.TextArea, sm.Index, sm.Index + sm.Length);
             }
         }
-
-        #endregion
 
         private SMBaseDefinition MatchDefinition(SMDefinition smDef, string word, MouseButtonEventArgs e, bool currentFile = false)
         {
