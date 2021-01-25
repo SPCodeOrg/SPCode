@@ -341,13 +341,22 @@ namespace SPCode.UI.Windows
         private void MetroWindow_Closed(object sender, EventArgs e)
         {
             if (NeedsSMDefInvalidation)
+            {
                 foreach (var config in Program.Configs)
+                {
                     config.InvalidateSMDef();
+                }
+            }
             Program.MainWindow.FillConfigMenu();
             Program.MainWindow.ChangeConfig(Program.SelectedConfig);
             var outString = new StringBuilder();
             var settings = new XmlWriterSettings
-            { Indent = true, IndentChars = "\t", NewLineOnAttributes = false, OmitXmlDeclaration = true };
+            { 
+                Indent = true, 
+                IndentChars = "\t", 
+                NewLineOnAttributes = false, 
+                OmitXmlDeclaration = true 
+            };
             using (var writer = XmlWriter.Create(outString, settings))
             {
                 writer.WriteStartElement("Configurations");
@@ -381,11 +390,9 @@ namespace SPCode.UI.Windows
                     writer.WriteAttributeString("RConCommands", c.RConCommands);
                     writer.WriteEndElement();
                 }
-
                 writer.WriteEndElement();
                 writer.Flush();
             }
-
             File.WriteAllText("sourcepawn\\configs\\Configs.xml", outString.ToString());
         }
 
