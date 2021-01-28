@@ -28,15 +28,11 @@ RequestExecutionLevel admin
 
 !insertmacro MUI_LANGUAGE "English"
 
-
-
-
 Section "Program" prog01
 SectionIn 1 RO
 SetOutPath $INSTDIR
 
 !insertmacro CheckNetFramework 48
-
 
 File SPCode.exe
 File MahApps.Metro.dll
@@ -65,16 +61,18 @@ OptionsExist:
 Delete $INSTDIR\options_0.dat
 OptionsDoesNotExist:
 
-CreateDirectory "$INSTDIR\sourcepawn"
-CreateDirectory "$INSTDIR\sourcepawn\errorfiles"
-CreateDirectory "$INSTDIR\sourcepawn\scripts"
-CreateDirectory "$INSTDIR\sourcepawn\temp"
-CreateDirectory "$INSTDIR\sourcepawn\templates"
-CreateDirectory "$INSTDIR\sourcepawn\configs"
-CreateDirectory "$INSTDIR\sourcepawn\configs\sm_1_10_0_6478"
+CreateDirectory "$APPDATA\spcode\sourcepawn"
+CreateDirectory "$APPDATA\spcode\sourcepawn\errorfiles"
+CreateDirectory "$APPDATA\spcode\sourcepawn\scripts"
+CreateDirectory "$APPDATA\spcode\sourcepawn\temp"
+CreateDirectory "$APPDATA\spcode\sourcepawn\templates"
+CreateDirectory "$APPDATA\spcode\sourcepawn\configs"
+CreateDirectory "$APPDATA\spcode\sourcepawn\configs\sm_1_10_0_6478"
+
+SetOutPath $APPDATA\spcode
 File /r ".\sourcepawn"
 
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayName" "SPCode - A lightweight sourcepawn editor"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayName" "SPCode - A lightweight SourcePawn editor"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "UninstallString" "$INSTDIR\uninstall.exe"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "InstallLocation" "$INSTDIR"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayIcon" "$INSTDIR\SPCode.exe"
@@ -85,7 +83,6 @@ WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" 
 
 WriteUninstaller $INSTDIR\uninstall.exe
 SectionEnd
-
 
 
 Section "File Association (.sp)" prog02
@@ -145,7 +142,7 @@ Delete $INSTDIR\Microsoft.WindowsAPICodePack.Shell.dll
 Delete $INSTDIR\lang_0_spcode.xml
 Delete $INSTDIR\GPLv3.txt
 Delete $INSTDIR\*.dat
-RMDir /r $INSTDIR\sourcepawn
+RMDir /r $APPDATA\spcode
 RMDir $INSTDIR
 
 Delete "$DESKTOP\SPCode.lnk"
