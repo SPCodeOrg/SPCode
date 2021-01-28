@@ -24,6 +24,7 @@ namespace SPCode.UI.Windows
     {
         private bool AllowChange;
         private bool NeedsSMDefInvalidation;
+        private string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
         private ICommand textBoxButtonFileCmd;
 
@@ -386,7 +387,7 @@ namespace SPCode.UI.Windows
                 writer.Flush();
             }
 
-            File.WriteAllText("sourcepawn\\configs\\Configs.xml", outString.ToString());
+            File.WriteAllText(Constants.ConfigPath, outString.ToString());
         }
 
         private void Language_Translate()

@@ -1,6 +1,7 @@
 ﻿using MahApps.Metro.Controls.Dialogs;
 using SPCode.Interop.Updater;
 using SPCode.UI.Windows;
+using SPCode.Utils;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -206,7 +207,7 @@ namespace SPCode.UI
 
         private void ReportBug_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(@"https://github.com/Hexer10/SPCode/issues/new"));
+            Process.Start(new ProcessStartInfo(Constants.GitHubNewIssueLink));
         }
 
         private async void UpdateCheck_Click(object sender, RoutedEventArgs e)

@@ -14,15 +14,21 @@ namespace SPCode.Interop
         public static Config[] Load()
         {
             var configs = new List<Config>();
-            if (File.Exists("sourcepawn\\configs\\Configs.xml"))
+            if (File.Exists(Constants.ConfigPath))
             {
                 try
                 {
                     var document = new XmlDocument();
-                    document.Load("sourcepawn\\configs\\Configs.xml");
-                    if (document.ChildNodes.Count < 1) throw new Exception("No main 'Configurations' node.");
+                    document.Load(Constants.ConfigPath);
+                    if (document.ChildNodes.Count < 1)
+                    {
+                        throw new Exception("No main 'Configurations' node.");
+                    }
                     var mainNode = document.ChildNodes[0];
-                    if (mainNode.ChildNodes.Count < 1) throw new Exception("No 'config' nodes found.");
+                    if (mainNode.ChildNodes.Count < 1)
+                    {
+                        throw new Exception("No 'config' nodes found.");
+                    }
                     for (var i = 0; i < mainNode.ChildNodes.Count; ++i)
                     {
                         var node = mainNode.ChildNodes[i];
@@ -109,7 +115,7 @@ namespace SPCode.Interop
                 catch (Exception e)
                 {
                     MessageBox.Show(
-                        "An error appeared while reading the configs. Without them, the editor wont start. Reinstall program!" +
+                        "An error occured while reading the configs. Without them, the editor will not start. Reinstall your program." +
                         Environment.NewLine + "Details: " + e.Message
                         , "Error while reading configs."
                         , MessageBoxButton.OK
@@ -120,7 +126,7 @@ namespace SPCode.Interop
             else
             {
                 MessageBox.Show(
-                    "The Editor could not find the Configs.xml file. Without it, the editor wont start. Reinstall program.",
+                    $"The Editor could not find the Configs.xml file in {Constants.ConfigPath}. Without it, the editor will not start. Reinstall your program.",
                     "File not found.", MessageBoxButton.OK, MessageBoxImage.Warning);
                 Environment.Exit(Environment.ExitCode);
             }
