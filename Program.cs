@@ -1,20 +1,18 @@
-﻿using DiscordRPC;
+﻿using System;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using DiscordRPC;
 using MahApps.Metro;
 using SPCode.Interop;
 using SPCode.Interop.Updater;
 using SPCode.UI;
-using SPCode.UI.Interop;
-using System;
-using System.Globalization;
-using System.IO;
-using System.Reflection;
-using System.Runtime;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
+using SPCode.Utils;
 
 namespace SPCode
 {
@@ -35,6 +33,8 @@ namespace SPCode
         public static string Indentation => OptionsObject.Editor_ReplaceTabsToWhitespace
             ? new string(' ', OptionsObject.Editor_IndentationSize)
             : "\t";
+
+        public static bool _IsLocalInstallation;
 
         [STAThread]
         public static void Main(string[] args)
@@ -81,6 +81,8 @@ namespace SPCode
                             }
                         });
                     }
+
+                    _IsLocalInstallation = Paths.IsLocalInstallation();
 
                     Translations = new TranslationProvider();
                     Translations.LoadLanguage(OptionsObject.Language, true);
