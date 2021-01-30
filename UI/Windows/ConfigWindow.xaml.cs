@@ -348,7 +348,12 @@ namespace SPCode.UI.Windows
             Program.MainWindow.ChangeConfig(Program.SelectedConfig);
             var outString = new StringBuilder();
             var settings = new XmlWriterSettings
-            { Indent = true, IndentChars = "\t", NewLineOnAttributes = false, OmitXmlDeclaration = true };
+            { 
+                Indent = true, 
+                IndentChars = "\t", 
+                NewLineOnAttributes = false, 
+                OmitXmlDeclaration = true 
+            };
             using (var writer = XmlWriter.Create(outString, settings))
             {
                 writer.WriteStartElement("Configurations");
@@ -387,7 +392,7 @@ namespace SPCode.UI.Windows
                 writer.Flush();
             }
 
-            File.WriteAllText(Constants.ConfigPath, outString.ToString());
+            File.WriteAllText(Constants.ConfigFilePath, outString.ToString());
         }
 
         private void Language_Translate()

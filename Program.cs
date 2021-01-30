@@ -170,6 +170,7 @@ namespace SPCode
                         var sBuilder = new StringBuilder();
                         var addedFiles = false;
                         for (var i = 0; i < args.Length; ++i)
+                        {
                             if (!string.IsNullOrWhiteSpace(args[i]))
                             {
                                 var fInfo = new FileInfo(args[i]);
@@ -180,12 +181,19 @@ namespace SPCode
                                     {
                                         addedFiles = true;
                                         sBuilder.Append(fInfo.FullName);
-                                        if (i + 1 != args.Length) sBuilder.Append("|");
+                                        if (i + 1 != args.Length)
+                                        {
+                                            sBuilder.Append("|");
+                                        }
                                     }
                                 }
                             }
+                        }
 
-                        if (addedFiles) PipeInteropClient.ConnectToMasterPipeAndSendData(sBuilder.ToString());
+                        if (addedFiles)
+                        {
+                            PipeInteropClient.ConnectToMasterPipeAndSendData(sBuilder.ToString());
+                        }
                     }
                     catch (Exception)
                     {
