@@ -14,33 +14,31 @@ namespace SPCode.Interop
         public static Config[] Load()
         {
             var configs = new List<Config>();
-            if (File.Exists(Constants.ConfigPath))
+            if (File.Exists(Constants.ConfigFilePath))
             {
                 try
                 {
+                    // Document gets loaded
                     var document = new XmlDocument();
-                    document.Load(Constants.ConfigPath);
+                    document.Load(Constants.ConfigFilePath);
+
+                    // Document gets checked for proper Configurations tag
                     if (document.ChildNodes.Count < 1)
                     {
                         throw new Exception("No main 'Configurations' node.");
                     }
+                    
+                    // We check for main node and its main child 'Config' node
                     var mainNode = document.ChildNodes[0];
                     if (mainNode.ChildNodes.Count < 1)
                     {
                         throw new Exception("No 'config' nodes found.");
                     }
+
+                    // Start looping through all 'Config' child nodes
                     for (var i = 0; i < mainNode.ChildNodes.Count; ++i)
                     {
                         var node = mainNode.ChildNodes[i];
-                        var _Name = ReadAttributeStringSafe(ref node, "Name", "UNKOWN CONFIG " + (i + 1));
-                        var _SMDirectoryStr = ReadAttributeStringSafe(ref node, "SMDirectory");
-                        var SMDirectoriesSplitted = _SMDirectoryStr.Split(';');
-                        var SMDirs = new List<string>();
-                        foreach (var dir in SMDirectoriesSplitted)
-                        {
-                            var d = dir.Trim();
-                            if (Directory.Exists(d)) SMDirs.Add(d);
-                        }
 
                         var _Standard = ReadAttributeStringSafe(ref node, "Standard", "0");
                         var _AutoCopyStr = ReadAttributeStringSafe(ref node, "AutoCopy", "0");
@@ -57,16 +55,43 @@ namespace SPCode.Interop
                         var _AutoUpload = _AutoUploadStr != "0" && !string.IsNullOrWhiteSpace(_AutoUploadStr);
                         var _AutoRCON = _AutoRCONStr != "0" && !string.IsNullOrWhiteSpace(_AutoRCONStr);
 
+                        var _Name = ReadAttributeStringSafe(ref node, "Name", "UNKOWN CONFIG " + (i + 1));
+                        var _SMDirectoryStr = ReadAttributeStringSafe(ref node, "SMDirectory");
+                        var SMDirectoriesSplitted = _SMDirectoryStr.Split(';');
+                        var SMDirs = new List<string>();
+
+                        if (IsStandardConfig && string.IsNullOrEmpty(_SMDirectoryStr))
+                        {
+                            SMDirs.Add(Constants.SPCodeAppDataPath + @"sourcepawn\configs\sm_1_10_0_6478");
+                        }
+
+                        foreach (var dir in SMDirectoriesSplitted)
+                        {
+                            var d = dir.Trim();
+                            if (Directory.Exists(d))
+                            {
+                                SMDirs.Add(d);
+                            }
+                        }
+
                         int _OptimizationLevel = 2, _VerboseLevel = 1;
-                        int subValue;
-                        if (int.TryParse(ReadAttributeStringSafe(ref node, "OptimizationLevel", "2"), out subValue))
+                        if (int.TryParse(ReadAttributeStringSafe(ref node, "OptimizationLevel", "2"), out var subValue))
+                        {
                             _OptimizationLevel = subValue;
+                        }
+
                         if (int.TryParse(ReadAttributeStringSafe(ref node, "VerboseLevel", "1"), out subValue))
+                        {
                             _VerboseLevel = subValue;
+                        }
+
                         var _DeleteAfterCopy = false;
                         var DeleteAfterCopyStr = ReadAttributeStringSafe(ref node, "DeleteAfterCopy", "0");
                         if (!(DeleteAfterCopyStr == "0" || string.IsNullOrWhiteSpace(DeleteAfterCopyStr)))
+                        {
                             _DeleteAfterCopy = true;
+                        }
+
                         var _FTPHost = ReadAttributeStringSafe(ref node, "FTPHost", "ftp://localhost/");
                         var _FTPUser = ReadAttributeStringSafe(ref node, "FTPUser");
                         var encryptedFTPPW = ReadAttributeStringSafe(ref node, "FTPPassword");
@@ -76,12 +101,16 @@ namespace SPCode.Interop
                         bool _RConEngineTypeSource = !(_RConEngineSourceStr == "0" || string.IsNullOrWhiteSpace(_RConEngineSourceStr));
                         var _RConIP = ReadAttributeStringSafe(ref node, "RConIP", "127.0.0.1");
                         var _RConPortStr = ReadAttributeStringSafe(ref node, "RConPort", "27015");
-                        ushort _RConPort = 27015;
-                        if (!ushort.TryParse(_RConPortStr, NumberStyles.Any, CultureInfo.InvariantCulture,
-                            out _RConPort)) _RConPort = 27015;
+
+                        if (!ushort.TryParse(_RConPortStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var _RConPort))
+                        {
+                            _RConPort = 27015;
+                        }
+
                         var encryptedRConPassword = ReadAttributeStringSafe(ref node, "RConPassword");
                         var _RConPassword = ManagedAES.Decrypt(encryptedRConPassword);
                         var _RConCommands = ReadAttributeStringSafe(ref node, "RConCommands");
+
                         var c = new Config
                         {
                             Name = _Name,
@@ -108,7 +137,10 @@ namespace SPCode.Interop
                             RConPassword = _RConPassword,
                             RConCommands = _RConCommands
                         };
-                        if (IsStandardConfig) c.LoadSMDef();
+                        if (IsStandardConfig)
+                        {
+                            c.LoadSMDef();
+                        }
                         configs.Add(c);
                     }
                 }
@@ -126,7 +158,7 @@ namespace SPCode.Interop
             else
             {
                 MessageBox.Show(
-                    $"The Editor could not find the Configs.xml file in {Constants.ConfigPath}. Without it, the editor will not start. Reinstall your program.",
+                    $"The Editor could not find the Configs.xml file in {Constants.ConfigFilePath}. Without it, the editor will not start. Reinstall your program.",
                     "File not found.", MessageBoxButton.OK, MessageBoxImage.Warning);
                 Environment.Exit(Environment.ExitCode);
             }
