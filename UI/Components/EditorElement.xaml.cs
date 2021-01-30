@@ -1,12 +1,3 @@
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Editing;
-using ICSharpCode.AvalonEdit.Folding;
-using ICSharpCode.AvalonEdit.Rendering;
-using ICSharpCode.AvalonEdit.Utils;
-using MahApps.Metro.Controls.Dialogs;
-using SourcepawnCondenser;
-using SourcepawnCondenser.SourcemodDefinition;
-using SPCode.Utils.SPSyntaxTidy;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,6 +13,15 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Editing;
+using ICSharpCode.AvalonEdit.Folding;
+using ICSharpCode.AvalonEdit.Rendering;
+using ICSharpCode.AvalonEdit.Utils;
+using MahApps.Metro.Controls.Dialogs;
+using SourcepawnCondenser;
+using SourcepawnCondenser.SourcemodDefinition;
+using SPCode.Utils.SPSyntaxTidy;
 using Xceed.Wpf.AvalonDock.Layout;
 using Timer = System.Timers.Timer;
 
@@ -278,7 +278,7 @@ namespace SPCode.UI.Components
             if (currentFile)
             {
                 sm ??= smDef.Functions.FirstOrDefault(
-                    func => func.Index <= offset && 
+                    func => func.Index <= offset &&
                             offset <= func.EndPos)
                     ?.FuncVariables?.FirstOrDefault(
                         i => i.Name.Equals(word));
@@ -330,7 +330,7 @@ namespace SPCode.UI.Components
 
             sm ??= smDef.Methodmaps.FirstOrDefault(
                 i => i.Methods.Any(j => j.Name == word));
-            
+
             // structs?
             sm ??= smDef.Structs.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 

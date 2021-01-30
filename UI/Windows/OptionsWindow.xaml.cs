@@ -1,13 +1,13 @@
-﻿using DiscordRPC;
-using MahApps.Metro;
-using MahApps.Metro.Controls.Dialogs;
-using SPCode.UI.Components;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using DiscordRPC;
+using MahApps.Metro;
+using MahApps.Metro.Controls.Dialogs;
+using SPCode.UI.Components;
 
 namespace SPCode.UI.Windows
 {

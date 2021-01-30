@@ -1,6 +1,6 @@
-﻿using ICSharpCode.AvalonEdit.Document;
+﻿using System.Collections.Generic;
+using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Folding;
-using System.Collections.Generic;
 
 namespace SPCode.UI.Components
 {

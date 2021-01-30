@@ -1,6 +1,6 @@
-﻿using MahApps.Metro.Controls;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using MahApps.Metro.Controls;
 
 namespace SPCode.UI.Interop
 {

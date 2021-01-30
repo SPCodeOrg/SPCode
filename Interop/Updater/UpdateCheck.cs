@@ -1,7 +1,7 @@
-﻿using Octokit;
-using System;
+﻿using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using Octokit;
 
 namespace SPCode.Interop.Updater
 {

@@ -1,5 +1,5 @@
-﻿using Octokit;
-using System.Linq;
+﻿using System.Linq;
+using Octokit;
 
 namespace SPCode.Interop.Updater
 {

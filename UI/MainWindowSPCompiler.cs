@@ -1,6 +1,4 @@
-﻿using MahApps.Metro.Controls.Dialogs;
-using SPCode.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,6 +7,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using MahApps.Metro.Controls.Dialogs;
+using SPCode.Utils;
 
 namespace SPCode.UI
 {

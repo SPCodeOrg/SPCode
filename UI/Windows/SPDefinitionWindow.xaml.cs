@@ -1,7 +1,4 @@
-﻿using MahApps.Metro;
-using MahApps.Metro.Controls;
-using SourcepawnCondenser.SourcemodDefinition;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -11,6 +8,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using MahApps.Metro;
+using MahApps.Metro.Controls;
+using SourcepawnCondenser.SourcemodDefinition;
 
 namespace SPCode.UI.Windows
 {

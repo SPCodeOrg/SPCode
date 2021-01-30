@@ -1,7 +1,7 @@
-﻿using ICSharpCode.AvalonEdit.Highlighting;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
+using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace SPCode.UI.Components
 {

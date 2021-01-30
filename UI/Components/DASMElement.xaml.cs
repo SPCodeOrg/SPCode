@@ -1,11 +1,11 @@
-﻿using smxdasm;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using smxdasm;
 
 namespace SPCode.UI.Components
 {

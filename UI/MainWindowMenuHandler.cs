@@ -1,12 +1,12 @@
-﻿using MahApps.Metro.Controls.Dialogs;
-using SPCode.Interop.Updater;
-using SPCode.UI.Windows;
-using SPCode.Utils;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using SPCode.Interop.Updater;
+using SPCode.UI.Windows;
+using SPCode.Utils;
 
 namespace SPCode.UI
 {

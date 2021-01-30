@@ -1,10 +1,10 @@
-﻿using MahApps.Metro;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Navigation;
+using MahApps.Metro;
 
 namespace SPCode.UI.Windows
 {

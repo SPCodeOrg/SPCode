@@ -1,7 +1,7 @@
-﻿using SPCode.UI.Components;
-using SPCode.UI.Windows;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using SPCode.UI.Components;
+using SPCode.UI.Windows;
 
 namespace SPCode.UI
 {

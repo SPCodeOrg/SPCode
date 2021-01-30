@@ -1,11 +1,11 @@
-﻿using SpcodeUpdater.Properties;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using SpcodeUpdater.Properties;
 
 namespace SpcodeUpdater
 {

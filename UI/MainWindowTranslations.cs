@@ -1,6 +1,6 @@
-﻿using SPCode.UI.Components;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Controls;
+using SPCode.UI.Components;
 
 namespace SPCode.UI
 {

@@ -1,13 +1,13 @@
-﻿using Lysis;
+﻿using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using Lysis;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using SPCode.UI.Components;
 using SPCode.UI.Windows;
 using SPCode.Utils.SPSyntaxTidy;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace SPCode.UI
 {

@@ -28,7 +28,6 @@ namespace CondenserTest
                 str.AppendLine(File.ReadAllText(f));
             }
             ExpandBox.IsChecked = false;
-            //str.AppendLine(File.ReadAllText(@"C:\Users\Jelle\Desktop\coding\sm-scripting\CondenserTestFile.inc"));
             textBox.Text = str.ToString();
         }
 

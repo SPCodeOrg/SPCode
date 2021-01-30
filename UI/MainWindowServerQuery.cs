@@ -1,8 +1,8 @@
-﻿using QueryMaster;
-using System;
+﻿using System;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using QueryMaster;
 
 namespace SPCode.UI
 {

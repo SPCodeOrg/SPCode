@@ -1,6 +1,6 @@
-﻿using SpcodeUpdater.Properties;
-using System;
+﻿using System;
 using System.Windows.Forms;
+using SpcodeUpdater.Properties;
 
 namespace SpcodeUpdater
 {

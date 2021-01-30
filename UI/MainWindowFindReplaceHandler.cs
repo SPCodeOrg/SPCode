@@ -1,10 +1,10 @@
-﻿using SPCode.UI.Components;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
+using SPCode.UI.Components;
 
 namespace SPCode.UI
 {

@@ -1,7 +1,7 @@
-﻿using SPCode.UI;
-using System;
+﻿using System;
 using System.IO.Pipes;
 using System.Text;
+using SPCode.UI;
 
 namespace SPCode.Interop
 {
