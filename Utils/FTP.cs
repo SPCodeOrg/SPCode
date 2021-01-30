@@ -1,7 +1,7 @@
-﻿using Renci.SshNet;
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
+using Renci.SshNet;
 
 namespace SPCode.Utils
 {

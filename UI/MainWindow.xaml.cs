@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using DiscordRPC;
 using MahApps.Metro;
+using SPCode.Interop.Updater;
 using SPCode.UI.Components;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;

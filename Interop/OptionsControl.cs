@@ -197,7 +197,7 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
             try
             {
                 var formatter = new BinaryFormatter();
-                using (var fileStream = new FileStream(Constants.OptionsFilePath, FileMode.Create, FileAccess.ReadWrite,
+                using (var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Create, FileAccess.ReadWrite,
                     FileShare.None))
                 {
                     formatter.Serialize(fileStream, Program.OptionsObject);
@@ -213,11 +213,11 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
         {
             try
             {
-                if (File.Exists(Constants.OptionsFilePath))
+                if (File.Exists(Paths.GetOptionsFilePath()))
                 {
                     object deserializedOptionsObj;
                     var formatter = new BinaryFormatter();
-                    using (var fileStream = new FileStream(Constants.OptionsFilePath, FileMode.Open, FileAccess.Read,
+                    using (var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Open, FileAccess.Read,
                         FileShare.ReadWrite))
                     {
                         deserializedOptionsObj = formatter.Deserialize(fileStream);
