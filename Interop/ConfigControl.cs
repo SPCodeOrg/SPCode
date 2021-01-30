@@ -1,11 +1,11 @@
-﻿using SourcepawnCondenser.SourcemodDefinition;
-using SPCode.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Xml;
+using SourcepawnCondenser.SourcemodDefinition;
+using SPCode.Utils;
 
 namespace SPCode.Interop
 {
@@ -14,20 +14,20 @@ namespace SPCode.Interop
         public static Config[] Load()
         {
             var configs = new List<Config>();
-            if (File.Exists(Constants.ConfigFilePath))
+            if (File.Exists(Paths.GetConfigFilePath()))
             {
                 try
                 {
                     // Document gets loaded
                     var document = new XmlDocument();
-                    document.Load(Constants.ConfigFilePath);
+                    document.Load(Paths.GetConfigFilePath());
 
                     // Document gets checked for proper Configurations tag
                     if (document.ChildNodes.Count < 1)
                     {
                         throw new Exception("No main 'Configurations' node.");
                     }
-                    
+
                     // We check for main node and its main child 'Config' node
                     var mainNode = document.ChildNodes[0];
                     if (mainNode.ChildNodes.Count < 1)
@@ -60,9 +60,11 @@ namespace SPCode.Interop
                         var SMDirectoriesSplitted = _SMDirectoryStr.Split(';');
                         var SMDirs = new List<string>();
 
+                        // If it's the default config the program comes with, add as SMDirectory the default one
+                        // (calculate it based on installation being standalone or portable)
                         if (IsStandardConfig && string.IsNullOrEmpty(_SMDirectoryStr))
                         {
-                            SMDirs.Add(Constants.SPCodeAppDataPath + @"sourcepawn\configs\sm_1_10_0_6478");
+                            SMDirs.Add(Paths.GetConfigsFolderPath());
                         }
 
                         foreach (var dir in SMDirectoriesSplitted)
@@ -72,6 +74,12 @@ namespace SPCode.Interop
                             {
                                 SMDirs.Add(d);
                             }
+                        }
+
+                        // Extra assurance for the program to always load a proper config
+                        if (IsStandardConfig && SMDirs.Count == 0)
+                        {
+                            SMDirs.Add(Paths.GetConfigsFolderPath());
                         }
 
                         int _OptimizationLevel = 2, _VerboseLevel = 1;
@@ -158,8 +166,8 @@ namespace SPCode.Interop
             else
             {
                 MessageBox.Show(
-                    $"The Editor could not find the Configs.xml file in {Constants.ConfigFilePath}. Without it, the editor will not start. Reinstall your program.",
-                    "File not found.", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    "The Editor could not find the Configs.xml file, neither locally nor in AppData. Without it, the editor will not start. Reinstall your program.",
+                    "Configs file not found.", MessageBoxButton.OK, MessageBoxImage.Warning);
                 Environment.Exit(Environment.ExitCode);
             }
 

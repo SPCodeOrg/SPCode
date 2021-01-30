@@ -1,10 +1,4 @@
-﻿using MahApps.Metro;
-using MahApps.Metro.Controls.Dialogs;
-using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using SPCode.Interop;
-using SPCode.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -14,6 +8,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
+using MahApps.Metro;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using SPCode.Interop;
+using SPCode.Utils;
 
 namespace SPCode.UI.Windows
 {
@@ -348,11 +348,11 @@ namespace SPCode.UI.Windows
             Program.MainWindow.ChangeConfig(Program.SelectedConfig);
             var outString = new StringBuilder();
             var settings = new XmlWriterSettings
-            { 
-                Indent = true, 
-                IndentChars = "\t", 
-                NewLineOnAttributes = false, 
-                OmitXmlDeclaration = true 
+            {
+                Indent = true,
+                IndentChars = "\t",
+                NewLineOnAttributes = false,
+                OmitXmlDeclaration = true
             };
             using (var writer = XmlWriter.Create(outString, settings))
             {
@@ -392,7 +392,7 @@ namespace SPCode.UI.Windows
                 writer.Flush();
             }
 
-            File.WriteAllText(Constants.ConfigFilePath, outString.ToString());
+            File.WriteAllText(Paths.GetConfigFilePath(), outString.ToString());
         }
 
         private void Language_Translate()
