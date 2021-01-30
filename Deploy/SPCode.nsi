@@ -56,11 +56,6 @@ File Microsoft.WindowsAPICodePack.Shell.dll
 File lang_0_spcode.xml
 File GPLv3.txt
 
-IfFileExists $INSTDIR\options_0.dat OptionsExist OptionsDoesNotExist
-OptionsExist:
-Delete $INSTDIR\options_0.dat
-OptionsDoesNotExist:
-
 CreateDirectory "$APPDATA\spcode\sourcepawn"
 CreateDirectory "$APPDATA\spcode\sourcepawn\errorfiles"
 CreateDirectory "$APPDATA\spcode\sourcepawn\scripts"
@@ -71,6 +66,11 @@ CreateDirectory "$APPDATA\spcode\sourcepawn\configs\sm_1_10_0_6478"
 
 SetOutPath $APPDATA\spcode
 File /r ".\sourcepawn"
+
+IfFileExists $APPDATA\spcode\options_0.dat OptionsExist OptionsDoesNotExist
+OptionsExist:
+Delete $APPDATA\spcode\options_0.dat
+OptionsDoesNotExist:
 
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayName" "SPCode - A lightweight SourcePawn editor"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "UninstallString" "$INSTDIR\uninstall.exe"
