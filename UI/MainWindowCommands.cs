@@ -217,6 +217,10 @@ namespace SPCode.UI
         private void Command_TidyCode(bool All)
         {
             var editors = All ? GetAllEditorElements() : new[] { GetCurrentEditorElement() };
+            if (editors == null)
+            {
+                return;
+            }
             foreach (var ee in editors)
                 if (ee != null)
                 {
