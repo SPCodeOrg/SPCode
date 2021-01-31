@@ -736,7 +736,7 @@ namespace SPCode.UI.Components
 
                 var caret = -1;
 
-                if (ee == null) return;
+                if (ee == null || ce == null) return;
 
                 var definitions = new SMDefinition[ee.Length];
                 List<SMFunction> currentFunctions = null;
