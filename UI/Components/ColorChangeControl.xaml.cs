@@ -68,7 +68,7 @@ namespace SPCode.UI.Components
         private void BrushRect_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!RaiseEventAllowed) { return; }
-            int cVal = 0; 
+            int cVal = 0;
             string parseString = BrushRect.Text.Trim();
             if (parseString.StartsWith("0x", System.StringComparison.InvariantCultureIgnoreCase) && parseString.Length > 2)
             {

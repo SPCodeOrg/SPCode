@@ -260,7 +260,7 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
 #if DEBUG
             ProgramIsNew = false;
 #else
-			ProgramIsNew = true;
+            ProgramIsNew = true;
 #endif
             return oco;
         }
