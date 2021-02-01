@@ -40,7 +40,7 @@ namespace Lysis
             out_.Append(indent_ + text);
         }
 
-        static public string spop(SPOpcode op)
+        public static string spop(SPOpcode op)
         {
             switch (op)
             {

@@ -39,7 +39,7 @@ namespace CondenserTest
             var tList = Tokenizer.TokenizeString(text, false);
             watch.Stop();
             var t = tList.ToArray();
-            var tokenToTextLength = (double)t.Length / (double)text.Length;
+            var tokenToTextLength = t.Length / (double)text.Length;
             var subTitle = watch.ElapsedMilliseconds + " ms  -  tokenL/textL: " + tokenToTextLength + "  (" + t.Length + " / " + text.Length + ")";
             tokenStack.Children.Clear();
             var i = 0;

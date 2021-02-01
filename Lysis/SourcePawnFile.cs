@@ -423,7 +423,7 @@ namespace SourcePawn
             header_.compression = (Compression)reader.ReadByte();
             header_.disksize = (int)reader.ReadUInt32();
             header_.imagesize = (int)reader.ReadUInt32();
-            header_.sections = (int)reader.ReadByte();
+            header_.sections = reader.ReadByte();
             header_.stringtab = (int)reader.ReadUInt32();
             header_.dataoffs = (int)reader.ReadUInt32();
 
@@ -478,7 +478,7 @@ namespace SourcePawn
                 var main = br.ReadUInt32();
                 var codeoffs = br.ReadUInt32();
                 var codeBytes = Slice(binary, sc.dataoffs + (int)codeoffs, (int)codesize);
-                code_ = new Code(codeBytes, (int)flags, (int)codeversion);
+                code_ = new Code(codeBytes, flags, codeversion);
             }
 
             if (sections_.ContainsKey(".data"))

@@ -459,7 +459,7 @@ namespace SPCode.UI.Components
             root.Items.Add(node);
             node.Tag = new NodeData(delegate ()
             {
-                renderHexView(code.Reader(), (int)code.Header.CodeSize);
+                renderHexView(code.Reader(), code.Header.CodeSize);
             }, null);
 
             var functionMap = new Dictionary<string, uint>();

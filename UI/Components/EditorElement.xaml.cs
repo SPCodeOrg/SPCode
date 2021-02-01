@@ -945,7 +945,7 @@ namespace SPCode.UI.Components
                         // Getting the char ascii code with int cast and the string pos 0 (the char it self),
                         // if it's a ( i need to add 1 to get the ascii code for closing bracket
                         // for [ and { i need to add 2 to get the closing bracket ascii code
-                        var closingBracket = (char)((int)e.Text[0] + (e.Text == "(" ? 1 : 2));
+                        var closingBracket = (char)(e.Text[0] + (e.Text == "(" ? 1 : 2));
                         editor.Document.Insert(editor.CaretOffset, closingBracket.ToString());
                         if (editor.SelectionLength == 0)
                         {

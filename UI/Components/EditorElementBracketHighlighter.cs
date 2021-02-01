@@ -359,7 +359,7 @@ namespace SPCode.UI.Components
             }
             if (bracketStack.Count > 0)
             {
-                return (int)bracketStack.Pop();
+                return bracketStack.Pop();
             }
 
             return -1;

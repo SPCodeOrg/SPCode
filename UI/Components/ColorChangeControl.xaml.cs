@@ -48,7 +48,7 @@ namespace SPCode.UI.Components
         {
             RaiseEventAllowed = false;
             BrushRect.Background = new SolidColorBrush(c);
-            var colorChannelMean = (double)(c.R + c.G + c.B) / 3.0;
+            var colorChannelMean = (c.R + c.G + c.B) / 3.0;
             BrushRect.Foreground = new SolidColorBrush((colorChannelMean > 128.0) ? Colors.Black : Colors.White);
             if (UpdateTextBox)
             {
@@ -56,9 +56,9 @@ namespace SPCode.UI.Components
             }
             if (UpdateSlider)
             {
-                RSlider.Value = (double)c.R;
-                GSlider.Value = (double)c.G;
-                BSlider.Value = (double)c.B;
+                RSlider.Value = c.R;
+                GSlider.Value = c.G;
+                BSlider.Value = c.B;
             }
             var raiseEvent = new RoutedEventArgs(ColorChangeControl.ColorChangedEvent);
             RaiseEvent(raiseEvent);
