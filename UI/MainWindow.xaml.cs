@@ -282,7 +282,7 @@ namespace SPCode.UI
 #if !DEBUG
             if (Program.UpdateStatus.IsAvailable)
             {
-                UpdateWindow updateWin = new UpdateWindow(Program.UpdateStatus) { Owner = this };
+                var updateWin = new UpdateWindow(Program.UpdateStatus) { Owner = this };
                 updateWin.ShowDialog();
             }
 #endif
