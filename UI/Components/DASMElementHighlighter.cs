@@ -13,14 +13,14 @@ namespace SPCode.UI.Components
         {
             get
             {
-                HighlightingRuleSet commentMarkerSet = new HighlightingRuleSet
+                var commentMarkerSet = new HighlightingRuleSet
                 {
                     Name = "CommentMarkerSet"
                 };
-                HighlightingRuleSet excludeInnerSingleLineComment = new HighlightingRuleSet();
+                var excludeInnerSingleLineComment = new HighlightingRuleSet();
                 excludeInnerSingleLineComment.Spans.Add(new HighlightingSpan() { StartExpression = new Regex(@"\;"), EndExpression = new Regex(@".") });
-                HighlightingRuleSet rs = new HighlightingRuleSet();
-                SimpleHighlightingBrush commentBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Comments);
+                var rs = new HighlightingRuleSet();
+                var commentBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Comments);
                 rs.Spans.Add(new HighlightingSpan() //singleline comments
                 {
                     StartExpression = new Regex(@"\;", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
@@ -30,7 +30,7 @@ namespace SPCode.UI.Components
                     EndColor = new HighlightingColor() { Foreground = commentBrush },
                     RuleSet = commentMarkerSet
                 });
-                SimpleHighlightingBrush stringBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Strings);
+                var stringBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Strings);
                 rs.Spans.Add(new HighlightingSpan() //strings
                 {
                     StartExpression = new Regex(@"(?<!')""", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
@@ -111,7 +111,7 @@ namespace SPCode.UI.Components
         {
             get
             {
-                Dictionary<string, string> propertiesDictionary = new Dictionary<string, string>
+                var propertiesDictionary = new Dictionary<string, string>
                 {
                     { "DocCommentMarker", "///" }
                 };

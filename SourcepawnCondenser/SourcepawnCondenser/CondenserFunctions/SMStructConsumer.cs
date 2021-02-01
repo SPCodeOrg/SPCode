@@ -7,11 +7,11 @@ namespace SourcepawnCondenser
     {
         private int ConsumeSMStruct()
         {
-            int startIndex = t[position].Index;
+            var startIndex = t[position].Index;
             if ((position + 1) < length)
             {
-                int iteratePosition = position;
-                string structName = string.Empty;
+                var iteratePosition = position;
+                var structName = string.Empty;
                 while ((iteratePosition + 1) < length && t[iteratePosition].Kind != TokenKind.BraceOpen)
                 {
                     if (t[iteratePosition].Kind == TokenKind.Identifier)
@@ -20,8 +20,8 @@ namespace SourcepawnCondenser
                     }
                     ++iteratePosition;
                 }
-                int braceState = 0;
-                int endTokenIndex = -1;
+                var braceState = 0;
+                var endTokenIndex = -1;
                 for (; iteratePosition < length; ++iteratePosition)
                 {
                     if (t[iteratePosition].Kind == TokenKind.BraceOpen)

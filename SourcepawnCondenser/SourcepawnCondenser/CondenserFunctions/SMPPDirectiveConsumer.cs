@@ -20,7 +20,7 @@ namespace SourcepawnCondenser
                             File = FileName,
                             Name = t[position + 1].Value
                         });
-                        for (int j = position + 1; j < length; ++j)
+                        for (var j = position + 1; j < length; ++j)
                         {
                             if (t[j].Kind == TokenKind.EOL)
                             {

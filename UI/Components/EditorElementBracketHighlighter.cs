@@ -48,7 +48,7 @@ namespace SPCode.UI.Components
                 return;
             }
 
-            BackgroundGeometryBuilder builder = new BackgroundGeometryBuilder
+            var builder = new BackgroundGeometryBuilder
             {
                 CornerRadius = 1,
                 AlignToWholePixels = true,
@@ -59,7 +59,7 @@ namespace SPCode.UI.Components
             builder.CloseFigure();
             builder.AddSegment(textView, new TextSegment() { StartOffset = result.ClosingBracketOffset, Length = result.ClosingBracketLength });
 
-            Geometry geometry = builder.CreateGeometry();
+            var geometry = builder.CreateGeometry();
             if (geometry != null)
             {
                 drawingContext.DrawGeometry(backgroundBrush, null, geometry);
@@ -104,9 +104,9 @@ namespace SPCode.UI.Components
         {
             if (offset > 0)
             {
-                char c = document.GetCharAt(offset - 1);
-                int index = openingBrackets.IndexOf(c);
-                int otherOffset = -1;
+                var c = document.GetCharAt(offset - 1);
+                var index = openingBrackets.IndexOf(c);
+                var otherOffset = -1;
                 if (index > -1)
                 {
                     otherOffset = SearchBracketForward(document, offset, openingBrackets[index], closingBrackets[index]);
@@ -152,7 +152,7 @@ namespace SPCode.UI.Components
 
         bool IsBracketOnly(IDocument document, IDocumentLine documentLine)
         {
-            string lineText = document.GetText(documentLine).Trim();
+            var lineText = document.GetText(documentLine).Trim();
             return lineText == "{" || string.IsNullOrEmpty(lineText)
                 || lineText.StartsWith("//", StringComparison.Ordinal)
                 || lineText.StartsWith("/*", StringComparison.Ordinal)
@@ -163,7 +163,7 @@ namespace SPCode.UI.Components
         #region SearchBracket helper functions
         static int ScanLineStart(IDocument document, int offset)
         {
-            for (int i = offset - 1; i > 0; --i)
+            for (var i = offset - 1; i > 0; --i)
             {
                 if (document.GetCharAt(i) == '\n')
                 {
@@ -175,11 +175,11 @@ namespace SPCode.UI.Components
 
         static int GetStartType(IDocument document, int linestart, int offset)
         {
-            bool inString = false;
-            bool inChar = false;
-            bool verbatim = false;
-            int result = 0;
-            for (int i = linestart; i < offset; i++)
+            var inString = false;
+            var inChar = false;
+            var verbatim = false;
+            var result = 0;
+            for (var i = linestart; i < offset; i++)
             {
                 switch (document.GetCharAt(i))
                 {
@@ -243,29 +243,29 @@ namespace SPCode.UI.Components
                 return -1;
             }
 
-            int quickResult = QuickSearchBracketBackward(document, offset, openBracket, closingBracket);
+            var quickResult = QuickSearchBracketBackward(document, offset, openBracket, closingBracket);
             if (quickResult >= 0)
             {
                 return quickResult;
             }
 
-            int linestart = ScanLineStart(document, offset + 1);
+            var linestart = ScanLineStart(document, offset + 1);
 
-            int starttype = GetStartType(document, linestart, offset + 1);
+            var starttype = GetStartType(document, linestart, offset + 1);
             if (starttype == 1)
             {
                 return -1;
             }
-            Stack<int> bracketStack = new Stack<int>();
-            bool blockComment = false;
-            bool lineComment = false;
-            bool inChar = false;
-            bool inString = false;
-            bool verbatim = false;
+            var bracketStack = new Stack<int>();
+            var blockComment = false;
+            var lineComment = false;
+            var inChar = false;
+            var inString = false;
+            var verbatim = false;
 
-            for (int i = 0; i <= offset; ++i)
+            for (var i = 0; i <= offset; ++i)
             {
-                char ch = document.GetCharAt(i);
+                var ch = document.GetCharAt(i);
                 switch (ch)
                 {
                     case '\r':
@@ -369,37 +369,37 @@ namespace SPCode.UI.Components
         #region SearchBracketForward
         int SearchBracketForward(IDocument document, int offset, char openBracket, char closingBracket)
         {
-            bool inString = false;
-            bool inChar = false;
-            bool verbatim = false;
+            var inString = false;
+            var inChar = false;
+            var verbatim = false;
 
-            bool lineComment = false;
-            bool blockComment = false;
+            var lineComment = false;
+            var blockComment = false;
 
             if (offset < 0)
             {
                 return -1;
             }
 
-            int quickResult = QuickSearchBracketForward(document, offset, openBracket, closingBracket);
+            var quickResult = QuickSearchBracketForward(document, offset, openBracket, closingBracket);
             if (quickResult >= 0)
             {
                 return quickResult;
             }
 
-            int linestart = ScanLineStart(document, offset);
+            var linestart = ScanLineStart(document, offset);
 
-            int starttype = GetStartType(document, linestart, offset);
+            var starttype = GetStartType(document, linestart, offset);
             if (starttype != 0)
             {
                 return -1;
             }
 
-            int brackets = 1;
+            var brackets = 1;
 
             while (offset < document.TextLength)
             {
-                char ch = document.GetCharAt(offset);
+                var ch = document.GetCharAt(offset);
                 switch (ch)
                 {
                     case '\r':
@@ -496,10 +496,10 @@ namespace SPCode.UI.Components
 
         int QuickSearchBracketBackward(IDocument document, int offset, char openBracket, char closingBracket)
         {
-            int brackets = -1;
-            for (int i = offset; i >= 0; --i)
+            var brackets = -1;
+            for (var i = offset; i >= 0; --i)
             {
-                char ch = document.GetCharAt(i);
+                var ch = document.GetCharAt(i);
                 if (ch == openBracket)
                 {
                     ++brackets;
@@ -538,11 +538,11 @@ namespace SPCode.UI.Components
 
         int QuickSearchBracketForward(IDocument document, int offset, char openBracket, char closingBracket)
         {
-            int brackets = 1;
+            var brackets = 1;
             // try "quick find" - find the matching bracket if there is no string/comment in the way
-            for (int i = offset; i < document.TextLength; ++i)
+            for (var i = offset; i < document.TextLength; ++i)
             {
-                char ch = document.GetCharAt(i);
+                var ch = document.GetCharAt(i);
                 if (ch == openBracket)
                 {
                     ++brackets;

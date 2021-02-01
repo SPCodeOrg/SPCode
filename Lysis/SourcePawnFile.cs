@@ -256,8 +256,8 @@ namespace SourcePawn
 
         private static byte[] Slice(byte[] bytes, int offset, int length)
         {
-            byte[] shadow = new byte[length];
-            for (int i = 0; i < length; i++)
+            var shadow = new byte[length];
+            for (var i = 0; i < length; i++)
             {
                 shadow[i] = bytes[offset + i];
             }
@@ -267,7 +267,7 @@ namespace SourcePawn
 
         private static string ReadString(byte[] bytes, int offset, int dataoffs)
         {
-            int count = offset;
+            var count = offset;
             for (; count < bytes.Length; count++)
             {
                 if (bytes[count] == 0)
@@ -412,7 +412,7 @@ namespace SourcePawn
 
         public SourcePawnFile(byte[] binary)
         {
-            BinaryReader reader = new BinaryReader(new MemoryStream(binary));
+            var reader = new BinaryReader(new MemoryStream(binary));
             header_.magic = reader.ReadUInt32();
             if (header_.magic != MAGIC)
             {
@@ -438,18 +438,18 @@ namespace SourcePawn
             {
                 case Compression.Gzip:
                     {
-                        byte[] bits = new byte[header_.imagesize];
-                        for (int i = 0; i < header_.dataoffs; i++)
+                        var bits = new byte[header_.imagesize];
+                        for (var i = 0; i < header_.dataoffs; i++)
                         {
                             bits[i] = binary[i];
                         }
 
-                        int uncompressedSize = header_.imagesize - header_.dataoffs;
-                        int compressedSize = header_.disksize - header_.dataoffs;
-                        MemoryStream ms = new MemoryStream(binary, header_.dataoffs + 2, compressedSize - 2);
-                        DeflateStream gzip = new DeflateStream(ms, CompressionMode.Decompress);
+                        var uncompressedSize = header_.imagesize - header_.dataoffs;
+                        var compressedSize = header_.disksize - header_.dataoffs;
+                        var ms = new MemoryStream(binary, header_.dataoffs + 2, compressedSize - 2);
+                        var gzip = new DeflateStream(ms, CompressionMode.Decompress);
 
-                        int actualSize = gzip.Read(bits, header_.dataoffs, uncompressedSize);
+                        var actualSize = gzip.Read(bits, header_.dataoffs, uncompressedSize);
                         //Debug.Assert(actualSize == uncompressedSize, "uncompressed size mismatch, bad file?");
 
                         binary = bits;
@@ -458,103 +458,103 @@ namespace SourcePawn
             }
 
             // Read sections.
-            for (int i = 0; i < header_.sections; i++)
+            for (var i = 0; i < header_.sections; i++)
             {
-                int nameOffset = (int)reader.ReadUInt32();
-                int dataoffs = (int)reader.ReadUInt32();
-                int size = (int)reader.ReadUInt32();
-                string name = ReadString(binary, header_.stringtab + nameOffset, header_.dataoffs);
+                var nameOffset = (int)reader.ReadUInt32();
+                var dataoffs = (int)reader.ReadUInt32();
+                var size = (int)reader.ReadUInt32();
+                var name = ReadString(binary, header_.stringtab + nameOffset, header_.dataoffs);
                 sections_[name] = new Section(dataoffs, size);
             }
 
             if (sections_.ContainsKey(".code"))
             {
-                Section sc = sections_[".code"];
-                BinaryReader br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
-                uint codesize = br.ReadUInt32();
-                byte cellsize = br.ReadByte();
-                byte codeversion = br.ReadByte();
-                ushort flags = br.ReadUInt16();
-                uint main = br.ReadUInt32();
-                uint codeoffs = br.ReadUInt32();
-                byte[] codeBytes = Slice(binary, sc.dataoffs + (int)codeoffs, (int)codesize);
+                var sc = sections_[".code"];
+                var br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
+                var codesize = br.ReadUInt32();
+                var cellsize = br.ReadByte();
+                var codeversion = br.ReadByte();
+                var flags = br.ReadUInt16();
+                var main = br.ReadUInt32();
+                var codeoffs = br.ReadUInt32();
+                var codeBytes = Slice(binary, sc.dataoffs + (int)codeoffs, (int)codesize);
                 code_ = new Code(codeBytes, (int)flags, (int)codeversion);
             }
 
             if (sections_.ContainsKey(".data"))
             {
-                Section sc = sections_[".data"];
-                BinaryReader br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
-                uint datasize = br.ReadUInt32();
-                uint memsize = br.ReadUInt32();
-                uint dataoffs = br.ReadUInt32();
-                byte[] dataBytes = Slice(binary, sc.dataoffs + (int)dataoffs, (int)datasize);
+                var sc = sections_[".data"];
+                var br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
+                var datasize = br.ReadUInt32();
+                var memsize = br.ReadUInt32();
+                var dataoffs = br.ReadUInt32();
+                var dataBytes = Slice(binary, sc.dataoffs + (int)dataoffs, (int)datasize);
                 data_ = new Data(dataBytes, (int)memsize);
             }
 
             if (sections_.ContainsKey(".publics"))
             {
-                Section sc = sections_[".publics"];
-                BinaryReader br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
-                int numPublics = sc.size / 8;
+                var sc = sections_[".publics"];
+                var br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
+                var numPublics = sc.size / 8;
                 publics_ = new Public[numPublics];
-                for (int i = 0; i < numPublics; i++)
+                for (var i = 0; i < numPublics; i++)
                 {
-                    uint address = br.ReadUInt32();
-                    uint nameOffset = br.ReadUInt32();
-                    string name = ReadString(binary, sections_[".names"].dataoffs + (int)nameOffset, header_.dataoffs);
+                    var address = br.ReadUInt32();
+                    var nameOffset = br.ReadUInt32();
+                    var name = ReadString(binary, sections_[".names"].dataoffs + (int)nameOffset, header_.dataoffs);
                     publics_[i] = new Public(name, address);
                 }
             }
 
             if (sections_.ContainsKey(".pubvars"))
             {
-                Section sc = sections_[".pubvars"];
-                BinaryReader br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
-                int numPubVars = sc.size / 8;
+                var sc = sections_[".pubvars"];
+                var br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
+                var numPubVars = sc.size / 8;
                 pubvars_ = new PubVar[numPubVars];
-                for (int i = 0; i < numPubVars; i++)
+                for (var i = 0; i < numPubVars; i++)
                 {
-                    uint address = br.ReadUInt32();
-                    uint nameOffset = br.ReadUInt32();
-                    string name = ReadString(binary, sections_[".names"].dataoffs + (int)nameOffset, header_.dataoffs);
+                    var address = br.ReadUInt32();
+                    var nameOffset = br.ReadUInt32();
+                    var name = ReadString(binary, sections_[".names"].dataoffs + (int)nameOffset, header_.dataoffs);
                     pubvars_[i] = new PubVar(name, address);
                 }
             }
 
             if (sections_.ContainsKey(".natives"))
             {
-                Section sc = sections_[".natives"];
-                BinaryReader br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
-                int numNatives = sc.size / 4;
+                var sc = sections_[".natives"];
+                var br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
+                var numNatives = sc.size / 4;
                 natives_ = new Native[numNatives];
-                for (int i = 0; i < numNatives; i++)
+                for (var i = 0; i < numNatives; i++)
                 {
-                    uint nameOffset = br.ReadUInt32();
-                    string name = ReadString(binary, sections_[".names"].dataoffs + (int)nameOffset, header_.dataoffs);
+                    var nameOffset = br.ReadUInt32();
+                    var name = ReadString(binary, sections_[".names"].dataoffs + (int)nameOffset, header_.dataoffs);
                     natives_[i] = new Native(name, i);
                 }
             }
 
             if (sections_.ContainsKey(".tags"))
             {
-                Section sc = sections_[".tags"];
-                BinaryReader br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
-                int numTags = sc.size / 8;
+                var sc = sections_[".tags"];
+                var br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
+                var numTags = sc.size / 8;
                 tags_ = new Tag[numTags];
-                for (int i = 0; i < numTags; i++)
+                for (var i = 0; i < numTags; i++)
                 {
-                    uint tag_id = br.ReadUInt32();
-                    uint nameOffset = br.ReadUInt32();
-                    string name = ReadString(binary, sections_[".names"].dataoffs + (int)nameOffset, header_.dataoffs);
+                    var tag_id = br.ReadUInt32();
+                    var nameOffset = br.ReadUInt32();
+                    var name = ReadString(binary, sections_[".names"].dataoffs + (int)nameOffset, header_.dataoffs);
                     tags_[i] = new Tag(name, tag_id);
                 }
             }
 
             if (sections_.ContainsKey(".dbg.info"))
             {
-                Section sc = sections_[".dbg.info"];
-                BinaryReader br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
+                var sc = sections_[".dbg.info"];
+                var br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
                 debugHeader_.numFiles = (int)br.ReadUInt32();
                 debugHeader_.numLines = (int)br.ReadUInt32();
                 debugHeader_.numSyms = (int)br.ReadUInt32();
@@ -562,74 +562,74 @@ namespace SourcePawn
 
             if (sections_.ContainsKey(".dbg.files") && debugHeader_.numFiles > 0)
             {
-                Section sc = sections_[".dbg.files"];
-                BinaryReader br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
+                var sc = sections_[".dbg.files"];
+                var br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
                 debugFiles_ = new DebugFile[debugHeader_.numFiles];
-                for (int i = 0; i < debugHeader_.numFiles; i++)
+                for (var i = 0; i < debugHeader_.numFiles; i++)
                 {
-                    uint address = br.ReadUInt32();
-                    uint nameOffset = br.ReadUInt32();
-                    string name = ReadString(binary, sections_[".dbg.strings"].dataoffs + (int)nameOffset, header_.dataoffs);
+                    var address = br.ReadUInt32();
+                    var nameOffset = br.ReadUInt32();
+                    var name = ReadString(binary, sections_[".dbg.strings"].dataoffs + (int)nameOffset, header_.dataoffs);
                     debugFiles_[i] = new DebugFile(name, nameOffset);
                 }
             }
 
             if (sections_.ContainsKey(".dbg.lines") && debugHeader_.numLines > 0)
             {
-                Section sc = sections_[".dbg.lines"];
-                BinaryReader br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
+                var sc = sections_[".dbg.lines"];
+                var br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
                 debugLines_ = new DebugLine[debugHeader_.numLines];
-                for (int i = 0; i < debugHeader_.numLines; i++)
+                for (var i = 0; i < debugHeader_.numLines; i++)
                 {
-                    uint address = br.ReadUInt32();
-                    uint line = br.ReadUInt32();
+                    var address = br.ReadUInt32();
+                    var line = br.ReadUInt32();
                     debugLines_[i] = new DebugLine((int)line, address);
                 }
             }
 
             if (sections_.ContainsKey(".dbg.symbols") && debugHeader_.numSyms > 0)
             {
-                Section sc = sections_[".dbg.symbols"];
-                BinaryReader br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
-                List<Variable> locals = new List<Variable>();
-                List<Variable> globals = new List<Variable>();
-                List<Function> functions = new List<Function>();
-                for (int i = 0; i < debugHeader_.numSyms; i++)
+                var sc = sections_[".dbg.symbols"];
+                var br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
+                var locals = new List<Variable>();
+                var globals = new List<Variable>();
+                var functions = new List<Function>();
+                for (var i = 0; i < debugHeader_.numSyms; i++)
                 {
-                    int addr = br.ReadInt32();
-                    short tagid = br.ReadInt16();
-                    uint codestart = br.ReadUInt32();
-                    uint codeend = br.ReadUInt32();
-                    byte ident = br.ReadByte();
-                    Scope vclass = (Scope)br.ReadByte();
-                    ushort dimcount = br.ReadUInt16();
-                    uint nameOffset = br.ReadUInt32();
-                    string name = ReadString(binary, sections_[".dbg.strings"].dataoffs + (int)nameOffset, header_.dataoffs);
+                    var addr = br.ReadInt32();
+                    var tagid = br.ReadInt16();
+                    var codestart = br.ReadUInt32();
+                    var codeend = br.ReadUInt32();
+                    var ident = br.ReadByte();
+                    var vclass = (Scope)br.ReadByte();
+                    var dimcount = br.ReadUInt16();
+                    var nameOffset = br.ReadUInt32();
+                    var name = ReadString(binary, sections_[".dbg.strings"].dataoffs + (int)nameOffset, header_.dataoffs);
 
                     if (ident == IDENT_FUNCTION)
                     {
-                        Tag tag = tagid >= tags_.Length ? null : tags_[tagid];
-                        Function func = new Function((uint)addr, codestart, codeend, name, tag);
+                        var tag = tagid >= tags_.Length ? null : tags_[tagid];
+                        var func = new Function((uint)addr, codestart, codeend, name, tag);
                         functions.Add(func);
                     }
                     else
                     {
-                        VariableType type = FromIdent(ident);
+                        var type = FromIdent(ident);
                         Dimension[] dims = null;
                         if (dimcount > 0)
                         {
                             dims = new Dimension[dimcount];
-                            for (int dim = 0; dim < dimcount; dim++)
+                            for (var dim = 0; dim < dimcount; dim++)
                             {
-                                short dim_tagid = br.ReadInt16();
-                                Tag dim_tag = dim_tagid >= tags_.Length ? null : tags_[dim_tagid];
-                                uint size = br.ReadUInt32();
+                                var dim_tagid = br.ReadInt16();
+                                var dim_tag = dim_tagid >= tags_.Length ? null : tags_[dim_tagid];
+                                var size = br.ReadUInt32();
                                 dims[dim] = new Dimension(dim_tagid, dim_tag, (int)size);
                             }
                         }
 
-                        Tag tag = tagid >= tags_.Length ? null : tags_[tagid];
-                        Variable var = new Variable(addr, tagid, tag, codestart, codeend, type, vclass, name, dims);
+                        var tag = tagid >= tags_.Length ? null : tags_[tagid];
+                        var var = new Variable(addr, tagid, tag, codestart, codeend, type, vclass, name, dims);
                         if (vclass == Scope.Global)
                         {
                             globals.Add(var);
@@ -657,38 +657,38 @@ namespace SourcePawn
 
             if (sections_.ContainsKey(".dbg.natives"))
             {
-                Section sc = sections_[".dbg.natives"];
-                BinaryReader br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
-                uint nentries = br.ReadUInt32();
-                for (int i = 0; i < (int)nentries; i++)
+                var sc = sections_[".dbg.natives"];
+                var br = new BinaryReader(new MemoryStream(binary, sc.dataoffs, sc.size));
+                var nentries = br.ReadUInt32();
+                for (var i = 0; i < (int)nentries; i++)
                 {
-                    uint index = br.ReadUInt32();
-                    uint nameOffset = br.ReadUInt32();
-                    string name = ReadString(binary, sections_[".dbg.strings"].dataoffs + (int)nameOffset, header_.dataoffs);
-                    short tagid = br.ReadInt16();
-                    Tag tag = tagid >= tags_.Length ? null : tags_[tagid];
-                    ushort nargs = br.ReadUInt16();
+                    var index = br.ReadUInt32();
+                    var nameOffset = br.ReadUInt32();
+                    var name = ReadString(binary, sections_[".dbg.strings"].dataoffs + (int)nameOffset, header_.dataoffs);
+                    var tagid = br.ReadInt16();
+                    var tag = tagid >= tags_.Length ? null : tags_[tagid];
+                    var nargs = br.ReadUInt16();
 
-                    Argument[] args = new Argument[nargs];
+                    var args = new Argument[nargs];
                     for (ushort arg = 0; arg < nargs; arg++)
                     {
-                        byte ident = br.ReadByte();
-                        short arg_tagid = br.ReadInt16();
-                        ushort dimcount = br.ReadUInt16();
-                        uint argNameOffset = br.ReadUInt32();
-                        string argName = ReadString(binary, sections_[".dbg.strings"].dataoffs + (int)argNameOffset, header_.dataoffs);
-                        Tag argTag = arg_tagid >= tags_.Length ? null : tags_[arg_tagid];
-                        VariableType type = FromIdent(ident);
+                        var ident = br.ReadByte();
+                        var arg_tagid = br.ReadInt16();
+                        var dimcount = br.ReadUInt16();
+                        var argNameOffset = br.ReadUInt32();
+                        var argName = ReadString(binary, sections_[".dbg.strings"].dataoffs + (int)argNameOffset, header_.dataoffs);
+                        var argTag = arg_tagid >= tags_.Length ? null : tags_[arg_tagid];
+                        var type = FromIdent(ident);
 
                         Dimension[] dims = null;
                         if (dimcount > 0)
                         {
                             dims = new Dimension[dimcount];
-                            for (int dim = 0; dim < dimcount; dim++)
+                            for (var dim = 0; dim < dimcount; dim++)
                             {
-                                short dim_tagid = br.ReadInt16();
-                                Tag dim_tag = dim_tagid >= tags_.Length ? null : tags_[dim_tagid];
-                                uint size = br.ReadUInt32();
+                                var dim_tagid = br.ReadInt16();
+                                var dim_tag = dim_tagid >= tags_.Length ? null : tags_[dim_tagid];
+                                var size = br.ReadUInt32();
                                 dims[dim] = new Dimension(dim_tagid, dim_tag, (int)size);
                             }
                         }
@@ -706,20 +706,20 @@ namespace SourcePawn
             }
 
             // For every function, attempt to build argument information.
-            for (int i = 0; i < functions_.Length; i++)
+            for (var i = 0; i < functions_.Length; i++)
             {
-                Function fun = functions_[i];
-                int argOffset = 12;
+                var fun = functions_[i];
+                var argOffset = 12;
                 var args = new List<Argument>();
                 do
                 {
-                    Variable var = lookupVariable(fun.address, argOffset);
+                    var var = lookupVariable(fun.address, argOffset);
                     if (var == null)
                     {
                         break;
                     }
 
-                    Argument arg = new Argument(var.type, var.name, (int)var.tag.tag_id, var.tag, var.dims);
+                    var arg = new Argument(var.type, var.name, (int)var.tag.tag_id, var.tag, var.dims);
                     args.Add(arg);
                     argOffset += 4;
                 } while (true);
@@ -753,12 +753,12 @@ namespace SourcePawn
                 return null;
             }
 
-            int high = debugFiles_.Length;
-            int low = -1;
+            var high = debugFiles_.Length;
+            var low = -1;
 
             while (high - low > 1)
             {
-                int mid = (low + high) >> 1;
+                var mid = (low + high) >> 1;
                 if (debugFiles_[mid].address <= address)
                 {
                     low = mid;
@@ -783,12 +783,12 @@ namespace SourcePawn
                 return -1;
             }
 
-            int high = debugLines_.Length;
-            int low = -1;
+            var high = debugLines_.Length;
+            var low = -1;
 
             while (high - low > 1)
             {
-                int mid = (low + high) >> 1;
+                var mid = (low + high) >> 1;
                 if (debugLines_[mid].address <= address)
                 {
                     low = mid;
@@ -810,7 +810,7 @@ namespace SourcePawn
         {
             for (i++; i < variables_.Length; i++)
             {
-                Variable var = variables_[i];
+                var var = variables_[i];
                 if (pc != var.codeStart)
                 {
                     continue;
@@ -826,9 +826,9 @@ namespace SourcePawn
 
         public Variable lookupVariable(uint pc, int offset, Scope scope = Scope.Local)
         {
-            for (int i = 0; i < variables_.Length; i++)
+            for (var i = 0; i < variables_.Length; i++)
             {
-                Variable var = variables_[i];
+                var var = variables_[i];
                 if ((pc >= var.codeStart && pc < var.codeEnd) &&
                     (offset == var.address && var.scope == scope))
                 {
@@ -840,9 +840,9 @@ namespace SourcePawn
 
         public Variable lookupGlobal(int address)
         {
-            for (int i = 0; i < globals_.Length; i++)
+            for (var i = 0; i < globals_.Length; i++)
             {
-                Variable var = globals_[i];
+                var var = globals_[i];
                 if (var.address == address)
                 {
                     return var;

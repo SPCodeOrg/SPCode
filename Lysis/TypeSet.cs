@@ -206,12 +206,12 @@ namespace Lysis
                     return new TypeUnit(new PawnType(var.tag), var.dims.Length);
                 case VariableType.Reference:
                     {
-                        TypeUnit tu = new TypeUnit(new PawnType(var.tag));
+                        var tu = new TypeUnit(new PawnType(var.tag));
                         return new TypeUnit(tu);
                     }
                 case VariableType.ArrayReference:
                     {
-                        TypeUnit tu = new TypeUnit(new PawnType(var.tag), var.dims.Length);
+                        var tu = new TypeUnit(new PawnType(var.tag), var.dims.Length);
                         return new TypeUnit(tu);
                     }
             }
@@ -253,7 +253,7 @@ namespace Lysis
             }
             else
             {
-                for (int i = 0; i < types_.Count; i++)
+                for (var i = 0; i < types_.Count; i++)
                 {
                     if (types_[i].equalTo(tu))
                     {
@@ -265,7 +265,7 @@ namespace Lysis
         }
         public void addTypes(TypeSet other)
         {
-            for (int i = 0; i < other.numTypes; i++)
+            for (var i = 0; i < other.numTypes; i++)
             {
                 addType(other[i]);
             }

@@ -211,7 +211,7 @@ namespace SPCode.UI.Components
             var chars = new StringBuilder();
 
             startDetailUpdate();
-            for (int i = 0; i < size; i++)
+            for (var i = 0; i < size; i++)
             {
                 if (i % 16 == 0)
                 {
@@ -255,7 +255,7 @@ namespace SPCode.UI.Components
             var addrfmt = "0x{0:x" + ndigits + "}: ";
 
             startDetailUpdate();
-            for (int i = 0; i < size; i += 4)
+            for (var i = 0; i < size; i += 4)
             {
                 if (i % 32 == 0)
                 {
@@ -284,7 +284,7 @@ namespace SPCode.UI.Components
             var current = new StringBuilder();
             for (var i = 0; i < size; i++)
             {
-                byte b = reader.ReadByte();
+                var b = reader.ReadByte();
                 if (b == 0 && current.Length > 0)
                 {
                     addDetailLine("0x{0:x6}: {1}", i, current.ToString());
@@ -331,7 +331,7 @@ namespace SPCode.UI.Components
 
 
             // Find the largest address so we can get consistent column length.
-            int last_address = insns[insns.Length - 1].Address;
+            var last_address = insns[insns.Length - 1].Address;
             var ndigits = string.Format("{0:x}", last_address).Length;
             var addrfmt = "0x{0:x" + ndigits + "}: ";
 
@@ -369,7 +369,7 @@ namespace SPCode.UI.Components
 
                             break;
                         case V1Param.Jump:
-                            int delta = value - insn.Address;
+                            var delta = value - insn.Address;
                             buffer.Append(string.Format(" 0x{0:x}", value));
                             if (delta >= 0)
                             {
@@ -422,7 +422,7 @@ namespace SPCode.UI.Components
                                 break;
                             }
                         case V1Param.Function:
-                            string fun = file_.FindFunctionName(value);
+                            var fun = file_.FindFunctionName(value);
                             buffer.Append(string.Format(" 0x{0:x}", value));
                             comment.Append(string.Format(" {0}", fun));
                             break;
@@ -530,7 +530,7 @@ namespace SPCode.UI.Components
 
         private void renderPublicsList(TreeViewItem root, SmxPublicTable publics)
         {
-            for (int i = 0; i < publics.Length; i++)
+            for (var i = 0; i < publics.Length; i++)
             {
                 var index = i;
                 var pubfun = publics[i];
@@ -548,7 +548,7 @@ namespace SPCode.UI.Components
 
         private void renderPubvarList(TreeViewItem root, SmxPubvarTable pubvars)
         {
-            for (int i = 0; i < pubvars.Length; i++)
+            for (var i = 0; i < pubvars.Length; i++)
             {
                 var index = i;
                 var pubvar = pubvars[i];
@@ -661,7 +661,7 @@ namespace SPCode.UI.Components
 
         private string dimsToString(Tag tag, DebugSymbolDimEntry[] dims)
         {
-            string str = "";
+            var str = "";
             for (var i = 0; i < dims.Length; i++)
             {
                 int size;

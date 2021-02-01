@@ -27,7 +27,7 @@ namespace Lysis
         {
             stack_ = new List<StackEntry>();
             args_ = new StackEntry[nargs];
-            for (int i = 0; i < args_.Length; i++)
+            for (var i = 0; i < args_.Length; i++)
             {
                 args_[i] = new StackEntry(null, null);
             }
@@ -36,13 +36,13 @@ namespace Lysis
         public AbstractStack(AbstractStack other)
         {
             stack_ = new List<StackEntry>();
-            for (int i = 0; i < other.stack_.Count; i++)
+            for (var i = 0; i < other.stack_.Count; i++)
             {
                 stack_.Add(new StackEntry(other.stack_[i].declaration, other.stack_[i].assignment));
             }
 
             args_ = new StackEntry[other.args_.Length];
-            for (int i = 0; i < args_.Length; i++)
+            for (var i = 0; i < args_.Length; i++)
             {
                 args_[i] = new StackEntry(other.args_[i].declaration, other.args_[i].assignment);
             }
@@ -58,7 +58,7 @@ namespace Lysis
         }
         private StackEntry popEntry()
         {
-            StackEntry e = stack_[stack_.Count - 1];
+            var e = stack_[stack_.Count - 1];
             stack_.RemoveRange(stack_.Count - 1, 1);
             return e;
         }
@@ -68,7 +68,7 @@ namespace Lysis
         }
         public DNode popAsTemp()
         {
-            StackEntry entry = popEntry();
+            var entry = popEntry();
             if (entry.declaration.uses.Count == 0)
             {
                 return entry.assignment;
@@ -84,7 +84,7 @@ namespace Lysis
         }
         public DNode popValue()
         {
-            DNode value = stack_[stack_.Count - 1].assignment;
+            var value = stack_[stack_.Count - 1].assignment;
             pop();
             return value;
         }
@@ -171,7 +171,7 @@ namespace Lysis
             }
 
             DPhi phi;
-            DNode node = stack_.reg(reg);
+            var node = stack_.reg(reg);
             if (node.type != NodeType.Phi || node.block != this)
             {
                 phi = new DPhi(node);
@@ -190,9 +190,9 @@ namespace Lysis
             if (other == null)
             {
                 stack_ = new AbstractStack(graph.nargs);
-                for (int i = 0; i < graph.nargs; i++)
+                for (var i = 0; i < graph.nargs; i++)
                 {
-                    DDeclareLocal local = new DDeclareLocal(lir_.pc, null);
+                    var local = new DDeclareLocal(lir_.pc, null);
                     local.setOffset((i * 4) + 12);
                     add(local);
                     stack_.init((i * 4) + 12, local);

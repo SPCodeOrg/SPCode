@@ -106,7 +106,7 @@ namespace SPCode.Interop
                         var _FTPPW = ManagedAES.Decrypt(encryptedFTPPW);
                         var _FTPDir = ReadAttributeStringSafe(ref node, "FTPDir");
                         var _RConEngineSourceStr = ReadAttributeStringSafe(ref node, "RConSourceEngine", "1");
-                        bool _RConEngineTypeSource = !(_RConEngineSourceStr == "0" || string.IsNullOrWhiteSpace(_RConEngineSourceStr));
+                        var _RConEngineTypeSource = !(_RConEngineSourceStr == "0" || string.IsNullOrWhiteSpace(_RConEngineSourceStr));
                         var _RConIP = ReadAttributeStringSafe(ref node, "RConIP", "127.0.0.1");
                         var _RConPortStr = ReadAttributeStringSafe(ref node, "RConPort", "27015");
 

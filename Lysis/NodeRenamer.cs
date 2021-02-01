@@ -6,9 +6,9 @@
 
         private void renameBlock(NodeBlock block)
         {
-            for (NodeList.iterator iter = block.nodes.begin(); iter.more();)
+            for (var iter = block.nodes.begin(); iter.more();)
             {
-                DNode node = iter.node;
+                var node = iter.node;
                 switch (node.type)
                 {
                     case NodeType.TempName:
@@ -26,7 +26,7 @@
 
                     case NodeType.DeclareLocal:
                         {
-                            DDeclareLocal decl = (DDeclareLocal)node;
+                            var decl = (DDeclareLocal)node;
                             if (decl.var == null)
                             {
                                 if (decl.uses.Count <= 1)
@@ -34,13 +34,13 @@
                                     // This was probably just a stack temporary.
                                     if (decl.uses.Count == 1)
                                     {
-                                        DUse use = decl.uses.First.Value;
+                                        var use = decl.uses.First.Value;
                                         use.node.replaceOperand(use.index, decl.value);
                                     }
                                     block.nodes.remove(iter);
                                     continue;
                                 }
-                                DTempName name = new DTempName(graph_.tempName());
+                                var name = new DTempName(graph_.tempName());
                                 node.replaceAllUsesWith(name);
                                 name.init(decl.value);
                                 block.nodes.replace(iter, name);
@@ -96,7 +96,7 @@
                 // If we've reached here, the expression has more than one use
                 // and we have to wrap it in some kind of name, lest we
                 // duplicate it in the expression tree which may be illegal.
-                DTempName replacement = new DTempName(graph_.tempName());
+                var replacement = new DTempName(graph_.tempName());
                 node.replaceAllUsesWith(replacement);
                 replacement.init(node);
                 block.nodes.replace(iter, replacement);
@@ -111,7 +111,7 @@
 
         public void rename()
         {
-            for (int i = 0; i < graph_.numBlocks; i++)
+            for (var i = 0; i < graph_.numBlocks; i++)
             {
                 renameBlock(graph_[i]);
             }

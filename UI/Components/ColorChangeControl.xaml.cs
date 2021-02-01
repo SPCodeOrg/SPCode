@@ -38,9 +38,9 @@ namespace SPCode.UI.Components
         private void SliderValue_Changed(object sender, RoutedEventArgs e)
         {
             if (!RaiseEventAllowed) { return; }
-            Color c = Color.FromArgb(0xFF, (byte)((int)RSlider.Value), (byte)((int)GSlider.Value), (byte)((int)BSlider.Value));
+            var c = Color.FromArgb(0xFF, (byte)((int)RSlider.Value), (byte)((int)GSlider.Value), (byte)((int)BSlider.Value));
             UpdateColor(c, true, false);
-            RoutedEventArgs raiseEvent = new RoutedEventArgs(ColorChangeControl.ColorChangedEvent);
+            var raiseEvent = new RoutedEventArgs(ColorChangeControl.ColorChangedEvent);
             RaiseEvent(raiseEvent);
         }
 
@@ -48,7 +48,7 @@ namespace SPCode.UI.Components
         {
             RaiseEventAllowed = false;
             BrushRect.Background = new SolidColorBrush(c);
-            double colorChannelMean = (double)(c.R + c.G + c.B) / 3.0;
+            var colorChannelMean = (double)(c.R + c.G + c.B) / 3.0;
             BrushRect.Foreground = new SolidColorBrush((colorChannelMean > 128.0) ? Colors.Black : Colors.White);
             if (UpdateTextBox)
             {
@@ -60,7 +60,7 @@ namespace SPCode.UI.Components
                 GSlider.Value = (double)c.G;
                 BSlider.Value = (double)c.B;
             }
-            RoutedEventArgs raiseEvent = new RoutedEventArgs(ColorChangeControl.ColorChangedEvent);
+            var raiseEvent = new RoutedEventArgs(ColorChangeControl.ColorChangedEvent);
             RaiseEvent(raiseEvent);
             RaiseEventAllowed = true;
         }
@@ -68,8 +68,8 @@ namespace SPCode.UI.Components
         private void BrushRect_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!RaiseEventAllowed) { return; }
-            int cVal = 0;
-            string parseString = BrushRect.Text.Trim();
+            var cVal = 0;
+            var parseString = BrushRect.Text.Trim();
             if (parseString.StartsWith("0x", System.StringComparison.InvariantCultureIgnoreCase) && parseString.Length > 2)
             {
                 parseString = parseString.Substring(2);

@@ -14,13 +14,13 @@ namespace SPCode.UI
         private string CurrentObjectBrowserDirectory = string.Empty;
         private void TreeViewOBItem_Expanded(object sender, RoutedEventArgs e)
         {
-            object source = e.Source;
+            var source = e.Source;
             if (!(source is TreeViewItem))
             {
                 return;
             }
-            TreeViewItem item = (TreeViewItem)source;
-            ObjectBrowserTag itemInfo = (ObjectBrowserTag)item.Tag;
+            var item = (TreeViewItem)source;
+            var itemInfo = (ObjectBrowserTag)item.Tag;
             if (itemInfo.Kind != ObjectBrowserItemKind.Directory || !Directory.Exists(itemInfo.Value))
             {
                 return;
@@ -30,7 +30,7 @@ namespace SPCode.UI
             using (Dispatcher.DisableProcessing())
             {
                 item.Items.Clear();
-                List<TreeViewItem> newItems = BuildDirectoryItems(itemInfo.Value);
+                var newItems = BuildDirectoryItems(itemInfo.Value);
                 foreach (var i in newItems)
                 {
                     item.Items.Add(i);
@@ -40,8 +40,8 @@ namespace SPCode.UI
 
         private void TreeViewOBItemParentDir_DoubleClicked(object sender, RoutedEventArgs e)
         {
-            DirectoryInfo currentInfo = new DirectoryInfo(CurrentObjectBrowserDirectory);
-            DirectoryInfo parentInfo = currentInfo.Parent;
+            var currentInfo = new DirectoryInfo(CurrentObjectBrowserDirectory);
+            var parentInfo = currentInfo.Parent;
             if (parentInfo != null)
             {
                 if (parentInfo.Exists)
@@ -57,7 +57,7 @@ namespace SPCode.UI
         {
             if (sender is TreeViewItem item)
             {
-                ObjectBrowserTag itemInfo = (ObjectBrowserTag)item.Tag;
+                var itemInfo = (ObjectBrowserTag)item.Tag;
                 if (itemInfo.Kind == ObjectBrowserItemKind.File)
                 {
                     TryLoadSourceFile(itemInfo.Value, true, false, true);
@@ -69,10 +69,10 @@ namespace SPCode.UI
         {
             if (sender is ListViewItem item)
             {
-                EditorElement ee = GetCurrentEditorElement();
+                var ee = GetCurrentEditorElement();
                 if (ee != null)
                 {
-                    FileInfo fInfo = new FileInfo(ee.FullFilePath);
+                    var fInfo = new FileInfo(ee.FullFilePath);
                     ChangeObjectBrowserToDirectory(fInfo.DirectoryName);
                 }
                 item.IsSelected = false;
@@ -96,18 +96,18 @@ namespace SPCode.UI
         {
             if (sender is ListViewItem viewItem)
             {
-                object objectBrowserSelectedItem = ObjectBrowser.SelectedItem;
+                var objectBrowserSelectedItem = ObjectBrowser.SelectedItem;
                 if (objectBrowserSelectedItem is TreeViewItem item)
                 {
-                    ObjectBrowserTag itemInfo = (ObjectBrowserTag)item.Tag;
+                    var itemInfo = (ObjectBrowserTag)item.Tag;
                     if (itemInfo.Kind == ObjectBrowserItemKind.Directory)
                     {
                         ChangeObjectBrowserToDirectory(itemInfo.Value);
                     }
                     else if (itemInfo.Kind == ObjectBrowserItemKind.ParentDirectory)
                     {
-                        DirectoryInfo currentInfo = new DirectoryInfo(CurrentObjectBrowserDirectory);
-                        DirectoryInfo parentInfo = currentInfo.Parent;
+                        var currentInfo = new DirectoryInfo(CurrentObjectBrowserDirectory);
+                        var parentInfo = currentInfo.Parent;
                         if (parentInfo != null)
                         {
                             if (parentInfo.Exists)
@@ -159,14 +159,14 @@ namespace SPCode.UI
             {
                 ObjectBrowserDirBlock.Text = dir;
                 ObjectBrowser.Items.Clear();
-                TreeViewItem parentDirItem = new TreeViewItem()
+                var parentDirItem = new TreeViewItem()
                 {
                     Header = "..",
                     Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.ParentDirectory }
                 };
                 parentDirItem.MouseDoubleClick += TreeViewOBItemParentDir_DoubleClicked;
                 ObjectBrowser.Items.Add(parentDirItem);
-                List<TreeViewItem> newItems = BuildDirectoryItems(dir);
+                var newItems = BuildDirectoryItems(dir);
                 foreach (var item in newItems)
                 {
                     ObjectBrowser.Items.Add(item);
@@ -177,7 +177,7 @@ namespace SPCode.UI
         private void ChangeObjectBrowserToDrives()
         {
             Program.OptionsObject.Program_ObjectBrowserDirectory = "0:";
-            DriveInfo[] drives = DriveInfo.GetDrives();
+            var drives = DriveInfo.GetDrives();
             Debug.Assert(Dispatcher != null, nameof(Dispatcher) + " != null");
             using (Dispatcher.DisableProcessing())
             {
@@ -201,13 +201,13 @@ namespace SPCode.UI
 
         private List<TreeViewItem> BuildDirectoryItems(string dir)
         {
-            List<TreeViewItem> itemList = new List<TreeViewItem>();
-            string[] spFiles = Directory.GetFiles(dir, "*.sp", SearchOption.TopDirectoryOnly);
-            string[] incFiles = Directory.GetFiles(dir, "*.inc", SearchOption.TopDirectoryOnly);
-            string[] directories = Directory.GetDirectories(dir, "*", SearchOption.TopDirectoryOnly);
-            foreach (string d in directories)
+            var itemList = new List<TreeViewItem>();
+            var spFiles = Directory.GetFiles(dir, "*.sp", SearchOption.TopDirectoryOnly);
+            var incFiles = Directory.GetFiles(dir, "*.inc", SearchOption.TopDirectoryOnly);
+            var directories = Directory.GetDirectories(dir, "*", SearchOption.TopDirectoryOnly);
+            foreach (var d in directories)
             {
-                DirectoryInfo dInfo = new DirectoryInfo(d);
+                var dInfo = new DirectoryInfo(d);
                 if (!dInfo.Exists)
                 {
                     continue;
@@ -228,9 +228,9 @@ namespace SPCode.UI
                 tvi.Items.Add("...");
                 itemList.Add(tvi);
             }
-            foreach (string f in spFiles)
+            foreach (var f in spFiles)
             {
-                FileInfo fInfo = new FileInfo(f);
+                var fInfo = new FileInfo(f);
                 if (!fInfo.Exists)
                 {
                     continue;
@@ -243,9 +243,9 @@ namespace SPCode.UI
                 tvi.MouseDoubleClick += TreeViewOBItemFile_DoubleClicked;
                 itemList.Add(tvi);
             }
-            foreach (string f in incFiles)
+            foreach (var f in incFiles)
             {
-                FileInfo fInfo = new FileInfo(f);
+                var fInfo = new FileInfo(f);
                 if (!fInfo.Exists)
                 {
                     continue;
@@ -263,13 +263,13 @@ namespace SPCode.UI
 
         private object BuildTreeViewItemContent(string headerString, string iconFile)
         {
-            StackPanel stack = new StackPanel { Orientation = Orientation.Horizontal };
-            Image image = new Image();
-            string uriPath = $"/SPCode;component/Resources/{iconFile}";
+            var stack = new StackPanel { Orientation = Orientation.Horizontal };
+            var image = new Image();
+            var uriPath = $"/SPCode;component/Resources/{iconFile}";
             image.Source = new BitmapImage(new Uri(uriPath, UriKind.Relative));
             image.Width = 16;
             image.Height = 16;
-            TextBlock lbl = new TextBlock { Text = headerString, Margin = new Thickness(2.0, 0.0, 0.0, 0.0) };
+            var lbl = new TextBlock { Text = headerString, Margin = new Thickness(2.0, 0.0, 0.0, 0.0) };
             stack.Children.Add(image);
             stack.Children.Add(lbl);
             return stack;

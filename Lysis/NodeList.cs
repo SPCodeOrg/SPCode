@@ -39,7 +39,7 @@
         }
         public void remove(iterator_base where)
         {
-            DNode node = where.node;
+            var node = where.node;
             where.next();
             remove(node);
         }

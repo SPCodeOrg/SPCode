@@ -130,8 +130,8 @@ namespace Lysis
         }
         public void replaceAllUsesWith(DNode node)
         {
-            DUse[] copies = uses.ToArray();
-            foreach (DUse use in copies)
+            var copies = uses.ToArray();
+            foreach (var use in copies)
             {
                 use.node.replaceOperand(use.index, node);
             }
@@ -139,7 +139,7 @@ namespace Lysis
         public void removeUse(int index, DNode node)
         {
             DUse use = null;
-            foreach (DUse u in uses)
+            foreach (var u in uses)
             {
                 if (u.index == index && u.node == node)
                 {
@@ -154,7 +154,7 @@ namespace Lysis
         // Remove this node from all use chains.
         public void removeFromUseChains()
         {
-            for (int i = 0; i < numOperands; i++)
+            for (var i = 0; i < numOperands; i++)
             {
                 replaceOperand(i, null);
             }
@@ -382,7 +382,7 @@ namespace Lysis
                 return null;
             }
 
-            DNode replacement = value.applyType(file, tag, type);
+            var replacement = value.applyType(file, tag, type);
             if (replacement != value)
             {
                 replaceOperand(0, replacement);
@@ -460,7 +460,7 @@ namespace Lysis
                 case VariableType.Reference:
                 case VariableType.Variadic:
                     {
-                        Variable global = file.lookupGlobal(value);
+                        var global = file.lookupGlobal(value);
                         if (global != null)
                         {
                             return new DGlobal(global);
@@ -500,7 +500,7 @@ namespace Lysis
         {
             get
             {
-                DNode operator_ = getOperand(0);
+                var operator_ = getOperand(0);
                 if (operator_ is DTempName)
                 {
                     return ((DTempName)operator_).name;
@@ -681,7 +681,7 @@ namespace Lysis
         public DCallNode(DNode[] arguments)
         {
             arguments_ = new DNode[arguments.Length];
-            for (int i = 0; i < arguments.Length; i++)
+            for (var i = 0; i < arguments.Length; i++)
             {
                 initOperand(i, arguments[i]);
             }

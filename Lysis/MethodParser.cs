@@ -90,35 +90,35 @@ namespace Lysis
                 case SPOpcode.load_pri:
                 case SPOpcode.load_alt:
                     {
-                        Register reg = (op == SPOpcode.load_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.load_pri) ? Register.Pri : Register.Alt;
                         return new LLoadGlobal(readInt32(), reg);
                     }
 
                 case SPOpcode.load_s_pri:
                 case SPOpcode.load_s_alt:
                     {
-                        Register reg = (op == SPOpcode.load_s_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.load_s_pri) ? Register.Pri : Register.Alt;
                         return new LLoadLocal(trackStack(readInt32()), reg);
                     }
 
                 case SPOpcode.lref_s_pri:
                 case SPOpcode.lref_s_alt:
                     {
-                        Register reg = (op == SPOpcode.lref_s_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.lref_s_pri) ? Register.Pri : Register.Alt;
                         return new LLoadLocalRef(trackStack(readInt32()), reg);
                     }
 
                 case SPOpcode.stor_s_pri:
                 case SPOpcode.stor_s_alt:
                     {
-                        Register reg = (op == SPOpcode.stor_s_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.stor_s_pri) ? Register.Pri : Register.Alt;
                         return new LStoreLocal(reg, trackStack(readInt32()));
                     }
 
                 case SPOpcode.sref_s_pri:
                 case SPOpcode.sref_s_alt:
                     {
-                        Register reg = (op == SPOpcode.sref_s_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.sref_s_pri) ? Register.Pri : Register.Alt;
                         return new LStoreLocalRef(reg, trackStack(readInt32()));
                     }
 
@@ -131,21 +131,21 @@ namespace Lysis
                 case SPOpcode.const_pri:
                 case SPOpcode.const_alt:
                     {
-                        Register reg = (op == SPOpcode.const_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.const_pri) ? Register.Pri : Register.Alt;
                         return new LConstant(readInt32(), reg);
                     }
 
                 case SPOpcode.addr_pri:
                 case SPOpcode.addr_alt:
                     {
-                        Register reg = (op == SPOpcode.addr_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.addr_pri) ? Register.Pri : Register.Alt;
                         return new LStackAddress(trackStack(readInt32()), reg);
                     }
 
                 case SPOpcode.stor_pri:
                 case SPOpcode.stor_alt:
                     {
-                        Register reg = (op == SPOpcode.stor_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.stor_pri) ? Register.Pri : Register.Alt;
                         return new LStoreGlobal(readInt32(), reg);
                     }
 
@@ -170,7 +170,7 @@ namespace Lysis
                 case SPOpcode.move_pri:
                 case SPOpcode.move_alt:
                     {
-                        Register reg = (op == SPOpcode.move_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.move_pri) ? Register.Pri : Register.Alt;
                         return new LMove(reg);
                     }
 
@@ -180,7 +180,7 @@ namespace Lysis
                 case SPOpcode.push_pri:
                 case SPOpcode.push_alt:
                     {
-                        Register reg = (op == SPOpcode.push_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.push_pri) ? Register.Pri : Register.Alt;
                         return new LPushReg(reg);
                     }
 
@@ -196,7 +196,7 @@ namespace Lysis
                 case SPOpcode.pop_pri:
                 case SPOpcode.pop_alt:
                     {
-                        Register reg = (op == SPOpcode.pop_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.pop_pri) ? Register.Pri : Register.Alt;
                         return new LPop(reg);
                     }
 
@@ -211,7 +211,7 @@ namespace Lysis
 
                 case SPOpcode.jump:
                     {
-                        uint offset = readUInt32();
+                        var offset = readUInt32();
                         return new LJump(prepareJumpTarget(offset), offset);
                     }
 
@@ -224,7 +224,7 @@ namespace Lysis
                 case SPOpcode.jsgrtr:
                 case SPOpcode.jsleq:
                     {
-                        uint offset = readUInt32();
+                        var offset = readUInt32();
                         if (offset == pc_)
                         {
                             return new LJump(prepareJumpTarget(offset), offset);
@@ -261,7 +261,7 @@ namespace Lysis
                 case SPOpcode.zero_pri:
                 case SPOpcode.zero_alt:
                     {
-                        Register reg = (op == SPOpcode.zero_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.zero_pri) ? Register.Pri : Register.Alt;
                         return new LConstant(0, reg);
                     }
 
@@ -282,7 +282,7 @@ namespace Lysis
                 case SPOpcode.eq_c_pri:
                 case SPOpcode.eq_c_alt:
                     {
-                        Register reg = (op == SPOpcode.eq_c_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.eq_c_pri) ? Register.Pri : Register.Alt;
                         return new LEqualConstant(reg, readInt32());
                     }
 
@@ -301,14 +301,14 @@ namespace Lysis
                 case SPOpcode.inc_pri:
                 case SPOpcode.inc_alt:
                     {
-                        Register reg = (op == SPOpcode.inc_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.inc_pri) ? Register.Pri : Register.Alt;
                         return new LIncReg(reg);
                     }
 
                 case SPOpcode.dec_pri:
                 case SPOpcode.dec_alt:
                     {
-                        Register reg = (op == SPOpcode.dec_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.dec_pri) ? Register.Pri : Register.Alt;
                         return new LDecReg(reg);
                     }
 
@@ -324,7 +324,7 @@ namespace Lysis
                 case SPOpcode.swap_pri:
                 case SPOpcode.swap_alt:
                     {
-                        Register reg = (op == SPOpcode.swap_pri) ? Register.Pri : Register.Alt;
+                        var reg = (op == SPOpcode.swap_pri) ? Register.Pri : Register.Alt;
                         return new LSwap(reg);
                     }
 
@@ -333,7 +333,7 @@ namespace Lysis
 
                 case SPOpcode.sysreq_n:
                     {
-                        int index = readInt32();
+                        var index = readInt32();
                         add(new LPushConstant(readInt32()));
                         return new LSysReq(file_.natives[index]);
                     }
@@ -498,21 +498,21 @@ namespace Lysis
 
                 case SPOpcode.switch_:
                     {
-                        uint table = readUInt32();
-                        uint savePc = pc_;
+                        var table = readUInt32();
+                        var savePc = pc_;
                         pc_ = table;
 
-                        SPOpcode casetbl = (SPOpcode)readUInt32();
+                        var casetbl = (SPOpcode)readUInt32();
                         //Debug.Assert(casetbl == SPOpcode.casetbl);
 
-                        int ncases = readInt32();
-                        uint defaultCase = readUInt32();
+                        var ncases = readInt32();
+                        var defaultCase = readUInt32();
                         var cases = new List<SwitchCase>();
-                        for (int i = 0; i < ncases; i++)
+                        for (var i = 0; i < ncases; i++)
                         {
-                            int value = readInt32();
-                            uint pc = readUInt32();
-                            LBlock target = prepareJumpTarget(pc);
+                            var value = readInt32();
+                            var pc = readUInt32();
+                            var target = prepareJumpTarget(pc);
                             cases.Add(new SwitchCase(value, target));
                         }
                         pc_ = savePc;
@@ -521,7 +521,7 @@ namespace Lysis
 
                 case SPOpcode.casetbl:
                     {
-                        int ncases = readInt32();
+                        var ncases = readInt32();
                         pc_ += (uint)ncases * 8 + 4;
                         return new LDebugBreak();
                     }
@@ -545,7 +545,7 @@ namespace Lysis
             while (pc_ < (uint)file_.code.bytes.Length)
             {
                 current_pc_ = pc_;
-                SPOpcode op = readOp();
+                var op = readOp();
                 if (op == SPOpcode.proc)
                 {
                     break;
@@ -584,15 +584,15 @@ namespace Lysis
 
             public LBlock parse()
             {
-                for (int i = 0; i < lir_.instructions.Count; i++)
+                for (var i = 0; i < lir_.instructions.Count; i++)
                 {
-                    LInstruction ins = lir_.instructions[i];
+                    var ins = lir_.instructions[i];
 
                     if (lir_.isTarget(ins.pc))
                     {
                         // This instruction is the target of a basic block, so
                         // finish the old one.
-                        LBlock next = lir_.blockOfTarget(ins.pc);
+                        var next = lir_.blockOfTarget(ins.pc);
 
                         // Multiple instructions could be at the same pc,
                         // because of decomposition, so make sure we're not
@@ -631,7 +631,7 @@ namespace Lysis
 
                         case Opcode.Jump:
                             {
-                                LJump jump = (LJump)ins;
+                                var jump = (LJump)ins;
                                 jump.target.addPredecessor(block_);
                                 transitionBlocks(null);
                                 break;
@@ -639,7 +639,7 @@ namespace Lysis
 
                         case Opcode.JumpCondition:
                             {
-                                LJumpCondition jcc = (LJumpCondition)ins;
+                                var jcc = (LJumpCondition)ins;
                                 jcc.trueTarget.addPredecessor(block_);
                                 jcc.falseTarget.addPredecessor(block_);
 
@@ -651,8 +651,8 @@ namespace Lysis
 
                         case Opcode.Switch:
                             {
-                                LSwitch switch_ = (LSwitch)ins;
-                                for (int j = 0; j < switch_.numSuccessors; j++)
+                                var switch_ = (LSwitch)ins;
+                                for (var j = 0; j < switch_.numSuccessors; j++)
                                 {
                                     switch_.getSuccessor(j).addPredecessor(block_);
                                 }
@@ -669,11 +669,11 @@ namespace Lysis
         private LGraph buildBlocks()
         {
             lir_.entry = new LBlock(lir_.entry_pc);
-            BlockBuilder builder = new BlockBuilder(lir_);
-            LBlock entry = builder.parse();
+            var builder = new BlockBuilder(lir_);
+            var entry = builder.parse();
 
             // Get an RPO ordering of the blocks, since we don't have predecessors yet.
-            LBlock[] blocks = BlockAnalysis.Order(entry);
+            var blocks = BlockAnalysis.Order(entry);
 
             if (!BlockAnalysis.IsReducible(blocks))
             {
@@ -692,7 +692,7 @@ namespace Lysis
             BlockAnalysis.ComputeDominatorTree(blocks);
             BlockAnalysis.FindLoops(blocks);
 
-            LGraph graph = new LGraph
+            var graph = new LGraph
             {
                 blocks = blocks,
                 entry = blocks[0]

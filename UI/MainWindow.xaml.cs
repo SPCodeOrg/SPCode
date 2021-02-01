@@ -362,8 +362,8 @@ namespace SPCode.UI
         public void UpdateWindowTitle()
         {
             var ee = GetCurrentEditorElement();
-            bool someEditorIsOpen = ee != null;
-            string outString = "Idle";
+            var someEditorIsOpen = ee != null;
+            var outString = "Idle";
             if (someEditorIsOpen)
             {
                 outString = ee.FullFilePath;

@@ -7,10 +7,10 @@ namespace Lysis
     {
         public static void RemoveGuards(NodeGraph graph)
         {
-            for (int i = graph.numBlocks - 1; i >= 0; i--)
+            for (var i = graph.numBlocks - 1; i >= 0; i--)
             {
-                NodeBlock block = graph[i];
-                for (NodeList.reverse_iterator iter = block.nodes.rbegin(); iter.more();)
+                var block = graph[i];
+                for (var iter = block.nodes.rbegin(); iter.more();)
                 {
                     if (iter.node.guard)
                     {
@@ -26,11 +26,11 @@ namespace Lysis
 
         private static void RemoveDeadCodeInBlock(NodeBlock block)
         {
-            for (NodeList.reverse_iterator iter = block.nodes.rbegin(); iter.more();)
+            for (var iter = block.nodes.rbegin(); iter.more();)
             {
                 if (iter.node.type == NodeType.DeclareLocal)
                 {
-                    DDeclareLocal decl = (DDeclareLocal)iter.node;
+                    var decl = (DDeclareLocal)iter.node;
                     if (decl.var == null &&
                         (decl.uses.Count == 0 ||
                          (decl.uses.Count == 1 && decl.value != null)))
@@ -38,7 +38,7 @@ namespace Lysis
                         // This was probably just a stack temporary.
                         if (decl.uses.Count == 1)
                         {
-                            DUse use = decl.uses.First.Value;
+                            var use = decl.uses.First.Value;
                             use.node.replaceOperand(use.index, decl.value);
                         }
                         iter.node.removeFromUseChains();
@@ -70,7 +70,7 @@ namespace Lysis
         // so we provide a phase for updating use info.
         public static void RemoveDeadCode(NodeGraph graph)
         {
-            for (int i = graph.numBlocks - 1; i >= 0; i--)
+            for (var i = graph.numBlocks - 1; i >= 0; i--)
             {
                 RemoveDeadCodeInBlock(graph[i]);
             }
@@ -88,7 +88,7 @@ namespace Lysis
                 return false;
             }
 
-            TypeUnit tu = ts[0];
+            var tu = ts[0];
             if (tu.kind == TypeUnit.Kind.Array)
             {
                 return true;
@@ -141,7 +141,7 @@ namespace Lysis
                 return true;
             }
 
-            foreach (DUse use in node.uses)
+            foreach (var use in node.uses)
             {
                 if (use.node.type == NodeType.Store || use.node.type == NodeType.Load)
                 {
@@ -160,7 +160,7 @@ namespace Lysis
 
             if (node.type == NodeType.Binary)
             {
-                DBinary bin = (DBinary)node;
+                var bin = (DBinary)node;
                 return bin.spop == SPOpcode.add;
             }
             return false;
@@ -168,18 +168,18 @@ namespace Lysis
 
         private static bool CollapseArrayReferences(NodeBlock block)
         {
-            bool changed = false;
+            var changed = false;
 
-            for (NodeList.reverse_iterator iter = block.nodes.rbegin(); iter.more(); iter.next())
+            for (var iter = block.nodes.rbegin(); iter.more(); iter.next())
             {
-                DNode node = iter.node;
+                var node = iter.node;
 
                 if (node.type == NodeType.Store || node.type == NodeType.Load)
                 {
                     if (node.getOperand(0).type != NodeType.ArrayRef && IsArray(node.getOperand(0).typeSet))
                     {
-                        DConstant index0 = new DConstant(0);
-                        DArrayRef aref0 = new DArrayRef(node.getOperand(0), index0, 0);
+                        var index0 = new DConstant(0);
+                        var aref0 = new DArrayRef(node.getOperand(0), index0, 0);
                         block.nodes.insertBefore(node, index0);
                         block.nodes.insertBefore(node, aref0);
                         node.replaceOperand(0, aref0);
@@ -192,7 +192,7 @@ namespace Lysis
                     continue;
                 }
 
-                DBinary binary = (DBinary)node;
+                var binary = (DBinary)node;
                 if (binary.spop != SPOpcode.add)
                 {
                     continue;
@@ -204,13 +204,13 @@ namespace Lysis
                 }
 
                 // Check for an array index.
-                DNode abase = GuessArrayBase(binary.lhs, binary.rhs);
+                var abase = GuessArrayBase(binary.lhs, binary.rhs);
                 if (abase == null)
                 {
                     continue;
                 }
 
-                DNode index = (abase == binary.lhs) ? binary.rhs : binary.lhs;
+                var index = (abase == binary.lhs) ? binary.rhs : binary.lhs;
 
                 if (!IsReallyLikelyArrayCompute(binary, abase))
                 {
@@ -232,7 +232,7 @@ namespace Lysis
                 }
 
                 // Otherwise, create a new array reference.
-                DArrayRef aref = new DArrayRef(abase, index);
+                var aref = new DArrayRef(abase, index);
                 iter.node.replaceAllUsesWith(aref);
                 iter.node.removeFromUseChains();
                 block.nodes.remove(iter);
@@ -250,7 +250,7 @@ namespace Lysis
             do
             {
                 changed = false;
-                for (int i = graph.numBlocks - 1; i >= 0; i--)
+                for (var i = graph.numBlocks - 1; i >= 0; i--)
                 {
                     changed |= CollapseArrayReferences(graph[i]);
                 }
@@ -259,20 +259,20 @@ namespace Lysis
 
         public static void CoalesceLoadsAndDeclarations(NodeGraph graph)
         {
-            for (int i = 0; i < graph.numBlocks; i++)
+            for (var i = 0; i < graph.numBlocks; i++)
             {
-                NodeBlock block = graph[i];
-                for (NodeList.iterator iter = block.nodes.begin(); iter.more();)
+                var block = graph[i];
+                for (var iter = block.nodes.begin(); iter.more();)
                 {
-                    DNode node = iter.node;
+                    var node = iter.node;
 
                     if (node.type == NodeType.DeclareLocal)
                     {
                         // Peephole next = store(this, expr)
-                        DDeclareLocal local = (DDeclareLocal)node;
+                        var local = (DDeclareLocal)node;
                         if (node.next.type == NodeType.Store)
                         {
-                            DStore store = (DStore)node.next;
+                            var store = (DStore)node.next;
                             if (store.getOperand(0) == local)
                             {
                                 local.replaceOperand(0, store.getOperand(1));
@@ -291,22 +291,22 @@ namespace Lysis
 
         private static void CoalesceLoadStores(NodeBlock block)
         {
-            for (NodeList.reverse_iterator riter = block.nodes.rbegin(); riter.more(); riter.next())
+            for (var riter = block.nodes.rbegin(); riter.more(); riter.next())
             {
                 if (riter.node.type != NodeType.Store)
                 {
                     continue;
                 }
 
-                DStore store = (DStore)riter.node;
+                var store = (DStore)riter.node;
 
                 DNode coalesce = null;
                 if (store.rhs.type == NodeType.Binary)
                 {
-                    DBinary rhs = (DBinary)store.rhs;
+                    var rhs = (DBinary)store.rhs;
                     if (rhs.lhs.type == NodeType.Load)
                     {
-                        DLoad load = (DLoad)rhs.lhs;
+                        var load = (DLoad)rhs.lhs;
                         if (load.from == store.lhs)
                         {
                             coalesce = rhs.rhs;
@@ -314,7 +314,7 @@ namespace Lysis
                         else if (load.from.type == NodeType.ArrayRef &&
                                  store.lhs.type == NodeType.Load)
                         {
-                            DArrayRef aref = (DArrayRef)load.from;
+                            var aref = (DArrayRef)load.from;
                             load = (DLoad)store.lhs;
                             if (aref.abase == load &&
                                 aref.index.type == NodeType.Constant &&
@@ -365,7 +365,7 @@ namespace Lysis
 
         public static void CoalesceLoadStores(NodeGraph graph)
         {
-            for (int i = 0; i < graph.numBlocks; i++)
+            for (var i = 0; i < graph.numBlocks; i++)
             {
                 CoalesceLoadStores(graph[i]);
             }
@@ -386,8 +386,8 @@ namespace Lysis
             // Easy case: compiler needed a lvalue.
             if (node.uses.Count == 2)
             {
-                DUse lastUse = node.uses.Last();
-                DUse firstUse = node.uses.First();
+                var lastUse = node.uses.Last();
+                var firstUse = node.uses.First();
                 if ((lastUse.node.type == NodeType.Call ||
                      lastUse.node.type == NodeType.SysReq) &&
                     firstUse.node.type == NodeType.Store &&
@@ -403,15 +403,15 @@ namespace Lysis
                     firstUse.index == 0)
                 {
                     // heap -> memcpy always reads from DAT + constant
-                    DMemCopy memcopy = (DMemCopy)firstUse.node;
-                    DConstant cv = (DConstant)memcopy.from;
-                    DInlineArray ia = new DInlineArray(cv.value, memcopy.bytes);
+                    var memcopy = (DMemCopy)firstUse.node;
+                    var cv = (DConstant)memcopy.from;
+                    var ia = new DInlineArray(cv.value, memcopy.bytes);
                     block.nodes.insertAfter(node, ia);
                     lastUse.node.replaceOperand(lastUse.index, ia);
 
                     // Give the inline array some type information.
-                    Signature signature = SignatureOf(lastUse.node);
-                    TypeUnit tu = TypeUnit.FromArgument(signature.args[lastUse.index]);
+                    var signature = SignatureOf(lastUse.node);
+                    var tu = TypeUnit.FromArgument(signature.args[lastUse.index]);
                     ia.addType(tu);
                     return true;
                 }
@@ -422,7 +422,7 @@ namespace Lysis
 
         private static void AnalyzeHeapUsage(NodeBlock block)
         {
-            for (NodeList.reverse_iterator riter = block.nodes.rbegin(); riter.more(); riter.next())
+            for (var riter = block.nodes.rbegin(); riter.more(); riter.next())
             {
                 if (riter.node.type == NodeType.Heap)
                 {
@@ -436,7 +436,7 @@ namespace Lysis
 
         public static void AnalyzeHeapUsage(NodeGraph graph)
         {
-            for (int i = 0; i < graph.numBlocks; i++)
+            for (var i = 0; i < graph.numBlocks; i++)
             {
                 AnalyzeHeapUsage(graph[i]);
             }

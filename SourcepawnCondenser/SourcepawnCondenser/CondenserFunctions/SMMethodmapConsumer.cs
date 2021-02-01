@@ -10,14 +10,14 @@ namespace SourcepawnCondenser
     {
         private int ConsumeSMMethodmap()
         {
-            int startIndex = t[position].Index;
-            int iteratePosition = position + 1;
+            var startIndex = t[position].Index;
+            var iteratePosition = position + 1;
             if ((position + 4) < length)
             {
-                string methodMapName = string.Empty;
-                string methodMapType = string.Empty;
-                List<SMMethodmapMethod> methods = new List<SMMethodmapMethod>();
-                List<SMMethodmapField> fields = new List<SMMethodmapField>();
+                var methodMapName = string.Empty;
+                var methodMapType = string.Empty;
+                var methods = new List<SMMethodmapMethod>();
+                var fields = new List<SMMethodmapField>();
                 if (t[iteratePosition].Kind == TokenKind.Identifier)
                 {
                     if (t[iteratePosition + 1].Kind == TokenKind.Identifier)
@@ -32,10 +32,10 @@ namespace SourcepawnCondenser
                     }
                     ++iteratePosition;
                 }
-                string inheriteType = string.Empty;
-                bool enteredBlock = false;
-                int braceIndex = 0;
-                int lastIndex = -1;
+                var inheriteType = string.Empty;
+                var enteredBlock = false;
+                var braceIndex = 0;
+                var lastIndex = -1;
                 for (; iteratePosition < length; ++iteratePosition)
                 {
                     if (t[iteratePosition].Kind == TokenKind.BraceOpen)
@@ -72,15 +72,15 @@ namespace SourcepawnCondenser
                     {
                         if (t[iteratePosition].Kind == TokenKind.FunctionIndicator)
                         {
-                            int mStartIndex = t[iteratePosition].Index;
-                            string functionCommentString = string.Empty;
-                            int commentTokenIndex = BacktraceTestForToken(iteratePosition - 1, TokenKind.MultiLineComment, true, false);
+                            var mStartIndex = t[iteratePosition].Index;
+                            var functionCommentString = string.Empty;
+                            var commentTokenIndex = BacktraceTestForToken(iteratePosition - 1, TokenKind.MultiLineComment, true, false);
                             if (commentTokenIndex == -1)
                             {
                                 commentTokenIndex = BacktraceTestForToken(iteratePosition - 1, TokenKind.SingleLineComment, true, false);
                                 if (commentTokenIndex != -1)
                                 {
-                                    StringBuilder strBuilder = new StringBuilder(t[commentTokenIndex].Value);
+                                    var strBuilder = new StringBuilder(t[commentTokenIndex].Value);
                                     while ((commentTokenIndex = BacktraceTestForToken(commentTokenIndex - 1, TokenKind.SingleLineComment, true, false)) != -1)
                                     {
                                         strBuilder.Insert(0, Environment.NewLine);
@@ -93,20 +93,20 @@ namespace SourcepawnCondenser
                             {
                                 functionCommentString = t[commentTokenIndex].Value;
                             }
-                            int mEndIndex = mStartIndex;
-                            List<string> functionIndicators = new List<string>();
-                            List<string> parameters = new List<string>();
-                            string methodName = string.Empty;
-                            string methodReturnValue = string.Empty;
-                            bool ParsingIndicators = true;
-                            bool InCodeSection = false;
-                            int ParenthesisIndex = 0;
-                            int mBraceIndex = 0;
-                            bool AwaitingName = true;
-                            string lastFoundParam = string.Empty;
-                            bool foundCurentParameter = false;
-                            bool InSearchForComma = false;
-                            for (int i = iteratePosition; i < length; ++i)
+                            var mEndIndex = mStartIndex;
+                            var functionIndicators = new List<string>();
+                            var parameters = new List<string>();
+                            var methodName = string.Empty;
+                            var methodReturnValue = string.Empty;
+                            var ParsingIndicators = true;
+                            var InCodeSection = false;
+                            var ParenthesisIndex = 0;
+                            var mBraceIndex = 0;
+                            var AwaitingName = true;
+                            var lastFoundParam = string.Empty;
+                            var foundCurentParameter = false;
+                            var InSearchForComma = false;
+                            for (var i = iteratePosition; i < length; ++i)
                             {
                                 if (InCodeSection)
                                 {
@@ -223,8 +223,8 @@ namespace SourcepawnCondenser
                         }
                         else if (t[iteratePosition].Kind == TokenKind.Property)
                         {
-                            int fStartIndex = t[iteratePosition].Index;
-                            int fEndIndex = fStartIndex;
+                            var fStartIndex = t[iteratePosition].Index;
+                            var fEndIndex = fStartIndex;
                             if ((iteratePosition - 1) >= 0)
                             {
                                 if (t[iteratePosition - 1].Kind == TokenKind.FunctionIndicator)
@@ -232,10 +232,10 @@ namespace SourcepawnCondenser
                                     fStartIndex = t[iteratePosition - 1].Index;
                                 }
                             }
-                            string fieldName = string.Empty;
-                            bool InPureSemicolonSearch = false;
-                            int fBracketIndex = 0;
-                            for (int j = iteratePosition; j < length; ++j)
+                            var fieldName = string.Empty;
+                            var InPureSemicolonSearch = false;
+                            var fBracketIndex = 0;
+                            for (var j = iteratePosition; j < length; ++j)
                             {
                                 if (t[j].Kind == TokenKind.Identifier && !InPureSemicolonSearch)
                                 {

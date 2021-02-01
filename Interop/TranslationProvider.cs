@@ -32,8 +32,8 @@ namespace SPCode.Interop
         public void LoadLanguage(string lang, bool Initial = false)
         {
             FillToEnglishDefaults();
-            List<string> languageList = new List<string>();
-            List<string> languageIDList = new List<string>();
+            var languageList = new List<string>();
+            var languageIDList = new List<string>();
             languageList.Add("English");
             languageIDList.Add("");
             lang = lang.Trim().ToLowerInvariant();
@@ -42,7 +42,7 @@ namespace SPCode.Interop
             {
                 try
                 {
-                    XmlDocument document = new XmlDocument();
+                    var document = new XmlDocument();
                     document.Load("lang_0_spcode.xml");
                     if (document.ChildNodes.Count < 1)
                     {
@@ -52,8 +52,8 @@ namespace SPCode.Interop
                     XmlNode rootLangNode = null;
                     foreach (XmlNode childNode in document.ChildNodes[0].ChildNodes)
                     {
-                        string lID = childNode.Name;
-                        string lNm = lID;
+                        var lID = childNode.Name;
+                        var lNm = lID;
                         if (childNode.Name.ToLowerInvariant() == lang)
                         {
                             rootLangNode = childNode;
@@ -73,8 +73,8 @@ namespace SPCode.Interop
                             {
                                 continue;
                             }
-                            string nn = node.Name.ToLowerInvariant();
-                            string nv = node.InnerText;
+                            var nn = node.Name.ToLowerInvariant();
+                            var nv = node.InnerText;
                             language[nn] = nv;
                         }
                     }

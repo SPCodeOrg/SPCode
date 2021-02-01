@@ -158,7 +158,7 @@ namespace Lysis
         public void replacePredecessor(LBlock from, LBlock split)
         {
             //Debug.Assert(predecessors_.Contains(from));
-            for (int i = 0; i < numPredecessors; i++)
+            for (var i = 0; i < numPredecessors; i++)
             {
                 if (getPredecessor(i) == from)
                 {

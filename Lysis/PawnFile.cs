@@ -33,16 +33,16 @@ namespace Lysis
 
         public static PawnFile FromFile(string path)
         {
-            FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            List<byte> bytes = new List<byte>();
+            var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var bytes = new List<byte>();
             int b;
             while ((b = fs.ReadByte()) >= 0)
             {
                 bytes.Add((byte)b);
             }
 
-            byte[] vec = bytes.ToArray();
-            uint magic = BitConverter.ToUInt32(vec, 0);
+            var vec = bytes.ToArray();
+            var magic = BitConverter.ToUInt32(vec, 0);
             if (magic == SourcePawn.SourcePawnFile.MAGIC)
             {
                 return new SourcePawn.SourcePawnFile(vec);
@@ -57,9 +57,9 @@ namespace Lysis
 
         public Function lookupFunction(uint pc)
         {
-            for (int i = 0; i < functions_.Length; i++)
+            for (var i = 0; i < functions_.Length; i++)
             {
-                Function f = functions_[i];
+                var f = functions_[i];
                 if (pc >= f.codeStart && pc < f.codeEnd)
                 {
                     return f;
@@ -69,7 +69,7 @@ namespace Lysis
         }
         public Public lookupPublic(string name)
         {
-            for (int i = 0; i < publics_.Length; i++)
+            for (var i = 0; i < publics_.Length; i++)
             {
                 if (publics_[i].name == name)
                 {
@@ -81,7 +81,7 @@ namespace Lysis
 
         public Public lookupPublic(uint addr)
         {
-            for (int i = 0; i < publics_.Length; i++)
+            for (var i = 0; i < publics_.Length; i++)
             {
                 if (publics_[i].address == addr)
                 {

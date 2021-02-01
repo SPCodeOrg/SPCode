@@ -18,7 +18,7 @@ namespace Lysis
             {
                 return "Error while loading file." + Environment.NewLine + "Details: " + e.Message + Environment.NewLine + "Stacktrace: " + e.StackTrace;
             }
-            StringBuilder outString = new StringBuilder();
+            var outString = new StringBuilder();
 
             SourceBuilder source;
             try
@@ -40,9 +40,9 @@ namespace Lysis
                 outString.AppendLine("Details: " + e.Message);
                 outString.AppendLine("Stacktrace: " + e.StackTrace);
             }
-            for (int i = 0; i < file.functions.Length; i++)
+            for (var i = 0; i < file.functions.Length; i++)
             {
-                Function fun = file.functions[i];
+                var fun = file.functions[i];
                 try
                 {
                     DumpMethod((SourcePawnFile)file, source, fun.address);
@@ -73,7 +73,7 @@ namespace Lysis
                 }
 #endif
             }
-            string NoteString = @"/*" + Environment.NewLine + "** ATTENTION" + Environment.NewLine +
+            var NoteString = @"/*" + Environment.NewLine + "** ATTENTION" + Environment.NewLine +
                 "** THE PRODUCED CODE, IS NOT ABLE TO COMPILE!" + Environment.NewLine +
                 "** THE DECOMPILER JUST TRIES TO GIVE YOU A POSSIBILITY" + Environment.NewLine +
                 "** TO LOOK HOW A PLUGIN DOES IT'S JOB AND LOOK FOR" + Environment.NewLine +
@@ -87,27 +87,27 @@ namespace Lysis
 
         static void DumpMethod(SourcePawnFile file, SourceBuilder source, uint addr)
         {
-            MethodParser mp = new MethodParser(file, addr);
-            LGraph graph = mp.parse();
+            var mp = new MethodParser(file, addr);
+            var graph = mp.parse();
 
-            NodeBuilder nb = new NodeBuilder(file, graph);
-            NodeBlock[] nblocks = nb.buildNodes();
+            var nb = new NodeBuilder(file, graph);
+            var nblocks = nb.buildNodes();
 
-            NodeGraph ngraph = new NodeGraph(file, nblocks);
+            var ngraph = new NodeGraph(file, nblocks);
 
             // Remove dead phis first.
             NodeAnalysis.RemoveDeadCode(ngraph);
 
-            NodeRewriter rewriter = new NodeRewriter(ngraph);
+            var rewriter = new NodeRewriter(ngraph);
             rewriter.rewrite();
 
             NodeAnalysis.CollapseArrayReferences(ngraph);
 
             // Propagate type information.
-            ForwardTypePropagation ftypes = new ForwardTypePropagation(ngraph);
+            var ftypes = new ForwardTypePropagation(ngraph);
             ftypes.propagate();
 
-            BackwardTypePropagation btypes = new BackwardTypePropagation(ngraph);
+            var btypes = new BackwardTypePropagation(ngraph);
             btypes.propagate();
 
             // We're not fixpoint, so just iterate again.
@@ -132,7 +132,7 @@ namespace Lysis
             NodeAnalysis.RemoveGuards(ngraph);
             NodeAnalysis.RemoveDeadCode(ngraph);
 
-            NodeRenamer renamer = new NodeRenamer(ngraph);
+            var renamer = new NodeRenamer(ngraph);
             renamer.rename();
 
             // Do a pass to coalesce declaration+stores.
@@ -151,7 +151,7 @@ namespace Lysis
 
         static Function FunctionByName(SourcePawnFile file, string name)
         {
-            for (int i = 0; i < file.functions.Length; i++)
+            for (var i = 0; i < file.functions.Length; i++)
             {
                 if (file.functions[i].name == name)
                 {

@@ -165,7 +165,7 @@ namespace Lysis
 
         private void writeSignature(NodeBlock entry)
         {
-            Function f = file_.lookupFunction(entry.lir.pc);
+            var f = file_.lookupFunction(entry.lir.pc);
             Debug.Assert(f != null);
 
             if (file_.lookupPublic(entry.lir.pc) != null)
@@ -183,7 +183,7 @@ namespace Lysis
             }
 
             out_.Append("(");
-            for (int i = 0; i < f.args.Length; i++)
+            for (var i = 0; i < f.args.Length; i++)
             {
                 out_.Append(buildArgDeclaration(f.args[i]));
                 if (i != f.args.Length - 1)
@@ -197,10 +197,10 @@ namespace Lysis
 
         private string buildConstant(DConstant node)
         {
-            string prefix = "";
+            var prefix = "";
             if (node.typeSet.numTypes == 1)
             {
-                TypeUnit tu = node.typeSet[0];
+                var tu = node.typeSet[0];
                 if (tu.kind == TypeUnit.Kind.Cell && tu.type.type == CellType.Tag)
                 {
                     prefix = tu.type.tag.name + " ";
@@ -214,7 +214,7 @@ namespace Lysis
             str = str.Replace("\r", "\\r");
             str = str.Replace("\n", "\\n");
             str = str.Replace("\"", "\\\"");
-            for (int i = 0; i < str.Length; ++i)
+            for (var i = 0; i < str.Length; ++i)
             {
                 if (str[i] < 32)
                 {
@@ -231,21 +231,21 @@ namespace Lysis
 
         private string buildArrayRef(DArrayRef aref)
         {
-            string lhs = buildExpression(aref.getOperand(0));
-            string rhs = buildExpression(aref.getOperand(1));
+            var lhs = buildExpression(aref.getOperand(0));
+            var rhs = buildExpression(aref.getOperand(1));
             return lhs + "[" + rhs + "]";
         }
 
         private string buildUnary(DUnary unary)
         {
-            string rhs = buildExpression(unary.getOperand(0));
+            var rhs = buildExpression(unary.getOperand(0));
             return spop(unary.spop) + rhs;
         }
 
         private string buildBinary(DBinary binary)
         {
-            string lhs = buildExpression(binary.getOperand(0));
-            string rhs = buildExpression(binary.getOperand(1));
+            var lhs = buildExpression(binary.getOperand(0));
+            var rhs = buildExpression(binary.getOperand(1));
             return lhs + " " + spop(binary.spop) + " " + rhs;
         }
 
@@ -255,13 +255,13 @@ namespace Lysis
             {
                 case NodeType.TempName:
                     {
-                        DTempName temp = (DTempName)node;
+                        var temp = (DTempName)node;
                         return temp.name;
                     }
 
                 case NodeType.DeclareLocal:
                     {
-                        DDeclareLocal local = (DDeclareLocal)node;
+                        var local = (DDeclareLocal)node;
                         return local.var.name;
                     }
 
@@ -270,8 +270,8 @@ namespace Lysis
 
                 case NodeType.LocalRef:
                     {
-                        DLocalRef lref = (DLocalRef)node;
-                        DDeclareLocal local = lref.local;
+                        var lref = (DLocalRef)node;
+                        var local = lref.local;
                         if (local.var.type == VariableType.ArrayReference || local.var.type == VariableType.Array)
                         {
                             return local.var.name + "[0]";
@@ -287,7 +287,7 @@ namespace Lysis
 
                 case NodeType.Global:
                     {
-                        DGlobal global = (DGlobal)node;
+                        var global = (DGlobal)node;
                         if (global.var == null)
                         {
                             return "__unk";
@@ -298,7 +298,7 @@ namespace Lysis
 
                 case NodeType.Load:
                     {
-                        DLoad load = (DLoad)node;
+                        var load = (DLoad)node;
 
                         Debug.Assert(load.from.type == NodeType.DeclareLocal ||
                                         load.from.type == NodeType.ArrayRef ||
@@ -318,11 +318,11 @@ namespace Lysis
 
         private string buildSysReq(DSysReq sysreq)
         {
-            string args = "";
-            for (int i = 0; i < sysreq.numOperands; i++)
+            var args = "";
+            for (var i = 0; i < sysreq.numOperands; i++)
             {
-                DNode input = sysreq.getOperand(i);
-                string arg = buildExpression(input);
+                var input = sysreq.getOperand(i);
+                var arg = buildExpression(input);
                 args += arg;
                 if (i != sysreq.numOperands - 1)
                 {
@@ -335,11 +335,11 @@ namespace Lysis
 
         private string buildCall(DCall call)
         {
-            string args = "";
-            for (int i = 0; i < call.numOperands; i++)
+            var args = "";
+            for (var i = 0; i < call.numOperands; i++)
             {
-                DNode input = call.getOperand(i);
-                string arg = buildExpression(input);
+                var input = call.getOperand(i);
+                var arg = buildExpression(input);
                 args += arg;
                 if (i != call.numOperands - 1)
                 {
@@ -353,28 +353,28 @@ namespace Lysis
         private string buildInlineArray(DInlineArray ia)
         {
             Debug.Assert(ia.typeSet.numTypes == 1);
-            TypeUnit tu = ia.typeSet[0];
+            var tu = ia.typeSet[0];
 
             Debug.Assert(tu.kind == TypeUnit.Kind.Array);
             Debug.Assert(tu.dims == 1);
 
             if (tu.type.isString)
             {
-                string s = file_.stringFromData(ia.address);
+                var s = file_.stringFromData(ia.address);
                 return buildString(s);
             }
 
-            string text = "{";
-            for (int i = 0; i < ia.size / 4; i++)
+            var text = "{";
+            for (var i = 0; i < ia.size / 4; i++)
             {
                 if (tu.type.type == CellType.Float)
                 {
-                    float f = file_.floatFromData(ia.address + i * 4);
+                    var f = file_.floatFromData(ia.address + i * 4);
                     text += f;
                 }
                 else
                 {
-                    int v = file_.int32FromData(ia.address);
+                    var v = file_.int32FromData(ia.address);
                     text += buildTag(tu.type) + v;
                 }
                 if (i != (ia.size / 4) - 1)
@@ -451,19 +451,19 @@ namespace Lysis
 
                 case NodeType.DeclareLocal:
                     {
-                        DDeclareLocal local = (DDeclareLocal)node;
+                        var local = (DDeclareLocal)node;
                         return local.var.name;
                     }
 
                 case NodeType.TempName:
                     {
-                        DTempName name = (DTempName)node;
+                        var name = (DTempName)node;
                         return name.name;
                     }
 
                 case NodeType.Global:
                     {
-                        DGlobal global = (DGlobal)node;
+                        var global = (DGlobal)node;
                         return global.var.name;
                     }
 
@@ -479,15 +479,15 @@ namespace Lysis
 
         private string buildArgDeclaration(Argument arg)
         {
-            string prefix = arg.type == VariableType.Reference
+            var prefix = arg.type == VariableType.Reference
                             ? "&"
                             : "";
-            string decl = prefix + buildTag(arg.tag) + arg.name;
+            var decl = prefix + buildTag(arg.tag) + arg.name;
             if (arg.dimensions != null)
             {
-                for (int i = 0; i < arg.dimensions.Length; i++)
+                for (var i = 0; i < arg.dimensions.Length; i++)
                 {
-                    Dimension dim = arg.dimensions[i];
+                    var dim = arg.dimensions[i];
                     decl += "[";
                     if (dim.size >= 1)
                     {
@@ -508,15 +508,15 @@ namespace Lysis
 
         private string buildVarDeclaration(Variable var)
         {
-            string prefix = var.type == VariableType.Reference
+            var prefix = var.type == VariableType.Reference
                             ? "&"
                             : "";
-            string decl = prefix + buildTag(var.tag) + var.name;
+            var decl = prefix + buildTag(var.tag) + var.name;
             if (var.dims != null)
             {
-                for (int i = 0; i < var.dims.Length; i++)
+                for (var i = 0; i < var.dims.Length; i++)
                 {
-                    Dimension dim = var.dims[i];
+                    var dim = var.dims[i];
                     decl += "[";
                     if (dim.size >= 1)
                     {
@@ -543,7 +543,7 @@ namespace Lysis
                 return;
             }
 
-            string decl = buildVarDeclaration(local.var);
+            var decl = buildVarDeclaration(local.var);
 
             if (local.value == null)
             {
@@ -552,7 +552,7 @@ namespace Lysis
                 return;
             }
 
-            string expr = buildExpression(local.value);
+            var expr = buildExpression(local.value);
             //outputLine("new " + decl + " = " + expr + ";");
             outputLine(decl + " = " + expr + ";");
         }
@@ -574,9 +574,9 @@ namespace Lysis
 
         private void writeStore(DStore store)
         {
-            string lhs = buildLoadStoreRef(store.getOperand(0));
-            string rhs = buildExpression(store.getOperand(1));
-            string eq = store.spop == SPOpcode.nop
+            var lhs = buildLoadStoreRef(store.getOperand(0));
+            var rhs = buildExpression(store.getOperand(1));
+            var eq = store.spop == SPOpcode.nop
                         ? "="
                         : spop(store.spop) + "=";
             outputLine(lhs + " " + eq + " " + rhs + ";");
@@ -584,14 +584,14 @@ namespace Lysis
 
         private void writeReturn(DReturn ret)
         {
-            string operand = buildExpression(ret.getOperand(0));
+            var operand = buildExpression(ret.getOperand(0));
             outputLine("return " + operand + ";");
         }
 
         private void writeIncDec(DIncDec incdec)
         {
-            string lhs = buildLoadStoreRef(incdec.getOperand(0));
-            string rhs = incdec.amount == 1 ? "++" : "--";
+            var lhs = buildLoadStoreRef(incdec.getOperand(0));
+            var rhs = incdec.amount == 1 ? "++" : "--";
             outputLine(lhs + rhs + ";");
         }
 
@@ -666,7 +666,7 @@ namespace Lysis
         {
             if (node.isSubChain)
             {
-                string text = buildLogicChain(node.subChain);
+                var text = buildLogicChain(node.subChain);
                 if (node.subChain.nodes.Count == 1)
                 {
                     return text;
@@ -679,10 +679,10 @@ namespace Lysis
 
         private string buildLogicChain(LogicChain chain)
         {
-            string text = buildLogicExpr(chain.nodes[0]);
-            for (int i = 1; i < chain.nodes.Count; i++)
+            var text = buildLogicExpr(chain.nodes[0]);
+            for (var i = 1; i < chain.nodes.Count; i++)
             {
-                LogicChain.Node node = chain.nodes[i];
+                var node = chain.nodes[i];
                 text += " " + lgop(chain.op) + " " + buildLogicExpr(node);
             }
             return text;
@@ -690,7 +690,7 @@ namespace Lysis
 
         private void writeStatements(NodeBlock block)
         {
-            for (NodeList.iterator iter = block.nodes.begin(); iter.more(); iter.next())
+            for (var iter = block.nodes.begin(); iter.more(); iter.next())
             {
                 writeStatement(iter.node);
             }
@@ -703,7 +703,7 @@ namespace Lysis
             {
                 writeStatements(block.source);
 
-                DJumpCondition jcc = (DJumpCondition)block.source.nodes.last;
+                var jcc = (DJumpCondition)block.source.nodes.last;
 
                 if (block.invert)
                 {
@@ -761,7 +761,7 @@ namespace Lysis
             {
                 writeStatements(loop.source);
 
-                DJumpCondition jcc = (DJumpCondition)loop.source.nodes.last;
+                var jcc = (DJumpCondition)loop.source.nodes.last;
                 cond = buildExpression(jcc.getOperand(0));
             }
             else
@@ -796,7 +796,7 @@ namespace Lysis
                 writeStatements(loop.source);
                 decreaseIndent();
 
-                DJumpCondition jcc = (DJumpCondition)loop.source.nodes.last;
+                var jcc = (DJumpCondition)loop.source.nodes.last;
                 cond = buildExpression(jcc.getOperand(0));
             }
             else
@@ -817,14 +817,14 @@ namespace Lysis
         {
             writeStatements(switch_.source);
 
-            DSwitch last = (DSwitch)switch_.source.nodes.last;
-            string cond = buildExpression(last.getOperand(0));
+            var last = (DSwitch)switch_.source.nodes.last;
+            var cond = buildExpression(last.getOperand(0));
             outputLine("switch (" + cond + ")");
             outputLine("{");
             increaseIndent();
-            for (int i = 0; i < switch_.numCases; i++)
+            for (var i = 0; i < switch_.numCases; i++)
             {
-                SwitchBlock.Case cas = switch_.getCase(i);
+                var cas = switch_.getCase(i);
                 outputLine("case " + cas.value + ": {");
                 increaseIndent();
                 writeBlock(cas.target);
@@ -890,7 +890,7 @@ namespace Lysis
 
         private bool isArrayEmpty(int address, int bytes)
         {
-            for (int i = address + 0; i < address + bytes; i++)
+            for (var i = address + 0; i < address + bytes; i++)
             {
                 if (file_.DAT[i] != 0)
                 {
@@ -907,11 +907,11 @@ namespace Lysis
                 return isArrayEmpty(address, dims[level] * 4);
             }
 
-            for (int i = 0; i < dims[level]; i++)
+            for (var i = 0; i < dims[level]; i++)
             {
-                int abase = address + i * 4;
-                int inner = file_.int32FromData(abase);
-                int final = abase + inner;
+                var abase = address + i * 4;
+                var inner = file_.int32FromData(abase);
+                var final = abase + inner;
                 if (!isArrayEmpty(final, dims, level + 1))
                 {
                     return false;
@@ -924,7 +924,7 @@ namespace Lysis
         private bool isArrayEmpty(Variable var)
         {
             var dims = new int[var.dims.Length];
-            for (int i = 0; i < var.dims.Length; i++)
+            for (var i = 0; i < var.dims.Length; i++)
             {
                 dims[i] = var.dims[i].size;
             }
@@ -939,13 +939,13 @@ namespace Lysis
 
         private void dumpStringArray(int address, int size)
         {
-            for (int i = 0; i < size; i++)
+            for (var i = 0; i < size; i++)
             {
-                int abase = address + i * 4;
-                int inner = file_.int32FromData(abase);
-                int final = abase + inner;
-                string str = file_.stringFromData(final);
-                string text = buildString(str);
+                var abase = address + i * 4;
+                var inner = file_.int32FromData(abase);
+                var final = abase + inner;
+                var str = file_.stringFromData(final);
+                var text = buildString(str);
                 if (i != size - 1)
                 {
                     text += ",";
@@ -965,11 +965,11 @@ namespace Lysis
 
             Debug.Assert(false);
 
-            for (int i = 0; i < var.dims[i].size; i++)
+            for (var i = 0; i < var.dims[i].size; i++)
             {
-                int abase = address + i * 4;
-                int inner = file_.int32FromData(abase);
-                int final = abase + inner;
+                var abase = address + i * 4;
+                var inner = file_.int32FromData(abase);
+                var final = abase + inner;
                 outputLine("{");
                 increaseIndent();
                 dumpStringArray(var, final, level + 1);
@@ -987,10 +987,10 @@ namespace Lysis
 
         private void dumpEntireArray(int address, int size)
         {
-            string text = "";
-            for (int i = 0; i < size; i++)
+            var text = "";
+            for (var i = 0; i < size; i++)
             {
-                int cell = file_.int32FromData(address + i * 4);
+                var cell = file_.int32FromData(address + i * 4);
                 text += cell;
                 if (i != size - 1)
                 {
@@ -1002,10 +1002,10 @@ namespace Lysis
 
         private void dumpArray(int address, int size)
         {
-            int first = file_.int32FromData(address);
-            for (int i = 1; i < size; i++)
+            var first = file_.int32FromData(address);
+            for (var i = 1; i < size; i++)
             {
-                int cell = file_.int32FromData(address + i * 4);
+                var cell = file_.int32FromData(address + i * 4);
                 if (first != cell)
                 {
                     dumpEntireArray(address, size);
@@ -1022,16 +1022,16 @@ namespace Lysis
                 dumpArray(address, var.dims[level].size);
                 return;
             }
-            int maxI = var.dims.Length;
-            for (int i = 0; i < maxI; i++)
+            var maxI = var.dims.Length;
+            for (var i = 0; i < maxI; i++)
             {
                 if (var.dims[i].size >= i)
                 {
                     break;
                 }
-                int abase = address + i * 4;
-                int inner = file_.int32FromData(abase);
-                int final = abase + inner;
+                var abase = address + i * 4;
+                var inner = file_.int32FromData(abase);
+                var final = abase + inner;
                 outputLine("{");
                 increaseIndent();
                 dumpArray(var, final, level + 1);
@@ -1049,21 +1049,21 @@ namespace Lysis
 
         private void writeGlobal(Variable var)
         {
-            string decl = var.scope == Scope.Global
+            var decl = var.scope == Scope.Global
                                        ? "" //"new"
                                        : "static";
             if (var.tag.name == "Plugin")
             {
-                int nameOffset = file_.int32FromData(var.address + 0);
-                int descriptionOffset = file_.int32FromData(var.address + 4);
-                int authorOffset = file_.int32FromData(var.address + 8);
-                int versionOffset = file_.int32FromData(var.address + 12);
-                int urlOffset = file_.int32FromData(var.address + 16);
-                string name = file_.stringFromData(nameOffset);
-                string description = file_.stringFromData(descriptionOffset);
-                string author = file_.stringFromData(authorOffset);
-                string version = file_.stringFromData(versionOffset);
-                string url = file_.stringFromData(urlOffset);
+                var nameOffset = file_.int32FromData(var.address + 0);
+                var descriptionOffset = file_.int32FromData(var.address + 4);
+                var authorOffset = file_.int32FromData(var.address + 8);
+                var versionOffset = file_.int32FromData(var.address + 12);
+                var urlOffset = file_.int32FromData(var.address + 16);
+                var name = file_.stringFromData(nameOffset);
+                var description = file_.stringFromData(descriptionOffset);
+                var author = file_.stringFromData(authorOffset);
+                var version = file_.stringFromData(versionOffset);
+                var url = file_.stringFromData(urlOffset);
 
                 outputLine("public Plugin myinfo =");
                 outputLine("{");
@@ -1080,8 +1080,8 @@ namespace Lysis
             {
                 if (var.dims.Length == 1)
                 {
-                    string text = decl + " char " + var.name + "[" + var.dims[0].size + "]";
-                    string primer = file_.stringFromData(var.address);
+                    var text = decl + " char " + var.name + "[" + var.dims[0].size + "]";
+                    var primer = file_.stringFromData(var.address);
                     if (primer.Length > 0)
                     {
                         text += " = " + buildString(primer);
@@ -1091,10 +1091,10 @@ namespace Lysis
                 }
                 else
                 {
-                    string text = decl + " " + buildTag(var.tag) + var.name;
+                    var text = decl + " " + buildTag(var.tag) + var.name;
                     if (var.dims != null)
                     {
-                        for (int i = 0; i < var.dims.Length; i++)
+                        for (var i = 0; i < var.dims.Length; i++)
                         {
                             text += "[" + var.dims[i].size + "]";
                         }
@@ -1114,8 +1114,8 @@ namespace Lysis
             }
             else if (var.dims == null || var.dims.Length == 0)
             {
-                string text = decl + " " + buildTag(var.tag) + var.name;
-                int value = file_.int32FromData(var.address);
+                var text = decl + " " + buildTag(var.tag) + var.name;
+                var value = file_.int32FromData(var.address);
                 if (value != 0)
                 {
                     text += " = " + value;
@@ -1124,10 +1124,10 @@ namespace Lysis
             }
             else if (isArrayEmpty(var))
             {
-                string text = decl + " " + buildTag(var.tag) + var.name;
+                var text = decl + " " + buildTag(var.tag) + var.name;
                 if (var.dims != null)
                 {
-                    for (int i = 0; i < var.dims.Length; i++)
+                    for (var i = 0; i < var.dims.Length; i++)
                     {
                         text += "[" + var.dims[i].size + "]";
                     }
@@ -1136,10 +1136,10 @@ namespace Lysis
             }
             else
             {
-                string text = decl + " " + buildTag(var.tag) + var.name;
+                var text = decl + " " + buildTag(var.tag) + var.name;
                 if (var.dims != null)
                 {
-                    for (int i = 0; i < var.dims.Length; i++)
+                    for (var i = 0; i < var.dims.Length; i++)
                     {
                         text += "[" + var.dims[i].size + "]";
                     }
@@ -1155,7 +1155,7 @@ namespace Lysis
 
         public void writeGlobals()
         {
-            for (int i = 0; i < file_.globals.Length; i++)
+            for (var i = 0; i < file_.globals.Length; i++)
             {
                 writeGlobal(file_.globals[i]);
             }

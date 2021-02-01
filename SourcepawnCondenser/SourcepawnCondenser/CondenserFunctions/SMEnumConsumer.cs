@@ -8,11 +8,11 @@ namespace SourcepawnCondenser
     {
         private int ConsumeSMEnum()
         {
-            int startIndex = t[position].Index;
+            var startIndex = t[position].Index;
             if ((position + 1) < length)
             {
-                int iteratePosition = position;
-                string enumName = string.Empty;
+                var iteratePosition = position;
+                var enumName = string.Empty;
                 while ((iteratePosition + 1) < length && t[iteratePosition].Kind != TokenKind.BraceOpen)
                 {
                     if (t[iteratePosition].Kind == TokenKind.Identifier)
@@ -21,10 +21,10 @@ namespace SourcepawnCondenser
                     }
                     ++iteratePosition;
                 }
-                int braceState = 0;
-                bool inIgnoreMode = false;
-                int endTokenIndex = -1;
-                List<string> entries = new List<string>();
+                var braceState = 0;
+                var inIgnoreMode = false;
+                var endTokenIndex = -1;
+                var entries = new List<string>();
                 for (; iteratePosition < length; ++iteratePosition)
                 {
                     if (t[iteratePosition].Kind == TokenKind.BraceOpen)

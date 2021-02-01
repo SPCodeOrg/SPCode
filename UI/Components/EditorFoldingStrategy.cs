@@ -17,7 +17,7 @@ namespace SPCode.UI.Components
 
         public void UpdateFoldings(FoldingManager manager, TextDocument document)
         {
-            IEnumerable<NewFolding> newFoldings = CreateNewFoldings(document, out var firstErrorOffset);
+            var newFoldings = CreateNewFoldings(document, out var firstErrorOffset);
             manager.UpdateFoldings(newFoldings, firstErrorOffset);
         }
 
@@ -29,14 +29,14 @@ namespace SPCode.UI.Components
 
         public IEnumerable<NewFolding> CreateNewFoldings(ITextSource document)
         {
-            List<NewFolding> newFoldings = new List<NewFolding>();
+            var newFoldings = new List<NewFolding>();
 
-            Stack<int> startOffsets = new Stack<int>();
-            int lastNewLineOffset = 0;
-            bool InCommentMode = false;
-            for (int i = 0; i < document.TextLength; ++i)
+            var startOffsets = new Stack<int>();
+            var lastNewLineOffset = 0;
+            var InCommentMode = false;
+            for (var i = 0; i < document.TextLength; ++i)
             {
-                char c = document.GetCharAt(i);
+                var c = document.GetCharAt(i);
                 if (c == '\n' || c == '\r')
                 {
                     lastNewLineOffset = i + 1;
@@ -49,7 +49,7 @@ namespace SPCode.UI.Components
                         {
                             if (document.GetCharAt(i - 1) == '*')
                             {
-                                int startOffset = startOffsets.Pop();
+                                var startOffset = startOffsets.Pop();
                                 InCommentMode = false;
                                 if (startOffset < lastNewLineOffset)
                                 {
@@ -76,7 +76,7 @@ namespace SPCode.UI.Components
                 }
                 else if (c == '}' && startOffsets.Count > 0)
                 {
-                    int startOffset = startOffsets.Pop();
+                    var startOffset = startOffsets.Pop();
                     if (startOffset < lastNewLineOffset)
                     {
                         newFoldings.Add(new NewFolding(startOffset, i + 1));

@@ -1458,8 +1458,8 @@ namespace Lysis
         }
         public override void print(TextWriter tw)
         {
-            string text = defaultCase.id + (numCases > 0 ? "," : "");
-            for (int i = 0; i < numCases; i++)
+            var text = defaultCase.id + (numCases > 0 ? "," : "");
+            for (var i = 0; i < numCases; i++)
             {
                 text += getCase(i).target.id;
                 if (i != numCases - 1)
