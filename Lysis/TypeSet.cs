@@ -144,7 +144,7 @@ namespace Lysis
 
             if (kind_ == Kind.Reference)
             {
-                if ((ref_ == null) != (other.ref_ == null))
+                if (ref_ == null != (other.ref_ == null))
                 {
                     return false;
                 }

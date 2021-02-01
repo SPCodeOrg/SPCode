@@ -504,7 +504,7 @@ namespace SPCode.UI.Windows
 
             ShowToolBar.IsChecked = Program.OptionsObject.UI_ShowToolBar;
             DynamicISAC.IsChecked = Program.OptionsObject.Program_DynamicISAC;
-            DarkTheme.IsChecked = (Program.OptionsObject.Program_Theme == "BaseDark");
+            DarkTheme.IsChecked = Program.OptionsObject.Program_Theme == "BaseDark";
             for (var i = 0; i < AvailableAccents.Length; ++i)
             {
                 if (AvailableAccents[i] == Program.OptionsObject.Program_AccentColor)
@@ -579,7 +579,7 @@ namespace SPCode.UI.Windows
             {
                 if (!RestartTextIsShown)
                 {
-                    StatusTextBlock.Content = (FullEffect)
+                    StatusTextBlock.Content = FullEffect
                         ? Program.Translations.GetLanguage("RestartEdiFullEff")
                         : Program.Translations.GetLanguage("RestartEdiEff");
                     RestartTextIsShown = true;

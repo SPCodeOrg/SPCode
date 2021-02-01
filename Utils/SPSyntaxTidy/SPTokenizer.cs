@@ -356,8 +356,8 @@ namespace SPCode.Utils.SPSyntaxTidy
                         }
 
                         //if next to the single & is a function valid char, prepend its the addressof-operator | this can be lead to formatting-errors, but hey, thats not my fault..
-                        if (((buffer[i + 1] >= 'a' && buffer[i + 1] <= 'z') ||
-                             buffer[i + 1] >= 'A' && buffer[i + 1] <= 'Z') || buffer[i + 1] == '_')
+                        if ((buffer[i + 1] >= 'a' && buffer[i + 1] <= 'z') ||
+                             (buffer[i + 1] >= 'A' && buffer[i + 1] <= 'Z') || buffer[i + 1] == '_')
                         {
                             canMatchSingle = false;
                         }

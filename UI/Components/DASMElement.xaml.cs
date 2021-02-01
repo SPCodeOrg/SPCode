@@ -534,7 +534,7 @@ namespace SPCode.UI.Components
             {
                 var index = i;
                 var pubfun = publics[i];
-                var node = new TreeViewItem() { Header = (i.ToString() + ": " + pubfun.Name) };
+                var node = new TreeViewItem() { Header = i.ToString() + ": " + pubfun.Name };
                 root.Items.Add(node);
                 node.Tag = new NodeData(delegate ()
                 {
@@ -552,7 +552,7 @@ namespace SPCode.UI.Components
             {
                 var index = i;
                 var pubvar = pubvars[i];
-                var node = new TreeViewItem() { Header = (i.ToString() + ": " + pubvar.Name) };
+                var node = new TreeViewItem() { Header = i.ToString() + ": " + pubvar.Name };
                 root.Items.Add(node);
                 node.Tag = new NodeData(delegate ()
                 {
@@ -570,9 +570,9 @@ namespace SPCode.UI.Components
             {
                 var tag = tags[i];
                 var text = tag.Id + ": " + tag.Name;
-                if ((tag.Flags & ~(TagFlags.Fixed)) != 0)
+                if ((tag.Flags & ~TagFlags.Fixed) != 0)
                 {
-                    text += " (" + (tag.Flags & ~(TagFlags.Fixed)) + ")";
+                    text += " (" + (tag.Flags & ~TagFlags.Fixed) + ")";
                 }
 
                 var node = new TreeViewItem() { Header = text };
@@ -606,7 +606,7 @@ namespace SPCode.UI.Components
             {
                 var index = i;
                 var native = natives[i];
-                var node = new TreeViewItem() { Header = ("[" + i + "] " + native.Name) };
+                var node = new TreeViewItem() { Header = "[" + i + "] " + native.Name };
                 root.Items.Add(node);
                 node.Tag = new NodeData(delegate ()
                 {

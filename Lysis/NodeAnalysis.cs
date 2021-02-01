@@ -47,9 +47,9 @@ namespace Lysis
                     }
                 }
 
-                if ((iter.node.type == NodeType.Store &&
+                if (iter.node.type == NodeType.Store &&
                      iter.node.getOperand(0).type == NodeType.Heap &&
-                     iter.node.getOperand(0).uses.Count == 1))
+                     iter.node.getOperand(0).uses.Count == 1)
                 {
                     iter.node.removeFromUseChains();
                     block.nodes.remove(iter);

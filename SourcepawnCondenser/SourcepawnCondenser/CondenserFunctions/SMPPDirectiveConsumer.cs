@@ -16,7 +16,7 @@ namespace SourcepawnCondenser
                         def.Defines.Add(new SMDefine()
                         {
                             Index = t[position].Index,
-                            Length = (t[position + 1].Index - t[position].Index) + t[position + 1].Length,
+                            Length = t[position + 1].Index - t[position].Index + t[position + 1].Length,
                             File = FileName,
                             Name = t[position + 1].Value
                         });

@@ -934,10 +934,10 @@ namespace SPCode.UI.Components
                         var lineText = editor.Document.GetText(line);
 
                         // Don't auto close brackets when the user is in a comment or in a string or a text is selected.
-                        if (editor.SelectionLength == 0 &&
-                            (lineText[0] == '/' && lineText[1] == '/') ||
+                        if ((editor.SelectionLength == 0 &&
+                            lineText[0] == '/' && lineText[1] == '/') ||
                             editor.Document.GetText(line.Offset, editor.CaretOffset - line.Offset).Count(c => c == '\"') % 2 == 1 ||
-                            line.LineNumber != 1 && editor.Document.GetText(line.Offset - 3, 1) == "\\")
+                            (line.LineNumber != 1 && editor.Document.GetText(line.Offset - 3, 1) == "\\"))
                         {
                             break;
                         }
@@ -1053,8 +1053,8 @@ namespace SPCode.UI.Components
                 }
 
                 editor.ScrollToVerticalOffset(editor.VerticalOffset -
-                                              Math.Sign((double)e.Delta) * LineHeight *
-                                              Program.OptionsObject.Editor_ScrollLines);
+                                              (Math.Sign((double)e.Delta) * LineHeight *
+                                              Program.OptionsObject.Editor_ScrollLines));
                 //editor.ScrollToVerticalOffset(editor.VerticalOffset - ((double)e.Delta * editor.FontSize * Program.OptionsObject.Editor_ScrollSpeed));
                 e.Handled = true;
             }
@@ -1154,7 +1154,7 @@ namespace SPCode.UI.Components
             var length = s.Length;
             for (var i = 0; i < length; ++i)
             {
-                if (!(s[i] >= 'a' && s[i] <= 'z' || s[i] >= 'A' && s[i] <= 'Z' || s[i] >= '0' && s[i] <= '9' ||
+                if (!((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z') || (s[i] >= '0' && s[i] <= '9') ||
                       s[i] == '_'))
                 {
                     return false;

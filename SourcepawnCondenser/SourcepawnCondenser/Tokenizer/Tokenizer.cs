@@ -235,7 +235,7 @@ namespace SourcepawnCondenser.Tokenizer
 
                 #region Identifier
 
-                if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c == '_') //identifier
+                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_') //identifier
                 {
                     int startIndex = i, endIndex = i + 1;
                     var nextChar = '\0';
@@ -245,8 +245,8 @@ namespace SourcepawnCondenser.Tokenizer
                         endIndex = -1;
                         for (var j = i + 1; j < sArrayLength; ++j)
                         {
-                            if (!(sArray[j] >= 'a' && sArray[j] <= 'z' || sArray[j] >= 'A' && sArray[j] <= 'Z' ||
-                                  sArray[j] >= '0' && sArray[j] <= '9' || sArray[j] == '_'))
+                            if (!((sArray[j] >= 'a' && sArray[j] <= 'z') || (sArray[j] >= 'A' && sArray[j] <= 'Z') ||
+                                  (sArray[j] >= '0' && sArray[j] <= '9') || sArray[j] == '_'))
                             {
                                 endIndex = j;
                                 break;
@@ -259,9 +259,9 @@ namespace SourcepawnCondenser.Tokenizer
                         }
                     }
 
-                    if (c != '_' || c == '_' && (nextChar >= 'a' && nextChar <= 'z' ||
-                                                 nextChar >= 'A' && nextChar <= 'Z' ||
-                                                 nextChar >= '0' && nextChar <= '9' || nextChar == '_'))
+                    if (c != '_' || (c == '_' && ((nextChar >= 'a' && nextChar <= 'z') ||
+                                                 (nextChar >= 'A' && nextChar <= 'Z') ||
+                                                 (nextChar >= '0' && nextChar <= '9') || nextChar == '_')))
                     {
                         var identString = Source.Substring(startIndex, endIndex - startIndex);
                         switch (identString)
@@ -433,12 +433,12 @@ namespace SourcepawnCondenser.Tokenizer
                     if (i + 1 < sArrayLength)
                     {
                         var testChar = sArray[i + 1];
-                        if (testChar >= 'a' && testChar <= 'z' || testChar >= 'A' && testChar <= 'Z')
+                        if ((testChar >= 'a' && testChar <= 'z') || (testChar >= 'A' && testChar <= 'Z'))
                         {
                             var endIndex = i + 1;
                             for (var j = i + 1; j < sArrayLength; ++j)
                             {
-                                if (!(sArray[j] >= 'a' && sArray[j] <= 'z' || sArray[j] >= 'A' && sArray[j] <= 'Z'))
+                                if (!((sArray[j] >= 'a' && sArray[j] <= 'z') || (sArray[j] >= 'A' && sArray[j] <= 'Z')))
                                 {
                                     endIndex = j;
                                     break;

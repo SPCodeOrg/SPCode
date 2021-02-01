@@ -369,7 +369,7 @@ namespace Lysis
             {
                 if (tu.type.type == CellType.Float)
                 {
-                    var f = file_.floatFromData(ia.address + i * 4);
+                    var f = file_.floatFromData(ia.address + (i * 4));
                     text += f;
                 }
                 else
@@ -909,7 +909,7 @@ namespace Lysis
 
             for (var i = 0; i < dims[level]; i++)
             {
-                var abase = address + i * 4;
+                var abase = address + (i * 4);
                 var inner = file_.int32FromData(abase);
                 var final = abase + inner;
                 if (!isArrayEmpty(final, dims, level + 1))
@@ -941,7 +941,7 @@ namespace Lysis
         {
             for (var i = 0; i < size; i++)
             {
-                var abase = address + i * 4;
+                var abase = address + (i * 4);
                 var inner = file_.int32FromData(abase);
                 var final = abase + inner;
                 var str = file_.stringFromData(final);
@@ -967,7 +967,7 @@ namespace Lysis
 
             for (var i = 0; i < var.dims[i].size; i++)
             {
-                var abase = address + i * 4;
+                var abase = address + (i * 4);
                 var inner = file_.int32FromData(abase);
                 var final = abase + inner;
                 outputLine("{");
@@ -990,7 +990,7 @@ namespace Lysis
             var text = "";
             for (var i = 0; i < size; i++)
             {
-                var cell = file_.int32FromData(address + i * 4);
+                var cell = file_.int32FromData(address + (i * 4));
                 text += cell;
                 if (i != size - 1)
                 {
@@ -1005,7 +1005,7 @@ namespace Lysis
             var first = file_.int32FromData(address);
             for (var i = 1; i < size; i++)
             {
-                var cell = file_.int32FromData(address + i * 4);
+                var cell = file_.int32FromData(address + (i * 4));
                 if (first != cell)
                 {
                     dumpEntireArray(address, size);
@@ -1029,7 +1029,7 @@ namespace Lysis
                 {
                     break;
                 }
-                var abase = address + i * 4;
+                var abase = address + (i * 4);
                 var inner = file_.int32FromData(abase);
                 var final = abase + inner;
                 outputLine("{");

@@ -288,7 +288,7 @@ namespace Lysis
             if (trueTarget.lir.instructions[0] is LConstant)
             {
                 var constant = (LConstant)trueTarget.lir.instructions[0];
-                targetIsTruthy = (constant.val == 1);
+                targetIsTruthy = constant.val == 1;
             }
 
             // jump on true -> 1 == ||

@@ -18,8 +18,8 @@ namespace SPCode.UI.Components
                 var indentation = document.GetText(indentationSegment);
                 if (Program.OptionsObject.Editor_AgressiveIndentation)
                 {
-                    var currentLineTextTrimmed = (document.GetText(line)).Trim();
-                    var lastLineTextTrimmed = (document.GetText(previousLine)).Trim();
+                    var currentLineTextTrimmed = document.GetText(line).Trim();
+                    var lastLineTextTrimmed = document.GetText(previousLine).Trim();
                     var currentLineFirstNonWhitespaceChar = ' ';
                     if (currentLineTextTrimmed.Length > 0)
                     {

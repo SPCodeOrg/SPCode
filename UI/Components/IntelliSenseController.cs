@@ -706,7 +706,7 @@ namespace SPCode.UI.Components
 
         private bool IsValidFunctionChar(char c)
         {
-            if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '_')
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_')
             {
                 return true;
             }

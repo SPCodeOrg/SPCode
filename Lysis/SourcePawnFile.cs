@@ -784,8 +784,8 @@ namespace SourcePawn
             for (var i = 0; i < variables_.Length; i++)
             {
                 var var = variables_[i];
-                if ((pc >= var.codeStart && pc < var.codeEnd) &&
-                    (offset == var.address && var.scope == scope))
+                if (pc >= var.codeStart && pc < var.codeEnd &&
+                    offset == var.address && var.scope == scope)
                 {
                     return var;
                 }

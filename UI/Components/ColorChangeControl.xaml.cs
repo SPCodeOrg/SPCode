@@ -32,13 +32,13 @@ namespace SPCode.UI.Components
 
         public Color GetColor()
         {
-            return Color.FromArgb(0xFF, (byte)((int)RSlider.Value), (byte)((int)GSlider.Value), (byte)((int)BSlider.Value));
+            return Color.FromArgb(0xFF, (byte)(int)RSlider.Value, (byte)(int)GSlider.Value, (byte)(int)BSlider.Value);
         }
 
         private void SliderValue_Changed(object sender, RoutedEventArgs e)
         {
             if (!RaiseEventAllowed) { return; }
-            var c = Color.FromArgb(0xFF, (byte)((int)RSlider.Value), (byte)((int)GSlider.Value), (byte)((int)BSlider.Value));
+            var c = Color.FromArgb(0xFF, (byte)(int)RSlider.Value, (byte)(int)GSlider.Value, (byte)(int)BSlider.Value);
             UpdateColor(c, true, false);
             var raiseEvent = new RoutedEventArgs(ColorChangeControl.ColorChangedEvent);
             RaiseEvent(raiseEvent);

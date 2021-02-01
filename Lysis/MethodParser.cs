@@ -522,7 +522,7 @@ namespace Lysis
                 case SPOpcode.casetbl:
                     {
                         var ncases = readInt32();
-                        pc_ += (uint)ncases * 8 + 4;
+                        pc_ += ((uint)ncases * 8) + 4;
                         return new LDebugBreak();
                     }
 

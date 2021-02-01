@@ -100,19 +100,19 @@ namespace SPCode.Utils.SPSyntaxTidy
                         var lastToken = GetTokenSave(i - 1, token, length);
                         var nextToken = GetTokenSave(i + 1, token, length);
                         var lastTokenIsName = lastToken.Kind == SPTokenKind.Name;
-                        var lastTokenValid = (lastTokenIsName || IsTokenNumber(lastToken));
+                        var lastTokenValid = lastTokenIsName || IsTokenNumber(lastToken);
                         if (!lastTokenValid)
                         {
                             if (lastToken.Kind == SPTokenKind.Symbol)
                             {
-                                lastTokenValid = ((lastToken.Value == ")") || (lastToken.Value == "]"));
+                                lastTokenValid = (lastToken.Value == ")") || (lastToken.Value == "]");
                             }
                         }
                         if (lastTokenIsName)
                         {
                             lastTokenValid = lastToken.Value != "e" && lastToken.Value != "return";
                         }
-                        var nextTokenValid = ((nextToken.Kind == SPTokenKind.Name) || IsTokenNumber(nextToken));
+                        var nextTokenValid = (nextToken.Kind == SPTokenKind.Name) || IsTokenNumber(nextToken);
                         if (!nextTokenValid)
                         {
                             if (nextToken.Kind == SPTokenKind.Symbol)

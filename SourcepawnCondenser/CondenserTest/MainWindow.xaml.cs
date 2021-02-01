@@ -87,7 +87,7 @@ namespace CondenserTest
             var enumItem = new TreeViewItem() { Header = "enums (" + def.Enums.Count + ")", IsExpanded = expand };
             foreach (var en in def.Enums)
             {
-                var item = new TreeViewItem() { Header = (string.IsNullOrWhiteSpace(en.Name)) ? "no name" : en.Name, IsExpanded = expand };
+                var item = new TreeViewItem() { Header = string.IsNullOrWhiteSpace(en.Name) ? "no name" : en.Name, IsExpanded = expand };
                 item.Tag = en;
                 item.MouseLeftButtonUp += ItemEnum_MouseLeftButtonUp;
                 item.Items.Add(new TreeViewItem() { Header = "Index: " + en.Index, Background = Brushes.LightGray });
@@ -103,7 +103,7 @@ namespace CondenserTest
             var structItem = new TreeViewItem() { Header = "structs (" + def.Structs.Count + ")", IsExpanded = expand };
             foreach (var s in def.Structs)
             {
-                var item = new TreeViewItem() { Header = (string.IsNullOrWhiteSpace(s.Name)) ? "no name" : s.Name, IsExpanded = expand };
+                var item = new TreeViewItem() { Header = string.IsNullOrWhiteSpace(s.Name) ? "no name" : s.Name, IsExpanded = expand };
                 item.Tag = s;
                 item.MouseLeftButtonUp += ItemStruct_MouseLeftButtonUp;
                 item.Items.Add(new TreeViewItem() { Header = "Index: " + s.Index, Background = Brushes.LightGray });

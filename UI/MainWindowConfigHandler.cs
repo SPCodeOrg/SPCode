@@ -16,7 +16,7 @@ namespace SPCode.UI
                 {
                     Header = Program.Configs[i].Name,
                     IsCheckable = true,
-                    IsChecked = (i == Program.SelectedConfig)
+                    IsChecked = i == Program.SelectedConfig
                 };
                 item.Click += item_Click;
                 ConfigMenu.Items.Add(item);
@@ -35,7 +35,7 @@ namespace SPCode.UI
 
         private void item_Click(object sender, RoutedEventArgs e)
         {
-            var name = (string)(((MenuItem)sender).Header);
+            var name = (string)((MenuItem)sender).Header;
             ChangeConfig(name);
         }
 
@@ -49,7 +49,7 @@ namespace SPCode.UI
             var name = Program.Configs[index].Name;
             for (var i = 0; i < ConfigMenu.Items.Count - 2; ++i)
             {
-                ((MenuItem)ConfigMenu.Items[i]).IsChecked = (name == (string)(((MenuItem)ConfigMenu.Items[i]).Header));
+                ((MenuItem)ConfigMenu.Items[i]).IsChecked = name == (string)((MenuItem)ConfigMenu.Items[i]).Header;
             }
             Program.SelectedConfig = index;
             Program.OptionsObject.Program_SelectedConfig = Program.Configs[Program.SelectedConfig].Name;
