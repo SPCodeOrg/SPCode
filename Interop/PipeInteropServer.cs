@@ -8,7 +8,7 @@ namespace SPCode.Interop
     public class PipeInteropServer : IDisposable
     {
         private NamedPipeServerStream pipeServer;
-        private MainWindow _window;
+        private readonly MainWindow _window;
 
         public PipeInteropServer(MainWindow window)
         {

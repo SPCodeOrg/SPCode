@@ -14,8 +14,8 @@ namespace Lysis
 
     public struct PawnType
     {
-        private CellType type_;
-        private Tag tag_;
+        private readonly CellType type_;
+        private readonly Tag tag_;
 
         public bool equalTo(PawnType other)
         {
@@ -69,10 +69,10 @@ namespace Lysis
             Array
         };
 
-        private Kind kind_;
-        private PawnType type_;         // kind_ == Cell or Array
-        private int dims_;              // kind_ == Array
-        private TypeUnit ref_;          // kind_ == Reference
+        private readonly Kind kind_;
+        private readonly PawnType type_;         // kind_ == Cell or Array
+        private readonly int dims_;              // kind_ == Array
+        private readonly TypeUnit ref_;          // kind_ == Reference
 
         public TypeUnit(PawnType type)
         {

@@ -7,8 +7,8 @@ namespace Lysis
 {
     internal class SourceBuilder
     {
-        private PawnFile file_;
-        private StringBuilder out_;
+        private readonly PawnFile file_;
+        private readonly StringBuilder out_;
         private string indent_;
 
         public SourceBuilder(PawnFile file, StringBuilder tw)

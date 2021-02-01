@@ -57,7 +57,7 @@ namespace SPCode.UI.Windows
             PeopleInvolvedBlock.Text = Program.Translations.GetLanguage("PeopleInv");
         }
 
-        private string LicenseString = @"---------------------
+        private readonly string LicenseString = @"---------------------
     7th march 2015
     SPEdit - A lightweight Sourcepawn Editor
     Copyright (C) 2015  Julien Kluge

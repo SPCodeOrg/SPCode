@@ -5,7 +5,7 @@ namespace Lysis
 {
     public class NodeRewriter : NodeVisitor
     {
-        private NodeGraph graph_;
+        private readonly NodeGraph graph_;
         private NodeBlock current_;
         private NodeList.iterator iterator_;
 

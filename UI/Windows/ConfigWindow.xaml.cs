@@ -24,7 +24,7 @@ namespace SPCode.UI.Windows
     {
         private bool AllowChange;
         private bool NeedsSMDefInvalidation;
-        private string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        private readonly string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
         private ICommand textBoxButtonFileCmd;
 

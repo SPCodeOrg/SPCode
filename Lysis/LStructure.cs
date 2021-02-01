@@ -11,9 +11,9 @@ namespace Lysis
 
     public class LBlock
     {
-        private uint pc_;
+        private readonly uint pc_;
         private LInstruction[] instructions_;
-        private List<LBlock> predecessors_ = new List<LBlock>();
+        private readonly List<LBlock> predecessors_ = new List<LBlock>();
         private bool marked_ = false;
         private int id_;
         private LBlock backedge_ = null;
@@ -150,8 +150,8 @@ namespace Lysis
 
     public class Tag
     {
-        private uint tag_id_;
-        private string name_;
+        private readonly uint tag_id_;
+        private readonly string name_;
 
         public Tag(string name, uint tag_id)
         {
@@ -165,9 +165,9 @@ namespace Lysis
 
     public class Dimension
     {
-        private int tag_id_;
-        private Tag tag_;
-        private int size_;
+        private readonly int tag_id_;
+        private readonly Tag tag_;
+        private readonly int size_;
 
         public Dimension(int tag_id, Tag tag, int size)
         {
@@ -182,11 +182,11 @@ namespace Lysis
 
     public class Argument
     {
-        private VariableType type_;
-        private string name_;
-        private int tag_id_;
-        private Tag tag_;
-        private Dimension[] dims_;
+        private readonly VariableType type_;
+        private readonly string name_;
+        private readonly int tag_id_;
+        private readonly Tag tag_;
+        private readonly Dimension[] dims_;
 
         public Argument(VariableType type, string name, int tag_id, Tag tag, Dimension[] dims)
         {
@@ -227,7 +227,7 @@ namespace Lysis
 
     public class Native : Signature
     {
-        private int index_;
+        private readonly int index_;
 
         public Native(string name, int index)
           : base(name)
@@ -260,15 +260,15 @@ namespace Lysis
 
     public class Variable
     {
-        private int addr_;
-        private uint tag_id_;
+        private readonly int addr_;
+        private readonly uint tag_id_;
         private Tag tag_;
-        private uint codeStart_;
-        private uint codeEnd_;
-        private VariableType type_;
-        private Scope scope_;
-        private string name_;
-        private Dimension[] dims_;
+        private readonly uint codeStart_;
+        private readonly uint codeEnd_;
+        private readonly VariableType type_;
+        private readonly Scope scope_;
+        private readonly string name_;
+        private readonly Dimension[] dims_;
 
         public Variable(int addr, int tag_id, Tag tag, uint codeStart,
                         uint codeEnd, VariableType type, Scope scope,
@@ -302,9 +302,9 @@ namespace Lysis
 
     public class Function : Signature
     {
-        private uint addr_;
-        private uint codeStart_;
-        private uint codeEnd_;
+        private readonly uint addr_;
+        private readonly uint codeStart_;
+        private readonly uint codeEnd_;
 
         public Function(uint addr, uint codeStart, uint codeEnd, string name, Tag tag)
           : base(name)

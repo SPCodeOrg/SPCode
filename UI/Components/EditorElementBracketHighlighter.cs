@@ -9,8 +9,8 @@ namespace SPCode.UI.Components
     public class BracketHighlightRenderer : IBackgroundRenderer
     {
         private BracketSearchResult result;
-        private Brush backgroundBrush = new SolidColorBrush(Color.FromArgb(0x40, 0x88, 0x88, 0x88));
-        private TextView textView;
+        private readonly Brush backgroundBrush = new SolidColorBrush(Color.FromArgb(0x40, 0x88, 0x88, 0x88));
+        private readonly TextView textView;
 
         public void SetHighlight(BracketSearchResult result)
         {
@@ -91,8 +91,8 @@ namespace SPCode.UI.Components
 
     public class SPBracketSearcher : IBracketSearcher
     {
-        private string openingBrackets = "([{";
-        private string closingBrackets = ")]}";
+        private readonly string openingBrackets = "([{";
+        private readonly string closingBrackets = ")]}";
 
         public BracketSearchResult SearchBracket(IDocument document, int offset)
         {

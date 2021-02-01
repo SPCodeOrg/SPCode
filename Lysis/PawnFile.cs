@@ -6,8 +6,8 @@ namespace Lysis
 {
     public class Public
     {
-        private uint address_;
-        private string name_;
+        private readonly uint address_;
+        private readonly string name_;
 
         public Public(string name, uint address)
         {

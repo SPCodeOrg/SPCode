@@ -29,10 +29,10 @@ namespace Lysis
             }
         }
 
-        private SourcePawnFile file_;
+        private readonly SourcePawnFile file_;
         private uint pc_;
         private uint current_pc_;
-        private LIR lir_ = new LIR();
+        private readonly LIR lir_ = new LIR();
 
         private int readInt32()
         {
@@ -559,9 +559,9 @@ namespace Lysis
 
         private class BlockBuilder
         {
-            private List<LInstruction> pending_ = new List<LInstruction>();
+            private readonly List<LInstruction> pending_ = new List<LInstruction>();
             private LBlock block_ = null;
-            private LIR lir_;
+            private readonly LIR lir_;
 
             private void transitionBlocks(LBlock next)
             {

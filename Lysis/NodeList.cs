@@ -2,7 +2,7 @@
 {
     public class NodeList
     {
-        private DNode head_;
+        private readonly DNode head_;
 
         public NodeList()
         {

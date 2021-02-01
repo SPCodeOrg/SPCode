@@ -17,7 +17,7 @@ namespace SPCode.UI.Components
         private double LineHeight = 0.0;
 
         private SmxFile file_;
-        private StringBuilder detail_buffer_ = new StringBuilder();
+        private readonly StringBuilder detail_buffer_ = new StringBuilder();
 
         public DASMElement()
         {

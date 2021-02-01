@@ -91,7 +91,7 @@ namespace SPCode.UI.Components
             });
         }
 
-        private Regex methodExp = new Regex(@"(?<=\.)[A-Za-z_]\w*", RegexOptions.RightToLeft);
+        private readonly Regex methodExp = new Regex(@"(?<=\.)[A-Za-z_]\w*", RegexOptions.RightToLeft);
         private void EvaluateIntelliSense()
         {
             if (editor.SelectionLength > 0)

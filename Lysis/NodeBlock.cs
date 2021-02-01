@@ -18,8 +18,8 @@ namespace Lysis
             }
         }
 
-        private List<StackEntry> stack_;
-        private StackEntry[] args_;
+        private readonly List<StackEntry> stack_;
+        private readonly StackEntry[] args_;
         private DNode pri_;
         private DNode alt_;
 
@@ -135,9 +135,9 @@ namespace Lysis
 
     public class NodeBlock
     {
-        private LBlock lir_;
+        private readonly LBlock lir_;
         private AbstractStack stack_;
-        private NodeList nodes_;
+        private readonly NodeList nodes_;
 
         public NodeBlock(LBlock lir)
         {
@@ -227,10 +227,10 @@ namespace Lysis
 
     public class NodeGraph
     {
-        private SourcePawnFile file_;
-        private NodeBlock[] blocks_;
+        private readonly SourcePawnFile file_;
+        private readonly NodeBlock[] blocks_;
         private int nameCounter_;
-        private Function function_;
+        private readonly Function function_;
 
         public NodeGraph(SourcePawnFile file, NodeBlock[] blocks)
         {

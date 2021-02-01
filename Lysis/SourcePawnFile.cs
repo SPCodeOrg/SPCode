@@ -284,9 +284,9 @@ namespace SourcePawn
 
         public class Code
         {
-            private byte[] code_;
-            private int flags_;
-            private int version_;
+            private readonly byte[] code_;
+            private readonly int flags_;
+            private readonly int version_;
 
             public Code(byte[] code, int flags, int version)
             {
@@ -302,8 +302,8 @@ namespace SourcePawn
 
         public class Data
         {
-            private byte[] data_;
-            private int memory_;
+            private readonly byte[] data_;
+            private readonly int memory_;
 
             public Data(byte[] data, int memory)
             {
@@ -317,8 +317,8 @@ namespace SourcePawn
 
         public class PubVar
         {
-            private uint address_;
-            private string name_;
+            private readonly uint address_;
+            private readonly string name_;
 
             public PubVar(string name, uint address)
             {
@@ -332,8 +332,8 @@ namespace SourcePawn
 
         public class DebugFile
         {
-            private uint address_;
-            private string name_;
+            private readonly uint address_;
+            private readonly string name_;
 
             public DebugFile(string name, uint address)
             {
@@ -347,8 +347,8 @@ namespace SourcePawn
 
         public class DebugLine
         {
-            private uint address_;
-            private int line_;
+            private readonly uint address_;
+            private readonly int line_;
 
             public DebugLine(int line, uint address)
             {
@@ -365,17 +365,17 @@ namespace SourcePawn
         /// </summary>
 
         private Header header_;
-        private bool debugUnpacked_;
-        private Dictionary<string, Section> sections_;
-        private Code code_;
-        private Data data_;
-        private PubVar[] pubvars_;
-        private Native[] natives_;
-        private DebugFile[] debugFiles_;
-        private DebugLine[] debugLines_;
+        private readonly bool debugUnpacked_;
+        private readonly Dictionary<string, Section> sections_;
+        private readonly Code code_;
+        private readonly Data data_;
+        private readonly PubVar[] pubvars_;
+        private readonly Native[] natives_;
+        private readonly DebugFile[] debugFiles_;
+        private readonly DebugLine[] debugLines_;
         private DebugHeader debugHeader_;
-        private Tag[] tags_;
-        private Variable[] variables_;
+        private readonly Tag[] tags_;
+        private readonly Variable[] variables_;
 
         public SourcePawnFile(byte[] binary)
         {

@@ -2,7 +2,7 @@
 {
     public class NodeRenamer
     {
-        private NodeGraph graph_;
+        private readonly NodeGraph graph_;
 
         private void renameBlock(NodeBlock block)
         {

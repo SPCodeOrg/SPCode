@@ -5,7 +5,7 @@ namespace Lysis
 {
     public class ForwardTypePropagation : NodeVisitor
     {
-        private NodeGraph graph_;
+        private readonly NodeGraph graph_;
         private NodeBlock block_;
 
         public ForwardTypePropagation(NodeGraph graph)
@@ -116,7 +116,7 @@ namespace Lysis
 
     public class BackwardTypePropagation : NodeVisitor
     {
-        private NodeGraph graph_;
+        private readonly NodeGraph graph_;
         private NodeBlock block_;
 
         public BackwardTypePropagation(NodeGraph graph)

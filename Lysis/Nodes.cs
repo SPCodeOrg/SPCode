@@ -71,8 +71,8 @@ namespace Lysis
 
     public class DUse
     {
-        private DNode node_;
-        private int index_;
+        private readonly DNode node_;
+        private readonly int index_;
 
         public DUse(DNode node, int index)
         {
@@ -87,7 +87,7 @@ namespace Lysis
     public abstract class DNode
     {
         private NodeBlock block_;
-        private LinkedList<DUse> uses_ = new LinkedList<DUse>();
+        private readonly LinkedList<DUse> uses_ = new LinkedList<DUse>();
         private DNode next_;
         private DNode prev_;
         private bool usedAsArrayIndex_ = false;
@@ -261,7 +261,7 @@ namespace Lysis
 
     public abstract class DBinaryNode : DNode
     {
-        private DNode[] operands_ = new DNode[2];
+        private readonly DNode[] operands_ = new DNode[2];
 
         public DBinaryNode(DNode operand1, DNode operand2)
         {
@@ -284,7 +284,7 @@ namespace Lysis
 
     public class DDeclareLocal : DUnaryNode
     {
-        private uint pc_;
+        private readonly uint pc_;
         private int offset_;
         private Variable var_;
 
@@ -331,7 +331,7 @@ namespace Lysis
 
     public class DDeclareStatic : DNullaryNode
     {
-        private Variable var_;
+        private readonly Variable var_;
 
         public DDeclareStatic(Variable var)
         {
@@ -349,8 +349,8 @@ namespace Lysis
 
     public class DConstant : DNullaryNode
     {
-        private int value_;
-        private uint pc_;
+        private readonly int value_;
+        private readonly uint pc_;
 
         public DConstant(int value)
         {
@@ -440,7 +440,7 @@ namespace Lysis
 
     public class DJump : DNullaryNode
     {
-        private NodeBlock target_;
+        private readonly NodeBlock target_;
         private bool isBreak_;
 
         public DJump(NodeBlock target)
@@ -516,7 +516,7 @@ namespace Lysis
 
     public class DSwitch : DUnaryNode
     {
-        private LSwitch lir_;
+        private readonly LSwitch lir_;
 
         public DSwitch(DNode node, LSwitch lir)
             : base(node)
@@ -541,7 +541,7 @@ namespace Lysis
 
     public abstract class DCallNode : DNode
     {
-        private DNode[] arguments_;
+        private readonly DNode[] arguments_;
 
         public DCallNode(DNode[] arguments)
         {
@@ -566,7 +566,7 @@ namespace Lysis
 
     public class DSysReq : DCallNode
     {
-        private Native native_;
+        private readonly Native native_;
 
         public DSysReq(Native native, DNode[] arguments) : base(arguments)
         {
@@ -583,7 +583,7 @@ namespace Lysis
 
     public class DCall : DCallNode
     {
-        private Function function_;
+        private readonly Function function_;
 
         public DCall(Function function, DNode[] arguments)
             : base(arguments)
@@ -601,7 +601,7 @@ namespace Lysis
 
     public class DUnary : DUnaryNode
     {
-        private SPOpcode spop_;
+        private readonly SPOpcode spop_;
 
         public DUnary(SPOpcode op, DNode node) : base(node)
         {
@@ -618,7 +618,7 @@ namespace Lysis
 
     public class DBinary : DBinaryNode
     {
-        private SPOpcode spop_;
+        private readonly SPOpcode spop_;
 
         public DBinary(SPOpcode op, DNode lhs, DNode rhs) : base(lhs, rhs)
         {
@@ -649,7 +649,7 @@ namespace Lysis
 
     public class DArrayRef : DBinaryNode
     {
-        private int shift_;
+        private readonly int shift_;
 
         public DArrayRef(DNode bas, DNode index, int shift = 2) : base(bas, index)
         {
@@ -720,7 +720,7 @@ namespace Lysis
 
     public class DGlobal : DNullaryNode
     {
-        private Variable var_;
+        private readonly Variable var_;
 
         public DGlobal(Variable var)
         {
@@ -738,7 +738,7 @@ namespace Lysis
 
     public class DString : DNullaryNode
     {
-        private string value_;
+        private readonly string value_;
 
         public DString(string value)
         {
@@ -755,7 +755,7 @@ namespace Lysis
 
     public class DBoolean : DNullaryNode
     {
-        private bool value_;
+        private readonly bool value_;
 
         public DBoolean(bool value)
         {
@@ -772,7 +772,7 @@ namespace Lysis
 
     public class DCharacter : DNullaryNode
     {
-        private char value_;
+        private readonly char value_;
 
         public DCharacter(char value)
         {
@@ -789,7 +789,7 @@ namespace Lysis
 
     public class DFloat : DNullaryNode
     {
-        private float value_;
+        private readonly float value_;
 
         public DFloat(float value)
         {
@@ -806,8 +806,8 @@ namespace Lysis
 
     public class DFunction : DNullaryNode
     {
-        private Function function_;
-        private uint pc_;
+        private readonly Function function_;
+        private readonly uint pc_;
 
         public DFunction(uint pc, Function value)
         {
@@ -834,7 +834,7 @@ namespace Lysis
 
     public class DTempName : DUnaryNode
     {
-        private string name_;
+        private readonly string name_;
 
         public DTempName(string name) : base(null)
         {
@@ -855,7 +855,7 @@ namespace Lysis
 
     public class DPhi : DNode
     {
-        private List<DNode> inputs_ = new List<DNode>();
+        private readonly List<DNode> inputs_ = new List<DNode>();
 
         public DPhi(DNode node)
         {
@@ -886,7 +886,7 @@ namespace Lysis
 
     public class DIncDec : DUnaryNode
     {
-        private int amount_;
+        private readonly int amount_;
 
         public DIncDec(DNode node, int amount)
             : base(node)
@@ -905,7 +905,7 @@ namespace Lysis
 
     public class DHeap : DNullaryNode
     {
-        private int amount_;
+        private readonly int amount_;
 
         public DHeap(int amount)
         {
@@ -922,7 +922,7 @@ namespace Lysis
 
     public class DMemCopy : DBinaryNode
     {
-        private int bytes_;
+        private readonly int bytes_;
 
         public DMemCopy(DNode to, DNode from, int bytes)
             : base(to, from)
@@ -943,8 +943,8 @@ namespace Lysis
 
     public class DInlineArray : DNullaryNode
     {
-        private int address_;
-        private int size_;
+        private readonly int address_;
+        private readonly int size_;
 
         public DInlineArray(int address, int size)
         {

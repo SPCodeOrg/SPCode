@@ -17,7 +17,7 @@ namespace Lysis
 
     public abstract class ControlBlock
     {
-        private NodeBlock source_;
+        private readonly NodeBlock source_;
         public abstract ControlType type { get; }
 
         public ControlBlock(NodeBlock source)
@@ -38,8 +38,8 @@ namespace Lysis
     {
         public class Node
         {
-            private DNode expression_;
-            private LogicChain subChain_;
+            private readonly DNode expression_;
+            private readonly LogicChain subChain_;
 
             public Node(DNode expression)
             {
@@ -57,8 +57,8 @@ namespace Lysis
             public LogicChain subChain => subChain_;
         }
 
-        private LogicOperator op_;
-        private List<Node> nodes_ = new List<Node>();
+        private readonly LogicOperator op_;
+        private readonly List<Node> nodes_ = new List<Node>();
 
         public LogicChain(LogicOperator op)
         {
@@ -80,11 +80,11 @@ namespace Lysis
 
     public class IfBlock : ControlBlock
     {
-        private ControlBlock trueArm_;
-        private ControlBlock falseArm_;
-        private ControlBlock join_;
-        private LogicChain logic_;
-        private bool invert_;
+        private readonly ControlBlock trueArm_;
+        private readonly ControlBlock falseArm_;
+        private readonly ControlBlock join_;
+        private readonly LogicChain logic_;
+        private readonly bool invert_;
 
         public IfBlock(NodeBlock source, bool invert, ControlBlock trueArm, ControlBlock join)
           : base(source)
@@ -133,10 +133,10 @@ namespace Lysis
 
     public class WhileLoop : ControlBlock
     {
-        private ControlBlock body_;
-        private ControlBlock join_;
-        private LogicChain logic_;
-        private ControlType type_;
+        private readonly ControlBlock body_;
+        private readonly ControlBlock join_;
+        private readonly LogicChain logic_;
+        private readonly ControlType type_;
 
         public WhileLoop(ControlType type, NodeBlock source, ControlBlock body, ControlBlock join)
           : base(source)
@@ -165,8 +165,8 @@ namespace Lysis
     {
         public class Case
         {
-            private int value_;
-            private ControlBlock target_;
+            private readonly int value_;
+            private readonly ControlBlock target_;
 
             public Case(int value, ControlBlock target)
             {
@@ -178,9 +178,9 @@ namespace Lysis
             public ControlBlock target => target_;
         }
 
-        private ControlBlock defaultCase_;
-        private List<Case> cases_;
-        private ControlBlock join_;
+        private readonly ControlBlock defaultCase_;
+        private readonly List<Case> cases_;
+        private readonly ControlBlock join_;
 
         public SwitchBlock(NodeBlock source, ControlBlock defaultCase, List<Case> cases, ControlBlock join)
           : base(source)
@@ -212,7 +212,7 @@ namespace Lysis
 
     public class StatementBlock : ControlBlock
     {
-        private ControlBlock next_;
+        private readonly ControlBlock next_;
 
         public StatementBlock(NodeBlock source, ControlBlock next)
             : base(source)
@@ -226,8 +226,8 @@ namespace Lysis
 
     public class SourceStructureBuilder
     {
-        private NodeGraph graph_;
-        private Stack<NodeBlock> joinStack_ = new Stack<NodeBlock>();
+        private readonly NodeGraph graph_;
+        private readonly Stack<NodeBlock> joinStack_ = new Stack<NodeBlock>();
 
         public SourceStructureBuilder(NodeGraph graph)
         {

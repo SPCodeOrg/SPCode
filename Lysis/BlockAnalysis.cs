@@ -356,8 +356,8 @@ namespace Lysis
 
         private class LoopBodyWorklist
         {
-            private Stack<LBlock> stack_ = new Stack<LBlock>();
-            private LBlock backedge_;
+            private readonly Stack<LBlock> stack_ = new Stack<LBlock>();
+            private readonly LBlock backedge_;
 
             public LoopBodyWorklist(LBlock backedge)
             {
