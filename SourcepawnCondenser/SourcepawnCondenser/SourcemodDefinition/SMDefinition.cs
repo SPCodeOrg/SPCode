@@ -176,8 +176,10 @@ namespace SourcepawnCondenser.SourcemodDefinition
 
         public ACNode[] ProduceACNodes()
         {
-            var nodes = new List<ACNode>();
-            nodes.Capacity = Enums.Count + Structs.Count + Constants.Count + Functions.Count + EnumStructs.Count;
+            var nodes = new List<ACNode>
+            {
+                Capacity = Enums.Count + Structs.Count + Constants.Count + Functions.Count + EnumStructs.Count
+            };
             nodes.AddRange(ACNode.ConvertFromStringArray(FunctionStrings, true, "▲ "));
             nodes.AddRange(ACNode.ConvertFromStringArray(TypeStrings, false, "♦ "));
             nodes.AddRange(ACNode.ConvertFromStringArray(ConstantsStrings, false, "• "));

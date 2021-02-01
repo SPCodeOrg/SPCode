@@ -30,8 +30,10 @@ namespace SPCode.UI.Components
         {
             get
             {
-                var commentMarkerSet = new HighlightingRuleSet();
-                commentMarkerSet.Name = "CommentMarkerSet";
+                var commentMarkerSet = new HighlightingRuleSet
+                {
+                    Name = "CommentMarkerSet"
+                };
                 commentMarkerSet.Rules.Add(new HighlightingRule
                 {
                     Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
@@ -292,8 +294,10 @@ namespace SPCode.UI.Components
         {
             get
             {
-                var propertiesDictionary = new Dictionary<string, string>();
-                propertiesDictionary.Add("DocCommentMarker", "///");
+                var propertiesDictionary = new Dictionary<string, string>
+                {
+                    { "DocCommentMarker", "///" }
+                };
                 return propertiesDictionary;
             }
         }

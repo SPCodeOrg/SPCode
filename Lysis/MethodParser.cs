@@ -692,9 +692,11 @@ namespace Lysis
             BlockAnalysis.ComputeDominatorTree(blocks);
             BlockAnalysis.FindLoops(blocks);
 
-            LGraph graph = new LGraph();
-            graph.blocks = blocks;
-            graph.entry = blocks[0];
+            LGraph graph = new LGraph
+            {
+                blocks = blocks,
+                entry = blocks[0]
+            };
             if (lir_.argDepth > 0)
             {
                 graph.nargs = ((lir_.argDepth - 12) / 4) + 1;

@@ -48,11 +48,12 @@ namespace SPCode.UI.Components
                 return;
             }
 
-            BackgroundGeometryBuilder builder = new BackgroundGeometryBuilder();
-
-            builder.CornerRadius = 1;
-            builder.AlignToWholePixels = true;
-            builder.BorderThickness = 0.0;
+            BackgroundGeometryBuilder builder = new BackgroundGeometryBuilder
+            {
+                CornerRadius = 1,
+                AlignToWholePixels = true,
+                BorderThickness = 0.0
+            };
 
             builder.AddSegment(textView, new TextSegment() { StartOffset = result.OpeningBracketOffset, Length = result.OpeningBracketLength });
             builder.CloseFigure();

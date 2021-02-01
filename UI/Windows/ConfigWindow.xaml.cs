@@ -62,8 +62,10 @@ namespace SPCode.UI.Windows
                         {
                             if (o is TextBox box)
                             {
-                                var dialog = new CommonOpenFileDialog();
-                                dialog.IsFolderPicker = true;
+                                var dialog = new CommonOpenFileDialog
+                                {
+                                    IsFolderPicker = true
+                                };
                                 var result = dialog.ShowDialog();
 
                                 if (result == CommonFileDialogResult.Ok)

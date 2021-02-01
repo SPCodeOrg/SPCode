@@ -13,8 +13,10 @@ namespace SPCode.UI.Components
         {
             get
             {
-                HighlightingRuleSet commentMarkerSet = new HighlightingRuleSet();
-                commentMarkerSet.Name = "CommentMarkerSet";
+                HighlightingRuleSet commentMarkerSet = new HighlightingRuleSet
+                {
+                    Name = "CommentMarkerSet"
+                };
                 HighlightingRuleSet excludeInnerSingleLineComment = new HighlightingRuleSet();
                 excludeInnerSingleLineComment.Spans.Add(new HighlightingSpan() { StartExpression = new Regex(@"\;"), EndExpression = new Regex(@".") });
                 HighlightingRuleSet rs = new HighlightingRuleSet();
@@ -109,8 +111,10 @@ namespace SPCode.UI.Components
         {
             get
             {
-                Dictionary<string, string> propertiesDictionary = new Dictionary<string, string>();
-                propertiesDictionary.Add("DocCommentMarker", "///");
+                Dictionary<string, string> propertiesDictionary = new Dictionary<string, string>
+                {
+                    { "DocCommentMarker", "///" }
+                };
                 return propertiesDictionary;
             }
         }
