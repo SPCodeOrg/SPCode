@@ -163,7 +163,7 @@ namespace SPCode.UI.Windows
                 return;
             }
 
-            Program.OptionsObject.Program_AccentColor = (string) AccentColor.SelectedItem;
+            Program.OptionsObject.Program_AccentColor = (string)AccentColor.SelectedItem;
             ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
                 ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             ThemeManager.ChangeAppStyle(Program.MainWindow,
@@ -329,7 +329,7 @@ namespace SPCode.UI.Windows
                 return;
             }
 
-            FontFamily family = (FontFamily) FontFamilyCB.SelectedItem;
+            FontFamily family = (FontFamily)FontFamilyCB.SelectedItem;
             string FamilyString = family.Source;
             Program.OptionsObject.Editor_FontFamily = FamilyString;
             FontFamilyTB.Text = "Font (" + FamilyString + "):";
@@ -351,7 +351,7 @@ namespace SPCode.UI.Windows
             }
 
             int indentationSizeValue =
-                Program.OptionsObject.Editor_IndentationSize = (int) Math.Round(IndentationSize.Value);
+                Program.OptionsObject.Editor_IndentationSize = (int)Math.Round(IndentationSize.Value);
             EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
             if (editors != null)
             {
@@ -382,8 +382,8 @@ namespace SPCode.UI.Windows
                 return;
             }
 
-            var originalSource = (ComboBox) e.OriginalSource;
-            var selectedItem = (ComboboxItem) originalSource.SelectedItem;
+            var originalSource = (ComboBox)e.OriginalSource;
+            var selectedItem = (ComboboxItem)originalSource.SelectedItem;
             var lang = Program.Translations.AvailableLanguageIDs.FirstOrDefault(l => l == selectedItem.Value);
 
             Program.Translations.LoadLanguage(lang);

@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Xml;
 using System.Windows;
+using System.Xml;
 
 namespace SPCode.Interop
 {
-	public class TranslationProvider
-	{
-		public string[] AvailableLanguageIDs;
-		public string[] AvailableLanguages;
+    public class TranslationProvider
+    {
+        public string[] AvailableLanguageIDs;
+        public string[] AvailableLanguages;
 
-		public bool IsDefault = true;
+        public bool IsDefault = true;
 
 
         private readonly Dictionary<string, string> language = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -34,71 +30,71 @@ namespace SPCode.Interop
         }
 
         public void LoadLanguage(string lang, bool Initial = false)
-		{
-			FillToEnglishDefaults();
-			List<string> languageList = new List<string>();
-			List<string> languageIDList = new List<string>();
-			languageList.Add("English");
-			languageIDList.Add("");
-			lang = lang.Trim().ToLowerInvariant();
-			IsDefault = (string.IsNullOrEmpty(lang) || lang.ToLowerInvariant() == "en") && Initial;
-			if (File.Exists("lang_0_spcode.xml"))
-			{
-				try
-				{
-					XmlDocument document = new XmlDocument();
-					document.Load("lang_0_spcode.xml");
-					if (document.ChildNodes.Count < 1)
-					{
-						throw new Exception("No Root-Node: \"translations\" found");
-					}
+        {
+            FillToEnglishDefaults();
+            List<string> languageList = new List<string>();
+            List<string> languageIDList = new List<string>();
+            languageList.Add("English");
+            languageIDList.Add("");
+            lang = lang.Trim().ToLowerInvariant();
+            IsDefault = (string.IsNullOrEmpty(lang) || lang.ToLowerInvariant() == "en") && Initial;
+            if (File.Exists("lang_0_spcode.xml"))
+            {
+                try
+                {
+                    XmlDocument document = new XmlDocument();
+                    document.Load("lang_0_spcode.xml");
+                    if (document.ChildNodes.Count < 1)
+                    {
+                        throw new Exception("No Root-Node: \"translations\" found");
+                    }
 
-					XmlNode rootLangNode = null;
-					foreach (XmlNode childNode in document.ChildNodes[0].ChildNodes)
-					{
-						string lID = childNode.Name;
-						string lNm = lID;
-						if (childNode.Name.ToLowerInvariant() == lang)
-						{
-							rootLangNode = childNode;
-						}
-						if (childNode.FirstChild.Name.ToLowerInvariant() == "language")
-						{
-							lNm = childNode.FirstChild.InnerText;
-						}
-						languageList.Add(lNm);
-						languageIDList.Add(lID);
-					}
-					if (rootLangNode != null)
-					{
-						foreach (XmlNode node in rootLangNode.ChildNodes)
-						{
-							if (node.NodeType == XmlNodeType.Comment)
-							{
-								continue;
-							}
-							string nn = node.Name.ToLowerInvariant();
-							string nv = node.InnerText;
+                    XmlNode rootLangNode = null;
+                    foreach (XmlNode childNode in document.ChildNodes[0].ChildNodes)
+                    {
+                        string lID = childNode.Name;
+                        string lNm = lID;
+                        if (childNode.Name.ToLowerInvariant() == lang)
+                        {
+                            rootLangNode = childNode;
+                        }
+                        if (childNode.FirstChild.Name.ToLowerInvariant() == "language")
+                        {
+                            lNm = childNode.FirstChild.InnerText;
+                        }
+                        languageList.Add(lNm);
+                        languageIDList.Add(lID);
+                    }
+                    if (rootLangNode != null)
+                    {
+                        foreach (XmlNode node in rootLangNode.ChildNodes)
+                        {
+                            if (node.NodeType == XmlNodeType.Comment)
+                            {
+                                continue;
+                            }
+                            string nn = node.Name.ToLowerInvariant();
+                            string nv = node.InnerText;
                             language[nn] = nv;
-						}
-					}
-				}
-				catch (Exception e)
-				{
-					MessageBox.Show("An error occured while reading the language-file. Without them, the editor wont show translations." + Environment.NewLine + "Details: " + e.Message
-						, "Error while reading configs."
-						, MessageBoxButton.OK
-						, MessageBoxImage.Warning);
-				}
-			}
-			AvailableLanguages = languageList.ToArray();
-			AvailableLanguageIDs = languageIDList.ToArray();
-		}
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("An error occured while reading the language-file. Without them, the editor wont show translations." + Environment.NewLine + "Details: " + e.Message
+                        , "Error while reading configs."
+                        , MessageBoxButton.OK
+                        , MessageBoxImage.Warning);
+                }
+            }
+            AvailableLanguages = languageList.ToArray();
+            AvailableLanguageIDs = languageIDList.ToArray();
+        }
 
-		private void FillToEnglishDefaults()
-		{
-			language.Clear();
-			language.Add("Language", "English");
+        private void FillToEnglishDefaults()
+        {
+            language.Clear();
+            language.Add("Language", "English");
             language.Add("ServerRunning", "Server running");
             language.Add("Saving", "Saving");
             language.Add("SavingUFiles", "Save all unsaved files?");
@@ -295,6 +291,6 @@ namespace SPCode.Interop
             language.Add("CopyingFiles", "Copying files");
             language.Add("FTPUploading", "Uploading files");
             language.Add("RCONCommand", "Seconding RCON Commands");
-		}
-	}
+        }
+    }
 }

@@ -186,7 +186,7 @@ namespace SPCode.UI
                                 if (!string.IsNullOrWhiteSpace(execResult_Post))
                                     stringOutput.AppendLine(execResult_Post.Trim('\n', '\r'));
                                 stringOutput.AppendLine();
-                                progressTask.SetProgress((double) (i + 1) / compileCount);
+                                progressTask.SetProgress((double)(i + 1) / compileCount);
                                 ProcessUITasks();
                             }
                     }
@@ -402,7 +402,7 @@ namespace SPCode.UI
             code = ReplaceCMDVaraibles(code, directory, copyDir, scriptFile, scriptName, pluginFile, pluginName);
             if (string.IsNullOrWhiteSpace(code)) return null;
             var batchFile = new FileInfo(Path.Combine("sourcepawn\\temp\\",
-                Environment.TickCount + "_" + ((uint) code.GetHashCode() ^ (uint) directory.GetHashCode()) +
+                Environment.TickCount + "_" + ((uint)code.GetHashCode() ^ (uint)directory.GetHashCode()) +
                 "_temp.bat")).FullName;
             File.WriteAllText(batchFile, code);
             string result;

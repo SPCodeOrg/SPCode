@@ -97,7 +97,10 @@ namespace SPCode.UI.Windows
                                 TemplateDictionary.Add(NameStr,
                                     new TemplateInfo
                                     {
-                                        Name = NameStr, FileName = FileNameStr, Path = FilePathStr, NewName = NewNameStr
+                                        Name = NameStr,
+                                        FileName = FileNameStr,
+                                        Path = FilePathStr,
+                                        NewName = NewNameStr
                                     });
                                 TemplateListBox.Items.Add(NameStr);
                             }
@@ -107,7 +110,7 @@ namespace SPCode.UI.Windows
 
         private void TemplateListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var templateInfo = TemplateDictionary[(string) TemplateListBox.SelectedItem];
+            var templateInfo = TemplateDictionary[(string)TemplateListBox.SelectedItem];
             PrevieBox.Text = File.ReadAllText(templateInfo.Path);
             PathBox.Text = Path.Combine(PathStr, templateInfo.NewName);
         }
@@ -115,7 +118,7 @@ namespace SPCode.UI.Windows
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var destFile = new FileInfo(PathBox.Text);
-            var templateInfo = TemplateDictionary[(string) TemplateListBox.SelectedItem];
+            var templateInfo = TemplateDictionary[(string)TemplateListBox.SelectedItem];
             File.Copy(templateInfo.Path, destFile.FullName, true);
             Program.MainWindow.TryLoadSourceFile(destFile.FullName, true, true, true);
             Close();

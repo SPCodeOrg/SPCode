@@ -15,6 +15,7 @@ using SPCode.Interop;
 using SPCode.Interop.Updater;
 using SPCode.UI;
 using SPCode.UI.Interop;
+using SPCode.Utils;
 
 namespace SPCode
 {
@@ -36,6 +37,8 @@ namespace SPCode
             ? new string(' ', OptionsObject.Editor_IndentationSize)
             : "\t";
 
+        public static bool _IsLocalInstallation;
+
         [STAThread]
         public static void Main(string[] args)
         {
@@ -53,54 +56,56 @@ namespace SPCode
                     try
                     {
 #endif
-                        var splashScreen = new SplashScreen("Resources/Icon256x.png");
-                        splashScreen.Show(false, true);
-                        Environment.CurrentDirectory =
-                            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
-                            throw new NullReferenceException();
+                    var splashScreen = new SplashScreen("Resources/Icon256x.png");
+                    splashScreen.Show(false, true);
+                    Environment.CurrentDirectory =
+                        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
+                        throw new NullReferenceException();
 #if !DEBUG
                         ProfileOptimization.SetProfileRoot(Environment.CurrentDirectory);
                         ProfileOptimization.StartProfile("Startup.Profile");
 #endif
-                        UpdateStatus = new UpdateInfo();
-                        OptionsObject = OptionsControlIOObject.Load(out var ProgramIsNew);
-                        
-                        if (OptionsObject.Program_DiscordPresence)
+                    UpdateStatus = new UpdateInfo();
+                    OptionsObject = OptionsControlIOObject.Load(out var ProgramIsNew);
+
+                    if (OptionsObject.Program_DiscordPresence)
+                    {
+                        // Init Discord RPC
+                        discordClient.Initialize();
+
+                        // Set default presence
+                        discordClient.SetPresence(new RichPresence
                         {
-                            // Init Discord RPC
-                            discordClient.Initialize();
-
-                            // Set default presence
-                            discordClient.SetPresence(new RichPresence
+                            State = "Idle",
+                            Timestamps = discordTime,
+                            Assets = new Assets
                             {
-                                State = "Idle",
-                                Timestamps = discordTime,
-                                Assets = new Assets
-                                {
-                                    LargeImageKey = "immagine"
-                                }
-                            });
+                                LargeImageKey = "immagine"
+                            }
+                        });
+                    }
+
+                    _IsLocalInstallation = Paths.IsLocalInstallation();
+
+                    Translations = new TranslationProvider();
+                    Translations.LoadLanguage(OptionsObject.Language, true);
+                    foreach (var arg in args)
+                        if (arg.ToLowerInvariant() == "-rcck") //ReCreateCryptoKey
+                        {
+                            OptionsObject.ReCreateCryptoKey();
+                            MakeRCCKAlert();
                         }
-                        
-                        Translations = new TranslationProvider();
-                        Translations.LoadLanguage(OptionsObject.Language, true);
-                        foreach (var arg in args)
-                            if (arg.ToLowerInvariant() == "-rcck") //ReCreateCryptoKey
-                            {
-                                OptionsObject.ReCreateCryptoKey();
-                                MakeRCCKAlert();
-                            }
 
-                        Configs = ConfigLoader.Load();
-                        for (var i = 0; i < Configs.Length; ++i)
-                            if (Configs[i].Name == OptionsObject.Program_SelectedConfig)
-                            {
-                                SelectedConfig = i;
-                                break;
-                            }
+                    Configs = ConfigLoader.Load();
+                    for (var i = 0; i < Configs.Length; ++i)
+                        if (Configs[i].Name == OptionsObject.Program_SelectedConfig)
+                        {
+                            SelectedConfig = i;
+                            break;
+                        }
 
-                        if (!OptionsObject.Program_UseHardwareAcceleration)
-                            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+                    if (!OptionsObject.Program_UseHardwareAcceleration)
+                        RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
 #if !DEBUG
                         if (ProgramIsNew)
                             if (Translations.AvailableLanguageIDs.Length > 0)
@@ -120,9 +125,9 @@ namespace SPCode
                                 splashScreen.Show(false, true);
                             }
 #endif
-                        MainWindow = new MainWindow(splashScreen);
-                        var pipeServer = new PipeInteropServer(MainWindow);
-                        pipeServer.Start();
+                    MainWindow = new MainWindow(splashScreen);
+                    var pipeServer = new PipeInteropServer(MainWindow);
+                    pipeServer.Start();
 #if !DEBUG
                     }
                     catch (Exception e)
@@ -144,9 +149,9 @@ namespace SPCode
                     {
                         if (OptionsObject.Program_CheckForUpdates) Task.Run(UpdateCheck.Check);
 #endif
-                        app.Startup += App_Startup;
-                        app.Run(MainWindow);
-                        OptionsControlIOObject.Save();
+                    app.Startup += App_Startup;
+                    app.Run(MainWindow);
+                    OptionsControlIOObject.Save();
 #if !DEBUG
                     }
                     catch (Exception e)
@@ -170,6 +175,7 @@ namespace SPCode
                         var sBuilder = new StringBuilder();
                         var addedFiles = false;
                         for (var i = 0; i < args.Length; ++i)
+                        {
                             if (!string.IsNullOrWhiteSpace(args[i]))
                             {
                                 var fInfo = new FileInfo(args[i]);
@@ -180,12 +186,19 @@ namespace SPCode
                                     {
                                         addedFiles = true;
                                         sBuilder.Append(fInfo.FullName);
-                                        if (i + 1 != args.Length) sBuilder.Append("|");
+                                        if (i + 1 != args.Length)
+                                        {
+                                            sBuilder.Append("|");
+                                        }
                                     }
                                 }
                             }
+                        }
 
-                        if (addedFiles) PipeInteropClient.ConnectToMasterPipeAndSendData(sBuilder.ToString());
+                        if (addedFiles)
+                        {
+                            PipeInteropClient.ConnectToMasterPipeAndSendData(sBuilder.ToString());
+                        }
                     }
                     catch (Exception)
                     {
@@ -237,7 +250,7 @@ namespace SPCode
             outString.AppendLine("Current Culture: " + CultureInfo.CurrentCulture);
             outString.AppendLine();
             var eNumber = 1;
-            for (;;)
+            for (; ; )
             {
                 if (e == null) break;
                 outString.AppendLine("Exception " + eNumber);

@@ -3,6 +3,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Windows.Media;
+using SPCode.Utils;
 
 namespace SPCode //leave this here instead of .Interop because of reasons...
 {
@@ -196,7 +197,7 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
             try
             {
                 var formatter = new BinaryFormatter();
-                using (var fileStream = new FileStream("options_0.dat", FileMode.Create, FileAccess.ReadWrite,
+                using (var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Create, FileAccess.ReadWrite,
                     FileShare.None))
                 {
                     formatter.Serialize(fileStream, Program.OptionsObject);
@@ -212,17 +213,17 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
         {
             try
             {
-                if (File.Exists("options_0.dat"))
+                if (File.Exists(Paths.GetOptionsFilePath()))
                 {
                     object deserializedOptionsObj;
                     var formatter = new BinaryFormatter();
-                    using (var fileStream = new FileStream("options_0.dat", FileMode.Open, FileAccess.Read,
+                    using (var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Open, FileAccess.Read,
                         FileShare.ReadWrite))
                     {
                         deserializedOptionsObj = formatter.Deserialize(fileStream);
                     }
 
-                    var oc = (OptionsControl) deserializedOptionsObj;
+                    var oc = (OptionsControl)deserializedOptionsObj;
                     oc.FillNullToDefaults();
                     ProgramIsNew = false;
                     return oc;

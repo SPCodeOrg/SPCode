@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -17,7 +16,6 @@ using System.Windows.Media.Animation;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Folding;
-using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
 using ICSharpCode.AvalonEdit.Utils;
 using MahApps.Metro.Controls.Dialogs;
@@ -72,10 +70,10 @@ namespace SPCode.UI.Components
 
             bracketSearcher = new SPBracketSearcher();
             bracketHighlightRenderer = new BracketHighlightRenderer(editor.TextArea.TextView);
-            editor.TextArea.IndentationStrategy = new EditorIndetationStrategy();
+            editor.TextArea.IndentationStrategy = new EditorIndentationStrategy();
 
-            FadeJumpGridIn = (Storyboard) Resources["FadeJumpGridIn"];
-            FadeJumpGridOut = (Storyboard) Resources["FadeJumpGridOut"];
+            FadeJumpGridIn = (Storyboard)Resources["FadeJumpGridIn"];
+            FadeJumpGridOut = (Storyboard)Resources["FadeJumpGridOut"];
 
             editor.CaptureMouse();
 
@@ -90,7 +88,7 @@ namespace SPCode.UI.Components
             editor.PreviewMouseWheel += PrevMouseWheel;
             editor.MouseDown += editor_MouseDown;
             editor.Loaded += editor_Loaded;
-            
+
             editor.TextArea.TextEntered += TextArea_TextEntered;
             editor.TextArea.TextEntering += TextArea_TextEntering;
             var fInfo = new FileInfo(filePath);
@@ -211,53 +209,57 @@ namespace SPCode.UI.Components
         private async void TextArea_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!Keyboard.IsKeyDown(Key.LeftCtrl)) return;
+
             var word = GetWordAtMousePosition(e);
             Debug.Print($"The word: {word}");
             if (word.Trim().Length == 0) return;
 
             e.Handled = true;
-            // var smDef = currentSmDef ?? Program.Configs[Program.SelectedConfig].GetSMDef();
-            
-            /**** First try to match variables in the current file ***/
-            var sm = MatchDefinition(currentSmDef, word, e, true);
+
+            // First search across all scripting directories
+
+            var sm = MatchDefinition(Program.Configs[Program.SelectedConfig].GetSMDef(), word, e);
+            if (sm != null)
+            {
+                var config = Program.Configs[Program.SelectedConfig].SMDirectories;
+
+                foreach (var cfg in config)
+                {
+                    var file = Path.GetFullPath(Path.Combine(cfg, "include", sm.File)) + ".inc";
+                    await Task.Delay(100);
+                    var result = Program.MainWindow.TryLoadSourceFile(file, true, false, true);
+                    if (!result)
+                    {
+                        Debug.Print($"File {file} not found!");
+                        continue;
+                    }
+                    var newEditor = Program.MainWindow.GetCurrentEditorElement();
+                    Debug.Assert(newEditor != null);
+                    newEditor.editor.TextArea.Caret.Offset = sm.Index;
+                    newEditor.editor.TextArea.Caret.BringCaretToView();
+                    newEditor.editor.TextArea.Selection = Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
+                    return;
+                }
+            }
+
+            // If not, try to match variables in the current file 
+            // (shit solution to fix some symbols getting read first inside of the file inaproppiately)
+
+            sm = MatchDefinition(currentSmDef, word, e, true);
             if (sm != null)
             {
                 editor.TextArea.Caret.Offset = sm.Index;
                 editor.TextArea.Caret.BringCaretToView();
                 await Task.Delay(100);
                 editor.TextArea.Selection = Selection.Create(editor.TextArea, sm.Index, sm.Index + sm.Length);
-                return;
-            }
-
-            sm = MatchDefinition(Program.Configs[Program.SelectedConfig].GetSMDef(), word, e);
-            if (sm != null)
-            {
-                //TODO: Match definition for all the sm directories
-                var config = Program.Configs[Program.SelectedConfig].SMDirectories.First();
-                var file = Path.GetFullPath(Path.Combine(config, "include", sm.File)) + ".inc";
-                await Task.Delay(100);
-                var result = Program.MainWindow.TryLoadSourceFile(file,
-                    true, false, true);
-                if (!result)
-                {
-                    Debug.Print($"File {file} not found!");
-                    return;
-                }
-
-                var newEditor = Program.MainWindow.GetCurrentEditorElement();
-                Debug.Assert(newEditor != null);
-                newEditor.editor.TextArea.Caret.Offset = sm.Index;
-                newEditor.editor.TextArea.Caret.BringCaretToView();
-                newEditor.editor.TextArea.Selection =
-                    Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
             }
         }
-        
+
         private SMBaseDefinition MatchDefinition(SMDefinition smDef, string word, MouseButtonEventArgs e, bool currentFile = false)
         {
             if (smDef == null)
                 return null;
-            
+
             var mousePosition = editor.GetPositionFromPoint(e.GetPosition(this));
 
             if (mousePosition == null)
@@ -267,22 +269,33 @@ namespace SPCode.UI.Components
             var column = mousePosition.Value.Column;
             var offset = editor.TextArea.Document.GetOffset(line, column);
 
-            var sm = (SMBaseDefinition) smDef.Functions.FirstOrDefault(i => i.Name == word);
+            // Begin attempting to match the supplied word with a definition
 
+            // functions
+            var sm = (SMBaseDefinition)smDef.Functions.FirstOrDefault(i => i.Name == word);
+
+            // search in the same file if specified
             if (currentFile)
             {
-                sm  ??= smDef.Functions.FirstOrDefault(func => func.Index <= offset && offset <= func.EndPos)
-                    ?.FuncVariables?.FirstOrDefault(i => i.Name.Equals(word));
+                sm ??= smDef.Functions.FirstOrDefault(
+                    func => func.Index <= offset &&
+                            offset <= func.EndPos)
+                    ?.FuncVariables?.FirstOrDefault(
+                        i => i.Name.Equals(word));
             }
 
+            // variables
             sm ??= smDef.Variables.FirstOrDefault(i =>
                 i.Name.Equals(word));
 
+            // constants
             sm ??= smDef.Constants.FirstOrDefault(i =>
                 i.Name.Equals(word));
 
+            // defines
             sm ??= smDef.Defines.FirstOrDefault(i => i.Name.Equals(word));
 
+            // enums
             sm ??= smDef.Enums.FirstOrDefault(i => i.Name.Equals(word));
 
             if (sm == null)
@@ -298,19 +311,31 @@ namespace SPCode.UI.Components
                 }
             }
 
-
-            //TODO: Match EnumStruct and MethodMaps Fields and Methods
+            // enum structs
             sm ??= smDef.EnumStructs.FirstOrDefault(i =>
                 i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
+            sm ??= smDef.EnumStructs.FirstOrDefault(
+                i => i.Fields.Any(j => j.Name == word));
+
+            sm ??= smDef.EnumStructs.FirstOrDefault(
+                i => i.Methods.Any(j => j.Name == word));
+
+            // methodmaps
             sm ??= smDef.Methodmaps.FirstOrDefault(
                 i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
+            sm ??= smDef.Methodmaps.FirstOrDefault(
+                i => i.Fields.Any(j => j.Name == word));
+
+            sm ??= smDef.Methodmaps.FirstOrDefault(
+                i => i.Methods.Any(j => j.Name == word));
+
+            // structs?
             sm ??= smDef.Structs.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
+            // typedefs
             sm ??= smDef.Typedefs.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
-
-            // Debug.Print($"Function {word} found with {sm}!");
 
             return sm;
         }
@@ -681,7 +706,7 @@ namespace SPCode.UI.Components
             var result = bracketSearcher.SearchBracket(editor.Document, editor.CaretOffset);
             bracketHighlightRenderer.SetHighlight(result);
 
-            
+
             if (!Program.OptionsObject.Program_DynamicISAC || Program.MainWindow == null) return;
 
             if (parseTimer != null)
@@ -711,7 +736,7 @@ namespace SPCode.UI.Components
 
                 var caret = -1;
 
-                if (ee == null) return;
+                if (ee == null || ce == null) return;
 
                 var definitions = new SMDefinition[ee.Length];
                 List<SMFunction> currentFunctions = null;
@@ -813,11 +838,11 @@ namespace SPCode.UI.Components
                         var lineText = editor.Document.GetText(line);
 
                         // Don't auto close brackets when the user is in a comment or in a string or a text is selected.
-                            if (editor.SelectionLength == 0 &&
-                                (lineText[0] == '/' && lineText[1] == '/') ||
-                                editor.Document.GetText(line.Offset, editor.CaretOffset - line.Offset).Count(c => c == '\"') % 2 == 1 ||
-                                line.LineNumber != 1 && editor.Document.GetText(line.Offset - 3, 1) == "\\")
-                                break;
+                        if (editor.SelectionLength == 0 &&
+                            (lineText[0] == '/' && lineText[1] == '/') ||
+                            editor.Document.GetText(line.Offset, editor.CaretOffset - line.Offset).Count(c => c == '\"') % 2 == 1 ||
+                            line.LineNumber != 1 && editor.Document.GetText(line.Offset - 3, 1) == "\\")
+                            break;
 
                         // Getting the char ascii code with int cast and the string pos 0 (the char it self),
                         // if it's a ( i need to add 1 to get the ascii code for closing bracket
@@ -907,7 +932,7 @@ namespace SPCode.UI.Components
             {
                 if (LineHeight == 0.0) LineHeight = editor.TextArea.TextView.DefaultLineHeight;
                 editor.ScrollToVerticalOffset(editor.VerticalOffset -
-                                              Math.Sign((double) e.Delta) * LineHeight *
+                                              Math.Sign((double)e.Delta) * LineHeight *
                                               Program.OptionsObject.Editor_ScrollLines);
                 //editor.ScrollToVerticalOffset(editor.VerticalOffset - ((double)e.Delta * editor.FontSize * Program.OptionsObject.Editor_ScrollSpeed));
                 e.Handled = true;
@@ -960,45 +985,45 @@ namespace SPCode.UI.Components
 
         private void HandleContextMenuCommand(object sender, RoutedEventArgs e)
         {
-            switch ((string) ((MenuItem) sender).Tag)
+            switch ((string)((MenuItem)sender).Tag)
             {
                 case "0":
-                {
-                    editor.Undo();
-                    break;
-                }
+                    {
+                        editor.Undo();
+                        break;
+                    }
                 case "1":
-                {
-                    editor.Redo();
-                    break;
-                }
+                    {
+                        editor.Redo();
+                        break;
+                    }
                 case "2":
-                {
-                    editor.Cut();
-                    break;
-                }
+                    {
+                        editor.Cut();
+                        break;
+                    }
                 case "3":
-                {
-                    editor.Copy();
-                    break;
-                }
+                    {
+                        editor.Copy();
+                        break;
+                    }
                 case "4":
-                {
-                    editor.Paste();
-                    break;
-                }
+                    {
+                        editor.Paste();
+                        break;
+                    }
                 case "5":
-                {
-                    editor.SelectAll();
-                    break;
-                }
+                    {
+                        editor.SelectAll();
+                        break;
+                    }
             }
         }
 
         private void ContextMenu_Opening(object sender, RoutedEventArgs e)
         {
-            ((MenuItem) ((ContextMenu) sender).Items[0]).IsEnabled = editor.CanUndo;
-            ((MenuItem) ((ContextMenu) sender).Items[1]).IsEnabled = editor.CanRedo;
+            ((MenuItem)((ContextMenu)sender).Items[0]).IsEnabled = editor.CanUndo;
+            ((MenuItem)((ContextMenu)sender).Items[1]).IsEnabled = editor.CanRedo;
         }
 
         private bool IsValidSearchSelectionString(string s)

@@ -1,3 +1,3 @@
 <Configurations>
-	<Config Name="Standard SM 1.10.0.6478" SMDirectory="sourcepawn\configs\sm_1_10_0_6478;" Standard="1" CopyDirectory="" AutoCopy="0" ServerFile="" ServerArgs="" PostCmd="" PreCmd="" OptimizationLevel="2" VerboseLevel="1" DeleteAfterCopy="0" FTPHost="ftp://localhost/" FTPUser="" FTPPassword="" FTPDir="" RConSourceEngine="1" RConIP="127.0.0.1" RConPort="27015" RConPassword="" RConCommands="" />
+	<Config Name="Standard SM 1.10.0.6478" SMDirectory="" Standard="1" CopyDirectory="" AutoCopy="0" ServerFile="" ServerArgs="" PostCmd="" PreCmd="" OptimizationLevel="2" VerboseLevel="1" DeleteAfterCopy="0" FTPHost="ftp://localhost/" FTPUser="" FTPPassword="" FTPDir="" RConSourceEngine="1" RConIP="127.0.0.1" RConPort="27015" RConPassword="" RConCommands="" />
 </Configurations>

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SourcePawn;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using SourcePawn;
 
 namespace Lysis
 {
@@ -14,7 +10,7 @@ namespace Lysis
             for (int i = graph.numBlocks - 1; i >= 0; i--)
             {
                 NodeBlock block = graph[i];
-                for (NodeList.reverse_iterator iter = block.nodes.rbegin(); iter.more(); )
+                for (NodeList.reverse_iterator iter = block.nodes.rbegin(); iter.more();)
                 {
                     if (iter.node.guard)
                     {
@@ -30,7 +26,7 @@ namespace Lysis
 
         private static void RemoveDeadCodeInBlock(NodeBlock block)
         {
-            for (NodeList.reverse_iterator iter = block.nodes.rbegin(); iter.more(); )
+            for (NodeList.reverse_iterator iter = block.nodes.rbegin(); iter.more();)
             {
                 if (iter.node.type == NodeType.DeclareLocal)
                 {
@@ -224,7 +220,7 @@ namespace Lysis
             for (int i = 0; i < graph.numBlocks; i++)
             {
                 NodeBlock block = graph[i];
-                for (NodeList.iterator iter = block.nodes.begin(); iter.more(); )
+                for (NodeList.iterator iter = block.nodes.begin(); iter.more();)
                 {
                     DNode node = iter.node;
 

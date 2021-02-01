@@ -79,7 +79,7 @@ namespace SPCode.UI.Windows
             Program.OptionsObject.SH_ContextKeywords = SH_ContextKeywords.GetColor();
             ToggleRestartText();
         }
-        
+
         private void Chars_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging) { return; }

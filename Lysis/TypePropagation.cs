@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using SourcePawn;
+﻿using SourcePawn;
+using System;
 
 namespace Lysis
 {
@@ -157,41 +153,41 @@ namespace Lysis
                 switch (tu.kind)
                 {
                     case TypeUnit.Kind.Cell:
-                    {
-                        switch (tu.type.type)
                         {
-                            case CellType.Bool:
-                                replacement = new DBoolean(node.value != 0);
-                                break;
-                            case CellType.Character:
-                                replacement = new DCharacter(Convert.ToChar(node.value));
-                                break;
-                            case CellType.Float:
+                            switch (tu.type.type)
                             {
-                                //Debug.Assert(BitConverter.IsLittleEndian);
-                                byte[] bits = BitConverter.GetBytes(node.value);
-                                float v = BitConverter.ToSingle(bits, 0);
-                                replacement = new DFloat(v);
-                                break;
+                                case CellType.Bool:
+                                    replacement = new DBoolean(node.value != 0);
+                                    break;
+                                case CellType.Character:
+                                    replacement = new DCharacter(Convert.ToChar(node.value));
+                                    break;
+                                case CellType.Float:
+                                    {
+                                        //Debug.Assert(BitConverter.IsLittleEndian);
+                                        byte[] bits = BitConverter.GetBytes(node.value);
+                                        float v = BitConverter.ToSingle(bits, 0);
+                                        replacement = new DFloat(v);
+                                        break;
+                                    }
+                                case CellType.Function:
+                                    {
+                                        Public p = graph_.file.publics[node.value >> 1];
+                                        Function function = graph_.file.lookupFunction(p.address);
+                                        replacement = new DFunction(p.address, function);
+                                        break;
+                                    }
+                                default:
+                                    return;
                             }
-                            case CellType.Function:
-                            {
-                                Public p = graph_.file.publics[node.value >> 1];
-                                Function function = graph_.file.lookupFunction(p.address);
-                                replacement = new DFunction(p.address, function);
-                                break;
-                            }
-                            default:
-                                return;
+                            break;
                         }
-                        break;
-                    }
 
                     case TypeUnit.Kind.Array:
-                    {
-                        replacement = ConstantToReference(node, tu);
-                        break;
-                    }
+                        {
+                            replacement = ConstantToReference(node, tu);
+                            break;
+                        }
 
                     default:
                         return;

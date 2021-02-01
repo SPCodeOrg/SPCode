@@ -1,10 +1,10 @@
-﻿using SPCode.UI.Components;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
+using SPCode.UI.Components;
 
 namespace SPCode.UI
 {
@@ -144,7 +144,7 @@ namespace SPCode.UI
                 }
                 else if (i == (editors.Length + editorIndex))
                 {
-                    searchText = startFileCaretOffset == 0 ? 
+                    searchText = startFileCaretOffset == 0 ?
                         string.Empty :
                         editors[index].editor.Text.Substring(0, startFileCaretOffset);
                 }
@@ -200,7 +200,7 @@ namespace SPCode.UI
                 }
                 else if (i == (editors.Length + editorIndex))
                 {
-                    searchText = startFileCaretOffset == 0 ? 
+                    searchText = startFileCaretOffset == 0 ?
                         string.Empty :
                         editors[index].editor.Text.Substring(0, startFileCaretOffset);
                 }
@@ -243,7 +243,7 @@ namespace SPCode.UI
 
             int count = 0;
             int fileCount = 0;
-            
+
             string replaceString = ReplaceBox.Text;
             foreach (var editor in editors)
             {
@@ -262,8 +262,8 @@ namespace SPCode.UI
                     editor.NeedsSave = true;
                 }
             }
-			// FindResultBlock.Text = "Replaced " + count.ToString() + " occurences in " + fileCount.ToString() + " documents";
-			FindResultBlock.Text = string.Format(Program.Translations.GetLanguage("ReplacedOcc"), count, fileCount);
+            // FindResultBlock.Text = "Replaced " + count.ToString() + " occurences in " + fileCount.ToString() + " documents";
+            FindResultBlock.Text = string.Format(Program.Translations.GetLanguage("ReplacedOcc"), count, fileCount);
         }
 
         private void Count()
@@ -296,7 +296,7 @@ namespace SPCode.UI
             Debug.Assert(CCBox.IsChecked != null, "CCBox.IsChecked != null");
             Debug.Assert(NSearch_RButton.IsChecked != null, "NSearch_RButton.IsChecked != null");
 
-            
+
             if (!CCBox.IsChecked.Value)
             { regexOptions |= RegexOptions.IgnoreCase; }
 
@@ -319,7 +319,7 @@ namespace SPCode.UI
                         findString = findString.Replace("\\t", "\t").Replace("\\r", "\r").Replace("\\n", "\n");
                         Regex rx = new Regex(@"\\[uUxX]([0-9A-F]{4})");
                         findString = rx.Replace(findString,
-                            match => ((char) Int32.Parse(match.Value.Substring(2), NumberStyles.HexNumber)).ToString());
+                            match => ((char)Int32.Parse(match.Value.Substring(2), NumberStyles.HexNumber)).ToString());
                         regex = new Regex(Regex.Escape(findString), regexOptions);
                     }
                     else //if (RSearch_RButton.IsChecked.Value)

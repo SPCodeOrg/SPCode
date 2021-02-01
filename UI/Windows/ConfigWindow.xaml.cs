@@ -24,6 +24,7 @@ namespace SPCode.UI.Windows
     {
         private bool AllowChange;
         private bool NeedsSMDefInvalidation;
+        private string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
         private ICommand textBoxButtonFileCmd;
 
@@ -36,7 +37,7 @@ namespace SPCode.UI.Windows
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
                 ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
-            foreach (var config in Program.Configs) ConfigListBox.Items.Add(new ListBoxItem {Content = config.Name});
+            foreach (var config in Program.Configs) ConfigListBox.Items.Add(new ListBoxItem { Content = config.Name });
             ConfigListBox.SelectedIndex = Program.SelectedConfig;
         }
 
@@ -153,10 +154,10 @@ namespace SPCode.UI.Windows
 
         private void NewButton_Clicked(object sender, RoutedEventArgs e)
         {
-            var c = new Config {Name = "New Config", Standard = false, OptimizeLevel = 2, VerboseLevel = 1};
-            var configList = new List<Config>(Program.Configs) {c};
+            var c = new Config { Name = "New Config", Standard = false, OptimizeLevel = 2, VerboseLevel = 1 };
+            var configList = new List<Config>(Program.Configs) { c };
             Program.Configs = configList.ToArray();
-            ConfigListBox.Items.Add(new ListBoxItem {Content = Program.Translations.GetLanguage("NewConfig")});
+            ConfigListBox.Items.Add(new ListBoxItem { Content = Program.Translations.GetLanguage("NewConfig") });
         }
 
         private void DeleteButton_Clicked(object sender, RoutedEventArgs e)
@@ -184,7 +185,7 @@ namespace SPCode.UI.Windows
             if (!AllowChange) return;
             var Name = C_Name.Text;
             Program.Configs[ConfigListBox.SelectedIndex].Name = Name;
-            ((ListBoxItem) ConfigListBox.SelectedItem).Content = Name;
+            ((ListBoxItem)ConfigListBox.SelectedItem).Content = Name;
         }
 
         private void C_SMDir_TextChanged(object sender, TextChangedEventArgs e)
@@ -235,13 +236,13 @@ namespace SPCode.UI.Windows
         private void C_OptimizationLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (!AllowChange) return;
-            Program.Configs[ConfigListBox.SelectedIndex].OptimizeLevel = (int) C_OptimizationLevel.Value;
+            Program.Configs[ConfigListBox.SelectedIndex].OptimizeLevel = (int)C_OptimizationLevel.Value;
         }
 
         private void C_VerboseLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (!AllowChange) return;
-            Program.Configs[ConfigListBox.SelectedIndex].VerboseLevel = (int) C_VerboseLevel.Value;
+            Program.Configs[ConfigListBox.SelectedIndex].VerboseLevel = (int)C_VerboseLevel.Value;
         }
 
         private void C_AutoCopy_Changed(object sender, RoutedEventArgs e)
@@ -347,7 +348,12 @@ namespace SPCode.UI.Windows
             Program.MainWindow.ChangeConfig(Program.SelectedConfig);
             var outString = new StringBuilder();
             var settings = new XmlWriterSettings
-                {Indent = true, IndentChars = "\t", NewLineOnAttributes = false, OmitXmlDeclaration = true};
+            {
+                Indent = true,
+                IndentChars = "\t",
+                NewLineOnAttributes = false,
+                OmitXmlDeclaration = true
+            };
             using (var writer = XmlWriter.Create(outString, settings))
             {
                 writer.WriteStartElement("Configurations");
@@ -386,7 +392,7 @@ namespace SPCode.UI.Windows
                 writer.Flush();
             }
 
-            File.WriteAllText("sourcepawn\\configs\\Configs.xml", outString.ToString());
+            File.WriteAllText(Paths.GetConfigFilePath(), outString.ToString());
         }
 
         private void Language_Translate()

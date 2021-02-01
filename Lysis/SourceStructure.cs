@@ -1,9 +1,7 @@
-﻿using System;
+﻿using SourcePawn;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using SourcePawn;
 
 namespace Lysis
 {
@@ -290,7 +288,7 @@ namespace Lysis
         public StatementBlock(NodeBlock source, ControlBlock next)
             : base(source)
         {
-                        next_ = next;
+            next_ = next;
         }
 
         public override ControlType type
@@ -518,7 +516,7 @@ namespace Lysis
 
             DJumpCondition finalJcc = (DJumpCondition)join.nodes.last;
             //Debug.Assert(finalJcc.spop == SPOpcode.jzer);
-          
+
             // The final conditional should have the normal dominator
             // properties: 2 or 3 idoms, depending on the number of arms.
             // Because of critical edge splitting, we may have 3 idoms

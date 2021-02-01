@@ -1,9 +1,6 @@
-﻿using System;
+﻿using SourcePawn;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using SourcePawn;
 
 namespace Lysis
 {
@@ -161,7 +158,7 @@ namespace Lysis
                 stack_.set(reg, phi);
                 add(phi);
             }
-            else 
+            else
             {
                 phi = (DPhi)node;
             }

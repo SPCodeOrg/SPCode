@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ICSharpCode.AvalonEdit;
 using System.Windows.Media;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Rendering;
 using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Rendering;
 
 namespace SPCode.UI.Components
 {
@@ -52,8 +47,8 @@ namespace SPCode.UI.Components
             BackgroundGeometryBuilder builder = new BackgroundGeometryBuilder();
 
             builder.CornerRadius = 1;
-			builder.AlignToWholePixels = true;
-			builder.BorderThickness = 0.0;
+            builder.AlignToWholePixels = true;
+            builder.BorderThickness = 0.0;
 
             builder.AddSegment(textView, new TextSegment() { StartOffset = result.OpeningBracketOffset, Length = result.OpeningBracketLength });
             builder.CloseFigure();

@@ -93,7 +93,7 @@ namespace SPCode.Interop.Updater
             try
             {
                 Process.Start(new ProcessStartInfo
-                    {Arguments = "/C SPCodeUpdater.exe", FileName = "cmd", WindowStyle = ProcessWindowStyle.Hidden});
+                { Arguments = "/C SPCodeUpdater.exe", FileName = "cmd", WindowStyle = ProcessWindowStyle.Hidden });
                 Succeeded = true;
             }
             catch (Exception e)

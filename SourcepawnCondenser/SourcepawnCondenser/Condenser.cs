@@ -1,7 +1,7 @@
-﻿using System;
-using System.Text;
-using SourcepawnCondenser.SourcemodDefinition;
+﻿using SourcepawnCondenser.SourcemodDefinition;
 using SourcepawnCondenser.Tokenizer;
+using System;
+using System.Text;
 
 namespace SourcepawnCondenser
 {
@@ -35,121 +35,121 @@ namespace SourcepawnCondenser
                 switch (ct.Kind)
                 {
                     case TokenKind.FunctionIndicator:
-                    {
-                        var newIndex = ConsumeSMFunction();
-                        if (newIndex != -1)
                         {
-                            position = newIndex + 1;
-                            continue;
-                        }
+                            var newIndex = ConsumeSMFunction();
+                            if (newIndex != -1)
+                            {
+                                position = newIndex + 1;
+                                continue;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case TokenKind.EnumStruct:
-                    {
-                        var newIndex = ConsumeSMEnumStruct();
-                        if (newIndex != -1)
                         {
-                            position = newIndex + 1;
-                            continue;
-                        }
+                            var newIndex = ConsumeSMEnumStruct();
+                            if (newIndex != -1)
+                            {
+                                position = newIndex + 1;
+                                continue;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case TokenKind.Enum:
-                    {
-                        var newIndex = ConsumeSMEnum();
-                        if (newIndex != -1)
                         {
-                            position = newIndex + 1;
-                            continue;
-                        }
+                            var newIndex = ConsumeSMEnum();
+                            if (newIndex != -1)
+                            {
+                                position = newIndex + 1;
+                                continue;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case TokenKind.Struct:
-                    {
-                        var newIndex = ConsumeSMStruct();
-                        if (newIndex != -1)
                         {
-                            position = newIndex + 1;
-                            continue;
-                        }
+                            var newIndex = ConsumeSMStruct();
+                            if (newIndex != -1)
+                            {
+                                position = newIndex + 1;
+                                continue;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case TokenKind.PrePocessorDirective:
-                    {
-                        var newIndex = ConsumeSMPPDirective();
-                        if (newIndex != -1)
                         {
-                            position = newIndex + 1;
-                            continue;
-                        }
+                            var newIndex = ConsumeSMPPDirective();
+                            if (newIndex != -1)
+                            {
+                                position = newIndex + 1;
+                                continue;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case TokenKind.Constant:
-                    {
-                        var newIndex = ConsumeSMConstant();
-                        if (newIndex != -1)
                         {
-                            position = newIndex + 1;
-                            continue;
-                        }
+                            var newIndex = ConsumeSMConstant();
+                            if (newIndex != -1)
+                            {
+                                position = newIndex + 1;
+                                continue;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case TokenKind.MethodMap:
-                    {
-                        var newIndex = ConsumeSMMethodmap();
-                        if (newIndex != -1)
                         {
-                            position = newIndex + 1;
-                            continue;
-                        }
+                            var newIndex = ConsumeSMMethodmap();
+                            if (newIndex != -1)
+                            {
+                                position = newIndex + 1;
+                                continue;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case TokenKind.TypeSet:
-                    {
-                        var newIndex = ConsumeSMTypeset();
-                        if (newIndex != -1)
                         {
-                            position = newIndex + 1;
-                            continue;
-                        }
+                            var newIndex = ConsumeSMTypeset();
+                            if (newIndex != -1)
+                            {
+                                position = newIndex + 1;
+                                continue;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case TokenKind.TypeDef:
-                    {
-                        var newIndex = ConsumeSMTypedef();
-                        if (newIndex != -1)
                         {
-                            position = newIndex + 1;
-                            continue;
-                        }
+                            var newIndex = ConsumeSMTypedef();
+                            if (newIndex != -1)
+                            {
+                                position = newIndex + 1;
+                                continue;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case TokenKind.Identifier:
-                    {
-                        var newIndex = ConsumeSMVariable();
-                        if (newIndex != -1)
                         {
-                            position = newIndex + 1;
-                            continue;
+                            var newIndex = ConsumeSMVariable();
+                            if (newIndex != -1)
+                            {
+                                position = newIndex + 1;
+                                continue;
+                            }
+
+                            // If Variable is not found try function
+                            newIndex = ConsumeSMFunction();
+                            if (newIndex != -1)
+                            {
+                                position = newIndex + 1;
+                                continue;
+                            }
                         }
-                        
-                        // If Variable is not found try function
-                        newIndex = ConsumeSMFunction();
-                        if (newIndex != -1)
-                        {
-                            position = newIndex + 1;
-                            continue;
-                        }
-                    }
                         break;
                 }
 
@@ -227,7 +227,7 @@ namespace SourcepawnCondenser
 
         private static string FormatParamLineString(string line)
         {
-            var split = line.Replace('\t', ' ').Split(new[] {' '}, 3);
+            var split = line.Replace('\t', ' ').Split(new[] { ' ' }, 3);
             if (split.Length > 2) return ("@param " + split[1]).PadRight(24, ' ') + " " + split[2].Trim(' ', '\t');
             return line;
         }

@@ -1,8 +1,7 @@
-﻿using SPCode.UI.Components;
-using SPCode.UI.Windows;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using ICSharpCode.AvalonEdit.Highlighting;
+using SPCode.UI.Components;
+using SPCode.UI.Windows;
 
 namespace SPCode.UI
 {
@@ -15,7 +14,9 @@ namespace SPCode.UI
             {
                 MenuItem item = new MenuItem
                 {
-                    Header = Program.Configs[i].Name, IsCheckable = true, IsChecked = (i == Program.SelectedConfig)
+                    Header = Program.Configs[i].Name,
+                    IsCheckable = true,
+                    IsChecked = (i == Program.SelectedConfig)
                 };
                 item.Click += item_Click;
                 ConfigMenu.Items.Add(item);
@@ -53,7 +54,7 @@ namespace SPCode.UI
             Program.SelectedConfig = index;
             Program.OptionsObject.Program_SelectedConfig = Program.Configs[Program.SelectedConfig].Name;
             EditorElement[] editors = GetAllEditorElements();
-			if (editors != null)
+            if (editors != null)
             {
                 foreach (var editor in editors)
                 {

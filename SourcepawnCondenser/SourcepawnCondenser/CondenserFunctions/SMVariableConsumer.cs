@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using SourcepawnCondenser.SourcemodDefinition;
+﻿using SourcepawnCondenser.SourcemodDefinition;
 using SourcepawnCondenser.Tokenizer;
+using System.Collections.Generic;
 
 namespace SourcepawnCondenser
 {
@@ -49,9 +49,13 @@ namespace SourcepawnCondenser
                         {
                             def.Variables.Add(new SMVariable
                             {
-                                Index = startIndex, Length = t[position + i].Index - startIndex,
+                                Index = startIndex,
+                                Length = t[position + i].Index - startIndex,
                                 File = FileName,
-                                Name = varName, Type = varType, Dimensions = dimensions, Size = size,
+                                Name = varName,
+                                Type = varType,
+                                Dimensions = dimensions,
+                                Size = size,
                             });
                             return position + i;
                         }
@@ -82,19 +86,26 @@ namespace SourcepawnCondenser
                     case TokenKind.Semicolon:
                         def.Variables.Add(new SMVariable
                         {
-                            Index = startIndex, Length = t[position + 2].Index - startIndex, File = FileName,
-                            Name = varName, Type = varType
+                            Index = startIndex,
+                            Length = t[position + 2].Index - startIndex,
+                            File = FileName,
+                            Name = varName,
+                            Type = varType
                         });
                         return position + 2;
                     // Assign var match: "int x = 5"
                     case TokenKind.Assignment when t[position + 4].Kind == TokenKind.Semicolon &&
                                                    (t[position + 3].Kind == TokenKind.Number ||
                                                     t[position + 3].Kind == TokenKind.Quote ||
-                                                    t[position + 3].Kind == TokenKind.Identifier ):
+                                                    t[position + 3].Kind == TokenKind.Identifier):
                         def.Variables.Add(new SMVariable
                         {
-                            Index = startIndex, Length = t[position + 4].Index - startIndex, File = FileName,
-                            Name = varName, Type = varType, Value = t[position + 3].Value
+                            Index = startIndex,
+                            Length = t[position + 4].Index - startIndex,
+                            File = FileName,
+                            Name = varName,
+                            Type = varType,
+                            Value = t[position + 3].Value
                         });
                         return position + 4;
                 }
@@ -137,8 +148,13 @@ namespace SourcepawnCondenser
                 {
                     def.Variables.Add(new SMVariable
                     {
-                        Index = startIndex, Length = t[position + index].Index - startIndex, File = FileName,
-                        Name = varName, Type = varType, Dimensions = dimensions, Size = size
+                        Index = startIndex,
+                        Length = t[position + index].Index - startIndex,
+                        File = FileName,
+                        Name = varName,
+                        Type = varType,
+                        Dimensions = dimensions,
+                        Size = size
                     });
                     return position + index;
                 }
@@ -167,9 +183,13 @@ namespace SourcepawnCondenser
 
                         def.Variables.Add(new SMVariable
                         {
-                            Index = startIndex, Length = t[position + index].Index - startIndex,
+                            Index = startIndex,
+                            Length = t[position + index].Index - startIndex,
                             File = FileName,
-                            Name = varName, Type = varType, Dimensions = dimensions, Size = size,
+                            Name = varName,
+                            Type = varType,
+                            Dimensions = dimensions,
+                            Size = size,
                             Value = "-1" //TODO: Add proper value
                         });
                     }
@@ -181,9 +201,13 @@ namespace SourcepawnCondenser
                             return -1;
                         def.Variables.Add(new SMVariable
                         {
-                            Index = startIndex, Length = t[position + index + 2].Index - startIndex,
+                            Index = startIndex,
+                            Length = t[position + index + 2].Index - startIndex,
                             File = FileName,
-                            Name = varName, Type = varType, Dimensions = dimensions, Size = size,
+                            Name = varName,
+                            Type = varType,
+                            Dimensions = dimensions,
+                            Size = size,
                             Value = t[position + index + 1].Value
                         });
                     }

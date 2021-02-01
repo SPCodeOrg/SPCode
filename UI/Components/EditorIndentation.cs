@@ -1,11 +1,9 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Indentation;
-using ICSharpCode.AvalonEdit.Rendering;
-using System.Windows.Media;
 
 namespace SPCode.UI.Components
 {
-    public class EditorIndetationStrategy : IIndentationStrategy
+    public class EditorIndentationStrategy : IIndentationStrategy
     {
         public void IndentLine(TextDocument document, DocumentLine line)
         {

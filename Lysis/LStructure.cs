@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 
 namespace Lysis
 {
@@ -420,7 +416,7 @@ namespace Lysis
             codeEnd_ = codeEnd;
             tag_ = tag;
         }
-        
+
         public Function(uint addr, uint codeStart, uint codeEnd, string name, uint tag_id)
           : base(name)
         {

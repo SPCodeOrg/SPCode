@@ -50,12 +50,12 @@ namespace SPCode.UI.Components
         {
             if (!AnimationsLoaded)
             {
-                FadeISACIn = (Storyboard) Resources["FadeISACIn"];
-                FadeISACOut = (Storyboard) Resources["FadeISACOut"];
-                FadeACIn = (Storyboard) Resources["FadeACIn"];
-                FadeACOut = (Storyboard) Resources["FadeACOut"];
-                FadeAC_FuncC_In = (Storyboard) Resources["FadeAC_FuncC_In"];
-                FadeAC_MethodC_In = (Storyboard) Resources["FadeAC_MethodC_In"];
+                FadeISACIn = (Storyboard)Resources["FadeISACIn"];
+                FadeISACOut = (Storyboard)Resources["FadeISACOut"];
+                FadeACIn = (Storyboard)Resources["FadeACIn"];
+                FadeACOut = (Storyboard)Resources["FadeACOut"];
+                FadeAC_FuncC_In = (Storyboard)Resources["FadeAC_FuncC_In"];
+                FadeAC_MethodC_In = (Storyboard)Resources["FadeAC_MethodC_In"];
                 FadeISACOut.Completed += FadeISACOut_Completed;
                 FadeACOut.Completed += FadeACOut_Completed;
                 AnimationsLoaded = true;
@@ -131,7 +131,7 @@ namespace SPCode.UI.Components
             {
                 if (c == '#')
                 {
-                    string[] prep = {"define", "pragma", "file", "if"};
+                    string[] prep = { "define", "pragma", "file", "if" };
                     acEntrys = ACNode.ConvertFromStringArray(prep, false, "#").ToArray();
                     // HideISAC();
                     break;
@@ -361,79 +361,79 @@ namespace SPCode.UI.Components
                 switch (k)
                 {
                     case Key.Enter:
-                    {
-                        var startOffset = editor.CaretOffset - 1;
-                        var endOffset = startOffset;
-                        for (var i = startOffset; i >= 0; --i)
                         {
-                            if (!IsValidFunctionChar(editor.Document.GetCharAt(i))) break;
-                            endOffset = i;
-                        }
-
-                        var length = startOffset - endOffset;
-                        string replaceString;
-                        var setCaret = false;
-                        if (AC_IsFuncC)
-                        {
-                            replaceString = ((ACNode) AutoCompleteBox.SelectedItem).EntryName;
-                            if (acEntrys[AutoCompleteBox.SelectedIndex].IsExecuteable)
+                            var startOffset = editor.CaretOffset - 1;
+                            var endOffset = startOffset;
+                            for (var i = startOffset; i >= 0; --i)
                             {
-                                replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
-                                setCaret = true;
+                                if (!IsValidFunctionChar(editor.Document.GetCharAt(i))) break;
+                                endOffset = i;
                             }
-                        }
-                        else
-                        {
-                            replaceString = ((ISNode) MethodAutoCompleteBox.SelectedItem).EntryName;
-                            if (isEntrys[MethodAutoCompleteBox.SelectedIndex].IsExecuteable)
-                            {
-                                replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
-                                setCaret = true;
-                            }
-                        }
 
-                        editor.Document.Replace(endOffset, length + 1, replaceString);
-                        if (setCaret)
-                            editor.CaretOffset -= 1;
-                        return true;
-                    }
+                            var length = startOffset - endOffset;
+                            string replaceString;
+                            var setCaret = false;
+                            if (AC_IsFuncC)
+                            {
+                                replaceString = ((ACNode)AutoCompleteBox.SelectedItem).EntryName;
+                                if (acEntrys[AutoCompleteBox.SelectedIndex].IsExecuteable)
+                                {
+                                    replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
+                                    setCaret = true;
+                                }
+                            }
+                            else
+                            {
+                                replaceString = ((ISNode)MethodAutoCompleteBox.SelectedItem).EntryName;
+                                if (isEntrys[MethodAutoCompleteBox.SelectedIndex].IsExecuteable)
+                                {
+                                    replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
+                                    setCaret = true;
+                                }
+                            }
+
+                            editor.Document.Replace(endOffset, length + 1, replaceString);
+                            if (setCaret)
+                                editor.CaretOffset -= 1;
+                            return true;
+                        }
                     case Key.Up:
-                    {
-                        if (AC_IsFuncC)
                         {
-                            AutoCompleteBox.SelectedIndex = Math.Max(0, AutoCompleteBox.SelectedIndex - 1);
-                            AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
-                        }
-                        else
-                        {
-                            MethodAutoCompleteBox.SelectedIndex = Math.Max(0, MethodAutoCompleteBox.SelectedIndex - 1);
-                            MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
-                        }
+                            if (AC_IsFuncC)
+                            {
+                                AutoCompleteBox.SelectedIndex = Math.Max(0, AutoCompleteBox.SelectedIndex - 1);
+                                AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
+                            }
+                            else
+                            {
+                                MethodAutoCompleteBox.SelectedIndex = Math.Max(0, MethodAutoCompleteBox.SelectedIndex - 1);
+                                MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+                            }
 
-                        return true;
-                    }
+                            return true;
+                        }
                     case Key.Down:
-                    {
-                        if (AC_IsFuncC)
                         {
-                            AutoCompleteBox.SelectedIndex = Math.Min(AutoCompleteBox.Items.Count - 1,
-                                AutoCompleteBox.SelectedIndex + 1);
-                            AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
-                        }
-                        else
-                        {
-                            MethodAutoCompleteBox.SelectedIndex = Math.Min(MethodAutoCompleteBox.Items.Count - 1,
-                                MethodAutoCompleteBox.SelectedIndex + 1);
-                            MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
-                        }
+                            if (AC_IsFuncC)
+                            {
+                                AutoCompleteBox.SelectedIndex = Math.Min(AutoCompleteBox.Items.Count - 1,
+                                    AutoCompleteBox.SelectedIndex + 1);
+                                AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
+                            }
+                            else
+                            {
+                                MethodAutoCompleteBox.SelectedIndex = Math.Min(MethodAutoCompleteBox.Items.Count - 1,
+                                    MethodAutoCompleteBox.SelectedIndex + 1);
+                                MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+                            }
 
-                        return true;
-                    }
+                            return true;
+                        }
                     case Key.Escape:
-                    {
-                        HideISAC();
-                        return true;
-                    }
+                        {
+                            HideISAC();
+                            return true;
+                        }
                 }
 
             return false;
@@ -606,7 +606,7 @@ namespace SPCode.UI.Components
             }
 
             ISAC_Grid.Margin =
-                new Thickness(p.X + ((LineNumberMargin) editor.TextArea.LeftMargins[0]).ActualWidth + 20.0, y, 0.0,
+                new Thickness(p.X + ((LineNumberMargin)editor.TextArea.LeftMargins[0]).ActualWidth + 20.0, y, 0.0,
                     0.0);
         }
 

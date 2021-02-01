@@ -1,7 +1,7 @@
 ﻿namespace SourcepawnCondenser.SourcemodDefinition
 {
-	public class SMEnum : SMBaseDefinition
-	{
-		public string[] Entries = new string[0];
-	}
+    public class SMEnum : SMBaseDefinition
+    {
+        public string[] Entries = new string[0];
+    }
 }

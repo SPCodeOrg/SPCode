@@ -2,7 +2,7 @@
 
 namespace SPCode.Utils.SPSyntaxTidy
 {
-	public static class SPSyntaxTidy
+    public static class SPSyntaxTidy
     {
         public static string TidyUp(string source)
         {
@@ -230,14 +230,14 @@ namespace SPCode.Utils.SPSyntaxTidy
 
         public static bool IsTokenNumber(SPToken token)
         {
-			if (token == null)
-			{
-				return false;
-			}
-			if (token.Kind == SPTokenKind.Invalid)
-			{
-				return false;
-			}
+            if (token == null)
+            {
+                return false;
+            }
+            if (token.Kind == SPTokenKind.Invalid)
+            {
+                return false;
+            }
             if (token.Value.Length == 1)
             {
                 if (token.Value[0] >= '0' && token.Value[0] <= '9')

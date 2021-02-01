@@ -162,7 +162,7 @@
     <Compile Include="UI\Components\DASMElementHighlighter.cs" />
     <Compile Include="UI\Components\EditorElementHighlighter.cs" />
     <Compile Include="UI\Components\EditorFoldingStrategy.cs" />
-    <Compile Include="UI\Components\EditorIndetation.cs" />
+    <Compile Include="UI\Components\EditorIndentation.cs" />
     <Compile Include="UI\Components\IntelliSenseController.cs" />
     <Compile Include="UI\Interop\LanguageChooserWindow.xaml.cs">
       <DependentUpon>LanguageChooserWindow.xaml</DependentUpon>
@@ -196,6 +196,8 @@
     <Compile Include="UI\Windows\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\Constants.cs" />
+    <Compile Include="Utils\Paths.cs" />
     <Compile Include="Utils\FTP.cs" />
     <Compile Include="Utils\ManagedAES.cs" />
     <Compile Include="Utils\SPSyntaxTidy\SPSyntaxTidy.cs" />

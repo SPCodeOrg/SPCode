@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using SourcePawn;
+﻿using SourcePawn;
+using System;
 
 namespace Lysis
 {
@@ -153,15 +149,15 @@ namespace Lysis
                 case SPOpcode.neq:
                 case SPOpcode.add:
                 case SPOpcode.sub:
-                {
-                    if (call.numOperands != 2)
-                        return;
-                    DBinary binary = new DBinary(spop, call.getOperand(0), call.getOperand(1));
-                    call.replaceAllUsesWith(binary);
-                    call.removeFromUseChains();
-                    current_.replace(iterator_, binary);
-                    break;
-                }
+                    {
+                        if (call.numOperands != 2)
+                            return;
+                        DBinary binary = new DBinary(spop, call.getOperand(0), call.getOperand(1));
+                        call.replaceAllUsesWith(binary);
+                        call.removeFromUseChains();
+                        current_.replace(iterator_, binary);
+                        break;
+                    }
                 default:
                     throw new Exception("unknown spop");
             }
