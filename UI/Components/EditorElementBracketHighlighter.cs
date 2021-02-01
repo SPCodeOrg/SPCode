@@ -8,9 +8,9 @@ namespace SPCode.UI.Components
 {
     public class BracketHighlightRenderer : IBackgroundRenderer
     {
-        BracketSearchResult result;
-        Brush backgroundBrush = new SolidColorBrush(Color.FromArgb(0x40, 0x88, 0x88, 0x88));
-        TextView textView;
+        private BracketSearchResult result;
+        private Brush backgroundBrush = new SolidColorBrush(Color.FromArgb(0x40, 0x88, 0x88, 0x88));
+        private TextView textView;
 
         public void SetHighlight(BracketSearchResult result)
         {
@@ -91,8 +91,8 @@ namespace SPCode.UI.Components
 
     public class SPBracketSearcher : IBracketSearcher
     {
-        string openingBrackets = "([{";
-        string closingBrackets = ")]}";
+        private string openingBrackets = "([{";
+        private string closingBrackets = ")]}";
 
         public BracketSearchResult SearchBracket(IDocument document, int offset)
         {
@@ -124,7 +124,7 @@ namespace SPCode.UI.Components
             return null;
         }
 
-        void SearchDefinition(IDocument document, BracketSearchResult result)
+        private void SearchDefinition(IDocument document, BracketSearchResult result)
         {
             if (document.GetCharAt(result.OpeningBracketOffset) != '{')
             {
@@ -144,7 +144,7 @@ namespace SPCode.UI.Components
             }
         }
 
-        bool IsBracketOnly(IDocument document, IDocumentLine documentLine)
+        private bool IsBracketOnly(IDocument document, IDocumentLine documentLine)
         {
             var lineText = document.GetText(documentLine).Trim();
             return lineText == "{" || string.IsNullOrEmpty(lineText)
@@ -155,7 +155,7 @@ namespace SPCode.UI.Components
         }
 
         #region SearchBracket helper functions
-        static int ScanLineStart(IDocument document, int offset)
+        private static int ScanLineStart(IDocument document, int offset)
         {
             for (var i = offset - 1; i > 0; --i)
             {
@@ -167,7 +167,7 @@ namespace SPCode.UI.Components
             return 0;
         }
 
-        static int GetStartType(IDocument document, int linestart, int offset)
+        private static int GetStartType(IDocument document, int linestart, int offset)
         {
             var inString = false;
             var inChar = false;
@@ -230,7 +230,7 @@ namespace SPCode.UI.Components
         #endregion
 
         #region SearchBracketBackward
-        int SearchBracketBackward(IDocument document, int offset, char openBracket, char closingBracket)
+        private int SearchBracketBackward(IDocument document, int offset, char openBracket, char closingBracket)
         {
             if (offset + 1 >= document.TextLength)
             {
@@ -361,7 +361,7 @@ namespace SPCode.UI.Components
         #endregion
 
         #region SearchBracketForward
-        int SearchBracketForward(IDocument document, int offset, char openBracket, char closingBracket)
+        private int SearchBracketForward(IDocument document, int offset, char openBracket, char closingBracket)
         {
             var inString = false;
             var inChar = false;
@@ -488,7 +488,7 @@ namespace SPCode.UI.Components
         }
         #endregion
 
-        int QuickSearchBracketBackward(IDocument document, int offset, char openBracket, char closingBracket)
+        private int QuickSearchBracketBackward(IDocument document, int offset, char openBracket, char closingBracket)
         {
             var brackets = -1;
             for (var i = offset; i >= 0; --i)
@@ -530,7 +530,7 @@ namespace SPCode.UI.Components
             return -1;
         }
 
-        int QuickSearchBracketForward(IDocument document, int offset, char openBracket, char closingBracket)
+        private int QuickSearchBracketForward(IDocument document, int offset, char openBracket, char closingBracket)
         {
             var brackets = 1;
             // try "quick find" - find the matching bracket if there is no string/comment in the way

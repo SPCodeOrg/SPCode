@@ -5,7 +5,7 @@ using SourcePawn;
 
 namespace Lysis
 {
-    class SourceBuilder
+    internal class SourceBuilder
     {
         private PawnFile file_;
         private StringBuilder out_;

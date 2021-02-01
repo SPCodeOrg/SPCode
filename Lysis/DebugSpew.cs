@@ -2,7 +2,7 @@
 
 namespace Lysis
 {
-    static class DebugSpew
+    internal static class DebugSpew
     {
         public static void DumpGraph(LBlock[] blocks, TextWriter tw)
         {

@@ -17,7 +17,7 @@ namespace Lysis
 
     public abstract class ControlBlock
     {
-        NodeBlock source_;
+        private NodeBlock source_;
         public abstract ControlType type { get; }
 
         public ControlBlock(NodeBlock source)
@@ -80,11 +80,11 @@ namespace Lysis
 
     public class IfBlock : ControlBlock
     {
-        ControlBlock trueArm_;
-        ControlBlock falseArm_;
-        ControlBlock join_;
-        LogicChain logic_;
-        bool invert_;
+        private ControlBlock trueArm_;
+        private ControlBlock falseArm_;
+        private ControlBlock join_;
+        private LogicChain logic_;
+        private bool invert_;
 
         public IfBlock(NodeBlock source, bool invert, ControlBlock trueArm, ControlBlock join)
           : base(source)
@@ -133,10 +133,10 @@ namespace Lysis
 
     public class WhileLoop : ControlBlock
     {
-        ControlBlock body_;
-        ControlBlock join_;
-        LogicChain logic_;
-        ControlType type_;
+        private ControlBlock body_;
+        private ControlBlock join_;
+        private LogicChain logic_;
+        private ControlType type_;
 
         public WhileLoop(ControlType type, NodeBlock source, ControlBlock body, ControlBlock join)
           : base(source)
@@ -178,9 +178,9 @@ namespace Lysis
             public ControlBlock target => target_;
         }
 
-        ControlBlock defaultCase_;
-        List<Case> cases_;
-        ControlBlock join_;
+        private ControlBlock defaultCase_;
+        private List<Case> cases_;
+        private ControlBlock join_;
 
         public SwitchBlock(NodeBlock source, ControlBlock defaultCase, List<Case> cases, ControlBlock join)
           : base(source)
@@ -212,7 +212,7 @@ namespace Lysis
 
     public class StatementBlock : ControlBlock
     {
-        ControlBlock next_;
+        private ControlBlock next_;
 
         public StatementBlock(NodeBlock source, ControlBlock next)
             : base(source)

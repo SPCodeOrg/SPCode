@@ -165,9 +165,9 @@ namespace Lysis
 
     public class Dimension
     {
-        int tag_id_;
-        Tag tag_;
-        int size_;
+        private int tag_id_;
+        private Tag tag_;
+        private int size_;
 
         public Dimension(int tag_id, Tag tag, int size)
         {
@@ -182,11 +182,11 @@ namespace Lysis
 
     public class Argument
     {
-        VariableType type_;
-        string name_;
-        int tag_id_;
-        Tag tag_;
-        Dimension[] dims_;
+        private VariableType type_;
+        private string name_;
+        private int tag_id_;
+        private Tag tag_;
+        private Dimension[] dims_;
 
         public Argument(VariableType type, string name, int tag_id, Tag tag, Dimension[] dims)
         {
@@ -227,7 +227,7 @@ namespace Lysis
 
     public class Native : Signature
     {
-        int index_;
+        private int index_;
 
         public Native(string name, int index)
           : base(name)
@@ -260,15 +260,15 @@ namespace Lysis
 
     public class Variable
     {
-        int addr_;
-        uint tag_id_;
-        Tag tag_;
-        uint codeStart_;
-        uint codeEnd_;
-        VariableType type_;
-        Scope scope_;
-        string name_;
-        Dimension[] dims_;
+        private int addr_;
+        private uint tag_id_;
+        private Tag tag_;
+        private uint codeStart_;
+        private uint codeEnd_;
+        private VariableType type_;
+        private Scope scope_;
+        private string name_;
+        private Dimension[] dims_;
 
         public Variable(int addr, int tag_id, Tag tag, uint codeStart,
                         uint codeEnd, VariableType type, Scope scope,
@@ -302,9 +302,9 @@ namespace Lysis
 
     public class Function : Signature
     {
-        uint addr_;
-        uint codeStart_;
-        uint codeEnd_;
+        private uint addr_;
+        private uint codeStart_;
+        private uint codeEnd_;
 
         public Function(uint addr, uint codeStart, uint codeEnd, string name, Tag tag)
           : base(name)

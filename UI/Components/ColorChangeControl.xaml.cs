@@ -18,7 +18,7 @@ namespace SPCode.UI.Components
             remove { RemoveHandler(ColorChangedEvent, value); }
         }
 
-        bool RaiseEventAllowed = false;
+        private bool RaiseEventAllowed = false;
         public ColorChangeControl()
         {
             InitializeComponent();

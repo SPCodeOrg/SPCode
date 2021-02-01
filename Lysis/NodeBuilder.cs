@@ -6,7 +6,7 @@ namespace Lysis
 {
     public class NodeBuilder
     {
-        SourcePawnFile file_;
+        private SourcePawnFile file_;
         private LGraph graph_;
         private NodeBlock[] blocks_;
 

@@ -10,7 +10,7 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
-        bool IsSearchFieldOpen;
+        private bool IsSearchFieldOpen;
 
         private void ToggleSearchField()
         {

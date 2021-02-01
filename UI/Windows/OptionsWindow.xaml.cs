@@ -16,15 +16,14 @@ namespace SPCode.UI.Windows
     /// </summary>
     public partial class OptionsWindow
     {
-        readonly string[] AvailableAccents =
+        private readonly string[] AvailableAccents =
         {
             "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald", "Teal", "Cyan", "Cobalt", "Indigo", "Violet",
             "Pink", "Magenta", "Crimson", "Amber",
             "Yellow", "Brown", "Olive", "Steel", "Mauve", "Taupe", "Sienna"
         };
-
-        bool RestartTextIsShown;
-        readonly bool AllowChanging;
+        private bool RestartTextIsShown;
+        private readonly bool AllowChanging;
 
         public OptionsWindow()
         {

@@ -85,7 +85,7 @@ namespace Lysis
             return outString.ToString();
         }
 
-        static void DumpMethod(SourcePawnFile file, SourceBuilder source, uint addr)
+        private static void DumpMethod(SourcePawnFile file, SourceBuilder source, uint addr)
         {
             var mp = new MethodParser(file, addr);
             var graph = mp.parse();
@@ -149,7 +149,7 @@ namespace Lysis
             //System.Console.In.Read();
         }
 
-        static Function FunctionByName(SourcePawnFile file, string name)
+        private static Function FunctionByName(SourcePawnFile file, string name)
         {
             for (var i = 0; i < file.functions.Length; i++)
             {

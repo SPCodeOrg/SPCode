@@ -14,7 +14,7 @@ namespace SPCode.UI.Components
     /// </summary>
     public partial class DASMElement : UserControl
     {
-        double LineHeight = 0.0;
+        private double LineHeight = 0.0;
 
         private SmxFile file_;
         private StringBuilder detail_buffer_ = new StringBuilder();
