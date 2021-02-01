@@ -1,8 +1,8 @@
 // vim set: ts=4 sw=4 tw=99 et:
-using SourcePawn;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -1426,7 +1426,10 @@ namespace Lysis
         public override void replaceSuccessor(int i, LBlock block)
         {
             if (i == 0)
+            {
                 defaultCase_ = block;
+            }
+
             if (cases_.Count >= i && i > 0)
             {
                 cases_[i - 1].target = block;
@@ -1439,7 +1442,10 @@ namespace Lysis
         public override LBlock getSuccessor(int i)
         {
             if (i == 0)
+            {
                 return defaultCase_;
+            }
+
             return cases_[i - 1].target;
         }
         public int numCases
@@ -1457,7 +1463,9 @@ namespace Lysis
             {
                 text += getCase(i).target.id;
                 if (i != numCases - 1)
+                {
                     text += ",";
+                }
             }
             tw.Write("switch.pri -> " + text);
         }

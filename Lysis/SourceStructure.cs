@@ -1,7 +1,7 @@
-﻿using SourcePawn;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -324,7 +324,9 @@ namespace Lysis
             for (int i = joinStack_.Count - 1; i >= 0; i--)
             {
                 if (joinStack_.ElementAt(i) == block)
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -333,9 +335,14 @@ namespace Lysis
         {
             NodeBlock trueTarget = BlockAnalysis.EffectiveTarget(jcc.trueTarget);
             if (trueTarget.lir.numPredecessors == 1)
+            {
                 return false;
+            }
+
             if (pred.lir.idominated.Length > 3)
+            {
                 return true;
+            }
 
             // Hack... sniff out the case we care about, the true target
             // probably having a conditional.
@@ -402,8 +409,7 @@ namespace Lysis
                     if (BlockAnalysis.EffectiveTarget(childJcc.trueTarget) != earlyExit)
                     {
                         // Parse a sub-expression.
-                        NodeBlock innerJoin;
-                        LogicChain rhs = buildLogicChain(exprBlock, earlyExit, out innerJoin);
+                        LogicChain rhs = buildLogicChain(exprBlock, earlyExit, out var innerJoin);
                         AssertInnerJoinValidity(innerJoin, earlyExit);
                         chain.append(rhs);
                         exprBlock = innerJoin;
@@ -441,17 +447,23 @@ namespace Lysis
                     // gone a tad too far. This is the case for a simple
                     // expression like (a && b) || c.
                     if (earlyExitStop != null && SingleTarget(earlyExitStop) == condBlock)
+                    {
                         return chain;
+                    }
 
                     // If the true connects back to the early exit stop, we're
                     // done.
                     if (BlockAnalysis.EffectiveTarget(condJcc.trueTarget) == earlyExitStop)
+                    {
                         return chain;
+                    }
 
                     // If the true target does not have a shared target, we're
                     // done parsing the whole logic chain.
                     if (!HasSharedTarget(condBlock, condJcc))
+                    {
                         return chain;
+                    }
 
                     // Otherwise, there is another link in the chain. This link
                     // joins the existing chain to a new subexpression, which
@@ -460,8 +472,7 @@ namespace Lysis
                     earlyExit = BlockAnalysis.EffectiveTarget(condJcc.trueTarget);
 
                     // Build the right-hand side of the expression.
-                    NodeBlock innerJoin;
-                    LogicChain rhs = buildLogicChain(condJcc.falseTarget, earlyExit, out innerJoin);
+                    LogicChain rhs = buildLogicChain(condJcc.falseTarget, earlyExit, out var innerJoin);
                     AssertInnerJoinValidity(innerJoin, earlyExit);
 
                     // Build the full expression.
@@ -496,9 +507,15 @@ namespace Lysis
             if (block.lir.idominated.Length == 2)
             {
                 if (jcc.trueTarget != BlockAnalysis.EffectiveTarget(jcc.trueTarget))
+                {
                     return jcc.trueTarget;
+                }
+
                 if (jcc.falseTarget != BlockAnalysis.EffectiveTarget(jcc.falseTarget))
+                {
                     return jcc.falseTarget;
+                }
+
                 return null;
             }
             return graph_[block.lir.idominated[2].id];
@@ -511,8 +528,7 @@ namespace Lysis
             // |n| has a target to a shared "success" block, setting a
             // phony variable. We decompose this giant mess into the intended
             // sequence of expressions.
-            NodeBlock join;
-            LogicChain chain = buildLogicChain(block, null, out join);
+            LogicChain chain = buildLogicChain(block, null, out var join);
 
             DJumpCondition finalJcc = (DJumpCondition)join.nodes.last;
             //Debug.Assert(finalJcc.spop == SPOpcode.jzer);
@@ -536,13 +552,17 @@ namespace Lysis
             // If there is no join block, both arms terminate control flow,
             // eliminate one arm and use the other as a join point.
             if (joinBlock == null)
+            {
                 joinBlock = falseBlock;
+            }
 
             if (join.lir.idominated.Length == 2 ||
                 BlockAnalysis.EffectiveTarget(falseBlock) == joinBlock)
             {
                 if (join.lir.idominated.Length == 3)
+                {
                     joinBlock = BlockAnalysis.EffectiveTarget(falseBlock);
+                }
 
                 // One-armed structure.
                 pushScope(joinBlock);
@@ -567,7 +587,9 @@ namespace Lysis
         private IfBlock traverseIf(NodeBlock block, DJumpCondition jcc)
         {
             if (HasSharedTarget(block, jcc))
+            {
                 return traverseComplexIf(block, jcc);
+            }
 
             NodeBlock trueTarget = (jcc.spop == SPOpcode.jzer) ? jcc.falseTarget : jcc.trueTarget;
             NodeBlock falseTarget = (jcc.spop == SPOpcode.jzer) ? jcc.trueTarget : jcc.falseTarget;
@@ -576,12 +598,16 @@ namespace Lysis
             // If there is no join block (both arms terminate control flow),
             // eliminate one arm and use the other as a join point.
             if (joinTarget == null)
+            {
                 joinTarget = falseTarget;
+            }
 
             // If the false target is equivalent to the join point, eliminate
             // it.
             if (BlockAnalysis.EffectiveTarget(falseTarget) == joinTarget)
+            {
                 falseTarget = null;
+            }
 
             // If the true target is equivalent to the join point, promote
             // the false target to the true target and undo the inversion.
@@ -600,7 +626,9 @@ namespace Lysis
 
             ControlBlock joinArm = traverseJoin(joinTarget);
             if (falseTarget == null)
+            {
                 return new IfBlock(block, invert, trueArm, joinArm);
+            }
 
             pushScope(joinTarget);
             ControlBlock falseArm = traverseBlock(falseTarget);
@@ -688,7 +716,9 @@ namespace Lysis
             {
                 DJumpCondition jcc = (DJumpCondition)last;
                 if (HasSharedTarget(block, jcc))
+                {
                     chain = buildLogicChain(block, null, out effectiveHeader);
+                }
             }
 
             last = effectiveHeader.nodes.last;
@@ -699,8 +729,7 @@ namespace Lysis
                 // Assert that the backedge is a straight jump.
                 //Debug.Assert(BlockAnalysis.GetSingleTarget(graph_[block.lir.backedge.id]) == block);
 
-                NodeBlock join, body, cond;
-                ControlType type = findLoopJoinAndBody(block, effectiveHeader, out join, out body, out cond);
+                ControlType type = findLoopJoinAndBody(block, effectiveHeader, out var join, out var body, out var cond);
                 ControlBlock joinArm = traverseBlock(join);
 
                 ControlBlock bodyArm = null;
@@ -714,7 +743,10 @@ namespace Lysis
                 }
 
                 if (chain != null)
+                {
                     return new WhileLoop(type, chain, bodyArm, joinArm);
+                }
+
                 return new WhileLoop(type, cond, bodyArm, joinArm);
             }
 
@@ -725,11 +757,15 @@ namespace Lysis
         {
             var dominators = new List<LBlock>();
             for (int i = 0; i < block.lir.idominated.Length; i++)
+            {
                 dominators.Add(block.lir.idominated[i]);
+            }
 
             dominators.Remove(switch_.defaultCase);
             for (int i = 0; i < switch_.numCases; i++)
+            {
                 dominators.Remove(switch_.getCase(i).target);
+            }
 
             NodeBlock join = null;
             if (dominators.Count > 0)
@@ -740,7 +776,9 @@ namespace Lysis
 
             ControlBlock joinArm = null;
             if (join != null)
+            {
                 joinArm = traverseBlock(join);
+            }
 
             pushScope(join);
             var cases = new List<SwitchBlock.Case>();
@@ -758,7 +796,10 @@ namespace Lysis
         private ControlBlock traverseJoin(NodeBlock block)
         {
             if (isJoin(block))
+            {
                 return null;
+            }
+
             return traverseBlock(block);
         }
 
@@ -772,7 +813,9 @@ namespace Lysis
             DNode last = block.nodes.last;
 
             if (last.type == NodeType.JumpCondition)
+            {
                 return traverseIf(block, (DJumpCondition)last);
+            }
 
             if (last.type == NodeType.Jump)
             {
@@ -781,13 +824,17 @@ namespace Lysis
 
                 ControlBlock next = null;
                 if (!isJoin(target))
+                {
                     next = traverseBlock(target);
+                }
 
                 return new StatementBlock(block, next);
             }
 
             if (last.type == NodeType.Switch)
+            {
                 return traverseSwitch(block, (DSwitch)last);
+            }
 
             //Debug.Assert(last.type == NodeType.Return);
             return new ReturnBlock(block);

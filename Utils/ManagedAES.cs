@@ -78,14 +78,21 @@ namespace SPCode.Utils
                 CreateSalt();
             }
             if (!Program.OptionsObject.Program_UseHardwareSalts)
+            {
                 return key;
+            }
+
             byte[] buffer = new byte[16];
             for (int i = 0; i < 16; ++i)
             {
                 if (Salt != null && i < Salt.Length)
+                {
                     buffer[i] = (byte)(key[i] ^ (uint)Salt[i]);
+                }
                 else
+                {
                     buffer[i] = key[i];
+                }
             }
             return buffer;
         }

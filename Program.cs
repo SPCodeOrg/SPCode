@@ -45,10 +45,10 @@ namespace SPCode
 #if DEBUG     
             System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level =
                 System.Diagnostics.SourceLevels.Critical;
+
 #endif
 
-            bool mutexReserved;
-            using (new Mutex(true, "SPCodeGlobalMutex", out mutexReserved))
+            using (new Mutex(true, "SPCodeGlobalMutex", out var mutexReserved))
             {
                 if (mutexReserved)
                 {
@@ -90,22 +90,28 @@ namespace SPCode
                     Translations = new TranslationProvider();
                     Translations.LoadLanguage(OptionsObject.Language, true);
                     foreach (var arg in args)
+                    {
                         if (arg.ToLowerInvariant() == "-rcck") //ReCreateCryptoKey
                         {
                             OptionsObject.ReCreateCryptoKey();
                             MakeRCCKAlert();
                         }
+                    }
 
                     Configs = ConfigLoader.Load();
                     for (var i = 0; i < Configs.Length; ++i)
+                    {
                         if (Configs[i].Name == OptionsObject.Program_SelectedConfig)
                         {
                             SelectedConfig = i;
                             break;
                         }
+                    }
 
                     if (!OptionsObject.Program_UseHardwareAcceleration)
+                    {
                         RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+                    }
 #if !DEBUG
                         if (ProgramIsNew)
                             if (Translations.AvailableLanguageIDs.Length > 0)
@@ -210,7 +216,11 @@ namespace SPCode
 
         public static void MakeRCCKAlert()
         {
-            if (RCCKMade) return;
+            if (RCCKMade)
+            {
+                return;
+            }
+
             RCCKMade = true;
             MessageBox.Show(
                 "All FTP/RCon passwords are now encrypted wrong!" + Environment.NewLine + "You have to replace them!",
@@ -223,7 +233,10 @@ namespace SPCode
             for (var i = 0; i < files.Length; ++i)
             {
                 var fInfo = new FileInfo(files[i]);
-                if (fInfo.Name.StartsWith("updater_", StringComparison.CurrentCultureIgnoreCase)) fInfo.Delete();
+                if (fInfo.Name.StartsWith("updater_", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    fInfo.Delete();
+                }
             }
         }
 
@@ -252,7 +265,11 @@ namespace SPCode
             var eNumber = 1;
             for (; ; )
             {
-                if (e == null) break;
+                if (e == null)
+                {
+                    break;
+                }
+
                 outString.AppendLine("Exception " + eNumber);
                 outString.AppendLine("Message:");
                 outString.AppendLine(e.Message);

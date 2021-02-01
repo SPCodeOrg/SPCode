@@ -1,8 +1,8 @@
-﻿using Lysis;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using Lysis;
 
 namespace SourcePawn
 {
@@ -258,7 +258,10 @@ namespace SourcePawn
         {
             byte[] shadow = new byte[length];
             for (int i = 0; i < length; i++)
+            {
                 shadow[i] = bytes[offset + i];
+            }
+
             return shadow;
         }
 
@@ -412,7 +415,10 @@ namespace SourcePawn
             BinaryReader reader = new BinaryReader(new MemoryStream(binary));
             header_.magic = reader.ReadUInt32();
             if (header_.magic != MAGIC)
+            {
                 throw new Exception("bad magic - not SourcePawn file");
+            }
+
             header_.version = reader.ReadUInt16();
             header_.compression = (Compression)reader.ReadByte();
             header_.disksize = (int)reader.ReadUInt32();
@@ -434,7 +440,9 @@ namespace SourcePawn
                     {
                         byte[] bits = new byte[header_.imagesize];
                         for (int i = 0; i < header_.dataoffs; i++)
+                        {
                             bits[i] = binary[i];
+                        }
 
                         int uncompressedSize = header_.imagesize - header_.dataoffs;
                         int compressedSize = header_.disksize - header_.dataoffs;
@@ -623,9 +631,13 @@ namespace SourcePawn
                         Tag tag = tagid >= tags_.Length ? null : tags_[tagid];
                         Variable var = new Variable(addr, tagid, tag, codestart, codeend, type, vclass, name, dims);
                         if (vclass == Scope.Global)
+                        {
                             globals.Add(var);
+                        }
                         else
+                        {
                             locals.Add(var);
+                        }
                     }
                 }
 
@@ -685,7 +697,9 @@ namespace SourcePawn
                     }
 
                     if ((int)index > +natives_.Length)
+                    {
                         continue;
+                    }
 
                     natives_[index].setDebugInfo(tagid, tag, args);
                 }
@@ -701,7 +715,10 @@ namespace SourcePawn
                 {
                     Variable var = lookupVariable(fun.address, argOffset);
                     if (var == null)
+                    {
                         break;
+                    }
+
                     Argument arg = new Argument(var.type, var.name, (int)var.tag.tag_id, var.tag, var.dims);
                     args.Add(arg);
                     argOffset += 4;
@@ -732,7 +749,9 @@ namespace SourcePawn
         public string lookupFile(uint address)
         {
             if (debugFiles_ == null)
+            {
                 return null;
+            }
 
             int high = debugFiles_.Length;
             int low = -1;
@@ -741,19 +760,28 @@ namespace SourcePawn
             {
                 int mid = (low + high) >> 1;
                 if (debugFiles_[mid].address <= address)
+                {
                     low = mid;
+                }
                 else
+                {
                     high = mid;
+                }
             }
             if (low == -1)
+            {
                 return null;
+            }
+
             return debugFiles_[low].name;
         }
 
         public int lookupLine(uint address)
         {
             if (debugLines_ == null)
+            {
                 return -1;
+            }
 
             int high = debugLines_.Length;
             int low = -1;
@@ -762,12 +790,19 @@ namespace SourcePawn
             {
                 int mid = (low + high) >> 1;
                 if (debugLines_[mid].address <= address)
+                {
                     low = mid;
+                }
                 else
+                {
                     high = mid;
+                }
             }
             if (low == -1)
+            {
                 return -1;
+            }
+
             return debugLines_[low].line;
         }
 
@@ -777,9 +812,14 @@ namespace SourcePawn
             {
                 Variable var = variables_[i];
                 if (pc != var.codeStart)
+                {
                     continue;
+                }
+
                 if (var.scope == scope)
+                {
                     return var;
+                }
             }
             return null;
         }
@@ -804,7 +844,9 @@ namespace SourcePawn
             {
                 Variable var = globals_[i];
                 if (var.address == address)
+                {
                     return var;
+                }
             }
             return null;
         }

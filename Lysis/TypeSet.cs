@@ -131,18 +131,27 @@ namespace Lysis
         public TypeUnit load()
         {
             if (kind_ == Kind.Cell)
+            {
                 return null;
+            }
+
             if (kind_ == Kind.Reference)
             {
                 if (ref_.kind == Kind.Array)
+                {
                     return ref_.load();
+                }
+
                 return ref_;
             }
             //Debug.Assert(kind_ == Kind.Array);
             if (dims_ == 1)
             {
                 if (type_.isString)
+                {
                     return new TypeUnit(new PawnType(CellType.Character));
+                }
+
                 return new TypeUnit(type_);
             }
             return new TypeUnit(new TypeUnit(type_, dims_ - 1));
@@ -151,20 +160,33 @@ namespace Lysis
         public bool equalTo(TypeUnit other)
         {
             if (kind_ != other.kind_)
+            {
                 return false;
+            }
+
             if (kind_ == Kind.Array && dims_ != other.dims_)
+            {
                 return false;
+            }
+
             if (kind_ == Kind.Reference)
             {
                 if ((ref_ == null) != (other.ref_ == null))
+                {
                     return false;
+                }
+
                 if (ref_ != null && !ref_.equalTo(other.ref_))
+                {
                     return false;
+                }
             }
             else
             {
                 if (!type_.equalTo(other.type_))
+                {
                     return false;
+                }
             }
             return true;
         }
@@ -234,7 +256,9 @@ namespace Lysis
                 for (int i = 0; i < types_.Count; i++)
                 {
                     if (types_[i].equalTo(tu))
+                    {
                         return;
+                    }
                 }
             }
             types_.Add(tu);
@@ -242,7 +266,9 @@ namespace Lysis
         public void addTypes(TypeSet other)
         {
             for (int i = 0; i < other.numTypes; i++)
+            {
                 addType(other[i]);
+            }
         }
     };
 }

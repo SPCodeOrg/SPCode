@@ -1,8 +1,8 @@
-﻿using SourcepawnCondenser.SourcemodDefinition;
-using SourcepawnCondenser.Tokenizer;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SourcepawnCondenser.SourcemodDefinition;
+using SourcepawnCondenser.Tokenizer;
 
 namespace SourcepawnCondenser
 {

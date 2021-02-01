@@ -177,8 +177,13 @@ namespace SPCode.Interop
         private static string ReadAttributeStringSafe(ref XmlNode node, string attributeName, string defaultValue = "")
         {
             for (var i = 0; i < node.Attributes.Count; ++i)
+            {
                 if (node.Attributes[i].Name == attributeName)
+                {
                     return node.Attributes[i].Value;
+                }
+            }
+
             return defaultValue;
         }
     }
@@ -225,7 +230,11 @@ namespace SPCode.Interop
 
         public SMDefinition GetSMDef()
         {
-            if (SMDef == null) LoadSMDef();
+            if (SMDef == null)
+            {
+                LoadSMDef();
+            }
+
             return SMDef;
         }
 
@@ -236,7 +245,11 @@ namespace SPCode.Interop
 
         public void LoadSMDef()
         {
-            if (SMDef != null) return;
+            if (SMDef != null)
+            {
+                return;
+            }
+
             try
             {
                 var def = new SMDefinition();

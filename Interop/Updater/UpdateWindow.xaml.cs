@@ -26,7 +26,10 @@ namespace SPCode.Interop.Updater
             updateInfo = info;
             InitializeComponent();
             DescriptionBox.Text = updateInfo.Release.Body;
-            if (info.SkipDialog) StartUpdate();
+            if (info.SkipDialog)
+            {
+                StartUpdate();
+            }
         }
 
         private void ActionYesButton_Click(object sender, RoutedEventArgs e)
@@ -64,7 +67,10 @@ namespace SPCode.Interop.Updater
 #else
             var asset = updateInfo.Asset;
 #endif
-            if (File.Exists(asset.Name)) File.Delete(asset.Name);
+            if (File.Exists(asset.Name))
+            {
+                File.Delete(asset.Name);
+            }
 
             try
             {

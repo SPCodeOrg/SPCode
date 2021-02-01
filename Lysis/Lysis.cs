@@ -1,7 +1,7 @@
-﻿using SourcePawn;
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -154,7 +154,9 @@ namespace Lysis
             for (int i = 0; i < file.functions.Length; i++)
             {
                 if (file.functions[i].name == name)
+                {
                     return file.functions[i];
+                }
             }
             return null;
         }

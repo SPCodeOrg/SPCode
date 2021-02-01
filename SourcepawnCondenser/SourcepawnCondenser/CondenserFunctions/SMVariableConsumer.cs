@@ -1,6 +1,6 @@
-﻿using SourcepawnCondenser.SourcemodDefinition;
+﻿using System.Collections.Generic;
+using SourcepawnCondenser.SourcemodDefinition;
 using SourcepawnCondenser.Tokenizer;
-using System.Collections.Generic;
 
 namespace SourcepawnCondenser
 {
@@ -26,7 +26,9 @@ namespace SourcepawnCondenser
                     {
                         index = i;
                         if (t[position + i].Kind == TokenKind.Identifier)
+                        {
                             break;
+                        }
 
                         if (t[position + i].Value == "[" && t[position + i + 1].Value == "]")
                         {
@@ -41,7 +43,9 @@ namespace SourcepawnCondenser
 
                     if (t[position + index + 1].Kind != TokenKind.Assignment ||
                         t[position + index + 2].Kind != TokenKind.New || t[position + index + 3].Value != varType)
+                    {
                         return -1;
+                    }
 
                     for (var i = index + 4; i < length - 2; i += 3)
                     {
@@ -76,7 +80,9 @@ namespace SourcepawnCondenser
                 }
 
                 if (t[position + 1].Kind != TokenKind.Identifier)
+                {
                     return -1;
+                }
 
                 varName = t[position + 1].Value;
 
@@ -118,13 +124,17 @@ namespace SourcepawnCondenser
                 {
                     index = i;
                     if (t[position + i].Kind == TokenKind.Semicolon)
+                    {
                         break;
+                    }
 
                     if (t[position + i].Value == "[" && t[position + i + 2].Value == "]")
                     {
                         if (t[position + 1].Kind != TokenKind.Number &&
                             t[position + 1].Kind != TokenKind.Identifier)
+                        {
                             return -1;
+                        }
 
                         dimensions++;
                         i += 3;
@@ -172,14 +182,19 @@ namespace SourcepawnCondenser
                             if (t[position + i].Kind == TokenKind.BraceClose)
                             {
                                 if (t[position + i + 1].Kind != TokenKind.Semicolon)
+                                {
                                     return -1;
+                                }
+
                                 foundClose = true;
                                 break;
                             }
                         }
 
                         if (!foundClose)
+                        {
                             return -1;
+                        }
 
                         def.Variables.Add(new SMVariable
                         {
@@ -198,7 +213,10 @@ namespace SourcepawnCondenser
                     if (t[position + index + 1].Kind == TokenKind.Quote)
                     {
                         if (t[position + index + 2].Kind != TokenKind.Semicolon)
+                        {
                             return -1;
+                        }
+
                         def.Variables.Add(new SMVariable
                         {
                             Index = startIndex,

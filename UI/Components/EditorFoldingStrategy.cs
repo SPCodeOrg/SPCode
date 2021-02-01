@@ -11,14 +11,13 @@ namespace SPCode.UI.Components
 
         public SPFoldingStrategy()
         {
-            this.OpeningBrace = '{';
-            this.ClosingBrace = '}';
+            OpeningBrace = '{';
+            ClosingBrace = '}';
         }
 
         public void UpdateFoldings(FoldingManager manager, TextDocument document)
         {
-            int firstErrorOffset;
-            IEnumerable<NewFolding> newFoldings = CreateNewFoldings(document, out firstErrorOffset);
+            IEnumerable<NewFolding> newFoldings = CreateNewFoldings(document, out var firstErrorOffset);
             manager.UpdateFoldings(newFoldings, firstErrorOffset);
         }
 

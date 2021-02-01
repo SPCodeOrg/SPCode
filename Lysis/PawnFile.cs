@@ -37,11 +37,17 @@ namespace Lysis
             List<byte> bytes = new List<byte>();
             int b;
             while ((b = fs.ReadByte()) >= 0)
+            {
                 bytes.Add((byte)b);
+            }
+
             byte[] vec = bytes.ToArray();
             uint magic = BitConverter.ToUInt32(vec, 0);
             if (magic == SourcePawn.SourcePawnFile.MAGIC)
+            {
                 return new SourcePawn.SourcePawnFile(vec);
+            }
+
             throw new Exception("not a .smx file!");
         }
 
@@ -55,7 +61,9 @@ namespace Lysis
             {
                 Function f = functions_[i];
                 if (pc >= f.codeStart && pc < f.codeEnd)
+                {
                     return f;
+                }
             }
             return null;
         }
@@ -64,7 +72,9 @@ namespace Lysis
             for (int i = 0; i < publics_.Length; i++)
             {
                 if (publics_[i].name == name)
+                {
                     return publics_[i];
+                }
             }
             return null;
         }
@@ -74,7 +84,9 @@ namespace Lysis
             for (int i = 0; i < publics_.Length; i++)
             {
                 if (publics_[i].address == addr)
+                {
                     return publics_[i];
+                }
             }
             return null;
         }

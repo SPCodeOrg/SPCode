@@ -1,5 +1,5 @@
-﻿using SourcePawn;
-using System;
+﻿using System;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -19,7 +19,9 @@ namespace Lysis
             {
                 block_ = graph_[i];
                 for (NodeList.iterator iter = block_.nodes.begin(); iter.more(); iter.next())
+                {
                     iter.node.accept(this);
+                }
             }
         }
         public override void visit(DConstant node)
@@ -69,7 +71,9 @@ namespace Lysis
             DNode abase = aref.abase;
             TypeSet baseTypes = abase.typeSet;
             for (int i = 0; i < baseTypes.numTypes; i++)
+            {
                 aref.addType(baseTypes[i]);
+            }
         }
         public override void visit(DStore store)
         {
@@ -82,7 +86,10 @@ namespace Lysis
                 TypeUnit tu = fromTypes[i];
                 TypeUnit actual = tu.load();
                 if (actual == null)
+                {
                     actual = tu;
+                }
+
                 load.addType(actual);
             }
         }
@@ -92,7 +99,9 @@ namespace Lysis
         public override void visit(DGlobal global)
         {
             if (global.var == null)
+            {
                 return;
+            }
 
             TypeUnit tu = TypeUnit.FromVariable(global.var);
             global.addType(tu);
@@ -121,7 +130,9 @@ namespace Lysis
             {
                 block_ = graph_[i];
                 for (NodeList.reverse_iterator iter = block_.nodes.rbegin(); iter.more(); iter.next())
+                {
                     iter.node.accept(this);
+                }
             }
         }
 
@@ -135,12 +146,20 @@ namespace Lysis
         {
             Variable global = graph_.file.lookupGlobal(node.value);
             if (global == null)
+            {
                 graph_.file.lookupVariable(node.pc, node.value, Scope.Static);
+            }
+
             if (global != null)
+            {
                 return new DGlobal(global);
+            }
 
             if (tu != null && tu.type.isString)
+            {
                 return new DString(graph_.file.stringFromData(node.value));
+            }
+
             return null;
         }
 
@@ -195,7 +214,10 @@ namespace Lysis
             }
 
             if (replacement == null && node.usedAsReference)
+            {
                 replacement = ConstantToReference(node, null);
+            }
+
             if (replacement != null)
             {
                 block_.nodes.insertAfter(node, replacement);
@@ -205,7 +227,9 @@ namespace Lysis
         public override void visit(DDeclareLocal local)
         {
             if (local.value != null && local.var == null)
+            {
                 local.value.addTypes(local.typeSet);
+            }
         }
         public override void visit(DLocalRef lref)
         {
@@ -238,7 +262,9 @@ namespace Lysis
 
                 TypeUnit tu = TypeUnit.FromArgument(arg);
                 if (tu != null)
+                {
                     node.addType(tu);
+                }
             }
 
             // Peek ahead for constants.
@@ -249,7 +275,9 @@ namespace Lysis
                 {
                     DNode node = call.getOperand(i);
                     if (node.type != NodeType.Constant)
+                    {
                         continue;
+                    }
 
                     DConstant constNode = (DConstant)node;
                     Variable global = graph_.file.lookupGlobal(constNode.value);
@@ -276,7 +304,9 @@ namespace Lysis
         public override void visit(DBinary binary)
         {
             if (binary.spop == SPOpcode.add && binary.usedAsReference)
+            {
                 binary.lhs.setUsedAsReference();
+            }
         }
         public override void visit(DBoundsCheck check)
         {

@@ -17,14 +17,16 @@ namespace SPCode.UI.Components
             if (this.result != result)
             {
                 this.result = result;
-                textView.InvalidateLayer(this.Layer);
+                textView.InvalidateLayer(Layer);
             }
         }
 
         public BracketHighlightRenderer(TextView textView)
         {
             if (textView == null)
+            {
                 throw new ArgumentNullException("textView");
+            }
 
             this.textView = textView;
 
@@ -41,8 +43,10 @@ namespace SPCode.UI.Components
 
         public void Draw(TextView textView, DrawingContext drawingContext)
         {
-            if (this.result == null)
+            if (result == null)
+            {
                 return;
+            }
 
             BackgroundGeometryBuilder builder = new BackgroundGeometryBuilder();
 
@@ -83,10 +87,10 @@ namespace SPCode.UI.Components
         public BracketSearchResult(int openingBracketOffset, int openingBracketLength,
                                    int closingBracketOffset, int closingBracketLength)
         {
-            this.OpeningBracketOffset = openingBracketOffset;
-            this.OpeningBracketLength = openingBracketLength;
-            this.ClosingBracketOffset = closingBracketOffset;
-            this.ClosingBracketLength = closingBracketLength;
+            OpeningBracketOffset = openingBracketOffset;
+            OpeningBracketLength = openingBracketLength;
+            ClosingBracketOffset = closingBracketOffset;
+            ClosingBracketLength = closingBracketLength;
         }
     }
 
@@ -103,11 +107,15 @@ namespace SPCode.UI.Components
                 int index = openingBrackets.IndexOf(c);
                 int otherOffset = -1;
                 if (index > -1)
+                {
                     otherOffset = SearchBracketForward(document, offset, openingBrackets[index], closingBrackets[index]);
+                }
 
                 index = closingBrackets.IndexOf(c);
                 if (index > -1)
+                {
                     otherOffset = SearchBracketBackward(document, offset - 2, openingBrackets[index], closingBrackets[index]);
+                }
 
                 if (otherOffset > -1)
                 {
@@ -124,10 +132,16 @@ namespace SPCode.UI.Components
         void SearchDefinition(IDocument document, BracketSearchResult result)
         {
             if (document.GetCharAt(result.OpeningBracketOffset) != '{')
+            {
                 return;
+            }
+
             var documentLine = document.GetLineByOffset(result.OpeningBracketOffset);
             while (documentLine != null && IsBracketOnly(document, documentLine))
+            {
                 documentLine = documentLine.PreviousLine;
+            }
+
             if (documentLine != null)
             {
                 result.DefinitionHeaderOffset = documentLine.Offset;
@@ -151,7 +165,9 @@ namespace SPCode.UI.Components
             for (int i = offset - 1; i > 0; --i)
             {
                 if (document.GetCharAt(i) == '\n')
+                {
                     return i + 1;
+                }
             }
             return 0;
         }
@@ -198,11 +214,18 @@ namespace SPCode.UI.Components
                         }
                         break;
                     case '\'':
-                        if (!inString) inChar = !inChar;
+                        if (!inString)
+                        {
+                            inChar = !inChar;
+                        }
+
                         break;
                     case '\\':
                         if ((inString && !verbatim) || inChar)
+                        {
                             ++i;
+                        }
+
                         break;
                 }
             }
@@ -214,10 +237,16 @@ namespace SPCode.UI.Components
         #region SearchBracketBackward
         int SearchBracketBackward(IDocument document, int offset, char openBracket, char closingBracket)
         {
-            if (offset + 1 >= document.TextLength) return -1;
+            if (offset + 1 >= document.TextLength)
+            {
+                return -1;
+            }
 
             int quickResult = QuickSearchBracketBackward(document, offset, openBracket, closingBracket);
-            if (quickResult >= 0) return quickResult;
+            if (quickResult >= 0)
+            {
+                return quickResult;
+            }
 
             int linestart = ScanLineStart(document, offset + 1);
 
@@ -242,7 +271,11 @@ namespace SPCode.UI.Components
                     case '\n':
                         lineComment = false;
                         inChar = false;
-                        if (!verbatim) inString = false;
+                        if (!verbatim)
+                        {
+                            inString = false;
+                        }
+
                         break;
                     case '/':
                         if (blockComment)
@@ -297,7 +330,10 @@ namespace SPCode.UI.Components
                         break;
                     case '\\':
                         if ((inString && !verbatim) || inChar)
+                        {
                             ++i;
+                        }
+
                         break;
                     default:
                         if (ch == openBracket)
@@ -312,13 +348,19 @@ namespace SPCode.UI.Components
                             if (!(inString || inChar || lineComment || blockComment))
                             {
                                 if (bracketStack.Count > 0)
+                                {
                                     bracketStack.Pop();
+                                }
                             }
                         }
                         break;
                 }
             }
-            if (bracketStack.Count > 0) return (int)bracketStack.Pop();
+            if (bracketStack.Count > 0)
+            {
+                return (int)bracketStack.Pop();
+            }
+
             return -1;
         }
         #endregion
@@ -333,15 +375,24 @@ namespace SPCode.UI.Components
             bool lineComment = false;
             bool blockComment = false;
 
-            if (offset < 0) return -1;
+            if (offset < 0)
+            {
+                return -1;
+            }
 
             int quickResult = QuickSearchBracketForward(document, offset, openBracket, closingBracket);
-            if (quickResult >= 0) return quickResult;
+            if (quickResult >= 0)
+            {
+                return quickResult;
+            }
 
             int linestart = ScanLineStart(document, offset);
 
             int starttype = GetStartType(document, linestart, offset);
-            if (starttype != 0) return -1;
+            if (starttype != 0)
+            {
+                return -1;
+            }
 
             int brackets = 1;
 
@@ -354,7 +405,11 @@ namespace SPCode.UI.Components
                     case '\n':
                         lineComment = false;
                         inChar = false;
-                        if (!verbatim) inString = false;
+                        if (!verbatim)
+                        {
+                            inString = false;
+                        }
+
                         break;
                     case '/':
                         if (blockComment)
@@ -406,7 +461,10 @@ namespace SPCode.UI.Components
                         break;
                     case '\\':
                         if ((inString && !verbatim) || inChar)
+                        {
                             ++offset; // skip next character
+                        }
+
                         break;
                     default:
                         if (ch == openBracket)
@@ -444,7 +502,10 @@ namespace SPCode.UI.Components
                 if (ch == openBracket)
                 {
                     ++brackets;
-                    if (brackets == 0) return i;
+                    if (brackets == 0)
+                    {
+                        return i;
+                    }
                 }
                 else if (ch == closingBracket)
                 {
@@ -460,8 +521,15 @@ namespace SPCode.UI.Components
                 }
                 else if (ch == '/' && i > 0)
                 {
-                    if (document.GetCharAt(i - 1) == '/') break;
-                    if (document.GetCharAt(i - 1) == '*') break;
+                    if (document.GetCharAt(i - 1) == '/')
+                    {
+                        break;
+                    }
+
+                    if (document.GetCharAt(i - 1) == '*')
+                    {
+                        break;
+                    }
                 }
             }
             return -1;
@@ -481,7 +549,10 @@ namespace SPCode.UI.Components
                 else if (ch == closingBracket)
                 {
                     --brackets;
-                    if (brackets == 0) return i;
+                    if (brackets == 0)
+                    {
+                        return i;
+                    }
                 }
                 else if (ch == '"')
                 {
@@ -493,11 +564,17 @@ namespace SPCode.UI.Components
                 }
                 else if (ch == '/' && i > 0)
                 {
-                    if (document.GetCharAt(i - 1) == '/') break;
+                    if (document.GetCharAt(i - 1) == '/')
+                    {
+                        break;
+                    }
                 }
                 else if (ch == '*' && i > 0)
                 {
-                    if (document.GetCharAt(i - 1) == '/') break;
+                    if (document.GetCharAt(i - 1) == '/')
+                    {
+                        break;
+                    }
                 }
             }
             return -1;

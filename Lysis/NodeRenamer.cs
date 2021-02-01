@@ -57,9 +57,14 @@
                             if (node.uses.Count <= 1)
                             {
                                 if (node.uses.Count == 1)
+                                {
                                     block.nodes.remove(iter);
+                                }
                                 else
+                                {
                                     iter.next();
+                                }
+
                                 continue;
                             }
                             break;
@@ -107,7 +112,9 @@
         public void rename()
         {
             for (int i = 0; i < graph_.numBlocks; i++)
+            {
                 renameBlock(graph_[i]);
+            }
         }
     }
 }

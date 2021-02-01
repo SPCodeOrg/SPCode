@@ -67,6 +67,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public void AppendFiles(IEnumerable<string> paths)
         {
             foreach (var path in paths)
+            {
                 if (Directory.Exists(path))
                 {
                     var files = Directory.GetFiles(path, "*.inc", SearchOption.AllDirectories);
@@ -85,6 +86,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
                         EnumStructs.AddRange(subDefinition.EnumStructs);
                     }
                 }
+            }
 
             // var editor = Program.MainWindow.GetCurrentEditorElement();
 
@@ -95,7 +97,11 @@ namespace SourcepawnCondenser.SourcemodDefinition
         private void ProduceStringArrays(int caret = -1, List<SMFunction> currentFunctions = null)
         {
             FunctionStrings = new string[Functions.Count];
-            for (var i = 0; i < Functions.Count; ++i) FunctionStrings[i] = Functions[i].Name;
+            for (var i = 0; i < Functions.Count; ++i)
+            {
+                FunctionStrings[i] = Functions[i].Name;
+            }
+
             var methodNames = new List<string>();
             var fieldNames = new List<string>();
             var methodmapNames = new List<string>();
@@ -125,7 +131,10 @@ namespace SourcepawnCondenser.SourcemodDefinition
             EnumStructStrings = enumStructNames.ToArray();
 
             var constantNames = Constants.Select(i => i.Name).ToList();
-            foreach (var e in Enums) constantNames.AddRange(e.Entries);
+            foreach (var e in Enums)
+            {
+                constantNames.AddRange(e.Entries);
+            }
 
             constantNames.AddRange(Defines.Select(i => i.Name));
             constantNames.AddRange(Variables.Select(v => v.Name));
@@ -222,8 +231,12 @@ namespace SourcepawnCondenser.SourcemodDefinition
             var def = new SMDefinition();
             def.MergeDefinitions(this);
             foreach (var definition in definitions)
+            {
                 if (definition != null)
+                {
                     def.MergeDefinitions(definition);
+                }
+            }
 
             def.Sort();
             def.ProduceStringArrays(caret, currentFunctions);
@@ -341,8 +354,11 @@ namespace SourcepawnCondenser.SourcemodDefinition
             var nodeList = new List<ACNode>();
             var length = strings.Length;
             for (var i = 0; i < length; ++i)
+            {
                 nodeList.Add(
                     new ACNode { Name = prefix + strings[i], EntryName = strings[i], IsExecuteable = Executable });
+            }
+
             return nodeList;
         }
 
@@ -363,8 +379,11 @@ namespace SourcepawnCondenser.SourcemodDefinition
             var nodeList = new List<ISNode>();
             var length = strings.Length;
             for (var i = 0; i < length; ++i)
+            {
                 nodeList.Add(
                     new ISNode { Name = prefix + strings[i], EntryName = strings[i], IsExecuteable = Executable });
+            }
+
             return nodeList;
         }
 

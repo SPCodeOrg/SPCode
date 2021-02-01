@@ -1,5 +1,5 @@
-﻿using SourcePawn;
-using System;
+﻿using System;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -92,15 +92,23 @@ namespace Lysis
             // looking for bytecode patterns instead or something, but that would
             // need a whole-program analysis.
             if (call.function.name.Length < 8)
+            {
                 return;
+            }
+
             if (call.function.name.Substring(0, 8) != "operator")
+            {
                 return;
+            }
 
             string op = "";
             for (int i = 8; i < call.function.name.Length; i++)
             {
                 if (call.function.name[i] == '(')
+                {
                     break;
+                }
+
                 op += call.function.name[i];
             }
 
@@ -151,7 +159,10 @@ namespace Lysis
                 case SPOpcode.sub:
                     {
                         if (call.numOperands != 2)
+                        {
                             return;
+                        }
+
                         DBinary binary = new DBinary(spop, call.getOperand(0), call.getOperand(1));
                         call.replaceAllUsesWith(binary);
                         call.removeFromUseChains();
@@ -184,7 +195,9 @@ namespace Lysis
         {
             // We rewrite nodes in forward order so they are collapsed by the time we see their uses.
             for (int i = 0; i < graph_.numBlocks; i++)
+            {
                 rewriteBlock(graph_[i]);
+            }
         }
     }
 }

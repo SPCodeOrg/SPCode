@@ -77,12 +77,18 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
 
         public void FillNullToDefaults()
         {
-            if (Program_CryptoKey == null) ReCreateCryptoKey();
+            if (Program_CryptoKey == null)
+            {
+                ReCreateCryptoKey();
+            }
 
             if (SVersion > Version)
             {
                 Program.ClearUpdateFiles();
-                if (Version < 2) UI_ShowToolBar = false;
+                if (Version < 2)
+                {
+                    UI_ShowToolBar = false;
+                }
 
                 if (Version < 3)
                 {
@@ -91,9 +97,15 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
                     Program_CheckForUpdates = true;
                 }
 
-                if (Version < 4) Editor_ReplaceTabsToWhitespace = false;
+                if (Version < 4)
+                {
+                    Editor_ReplaceTabsToWhitespace = false;
+                }
 
-                if (Version < 5) Program_DynamicISAC = true;
+                if (Version < 5)
+                {
+                    Program_DynamicISAC = true;
+                }
 
                 if (Version < 7)
                 {
@@ -102,7 +114,10 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
                     NormalizeSHColors();
                 }
 
-                if (Version < 8) Editor_AutoCloseBrackets = true;
+                if (Version < 8)
+                {
+                    Editor_AutoCloseBrackets = true;
+                }
 
                 if (Version < 9)
                 {
@@ -119,11 +134,18 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
                     Program.MakeRCCKAlert();
                 }
 
-                if (Version < 10) Program_UseHardwareSalts = true;
+                if (Version < 10)
+                {
+                    Program_UseHardwareSalts = true;
+                }
 
                 if (Version < 11)
+                {
                     if (Program_AccentColor == "Cyan")
+                    {
                         Program_AccentColor = "Blue";
+                    }
+                }
 
                 //new Optionsversion - reset new fields to default
                 Version = SVersion; //then Update Version afterwars

@@ -1,7 +1,7 @@
-﻿using SourcePawn;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Text;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -102,21 +102,39 @@ namespace Lysis
         private string buildTag(PawnType type)
         {
             if (type.type == CellType.Bool)
+            {
                 return "bool ";
+            }
+
             if (type.type == CellType.Float)
+            {
                 return "float ";
+            }
+
             if (type.type == CellType.Tag)
+            {
                 return buildTag(type.tag);
+            }
+
             return "";
         }
         private string buildConTag(PawnType type)
         {
             if (type.type == CellType.Bool)
+            {
                 return "view_as<bool>";
+            }
+
             if (type.type == CellType.Float)
+            {
                 return "view_as<float>";
+            }
+
             if (type.type == CellType.Tag)
+            {
                 return buildConTag(type.tag);
+            }
+
             return "";
         }
 
@@ -151,7 +169,9 @@ namespace Lysis
             Debug.Assert(f != null);
 
             if (file_.lookupPublic(entry.lir.pc) != null)
+            {
                 out_.Append("public ");
+            }
 
             if (f != null)
             {
@@ -167,7 +187,9 @@ namespace Lysis
             {
                 out_.Append(buildArgDeclaration(f.args[i]));
                 if (i != f.args.Length - 1)
+                {
                     out_.Append(", ");
+                }
             }
 
             out_.Append(")" + Environment.NewLine);
@@ -180,7 +202,9 @@ namespace Lysis
             {
                 TypeUnit tu = node.typeSet[0];
                 if (tu.kind == TypeUnit.Kind.Cell && tu.type.type == CellType.Tag)
+                {
                     prefix = tu.type.tag.name + " ";
+                }
             }
             return prefix + node.value.ToString();
         }
@@ -249,9 +273,15 @@ namespace Lysis
                         DLocalRef lref = (DLocalRef)node;
                         DDeclareLocal local = lref.local;
                         if (local.var.type == VariableType.ArrayReference || local.var.type == VariableType.Array)
+                        {
                             return local.var.name + "[0]";
+                        }
+
                         if (local.var.type == VariableType.Reference)
+                        {
                             return local.var.name;
+                        }
+
                         throw new Exception("unknown local ref");
                     }
 
@@ -259,7 +289,10 @@ namespace Lysis
                     {
                         DGlobal global = (DGlobal)node;
                         if (global.var == null)
+                        {
                             return "__unk";
+                        }
+
                         return global.var.name;
                     }
 
@@ -292,7 +325,9 @@ namespace Lysis
                 string arg = buildExpression(input);
                 args += arg;
                 if (i != sysreq.numOperands - 1)
+                {
                     args += ", ";
+                }
             }
 
             return sysreq.native.name + "(" + args + ")";
@@ -307,7 +342,9 @@ namespace Lysis
                 string arg = buildExpression(input);
                 args += arg;
                 if (i != call.numOperands - 1)
+                {
                     args += ", ";
+                }
             }
 
             return call.function.name + "(" + args + ")";
@@ -341,7 +378,9 @@ namespace Lysis
                     text += buildTag(tu.type) + v;
                 }
                 if (i != (ia.size / 4) - 1)
+                {
                     text += ",";
+                }
             }
             text += "}";
             return text;
@@ -453,9 +492,13 @@ namespace Lysis
                     if (dim.size >= 1)
                     {
                         if (arg.tag != null && arg.tag.name == "String")
+                        {
                             decl += dim.size * 4;
+                        }
                         else
+                        {
                             decl += dim.size;
+                        }
                     }
                     decl += "]";
                 }
@@ -478,9 +521,13 @@ namespace Lysis
                     if (dim.size >= 1)
                     {
                         if (var.tag != null && var.tag.name == "String")
+                        {
                             decl += dim.size * 4;
+                        }
                         else
+                        {
                             decl += dim.size;
+                        }
                     }
                     decl += "]";
                 }
@@ -492,7 +539,9 @@ namespace Lysis
         {
             // Don't declare arguments.
             if (local.offset >= 0)
+            {
                 return;
+            }
 
             string decl = buildVarDeclaration(local.var);
 
@@ -549,9 +598,13 @@ namespace Lysis
         private void writeTempName(DTempName name)
         {
             if (name.getOperand(0) != null)
+            {
                 outputLine("int " + name.name + " = " + buildExpression(name.getOperand(0)) + ";");
+            }
             else
+            {
                 outputLine("int " + name.name + ";");
+            }
         }
 
         private void writeStatement(DNode node)
@@ -615,7 +668,10 @@ namespace Lysis
             {
                 string text = buildLogicChain(node.subChain);
                 if (node.subChain.nodes.Count == 1)
+                {
                     return text;
+                }
+
                 return "(" + text + ")";
             }
             return buildExpression(node.expression);
@@ -635,7 +691,9 @@ namespace Lysis
         private void writeStatements(NodeBlock block)
         {
             for (NodeList.iterator iter = block.nodes.begin(); iter.more(); iter.next())
+            {
                 writeStatement(iter.node);
+            }
         }
 
         private void writeIf(IfBlock block)
@@ -691,7 +749,9 @@ namespace Lysis
             }
             outputLine("}");
             if (block.join != null)
+            {
                 writeBlock(block.join);
+            }
         }
 
         private void writeWhileLoop(WhileLoop loop)
@@ -716,7 +776,9 @@ namespace Lysis
             decreaseIndent();
             outputLine("}");
             if (loop.join != null)
+            {
                 writeBlock(loop.join);
+            }
         }
 
         private void writeDoWhileLoop(WhileLoop loop)
@@ -724,7 +786,9 @@ namespace Lysis
             outputLine("do" + Environment.NewLine + "{");
             increaseIndent();
             if (loop.body != null)
+            {
                 writeBlock(loop.body);
+            }
 
             string cond;
             if (loop.logic == null)
@@ -744,7 +808,9 @@ namespace Lysis
             outputLine("}");
             outputLine("while (" + cond + ");");
             if (loop.join != null)
+            {
                 writeBlock(loop.join);
+            }
         }
 
         private void writeSwitch(SwitchBlock switch_)
@@ -775,14 +841,18 @@ namespace Lysis
             outputLine("}");
 
             if (switch_.join != null)
+            {
                 writeBlock(switch_.join);
+            }
         }
 
         private void writeStatementBlock(StatementBlock block)
         {
             writeStatements(block.source);
             if (block.next != null)
+            {
                 writeBlock(block.next);
+            }
         }
 
         private void writeBlock(ControlBlock block)
@@ -823,7 +893,9 @@ namespace Lysis
             for (int i = address + 0; i < address + bytes; i++)
             {
                 if (file_.DAT[i] != 0)
+                {
                     return false;
+                }
             }
             return true;
         }
@@ -831,7 +903,9 @@ namespace Lysis
         private bool isArrayEmpty(int address, int[] dims, int level)
         {
             if (level == dims.Length - 1)
+            {
                 return isArrayEmpty(address, dims[level] * 4);
+            }
 
             for (int i = 0; i < dims[level]; i++)
             {
@@ -839,7 +913,9 @@ namespace Lysis
                 int inner = file_.int32FromData(abase);
                 int final = abase + inner;
                 if (!isArrayEmpty(final, dims, level + 1))
+                {
                     return false;
+                }
             }
 
             return true;
@@ -849,9 +925,15 @@ namespace Lysis
         {
             var dims = new int[var.dims.Length];
             for (int i = 0; i < var.dims.Length; i++)
+            {
                 dims[i] = var.dims[i].size;
+            }
+
             if (var.tag.name == "String")
+            {
                 dims[dims.Length - 1] /= 4;
+            }
+
             return isArrayEmpty(var.address, dims, 0);
         }
 
@@ -865,7 +947,10 @@ namespace Lysis
                 string str = file_.stringFromData(final);
                 string text = buildString(str);
                 if (i != size - 1)
+                {
                     text += ",";
+                }
+
                 outputLine(text);
             }
         }
@@ -890,9 +975,13 @@ namespace Lysis
                 dumpStringArray(var, final, level + 1);
                 decreaseIndent();
                 if (i == var.dims[i].size - 1)
+                {
                     outputLine("}");
+                }
                 else
+                {
                     outputLine("},");
+                }
             }
         }
 
@@ -904,7 +993,9 @@ namespace Lysis
                 int cell = file_.int32FromData(address + i * 4);
                 text += cell;
                 if (i != size - 1)
+                {
                     text += ", ";
+                }
             }
             outputLine(text);
         }
@@ -946,9 +1037,13 @@ namespace Lysis
                 dumpArray(var, final, level + 1);
                 decreaseIndent();
                 if (i == var.dims[i].size - 1)
+                {
                     outputLine("}");
+                }
                 else
+                {
                     outputLine("},");
+                }
             }
         }
 
@@ -988,7 +1083,10 @@ namespace Lysis
                     string text = decl + " char " + var.name + "[" + var.dims[0].size + "]";
                     string primer = file_.stringFromData(var.address);
                     if (primer.Length > 0)
+                    {
                         text += " = " + buildString(primer);
+                    }
+
                     outputLine(text + ";");
                 }
                 else
@@ -997,7 +1095,9 @@ namespace Lysis
                     if (var.dims != null)
                     {
                         for (int i = 0; i < var.dims.Length; i++)
+                        {
                             text += "[" + var.dims[i].size + "]";
+                        }
                     }
                     if (isArrayEmpty(var))
                     {
@@ -1028,7 +1128,9 @@ namespace Lysis
                 if (var.dims != null)
                 {
                     for (int i = 0; i < var.dims.Length; i++)
+                    {
                         text += "[" + var.dims[i].size + "]";
+                    }
                 }
                 outputLine(text + ";");
             }
@@ -1038,7 +1140,9 @@ namespace Lysis
                 if (var.dims != null)
                 {
                     for (int i = 0; i < var.dims.Length; i++)
+                    {
                         text += "[" + var.dims[i].size + "]";
+                    }
                 }
                 outputLine(text + " =");
                 outputLine("{");
@@ -1052,7 +1156,9 @@ namespace Lysis
         public void writeGlobals()
         {
             for (int i = 0; i < file_.globals.Length; i++)
+            {
                 writeGlobal(file_.globals[i]);
+            }
         }
 
         public void write(ControlBlock root)

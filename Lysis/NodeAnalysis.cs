@@ -1,5 +1,5 @@
-﻿using SourcePawn;
-using System.Linq;
+﻿using System.Linq;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -71,29 +71,49 @@ namespace Lysis
         public static void RemoveDeadCode(NodeGraph graph)
         {
             for (int i = graph.numBlocks - 1; i >= 0; i--)
+            {
                 RemoveDeadCodeInBlock(graph[i]);
+            }
         }
 
         private static bool IsArray(TypeSet ts)
         {
             if (ts == null)
+            {
                 return false;
+            }
+
             if (ts.numTypes != 1)
+            {
                 return false;
+            }
+
             TypeUnit tu = ts[0];
             if (tu.kind == TypeUnit.Kind.Array)
+            {
                 return true;
+            }
+
             if (tu.kind == TypeUnit.Kind.Reference && tu.inner.kind == TypeUnit.Kind.Array)
+            {
                 return true;
+            }
+
             return false;
         }
 
         private static DNode GuessArrayBase(DNode op1, DNode op2)
         {
             if (op1.usedAsArrayIndex)
+            {
                 return op2;
+            }
+
             if (op2.usedAsArrayIndex)
+            {
                 return op1;
+            }
+
             if (op1.type == NodeType.ArrayRef ||
                 op1.type == NodeType.LocalRef ||
                 IsArray(op1.typeSet))
@@ -112,13 +132,21 @@ namespace Lysis
         private static bool IsReallyLikelyArrayCompute(DNode node, DNode abase)
         {
             if (abase.type == NodeType.ArrayRef)
+            {
                 return true;
+            }
+
             if (IsArray(abase.typeSet))
+            {
                 return true;
+            }
+
             foreach (DUse use in node.uses)
             {
                 if (use.node.type == NodeType.Store || use.node.type == NodeType.Load)
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -126,7 +154,10 @@ namespace Lysis
         private static bool IsArrayOpCandidate(DNode node)
         {
             if (node.type == NodeType.Load || node.type == NodeType.Store)
+            {
                 return true;
+            }
+
             if (node.type == NodeType.Binary)
             {
                 DBinary bin = (DBinary)node;
@@ -157,11 +188,15 @@ namespace Lysis
                 }
 
                 if (node.type != NodeType.Binary)
+                {
                     continue;
+                }
 
                 DBinary binary = (DBinary)node;
                 if (binary.spop != SPOpcode.add)
+                {
                     continue;
+                }
 
                 if (binary.lhs.type == NodeType.LocalRef)
                 {
@@ -171,11 +206,16 @@ namespace Lysis
                 // Check for an array index.
                 DNode abase = GuessArrayBase(binary.lhs, binary.rhs);
                 if (abase == null)
+                {
                     continue;
+                }
+
                 DNode index = (abase == binary.lhs) ? binary.rhs : binary.lhs;
 
                 if (!IsReallyLikelyArrayCompute(binary, abase))
+                {
                     continue;
+                }
 
                 // Multi-dimensional arrays are indexed like:
                 // x[y] => x + x[y]
@@ -211,7 +251,9 @@ namespace Lysis
             {
                 changed = false;
                 for (int i = graph.numBlocks - 1; i >= 0; i--)
+                {
                     changed |= CollapseArrayReferences(graph[i]);
+                }
             } while (changed);
         }
 
@@ -252,7 +294,9 @@ namespace Lysis
             for (NodeList.reverse_iterator riter = block.nodes.rbegin(); riter.more(); riter.next())
             {
                 if (riter.node.type != NodeType.Store)
+                {
                     continue;
+                }
 
                 DStore store = (DStore)riter.node;
 
@@ -282,7 +326,9 @@ namespace Lysis
                         }
                     }
                     if (coalesce != null)
+                    {
                         store.makeStoreOp(rhs.spop);
+                    }
                 }
                 else if (store.rhs.type == NodeType.Load &&
                          store.rhs.getOperand(0) == store.lhs)
@@ -311,20 +357,27 @@ namespace Lysis
                 }
 
                 if (coalesce != null)
+                {
                     store.replaceOperand(1, coalesce);
+                }
             }
         }
 
         public static void CoalesceLoadStores(NodeGraph graph)
         {
             for (int i = 0; i < graph.numBlocks; i++)
+            {
                 CoalesceLoadStores(graph[i]);
+            }
         }
 
         private static Signature SignatureOf(DNode node)
         {
             if (node.type == NodeType.Call)
+            {
                 return ((DCall)node).function;
+            }
+
             return ((DSysReq)node).native;
         }
 
@@ -374,7 +427,9 @@ namespace Lysis
                 if (riter.node.type == NodeType.Heap)
                 {
                     if (AnalyzeHeapNode(block, (DHeap)riter.node))
+                    {
                         block.nodes.remove(riter);
+                    }
                 }
             }
         }
@@ -382,7 +437,9 @@ namespace Lysis
         public static void AnalyzeHeapUsage(NodeGraph graph)
         {
             for (int i = 0; i < graph.numBlocks; i++)
+            {
                 AnalyzeHeapUsage(graph[i]);
+            }
         }
     }
 }

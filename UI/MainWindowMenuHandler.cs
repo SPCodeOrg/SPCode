@@ -16,7 +16,11 @@ namespace SPCode.UI
         {
             var editors = GetAllEditorElements();
             var EditorsAreOpen = false;
-            if (editors != null) EditorsAreOpen = editors.Length > 0;
+            if (editors != null)
+            {
+                EditorsAreOpen = editors.Length > 0;
+            }
+
             var EditorIsSelected = GetCurrentEditorElement() != null;
             ((MenuItem)((MenuItem)sender).Items[3]).IsEnabled = EditorIsSelected;
             ((MenuItem)((MenuItem)sender).Items[5]).IsEnabled = EditorIsSelected;
@@ -67,16 +71,24 @@ namespace SPCode.UI
             if (ee == null)
             {
                 foreach (var item in menu.Items)
+                {
                     if (item is MenuItem menuItem)
+                    {
                         menuItem.IsEnabled = false;
+                    }
+                }
             }
             else
             {
                 MenuI_Undo.IsEnabled = ee.editor.CanUndo;
                 MenuI_Redo.IsEnabled = ee.editor.CanRedo;
                 for (var i = 2; i < menu.Items.Count; ++i)
+                {
                     if (menu.Items[i] is MenuItem)
+                    {
                         ((MenuItem)menu.Items[i]).IsEnabled = true;
+                    }
+                }
             }
         }
 
@@ -233,15 +245,19 @@ namespace SPCode.UI
             else
             {
                 if (status.GotException)
+                {
                     await this.ShowMessageAsync(Program.Translations.GetLanguage("FailedCheck"),
                         Program.Translations.GetLanguage("ErrorUpdate") + Environment.NewLine +
                         $"{Program.Translations.GetLanguage("Details")}: " + status.ExceptionMessage
                         , MessageDialogStyle.Affirmative, MetroDialogOptions);
+                }
                 else
+                {
                     await this.ShowMessageAsync(Program.Translations.GetLanguage("VersUpToDate"),
                         string.Format(Program.Translations.GetLanguage("VersionYour"),
                             Assembly.GetEntryAssembly()?.GetName().Version)
                         , MessageDialogStyle.Affirmative, MetroDialogOptions);
+                }
             }
         }
 
@@ -249,19 +265,30 @@ namespace SPCode.UI
         {
             var selected = CompileButton.SelectedIndex;
             if (selected == 1)
+            {
                 Compile_SPScripts(false);
+            }
             else
+            {
                 Compile_SPScripts();
+            }
         }
 
         private void MenuButton_Action(object sender, RoutedEventArgs e)
         {
             var selected = CActionButton.SelectedIndex;
             if (selected == 0)
+            {
                 Copy_Plugins();
+            }
             else if (selected == 1)
+            {
                 FTPUpload_Plugins();
-            else if (selected == 2) Server_Start();
+            }
+            else if (selected == 2)
+            {
+                Server_Start();
+            }
         }
     }
 }

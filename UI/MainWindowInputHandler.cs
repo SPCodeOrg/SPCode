@@ -8,7 +8,11 @@ namespace SPCode.UI
         //some key bindings are handled in EditorElement.xaml.cs because the editor will fetch some keys before they can be handled here.
         private void MainWindowEvent_KeyDown(object sender, KeyEventArgs e)
         {
-            if (!e.IsDown) return;
+            if (!e.IsDown)
+            {
+                return;
+            }
+
             if (e.SystemKey == Key.F10)
             {
                 Server_Query();
@@ -19,6 +23,7 @@ namespace SPCode.UI
             if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl))
             {
                 if (e.KeyboardDevice.IsKeyDown(Key.LeftAlt))
+                {
                     switch (e.Key)
                     {
                         case Key.S:
@@ -28,7 +33,9 @@ namespace SPCode.UI
                                 break;
                             }
                     }
+                }
                 else if (e.KeyboardDevice.IsKeyDown(Key.LeftShift))
+                {
                     switch (e.Key)
                     {
                         case Key.S:
@@ -56,7 +63,9 @@ namespace SPCode.UI
                                 break;
                             }
                     }
+                }
                 else if (!e.KeyboardDevice.IsKeyDown(Key.RightAlt))
+                {
                     switch (e.Key)
                     {
                         case Key.N:
@@ -108,6 +117,7 @@ namespace SPCode.UI
                                 break;
                             }
                     }
+                }
             }
             else
             {

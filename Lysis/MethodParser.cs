@@ -1,6 +1,6 @@
-﻿using SourcePawn;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -61,16 +61,25 @@ namespace Lysis
         private LBlock prepareJumpTarget(uint offset)
         {
             if (!lir_.targets.ContainsKey(offset))
+            {
                 lir_.targets[offset] = new LBlock(offset);
+            }
+
             return lir_.targets[offset];
         }
 
         private int trackStack(int offset)
         {
             if (offset < 0)
+            {
                 return offset;
+            }
+
             if (offset > lir_.argDepth)
+            {
                 lir_.argDepth = offset;
+            }
+
             return offset;
         }
 
@@ -217,7 +226,10 @@ namespace Lysis
                     {
                         uint offset = readUInt32();
                         if (offset == pc_)
+                        {
                             return new LJump(prepareJumpTarget(offset), offset);
+                        }
+
                         return new LJumpCondition(op, prepareJumpTarget(offset), prepareJumpTarget(pc_), offset);
                     }
 
@@ -526,14 +538,19 @@ namespace Lysis
             lir_.entry_pc = pc_;
 
             if (readOp() != SPOpcode.proc)
+            {
                 throw new Exception("invalid method, first op must be PROC");
+            }
 
             while (pc_ < (uint)file_.code.bytes.Length)
             {
                 current_pc_ = pc_;
                 SPOpcode op = readOp();
                 if (op == SPOpcode.proc)
+                {
                     break;
+                }
+
                 add(readInstruction(op));
             }
 
@@ -597,7 +614,9 @@ namespace Lysis
 
                     // If there is no block present, we assume this is dead code.
                     if (block_ == null)
+                    {
                         continue;
+                    }
 
                     pending_.Add(ins);
 
@@ -634,7 +653,10 @@ namespace Lysis
                             {
                                 LSwitch switch_ = (LSwitch)ins;
                                 for (int j = 0; j < switch_.numSuccessors; j++)
+                                {
                                     switch_.getSuccessor(j).addPredecessor(block_);
+                                }
+
                                 transitionBlocks(null);
                                 break;
                             }
@@ -654,7 +676,9 @@ namespace Lysis
             LBlock[] blocks = BlockAnalysis.Order(entry);
 
             if (!BlockAnalysis.IsReducible(blocks))
+            {
                 throw new Exception("control flow graph is not reducible");
+            }
 
             // Split critical edges in the graph (is this even needed?)
             BlockAnalysis.SplitCriticalEdges(blocks);
@@ -672,9 +696,13 @@ namespace Lysis
             graph.blocks = blocks;
             graph.entry = blocks[0];
             if (lir_.argDepth > 0)
+            {
                 graph.nargs = ((lir_.argDepth - 12) / 4) + 1;
+            }
             else
+            {
                 graph.nargs = 0;
+            }
 
             return graph;
         }

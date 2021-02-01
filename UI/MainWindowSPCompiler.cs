@@ -26,7 +26,11 @@ namespace SPCode.UI
 
         private async void Compile_SPScripts(bool All = true)
         {
-            if (InCompiling) return;
+            if (InCompiling)
+            {
+                return;
+            }
+
             Command_SaveAll();
             InCompiling = true;
             compiledFiles.Clear();
@@ -62,7 +66,9 @@ namespace SPCode.UI
                     {
                         var compileBoxIsChecked = t.CompileBox.IsChecked;
                         if (compileBoxIsChecked != null && compileBoxIsChecked.Value)
+                        {
                             filesToCompile.Add(t.FullFilePath);
+                        }
                     }
                 }
                 else
@@ -79,7 +85,10 @@ namespace SPCode.UI
                     ** and only compile if it's checked or should it be ignored and compiled anyway?
                     ** I decided, to compile anyway but give me feedback/opinions.
                     */
-                    if (ee.FullFilePath.EndsWith(".sp")) filesToCompile.Add(ee.FullFilePath);
+                    if (ee.FullFilePath.EndsWith(".sp"))
+                    {
+                        filesToCompile.Add(ee.FullFilePath);
+                    }
                 }
 
                 var compileCount = filesToCompile.Count;
@@ -108,6 +117,7 @@ namespace SPCode.UI
                         var fileInfo = new FileInfo(file);
                         stringOutput.AppendLine(fileInfo.Name);
                         if (fileInfo.Exists)
+                        {
                             using (var process = new Process())
                             {
                                 process.StartInfo.WorkingDirectory =
@@ -118,14 +128,24 @@ namespace SPCode.UI
                                 process.StartInfo.FileName = spCompInfo.FullName;
                                 var destinationFileName = ShortenScriptFileName(fileInfo.Name) + ".smx";
                                 var outFile = Path.Combine(fileInfo.DirectoryName, destinationFileName);
-                                if (File.Exists(outFile)) File.Delete(outFile);
+                                if (File.Exists(outFile))
+                                {
+                                    File.Delete(outFile);
+                                }
+
                                 var errorFile = Environment.CurrentDirectory + @"\sourcepawn\errorfiles\error_" +
                                                 Environment.TickCount + "_" + file.GetHashCode().ToString("X") + "_" +
                                                 i + ".txt";
-                                if (File.Exists(errorFile)) File.Delete(errorFile);
+                                if (File.Exists(errorFile))
+                                {
+                                    File.Delete(errorFile);
+                                }
 
                                 var includeDirectories = new StringBuilder();
-                                foreach (var dir in c.SMDirectories) includeDirectories.Append(" -i=\"" + dir + "\"");
+                                foreach (var dir in c.SMDirectories)
+                                {
+                                    includeDirectories.Append(" -i=\"" + dir + "\"");
+                                }
 
                                 var includeStr = includeDirectories.ToString();
 
@@ -136,7 +156,10 @@ namespace SPCode.UI
                                 var execResult = ExecuteCommandLine(c.PreCmd, fileInfo.DirectoryName, c.CopyDirectory,
                                     fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
                                 if (!string.IsNullOrWhiteSpace(execResult))
+                                {
                                     stringOutput.AppendLine(execResult.Trim('\n', '\r'));
+                                }
+
                                 ProcessUITasks();
                                 try
                                 {
@@ -163,6 +186,7 @@ namespace SPCode.UI
                                     stringOutput.AppendLine(errorStr.Trim('\n', '\r'));
                                     var mc = errorFilterRegex.Matches(errorStr);
                                     for (var j = 0; j < mc.Count; ++j)
+                                    {
                                         ErrorResultGrid.Items.Add(new ErrorDataGridRow
                                         {
                                             file = mc[j].Groups["file"].Value.Trim(),
@@ -170,6 +194,8 @@ namespace SPCode.UI
                                             type = mc[j].Groups["type"].Value.Trim(),
                                             details = mc[j].Groups["details"].Value.Trim()
                                         });
+                                    }
+
                                     File.Delete(errorFile);
                                 }
 
@@ -184,11 +210,15 @@ namespace SPCode.UI
                                 var execResult_Post = ExecuteCommandLine(c.PostCmd, fileInfo.DirectoryName,
                                     c.CopyDirectory, fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
                                 if (!string.IsNullOrWhiteSpace(execResult_Post))
+                                {
                                     stringOutput.AppendLine(execResult_Post.Trim('\n', '\r'));
+                                }
+
                                 stringOutput.AppendLine();
                                 progressTask.SetProgress((double)(i + 1) / compileCount);
                                 ProcessUITasks();
                             }
+                        }
                     }
 
                     if (!PressedEscape)
@@ -219,7 +249,10 @@ namespace SPCode.UI
                             progressTask.SetProgress(1.0);
                         }
 
-                        if (CompileOutputRow.Height.Value < 11.0) CompileOutputRow.Height = new GridLength(200.0);
+                        if (CompileOutputRow.Height.Value < 11.0)
+                        {
+                            CompileOutputRow.Height = new GridLength(200.0);
+                        }
                     }
 
                     await progressTask.CloseAsync();
@@ -246,6 +279,7 @@ namespace SPCode.UI
                 {
                     var stringOutput = new StringBuilder();
                     foreach (var file in compiledFiles)
+                    {
                         try
                         {
                             var destFile = new FileInfo(file);
@@ -268,15 +302,28 @@ namespace SPCode.UI
                         {
                             stringOutput.AppendLine($"{Program.Translations.GetLanguage("FailCopy")}: " + file);
                         }
+                    }
 
-                    if (copyCount == 0) stringOutput.AppendLine(Program.Translations.GetLanguage("NoFilesCopy"));
+                    if (copyCount == 0)
+                    {
+                        stringOutput.AppendLine(Program.Translations.GetLanguage("NoFilesCopy"));
+                    }
+
                     Dispatcher.Invoke(() =>
                     {
                         if (OvertakeOutString)
+                        {
                             CompileOutput.AppendText(stringOutput.ToString());
+                        }
                         else
+                        {
                             CompileOutput.Text = stringOutput.ToString();
-                        if (CompileOutputRow.Height.Value < 11.0) CompileOutputRow.Height = new GridLength(200.0);
+                        }
+
+                        if (CompileOutputRow.Height.Value < 11.0)
+                        {
+                            CompileOutputRow.Height = new GridLength(200.0);
+                        }
                     });
                 }
             }
@@ -284,9 +331,17 @@ namespace SPCode.UI
 
         private void FTPUpload_Plugins()
         {
-            if (nonUploadedFiles.Count <= 0) return;
+            if (nonUploadedFiles.Count <= 0)
+            {
+                return;
+            }
+
             var c = Program.Configs[Program.SelectedConfig];
-            if (string.IsNullOrWhiteSpace(c.FTPHost) || string.IsNullOrWhiteSpace(c.FTPUser)) return;
+            if (string.IsNullOrWhiteSpace(c.FTPHost) || string.IsNullOrWhiteSpace(c.FTPUser))
+            {
+                return;
+            }
+
             var stringOutput = new StringBuilder();
             try
             {
@@ -298,9 +353,14 @@ namespace SPCode.UI
                     {
                         string uploadDir;
                         if (string.IsNullOrWhiteSpace(c.FTPDir))
+                        {
                             uploadDir = fileInfo.Name;
+                        }
                         else
+                        {
                             uploadDir = c.FTPDir.TrimEnd('/') + "/" + fileInfo.Name;
+                        }
+
                         try
                         {
                             ftp.Upload(uploadDir, file);
@@ -325,18 +385,33 @@ namespace SPCode.UI
             Dispatcher.Invoke(() =>
             {
                 CompileOutput.Text = stringOutput.ToString();
-                if (CompileOutputRow.Height.Value < 11.0) CompileOutputRow.Height = new GridLength(200.0);
+                if (CompileOutputRow.Height.Value < 11.0)
+                {
+                    CompileOutputRow.Height = new GridLength(200.0);
+                }
             });
         }
 
         private void Server_Start()
         {
-            if (ServerIsRunning) return;
+            if (ServerIsRunning)
+            {
+                return;
+            }
+
             var c = Program.Configs[Program.SelectedConfig];
             var serverOptionsPath = c.ServerFile;
-            if (string.IsNullOrWhiteSpace(serverOptionsPath)) return;
+            if (string.IsNullOrWhiteSpace(serverOptionsPath))
+            {
+                return;
+            }
+
             var serverExec = new FileInfo(serverOptionsPath);
-            if (!serverExec.Exists) return;
+            if (!serverExec.Exists)
+            {
+                return;
+            }
+
             try
             {
                 ServerProcess = new Process
@@ -392,7 +467,10 @@ namespace SPCode.UI
         private string ShortenScriptFileName(string fileName)
         {
             if (fileName.EndsWith(".sp", StringComparison.InvariantCultureIgnoreCase))
+            {
                 return fileName.Substring(0, fileName.Length - 3);
+            }
+
             return fileName;
         }
 
@@ -400,7 +478,11 @@ namespace SPCode.UI
             string scriptName, string pluginFile, string pluginName)
         {
             code = ReplaceCMDVaraibles(code, directory, copyDir, scriptFile, scriptName, pluginFile, pluginName);
-            if (string.IsNullOrWhiteSpace(code)) return null;
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                return null;
+            }
+
             var batchFile = new FileInfo(Path.Combine("sourcepawn\\temp\\",
                 Environment.TickCount + "_" + ((uint)code.GetHashCode() ^ (uint)directory.GetHashCode()) +
                 "_temp.bat")).FullName;

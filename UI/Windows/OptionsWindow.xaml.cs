@@ -460,13 +460,22 @@ namespace SPCode.UI.Windows
             {
                 Program.OptionsObject.Editor_AutoSave = true;
                 if (newIndex == 1)
+                {
                     Program.OptionsObject.Editor_AutoSaveInterval = 30;
+                }
                 else if (newIndex == 7)
+                {
                     Program.OptionsObject.Editor_AutoSaveInterval = 600;
+                }
                 else if (newIndex == 8)
+                {
                     Program.OptionsObject.Editor_AutoSaveInterval = 900;
+                }
                 else
+                {
                     Program.OptionsObject.Editor_AutoSaveInterval = (newIndex - 1) * 60;
+                }
+
                 if (editors != null)
                 {
                     foreach (var editor in editors)
@@ -524,13 +533,21 @@ namespace SPCode.UI.Windows
             {
                 int seconds = Program.OptionsObject.Editor_AutoSaveInterval;
                 if (seconds < 60)
+                {
                     AutoSave.SelectedIndex = 1;
+                }
                 else if (seconds <= 300)
+                {
                     AutoSave.SelectedIndex = Math.Max(1, Math.Min(seconds / 60, 5)) + 1;
+                }
                 else if (seconds == 600)
+                {
                     AutoSave.SelectedIndex = 7;
+                }
                 else
+                {
                     AutoSave.SelectedIndex = 8;
+                }
             }
             else
             {

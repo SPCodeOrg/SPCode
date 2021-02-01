@@ -1,6 +1,6 @@
-﻿using SourcePawn;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -16,7 +16,9 @@ namespace Lysis
             graph_ = graph;
             blocks_ = new NodeBlock[graph_.blocks.Length];
             for (int i = 0; i < graph_.blocks.Length; i++)
+            {
                 blocks_[i] = new NodeBlock(graph_.blocks[i]);
+            }
         }
 
         public void traverse(NodeBlock block)
@@ -27,7 +29,9 @@ namespace Lysis
 
                 // Don't bother with backedges yet.
                 if (pred.lir.id >= block.lir.id)
+                {
                     continue;
+                }
 
                 block.inherit(graph_, pred);
             }
@@ -43,7 +47,10 @@ namespace Lysis
                     {
                         Variable var = file_.lookupDeclarations(uins.pc, ref i, Scope.Static);
                         if (var == null)
+                        {
                             break;
+                        }
+
                         block.add(new DDeclareStatic(var));
                     } while (true);
                 }
@@ -68,7 +75,9 @@ namespace Lysis
                             else
                             {
                                 for (int i = 0; i < ins.amount / 4; i++)
+                                {
                                     block.stack.pop();
+                                }
                             }
                             break;
                         }
@@ -80,7 +89,10 @@ namespace Lysis
                             DDeclareLocal local = (DDeclareLocal)node;
                             //Debug.Assert(block.stack.pri.type == NodeType.Constant);
                             for (int i = 0; i < ins.amount; i += 4)
+                            {
                                 block.stack.set(local.offset + i, block.stack.pri);
+                            }
+
                             break;
                         }
 
@@ -246,7 +258,10 @@ namespace Lysis
                             DConstant ins = (DConstant)block.stack.popValue();
                             List<DNode> arguments = new List<DNode>();
                             for (int i = 0; i < ins.value; i++)
+                            {
                                 arguments.Add(block.stack.popName());
+                            }
+
                             DSysReq call = new DSysReq(sysreq.native, arguments.ToArray());
                             block.stack.set(Register.Pri, call);
                             block.add(call);
@@ -296,9 +311,14 @@ namespace Lysis
                         {
                             LMove ins = (LMove)uins;
                             if (ins.reg == Register.Pri)
+                            {
                                 block.stack.set(Register.Pri, block.stack.alt);
+                            }
                             else
+                            {
                                 block.stack.set(Register.Alt, block.stack.pri);
+                            }
+
                             break;
                         }
 
@@ -428,7 +448,10 @@ namespace Lysis
                             LPushGlobal ins = (LPushGlobal)uins;
                             Variable global = file_.lookupGlobal(ins.address);
                             if (global == null)
+                            {
                                 global = file_.lookupVariable(ins.pc, ins.address, Scope.Static);
+                            }
+
                             DGlobal dglobal = new DGlobal(global);
                             DNode node = new DLoad(dglobal);
                             DDeclareLocal local = new DDeclareLocal(ins.pc, node);
@@ -444,7 +467,10 @@ namespace Lysis
                             LLoadGlobal ins = (LLoadGlobal)uins;
                             Variable global = file_.lookupGlobal(ins.address);
                             if (global == null)
+                            {
                                 global = file_.lookupVariable(ins.pc, ins.address, Scope.Static);
+                            }
+
                             DNode dglobal = new DGlobal(global);
                             DNode node = new DLoad(dglobal);
                             block.stack.set(ins.reg, node);
@@ -458,7 +484,10 @@ namespace Lysis
                             LStoreGlobal ins = (LStoreGlobal)uins;
                             Variable global = file_.lookupGlobal(ins.address);
                             if (global == null)
+                            {
                                 global = file_.lookupVariable(ins.pc, ins.address, Scope.Static);
+                            }
+
                             DGlobal node = new DGlobal(global);
                             DStore store = new DStore(node, block.stack.reg(ins.reg));
                             block.add(node);
@@ -473,7 +502,10 @@ namespace Lysis
                             DConstant args = (DConstant)block.stack.popValue();
                             List<DNode> arguments = new List<DNode>();
                             for (int i = 0; i < args.value; i++)
+                            {
                                 arguments.Add(block.stack.popName());
+                            }
+
                             DCall call = new DCall(f, arguments.ToArray());
                             block.stack.set(Register.Pri, call);
                             block.add(call);

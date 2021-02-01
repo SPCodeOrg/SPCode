@@ -41,7 +41,7 @@ namespace SPCode.UI.Components
             Color c = Color.FromArgb(0xFF, (byte)((int)RSlider.Value), (byte)((int)GSlider.Value), (byte)((int)BSlider.Value));
             UpdateColor(c, true, false);
             RoutedEventArgs raiseEvent = new RoutedEventArgs(ColorChangeControl.ColorChangedEvent);
-            this.RaiseEvent(raiseEvent);
+            RaiseEvent(raiseEvent);
         }
 
         private void UpdateColor(Color c, bool UpdateTextBox = true, bool UpdateSlider = true)
@@ -61,20 +61,20 @@ namespace SPCode.UI.Components
                 BSlider.Value = (double)c.B;
             }
             RoutedEventArgs raiseEvent = new RoutedEventArgs(ColorChangeControl.ColorChangedEvent);
-            this.RaiseEvent(raiseEvent);
+            RaiseEvent(raiseEvent);
             RaiseEventAllowed = true;
         }
 
         private void BrushRect_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!RaiseEventAllowed) { return; }
-            int cVal = 0; int result = 0;
+            int cVal = 0; 
             string parseString = BrushRect.Text.Trim();
             if (parseString.StartsWith("0x", System.StringComparison.InvariantCultureIgnoreCase) && parseString.Length > 2)
             {
                 parseString = parseString.Substring(2);
             }
-            if (int.TryParse(parseString, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out result))
+            if (int.TryParse(parseString, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out var result))
             { cVal = result; }
             UpdateColor(Color.FromArgb(0xFF, (byte)((cVal >> 16) & 0xFF), (byte)((cVal >> 8) & 0xFF), (byte)(cVal & 0xFF)), false, true);
         }

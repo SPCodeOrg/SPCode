@@ -1,9 +1,9 @@
-﻿using SourcepawnCondenser.SourcemodDefinition;
-using SourcepawnCondenser.Tokenizer;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SourcepawnCondenser.SourcemodDefinition;
+using SourcepawnCondenser.Tokenizer;
 
 namespace SourcepawnCondenser
 {
@@ -22,13 +22,17 @@ namespace SourcepawnCondenser
                 case "stock":
                     {
                         if (startPosition + 1 < length)
+                        {
                             if (t[startPosition + 1].Kind == TokenKind.FunctionIndicator)
+                            {
                                 if (t[startPosition + 1].Value == "static")
                                 {
                                     kind = SMFunctionKind.StockStatic;
                                     ++iteratePosition;
                                     break;
                                 }
+                            }
+                        }
 
                         kind = SMFunctionKind.Stock;
                         break;
@@ -46,13 +50,17 @@ namespace SourcepawnCondenser
                 case "public":
                     {
                         if (startPosition + 1 < length)
+                        {
                             if (t[startPosition + 1].Kind == TokenKind.FunctionIndicator)
+                            {
                                 if (t[startPosition + 1].Value == "native")
                                 {
                                     kind = SMFunctionKind.PublicNative;
                                     ++iteratePosition;
                                     break;
                                 }
+                            }
+                        }
 
                         kind = SMFunctionKind.Public;
                         break;
@@ -115,11 +123,16 @@ namespace SourcepawnCondenser
                     }
 
                     if (t[iteratePosition].Kind == TokenKind.Character)
+                    {
                         if (t[iteratePosition].Value.Length > 0)
                         {
                             var testChar = t[iteratePosition].Value[0];
-                            if (testChar == ':' || testChar == '[' || testChar == ']') continue;
+                            if (testChar == ':' || testChar == '[' || testChar == ']')
+                            {
+                                continue;
+                            }
                         }
+                    }
 
                     return -1;
                 }
@@ -127,7 +140,11 @@ namespace SourcepawnCondenser
                 return -1;
             }
 
-            if (string.IsNullOrEmpty(functionName)) return -1;
+            if (string.IsNullOrEmpty(functionName))
+            {
+                return -1;
+            }
+
             ++iteratePosition;
             var functionParameters = new List<string>();
             var parameterDeclIndexStart = t[iteratePosition].Index;
@@ -163,7 +180,9 @@ namespace SourcepawnCondenser
                         {
                             var singleParameterString = source.Substring(lastParameterIndex + 1, length + 1);
                             if (!string.IsNullOrWhiteSpace(singleParameterString))
+                            {
                                 functionParameters.Add(singleParameterString);
+                            }
                         }
 
                         break;
@@ -172,8 +191,16 @@ namespace SourcepawnCondenser
                     continue;
                 }
 
-                if (t[iteratePosition].Kind == TokenKind.BraceOpen) ++braceState;
-                if (t[iteratePosition].Kind == TokenKind.BraceClose) --braceState;
+                if (t[iteratePosition].Kind == TokenKind.BraceOpen)
+                {
+                    ++braceState;
+                }
+
+                if (t[iteratePosition].Kind == TokenKind.BraceClose)
+                {
+                    --braceState;
+                }
+
                 if (t[iteratePosition].Kind == TokenKind.Comma && braceState == 0)
                 {
                     gotCommaBreak = true;
@@ -185,7 +212,10 @@ namespace SourcepawnCondenser
                 }
             }
 
-            if (parameterDeclIndexEnd == -1) return -1;
+            if (parameterDeclIndexEnd == -1)
+            {
+                return -1;
+            }
 
             var localVars = new List<SMVariable>();
 
@@ -215,6 +245,7 @@ namespace SourcepawnCondenser
                 {
                     braceState = 0;
                     for (var i = nextOpenBraceTokenIndex; i < length; ++i)
+                    {
                         if (t[i].Kind == TokenKind.BraceOpen)
                         {
                             ++braceState;
@@ -245,6 +276,7 @@ namespace SourcepawnCondenser
                                 return i;
                             }
                         }
+                    }
                 }
             }
 
@@ -275,7 +307,10 @@ namespace SourcepawnCondenser
             var length = t.Length;
 
             var variables = new List<SMVariable>();
-            if (3 >= length) return variables;
+            if (3 >= length)
+            {
+                return variables;
+            }
 
             while (position < length)
             {
@@ -290,14 +325,20 @@ namespace SourcepawnCondenser
                 // Dynamic array: "char[] x = new char[64];"
                 var continueNext = false;
 
-                if (position + 3 >= length) return variables;
+                if (position + 3 >= length)
+                {
+                    return variables;
+                }
+
                 if (t[position + 1].Kind == TokenKind.Character)
                 {
                     for (var i = 1; i < length; i += 2)
                     {
                         index = i;
                         if (t[position + i].Kind == TokenKind.Identifier)
+                        {
                             break;
+                        }
 
                         if (t[position + i].Value == "[" && t[position + i + 1].Value == "]")
                         {
@@ -359,7 +400,9 @@ namespace SourcepawnCondenser
                     }
 
                     if (continueNext)
+                    {
                         continue;
+                    }
                 }
 
                 if (t[position + 1].Kind != TokenKind.Identifier)
@@ -405,7 +448,9 @@ namespace SourcepawnCondenser
                 }
 
                 if (continueNext)
+                {
                     continue;
+                }
 
                 // Array declaration match: "int x[3][3]...;"
                 var requireAssign = false;
@@ -414,7 +459,9 @@ namespace SourcepawnCondenser
                 {
                     index = i;
                     if (t[position + i].Kind == TokenKind.Semicolon)
+                    {
                         break;
+                    }
 
                     if (t[position + i].Value == "[" && t[position + i + 2].Value == "]")
                     {
@@ -445,7 +492,9 @@ namespace SourcepawnCondenser
                 }
 
                 if (continueNext)
+                {
                     continue;
+                }
 
                 if (t[position + index].Kind == TokenKind.Semicolon && !requireAssign)
                 {

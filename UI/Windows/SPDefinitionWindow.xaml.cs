@@ -29,8 +29,11 @@ namespace SPCode.UI.Windows
             InitializeComponent();
             Language_Translate();
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
+            {
                 ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
+            }
+
             errorSearchBoxBrush.Freeze();
             var def = Program.Configs[Program.SelectedConfig].GetSMDef();
             if (def == null)
@@ -64,7 +67,10 @@ namespace SPCode.UI.Windows
             }
 
             foreach (var e in defList.Where(e => string.IsNullOrWhiteSpace(e.Name)))
+            {
                 e.Name = $"--{Program.Translations.GetLanguage("NoName")}--";
+            }
+
             defList.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
             defArray = defList.ToArray();
             var defArrayLength = defArray.Length;
@@ -87,7 +93,11 @@ namespace SPCode.UI.Windows
         private void SPFunctionsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var obj = SPBox.SelectedItem;
-            if (obj == null) return;
+            if (obj == null)
+            {
+                return;
+            }
+
             var item = (ListViewItem)obj;
             var TagValue = item.Tag;
             if (TagValue != null)
@@ -164,10 +174,18 @@ namespace SPCode.UI.Windows
                     SPTypeBlock.Text = "Methodmap " + sm6.Methods.Count + " methods - " + sm6.Fields.Count + " fields";
                     var outString = new StringBuilder();
                     outString.AppendLine("Methods:");
-                    foreach (var m in sm6.Methods) outString.AppendLine(m.FullName);
+                    foreach (var m in sm6.Methods)
+                    {
+                        outString.AppendLine(m.FullName);
+                    }
+
                     outString.AppendLine();
                     outString.AppendLine("Fields:");
-                    foreach (var f in sm6.Fields) outString.AppendLine(f.FullName);
+                    foreach (var f in sm6.Fields)
+                    {
+                        outString.AppendLine(f.FullName);
+                    }
+
                     SPCommentBox.Text = outString.ToString();
                     return;
                 }
@@ -277,11 +295,13 @@ namespace SPCode.UI.Windows
                 var foundOccurence = false;
                 SPBox.Items.Clear();
                 for (var i = 0; i < itemCount; ++i)
+                {
                     if (defArray[i].Name.ToLowerInvariant().Contains(searchString))
                     {
                         foundOccurence = true;
                         SPBox.Items.Add(items[i]);
                     }
+                }
 
                 SPSearchBox.Background = foundOccurence ? Brushes.Transparent : errorSearchBoxBrush;
                 SPProgress.IsIndeterminate = false;

@@ -1,7 +1,7 @@
-﻿using SourcePawn;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -108,23 +108,33 @@ namespace Lysis
         public void initOperand(int i, DNode node)
         {
             if (node != null)
+            {
                 node.addUse(this, i);
+            }
+
             setOperand(i, node);
         }
         public void replaceOperand(int i, DNode node)
         {
             if (getOperand(i) == node)
+            {
                 return;
+            }
 
             if (getOperand(i) != null)
+            {
                 getOperand(i).removeUse(i, this);
+            }
+
             initOperand(i, node);
         }
         public void replaceAllUsesWith(DNode node)
         {
             DUse[] copies = uses.ToArray();
             foreach (DUse use in copies)
+            {
                 use.node.replaceOperand(use.index, node);
+            }
         }
         public void removeUse(int index, DNode node)
         {
@@ -145,7 +155,9 @@ namespace Lysis
         public void removeFromUseChains()
         {
             for (int i = 0; i < numOperands; i++)
+            {
                 replaceOperand(i, null);
+            }
         }
 
         public void setBlock(NodeBlock block)
@@ -198,7 +210,10 @@ namespace Lysis
         private TypeSet ensureTypeSet()
         {
             if (typeSet_ == null)
+            {
                 typeSet_ = new TypeSet();
+            }
+
             return typeSet_;
         }
         public void addType(TypeUnit tu)
@@ -363,10 +378,16 @@ namespace Lysis
         public override DNode applyType(SourcePawnFile file, Tag tag, VariableType type)
         {
             if (value == null)
+            {
                 return null;
+            }
+
             DNode replacement = value.applyType(file, tag, type);
             if (replacement != value)
+            {
                 replaceOperand(0, replacement);
+            }
+
             return this;
         }
     }
@@ -441,9 +462,15 @@ namespace Lysis
                     {
                         Variable global = file.lookupGlobal(value);
                         if (global != null)
+                        {
                             return new DGlobal(global);
+                        }
+
                         if (tag.name == "String")
+                        {
                             return new DString(file.stringFromData(value));
+                        }
+
                         break;
                     }
             }
@@ -655,7 +682,9 @@ namespace Lysis
         {
             arguments_ = new DNode[arguments.Length];
             for (int i = 0; i < arguments.Length; i++)
+            {
                 initOperand(i, arguments[i]);
+            }
         }
 
         public override int numOperands

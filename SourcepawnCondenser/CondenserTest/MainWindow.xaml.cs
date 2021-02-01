@@ -1,6 +1,4 @@
-﻿using SourcepawnCondenser.SourcemodDefinition;
-using SourcepawnCondenser.Tokenizer;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -8,6 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using SourcepawnCondenser.SourcemodDefinition;
+using SourcepawnCondenser.Tokenizer;
 
 namespace CondenserTest
 {
@@ -63,7 +63,7 @@ namespace CondenserTest
             var def = c.Condense();
             watch.Stop();
             subTitle += "  -  condenser: " + watch.ElapsedMilliseconds + " ms";
-            this.Title = subTitle;
+            Title = subTitle;
             bool expand = ExpandBox.IsChecked.Value;
             TreeViewItem functionItem = new TreeViewItem() { Header = "functions (" + def.Functions.Count + ")", IsExpanded = expand };
             foreach (var f in def.Functions)

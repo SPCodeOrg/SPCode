@@ -184,7 +184,10 @@ namespace SPCode.UI.Components
                 var fInfo = new FileInfo(value);
                 _FullFilePath = fInfo.FullName;
                 Parent.Title = fInfo.Name;
-                if (fileWatcher != null) fileWatcher.Path = fInfo.DirectoryName;
+                if (fileWatcher != null)
+                {
+                    fileWatcher.Path = fInfo.DirectoryName;
+                }
             }
         }
 
@@ -194,25 +197,38 @@ namespace SPCode.UI.Components
             set
             {
                 if (!(value ^ _NeedsSave)) //when not changed
+                {
                     return;
+                }
+
                 _NeedsSave = value;
                 if (Parent != null)
                 {
                     if (_NeedsSave)
+                    {
                         Parent.Title = "*" + Parent.Title;
+                    }
                     else
+                    {
                         Parent.Title = Parent.Title.Trim('*');
+                    }
                 }
             }
         }
 
         private async void TextArea_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (!Keyboard.IsKeyDown(Key.LeftCtrl)) return;
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                return;
+            }
 
             var word = GetWordAtMousePosition(e);
             Debug.Print($"The word: {word}");
-            if (word.Trim().Length == 0) return;
+            if (word.Trim().Length == 0)
+            {
+                return;
+            }
 
             e.Handled = true;
 
@@ -258,12 +274,16 @@ namespace SPCode.UI.Components
         private SMBaseDefinition MatchDefinition(SMDefinition smDef, string word, MouseButtonEventArgs e, bool currentFile = false)
         {
             if (smDef == null)
+            {
                 return null;
+            }
 
             var mousePosition = editor.GetPositionFromPoint(e.GetPosition(this));
 
             if (mousePosition == null)
+            {
                 return null;
+            }
 
             var line = mousePosition.Value.Line;
             var column = mousePosition.Value.Column;
@@ -305,7 +325,11 @@ namespace SPCode.UI.Components
                     var str = smEnum.Entries.FirstOrDefault(
                         i => i.Equals(word));
 
-                    if (str == null) continue;
+                    if (str == null)
+                    {
+                        continue;
+                    }
+
                     sm = smEnum;
                     break;
                 }
@@ -345,14 +369,18 @@ namespace SPCode.UI.Components
             var mousePosition = editor.GetPositionFromPoint(e.GetPosition(this));
 
             if (mousePosition == null)
+            {
                 return string.Empty;
+            }
 
             var line = mousePosition.Value.Line;
             var column = mousePosition.Value.Column;
             var offset = editor.TextArea.Document.GetOffset(line, column);
 
             if (offset >= editor.TextArea.Document.TextLength)
+            {
                 offset--;
+            }
 
             var offsetStart = TextUtilities.GetNextCaretPosition(editor.TextArea.Document, offset,
                 LogicalDirection.Backward, CaretPositioningMode.WordBorder);
@@ -360,12 +388,16 @@ namespace SPCode.UI.Components
                 LogicalDirection.Forward, CaretPositioningMode.WordBorder);
 
             if (offsetEnd == -1 || offsetStart == -1)
+            {
                 return string.Empty;
+            }
 
             var currentChar = editor.TextArea.Document.GetText(offset, 1);
 
             if (string.IsNullOrWhiteSpace(currentChar))
+            {
                 return string.Empty;
+            }
 
             return editor.TextArea.Document.GetText(offsetStart, offsetEnd - offsetStart);
         }
@@ -373,14 +405,20 @@ namespace SPCode.UI.Components
         private void AutoSaveTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (NeedsSave)
+            {
                 Dispatcher.Invoke(() => { Save(); });
+            }
         }
 
         public void StartAutoSaveTimer()
         {
             if (Program.OptionsObject.Editor_AutoSave)
             {
-                if (AutoSaveTimer.Enabled) AutoSaveTimer.Stop();
+                if (AutoSaveTimer.Enabled)
+                {
+                    AutoSaveTimer.Stop();
+                }
+
                 AutoSaveTimer.Interval = 1000.0 * Program.OptionsObject.Editor_AutoSaveInterval;
                 AutoSaveTimer.Start();
             }
@@ -389,11 +427,13 @@ namespace SPCode.UI.Components
         private void EditorElement_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.G)
+            {
                 if (Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightAlt))
                 {
                     ToggleJumpGrid();
                     e.Handled = true;
                 }
+            }
         }
 
         public void ToggleJumpGrid()
@@ -454,7 +494,11 @@ namespace SPCode.UI.Components
 
         private void fileWatcher_Changed(object sender, FileSystemEventArgs e)
         {
-            if (e == null) return;
+            if (e == null)
+            {
+                return;
+            }
+
             if (e.FullPath == _FullFilePath)
             {
                 bool reloadFile;
@@ -473,6 +517,7 @@ namespace SPCode.UI.Components
                 }
 
                 if (reloadFile)
+                {
                     Dispatcher.Invoke(() =>
                     {
                         FileStream stream;
@@ -497,6 +542,7 @@ namespace SPCode.UI.Components
                                 100); //dont include System.Threading in the using directives, cause its onlyused once and the Timer class will double
                         }
                     });
+                }
             }
         }
 
@@ -554,7 +600,11 @@ namespace SPCode.UI.Components
         {
             if (_NeedsSave || force)
             {
-                if (fileWatcher != null) fileWatcher.EnableRaisingEvents = false;
+                if (fileWatcher != null)
+                {
+                    fileWatcher.EnableRaisingEvents = false;
+                }
+
                 try
                 {
                     using (var fs = new FileStream(_FullFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
@@ -572,7 +622,10 @@ namespace SPCode.UI.Components
                 }
 
                 NeedsSave = false;
-                if (fileWatcher != null) fileWatcher.EnableRaisingEvents = true;
+                if (fileWatcher != null)
+                {
+                    fileWatcher.EnableRaisingEvents = true;
+                }
             }
         }
 
@@ -584,7 +637,10 @@ namespace SPCode.UI.Components
                 StatusLine_FontSize.Text = size.ToString("n0") + $" {Program.Translations.GetLanguage("PtAbb")}";
             }
 
-            if (updateLineHeight) LineHeight = editor.TextArea.TextView.DefaultLineHeight;
+            if (updateLineHeight)
+            {
+                LineHeight = editor.TextArea.TextView.DefaultLineHeight;
+            }
         }
 
         public void ToggleCommentOnLine()
@@ -593,18 +649,28 @@ namespace SPCode.UI.Components
             var lineText = editor.Document.GetText(line);
             var leadingWhiteSpaces = 0;
             foreach (var l in lineText)
+            {
                 if (char.IsWhiteSpace(l))
+                {
                     leadingWhiteSpaces++;
+                }
                 else
+                {
                     break;
+                }
+            }
 
             lineText = lineText.Trim();
             if (lineText.Length > 1)
             {
                 if (lineText[0] == '/' && lineText[1] == '/')
+                {
                     editor.Document.Remove(line.Offset + leadingWhiteSpaces, 2);
+                }
                 else
+                {
                     editor.Document.Insert(line.Offset + leadingWhiteSpaces, "//");
+                }
             }
             else
             {
@@ -617,7 +683,10 @@ namespace SPCode.UI.Components
             var line = editor.Document.GetLineByOffset(editor.CaretOffset);
             var lineText = editor.Document.GetText(line);
             editor.Document.Insert(line.Offset, lineText + Environment.NewLine);
-            if (down) editor.CaretOffset -= line.Length + 1;
+            if (down)
+            {
+                editor.CaretOffset -= line.Length + 1;
+            }
         }
 
         private void MoveLine(bool down)
@@ -666,6 +735,7 @@ namespace SPCode.UI.Components
             }
 
             if (CheckSavings)
+            {
                 if (_NeedsSave)
                 {
                     if (ForcedToSave)
@@ -678,9 +748,13 @@ namespace SPCode.UI.Components
                                     "'";
                         var Result = await Program.MainWindow.ShowMessageAsync(title, "",
                             MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions);
-                        if (Result == MessageDialogResult.Affirmative) Save();
+                        if (Result == MessageDialogResult.Affirmative)
+                        {
+                            Save();
+                        }
                     }
                 }
+            }
 
             Program.MainWindow.EditorsReferences.Remove(this);
             // var childs = Program.MainWindow.DockingPaneGroup.Children;
@@ -707,7 +781,10 @@ namespace SPCode.UI.Components
             bracketHighlightRenderer.SetHighlight(result);
 
 
-            if (!Program.OptionsObject.Program_DynamicISAC || Program.MainWindow == null) return;
+            if (!Program.OptionsObject.Program_DynamicISAC || Program.MainWindow == null)
+            {
+                return;
+            }
 
             if (parseTimer != null)
             {
@@ -729,14 +806,20 @@ namespace SPCode.UI.Components
         {
             Dispatcher.Invoke(() =>
             {
-                if (Program.MainWindow == null) return;
+                if (Program.MainWindow == null)
+                {
+                    return;
+                }
 
                 var ee = Program.MainWindow.GetAllEditorElements();
                 var ce = Program.MainWindow.GetCurrentEditorElement();
 
                 var caret = -1;
 
-                if (ee == null || ce == null) return;
+                if (ee == null || ce == null)
+                {
+                    return;
+                }
 
                 var definitions = new SMDefinition[ee.Length];
                 List<SMFunction> currentFunctions = null;
@@ -746,11 +829,14 @@ namespace SPCode.UI.Components
                     var fInfo = new FileInfo(el.FullFilePath);
                     var text = el.editor.Document.Text;
                     if (fInfo.Extension.Trim('.').ToLowerInvariant() == "inc")
+                    {
                         definitions[i] =
                             new Condenser(text
                                 , fInfo.Name).Condense();
+                    }
 
                     if (fInfo.Extension.Trim('.').ToLowerInvariant() == "sp")
+                    {
                         if (el.IsLoaded)
                         {
                             caret = el.editor.CaretOffset;
@@ -768,6 +854,7 @@ namespace SPCode.UI.Components
 
                             }
                         }
+                    }
                 }
 
                 var smDef = Program.Configs[Program.SelectedConfig].GetSMDef()
@@ -784,7 +871,10 @@ namespace SPCode.UI.Components
                     if (el == ce)
                     {
                         Debug.Assert(ce != null, nameof(ce) + " != null");
-                        if (ce.ISAC_Open) continue;
+                        if (ce.ISAC_Open)
+                        {
+                            continue;
+                        }
                     }
 
 
@@ -797,7 +887,9 @@ namespace SPCode.UI.Components
         private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
             if (Program.OptionsObject.Editor_ReformatLineAfterSemicolon)
+            {
                 if (e.Text == ";")
+                {
                     if (editor.CaretOffset >= 0)
                     {
                         var line = editor.Document.GetLineByOffset(editor.CaretOffset);
@@ -813,12 +905,16 @@ namespace SPCode.UI.Components
                             editor.Document.Replace(line, newLineStr);
                         }
                     }
+                }
+            }
 
             switch (e.Text)
             {
                 case "\n":
                     if (!isBlock)
+                    {
                         break;
+                    }
 
                     editor.TextArea.Caret.Line -= 1;
                     editor.TextArea.Caret.Column += Program.Indentation.Length;
@@ -842,7 +938,9 @@ namespace SPCode.UI.Components
                             (lineText[0] == '/' && lineText[1] == '/') ||
                             editor.Document.GetText(line.Offset, editor.CaretOffset - line.Offset).Count(c => c == '\"') % 2 == 1 ||
                             line.LineNumber != 1 && editor.Document.GetText(line.Offset - 3, 1) == "\\")
+                        {
                             break;
+                        }
 
                         // Getting the char ascii code with int cast and the string pos 0 (the char it self),
                         // if it's a ( i need to add 1 to get the ascii code for closing bracket
@@ -850,11 +948,15 @@ namespace SPCode.UI.Components
                         char closingBracket = (char)((int)e.Text[0] + (e.Text == "(" ? 1 : 2));
                         editor.Document.Insert(editor.CaretOffset, closingBracket.ToString());
                         if (editor.SelectionLength == 0)
+                        {
                             editor.CaretOffset -= 1;
+                        }
 
                         // If it's a code block bracket we need to update the folding
                         if (e.Text == "{")
+                        {
                             foldingStrategy.UpdateFoldings(foldingManager, editor.Document);
+                        }
                     }
 
                     break;
@@ -868,7 +970,9 @@ namespace SPCode.UI.Components
                         {
                             editor.Document.Insert(editor.CaretOffset, e.Text);
                             if (editor.SelectionLength == 0)
+                            {
                                 editor.CaretOffset -= 1;
+                            }
                         }
                     }
                     break;
@@ -884,24 +988,37 @@ namespace SPCode.UI.Components
 
                 case "\n":
                     if (editor.Document.TextLength < editor.CaretOffset + 1 || editor.CaretOffset < 3)
+                    {
                         return;
+                    }
 
                     var segment = new AnchorSegment(editor.Document, editor.CaretOffset - 1, 2);
                     var text = editor.Document.GetText(segment);
                     if (text == "{}")
+                    {
                         isBlock = true;
+                    }
+
                     return;
 
                 case "(":
                 case "[":
                 case "{":
                     if (!Program.OptionsObject.Editor_AutoCloseBrackets)
-                        return; break;
+                    {
+                        return;
+                    }
+
+                    break;
 
                 case "\"":
                 case "'":
                     if (!Program.OptionsObject.Editor_AutoCloseStringChars)
-                        return; break;
+                    {
+                        return;
+                    }
+
+                    break;
             }
 
             var selectionLength = editor.SelectionLength;
@@ -930,7 +1047,11 @@ namespace SPCode.UI.Components
             }
             else
             {
-                if (LineHeight == 0.0) LineHeight = editor.TextArea.TextView.DefaultLineHeight;
+                if (LineHeight == 0.0)
+                {
+                    LineHeight = editor.TextArea.TextView.DefaultLineHeight;
+                }
+
                 editor.ScrollToVerticalOffset(editor.VerticalOffset -
                                               Math.Sign((double)e.Delta) * LineHeight *
                                               Program.OptionsObject.Editor_ScrollLines);
@@ -952,6 +1073,7 @@ namespace SPCode.UI.Components
             e.Handled = ISAC_EvaluateKeyDownEvent(e.Key);
             if (!e.Handled
             ) //one could ask why some key-bindings are handled here. Its because spedit sends handled flags for ups&downs and they are therefore not able to processed by the central code.
+            {
                 if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl))
                 {
                     if (e.KeyboardDevice.IsKeyDown(Key.LeftAlt))
@@ -981,6 +1103,7 @@ namespace SPCode.UI.Components
                         }
                     }
                 }
+            }
         }
 
         private void HandleContextMenuCommand(object sender, RoutedEventArgs e)
@@ -1030,15 +1153,24 @@ namespace SPCode.UI.Components
         {
             var length = s.Length;
             for (var i = 0; i < length; ++i)
+            {
                 if (!(s[i] >= 'a' && s[i] <= 'z' || s[i] >= 'A' && s[i] <= 'Z' || s[i] >= '0' && s[i] <= '9' ||
                       s[i] == '_'))
+                {
                     return false;
+                }
+            }
+
             return true;
         }
 
         public void Language_Translate(bool Initial = false)
         {
-            if (Program.Translations.IsDefault) return;
+            if (Program.Translations.IsDefault)
+            {
+                return;
+            }
+
             MenuC_Undo.Header = Program.Translations.GetLanguage("Undo");
 
             MenuC_Redo.Header = Program.Translations.GetLanguage("Redo");
@@ -1071,7 +1203,11 @@ namespace SPCode.UI.Components
         {
             if (HighlightSelection)
             {
-                if (string.IsNullOrWhiteSpace(SelectionString)) return;
+                if (string.IsNullOrWhiteSpace(SelectionString))
+                {
+                    return;
+                }
+
                 var lineStartOffset = line.Offset;
                 var text = CurrentContext.Document.GetText(line);
                 var start = 0;

@@ -38,7 +38,9 @@ namespace Lysis
                 }
 
                 if (pending.Count == 0)
+                {
                     break;
+                }
 
                 current = pending.Pop();
                 current.unmark();
@@ -69,12 +71,17 @@ namespace Lysis
             {
                 LBlock block = blocks[i];
                 if (block.numSuccessors < 2)
+                {
                     continue;
+                }
+
                 for (int j = 0; j < block.numSuccessors; j++)
                 {
                     LBlock target = block.getSuccessor(j);
                     if (target.numPredecessors < 2)
+                    {
                         continue;
+                    }
 
                     // Create a new block inheriting from the predecessor.
                     LBlock split = new LBlock(block.pc);
@@ -106,16 +113,23 @@ namespace Lysis
             // Copy the graph into a temporary mutable structure.
             RBlock[] rblocks = new RBlock[blocks.Length];
             for (int i = 0; i < blocks.Length; i++)
+            {
                 rblocks[i] = new RBlock(i);
+            }
 
             for (int i = 0; i < blocks.Length; i++)
             {
                 LBlock block = blocks[i];
                 RBlock rblock = rblocks[i];
                 for (int j = 0; j < block.numPredecessors; j++)
+                {
                     rblock.predecessors.Add(rblocks[block.getPredecessor(j).id]);
+                }
+
                 for (int j = 0; j < block.numSuccessors; j++)
+                {
                     rblock.successors.Add(rblocks[block.getSuccessor(j).id]);
+                }
             }
 
             // Okay, start reducing.
@@ -127,9 +141,14 @@ namespace Lysis
                 {
                     // Transformation T1, remove self-edges.
                     if (rblock.predecessors.Contains(rblock))
+                    {
                         rblock.predecessors.Remove(rblock);
+                    }
+
                     if (rblock.successors.Contains(rblock))
+                    {
                         rblock.successors.Remove(rblock);
+                    }
 
                     // Transformation T2, remove blocks with one predecessor,
                     // reroute successors' predecessors.
@@ -149,19 +168,27 @@ namespace Lysis
                             //Debug.Assert(successor.predecessors.Contains(rblock));
                             successor.predecessors.Remove(rblock);
                             if (!successor.predecessors.Contains(predecessor))
+                            {
                                 successor.predecessors.Add(predecessor);
+                            }
 
                             if (!predecessor.successors.Contains(successor))
+                            {
                                 predecessor.successors.Add(successor);
+                            }
                         }
                     }
                 }
 
                 if (deleteQueue.Count == 0)
+                {
                     break;
+                }
 
                 foreach (RBlock rblock in deleteQueue)
+                {
                     queue.Remove(rblock);
+                }
             }
 
             // If the graph reduced to one node, it was reducible.
@@ -174,7 +201,9 @@ namespace Lysis
             for (int i = 0; i < b1.Length; i++)
             {
                 if (b1[i] != b2[i])
+                {
                     return false;
+                }
             }
             return true;
         }
@@ -183,14 +212,18 @@ namespace Lysis
         {
             BitArray[] doms = new BitArray[blocks.Length];
             for (int i = 0; i < doms.Length; i++)
+            {
                 doms[i] = new BitArray(doms.Length);
+            }
 
             doms[0].Set(0, true);
 
             for (int i = 1; i < blocks.Length; i++)
             {
                 for (int j = 0; j < blocks.Length; j++)
+                {
                     doms[i].SetAll(true);
+                }
             }
 
             // Compute dominators.
@@ -208,7 +241,9 @@ namespace Lysis
                         doms[block.id].And(doms[pred.id]);
                         doms[block.id].Set(block.id, true);
                         if (!CompareBitArrays(doms[block.id], u))
+                        {
                             changed = true;
+                        }
                     }
                 }
             }
@@ -222,7 +257,9 @@ namespace Lysis
                 for (int j = 0; j < blocks.Length; j++)
                 {
                     if (doms[block.id][j])
+                    {
                         list.Add(blocks[j]);
+                    }
                 }
                 block.setDominators(list.ToArray());
             }
@@ -234,10 +271,14 @@ namespace Lysis
             {
                 LBlock other = from.dominators[i];
                 if (other == from || other == dom)
+                {
                     continue;
+                }
 
                 if (other.dominators.Contains(dom))
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -251,7 +292,9 @@ namespace Lysis
             {
                 LBlock dom = block.dominators[i];
                 if (dom == block)
+                {
                     continue;
+                }
 
                 if (!StrictlyDominatesADominator(block, dom))
                 {
@@ -267,14 +310,18 @@ namespace Lysis
             blocks[0].setImmediateDominator(blocks[0]);
 
             for (int i = 1; i < blocks.Length; i++)
+            {
                 ComputeImmediateDominator(blocks[i]);
+            }
         }
 
         public static void ComputeDominatorTree(LBlock[] blocks)
         {
             List<LBlock>[] idominated = new List<LBlock>[blocks.Length];
             for (int i = 0; i < blocks.Length; i++)
+            {
                 idominated[i] = new List<LBlock>();
+            }
 
             for (int i = 1; i < blocks.Length; i++)
             {
@@ -283,7 +330,9 @@ namespace Lysis
             }
 
             for (int i = 0; i < blocks.Length; i++)
+            {
                 blocks[i].setImmediateDominated(idominated[i].ToArray());
+            }
         }
 
         private static LBlock SkipContainedLoop(LBlock block, LBlock header)
@@ -291,9 +340,15 @@ namespace Lysis
             while (block.loop != null && block.loop == block)
             {
                 if (block.loop != null)
+                {
                     block = block.loop;
+                }
+
                 if (block == header)
+                {
                     break;
+                }
+
                 block = block.getLoopPredecessor();
             }
             return block;
@@ -317,14 +372,18 @@ namespace Lysis
 
                     // Has this block already been scanned?
                     if (pred.loop == backedge_.loop)
+                    {
                         continue;
+                    }
 
                     pred = SkipContainedLoop(pred, backedge_.loop);
 
                     // If this assert hits, there is probably a |break| keyword.
                     //Debug.Assert(pred.loop == null || pred.loop == backedge_.loop);
                     if (pred.loop != null)
+                    {
                         continue;
+                    }
 
                     stack_.Push(pred);
                 }
@@ -374,14 +433,19 @@ namespace Lysis
             {
                 LBlock block = blocks[i];
                 if (block.backedge != null)
+                {
                     MarkLoop(block.backedge);
+                }
             }
         }
 
         public static NodeBlock GetSingleTarget(NodeBlock block)
         {
             if (block.nodes.last.type != NodeType.Jump)
+            {
                 return null;
+            }
+
             DJump jump = (DJump)block.nodes.last;
             return jump.target;
         }
@@ -389,18 +453,30 @@ namespace Lysis
         public static NodeBlock GetEmptyTarget(NodeBlock block)
         {
             if (block.nodes.last != block.nodes.first)
+            {
                 return null;
+            }
+
             return GetSingleTarget(block);
         }
 
         private static NodeBlock FindJoinBlock(NodeGraph graph, NodeBlock block)
         {
             if (block.nodes.last.type == NodeType.JumpCondition && block.lir.idominated.Length == 3)
+            {
                 return graph[block.lir.idominated[2].id];
+            }
+
             if (block.lir.idom == null)
+            {
                 return null;
+            }
+
             if (block.lir.idom == block.lir)
+            {
                 return null;
+            }
+
             return FindJoinBlock(graph, graph[block.lir.idom.id]);
         }
 
@@ -409,10 +485,16 @@ namespace Lysis
             while (true)
             {
                 if (block.lir.backedge != null)
+                {
                     return block;
+                }
+
                 NodeBlock next = graph[block.lir.idom.id];
                 if (block == next)
+                {
                     return null;
+                }
+
                 block = next;
             }
         }
@@ -424,7 +506,10 @@ namespace Lysis
             {
                 block = GetEmptyTarget(block);
                 if (block == null)
+                {
                     return target;
+                }
+
                 target = block;
             }
         }

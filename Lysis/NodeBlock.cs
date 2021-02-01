@@ -1,6 +1,6 @@
-﻿using SourcePawn;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -28,17 +28,25 @@ namespace Lysis
             stack_ = new List<StackEntry>();
             args_ = new StackEntry[nargs];
             for (int i = 0; i < args_.Length; i++)
+            {
                 args_[i] = new StackEntry(null, null);
+            }
         }
 
         public AbstractStack(AbstractStack other)
         {
             stack_ = new List<StackEntry>();
             for (int i = 0; i < other.stack_.Count; i++)
+            {
                 stack_.Add(new StackEntry(other.stack_[i].declaration, other.stack_[i].assignment));
+            }
+
             args_ = new StackEntry[other.args_.Length];
             for (int i = 0; i < args_.Length; i++)
+            {
                 args_[i] = new StackEntry(other.args_[i].declaration, other.args_[i].assignment);
+            }
+
             pri_ = other.pri_;
             alt_ = other.alt_;
         }
@@ -62,7 +70,9 @@ namespace Lysis
         {
             StackEntry entry = popEntry();
             if (entry.declaration.uses.Count == 0)
+            {
                 return entry.assignment;
+            }
             //Debug.Assert(false, "not yet handled");
             return null;
         }
@@ -82,7 +92,10 @@ namespace Lysis
         private StackEntry entry(int offset)
         {
             if (offset < 0)
+            {
                 return stack_.ElementAt((-offset / 4) - 1);
+            }
+
             return args_[(offset - 12) / 4];
         }
         public DDeclareLocal getName(int offset)
@@ -113,9 +126,13 @@ namespace Lysis
         public void set(Register reg, DNode node)
         {
             if (reg == Register.Pri)
+            {
                 pri_ = node;
+            }
             else
+            {
                 alt_ = node;
+            }
         }
         public void set(int offset, DNode value)
         {
@@ -143,7 +160,10 @@ namespace Lysis
         private void joinRegs(Register reg, DNode value)
         {
             if (value == null || stack_.reg(reg) == value)
+            {
                 return;
+            }
+
             if (stack_.reg(reg) == null)
             {
                 stack_.set(reg, value);
