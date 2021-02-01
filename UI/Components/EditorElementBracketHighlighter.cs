@@ -23,12 +23,7 @@ namespace SPCode.UI.Components
 
         public BracketHighlightRenderer(TextView textView)
         {
-            if (textView == null)
-            {
-                throw new ArgumentNullException("textView");
-            }
-
-            this.textView = textView;
+            this.textView = textView ?? throw new ArgumentNullException("textView");
 
             this.textView.BackgroundRenderers.Add(this);
         }

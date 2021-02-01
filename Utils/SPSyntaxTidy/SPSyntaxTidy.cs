@@ -217,15 +217,15 @@ namespace SPCode.Utils.SPSyntaxTidy
 
         public static bool IsPreWhiteSpaceName(string name)
         {
-            switch (name)
+            return name switch
             {
-                case "if": return true;
-                case "for": return true;
-                case "while": return true;
-                case "switch": return true;
-                case "case": return true;
-            }
-            return false;
+                "if" => true,
+                "for" => true,
+                "while" => true,
+                "switch" => true,
+                "case" => true,
+                _ => false,
+            };
         }
 
         public static bool IsTokenNumber(SPToken token)

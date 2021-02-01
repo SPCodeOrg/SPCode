@@ -166,7 +166,7 @@ namespace SPCode.UI
                                     if (!(fileName.EndsWith(".inc", StringComparison.InvariantCultureIgnoreCase) ||
                                           fileName.EndsWith(".sp", StringComparison.InvariantCultureIgnoreCase)))
                                     {
-                                        fileName = fileName + ".inc";
+                                        fileName += ".inc";
                                     }
 
                                     fileName = Path.Combine(
