@@ -11,7 +11,7 @@ namespace SPCode.Interop
         {
             var stringData = Encoding.UTF8.GetBytes(data);
             var stringLength = stringData.Length;
-            var array = new byte[sizeof(Int32) + stringLength];
+            var array = new byte[sizeof(int) + stringLength];
             using (var stream = new MemoryStream(array))
             {
                 var stringLengthData = BitConverter.GetBytes(stringLength);

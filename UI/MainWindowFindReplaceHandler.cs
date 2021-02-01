@@ -319,7 +319,7 @@ namespace SPCode.UI
                         findString = findString.Replace("\\t", "\t").Replace("\\r", "\r").Replace("\\n", "\n");
                         var rx = new Regex(@"\\[uUxX]([0-9A-F]{4})");
                         findString = rx.Replace(findString,
-                            match => ((char)Int32.Parse(match.Value.Substring(2), NumberStyles.HexNumber)).ToString());
+                            match => ((char)int.Parse(match.Value.Substring(2), NumberStyles.HexNumber)).ToString());
                         regex = new Regex(Regex.Escape(findString), regexOptions);
                     }
                     else //if (RSearch_RButton.IsChecked.Value)

@@ -651,7 +651,7 @@ namespace Lysis
                     break;
 
                 default:
-                    throw new Exception(String.Format("unknown op ({0})", node.type.ToString()));
+                    throw new Exception(string.Format("unknown op ({0})", node.type.ToString()));
             }
         }
 

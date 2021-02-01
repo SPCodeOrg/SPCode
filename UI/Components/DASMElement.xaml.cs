@@ -173,7 +173,7 @@ namespace SPCode.UI.Components
 
         private void addDetailLine(string fmt, params object[] args)
         {
-            detail_buffer_.Append(String.Format(fmt, args) + "\r\n");
+            detail_buffer_.Append(string.Format(fmt, args) + "\r\n");
         }
 
         private void endDetailUpdate()

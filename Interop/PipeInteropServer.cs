@@ -45,7 +45,7 @@ namespace SPCode.Interop
         {
             pipeServer.EndWaitForConnection(iar);
             var byteBuffer = new byte[4];
-            pipeServer.Read(byteBuffer, 0, sizeof(Int32));
+            pipeServer.Read(byteBuffer, 0, sizeof(int));
             var length = BitConverter.ToInt32(byteBuffer, 0);
             byteBuffer = new byte[length];
             pipeServer.Read(byteBuffer, 0, length);

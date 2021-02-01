@@ -143,7 +143,7 @@ namespace Lysis
                     spop = SPOpcode.sub;
                     break;
                 default:
-                    throw new Exception(String.Format("unknown operator ({0})", op.ToString()));
+                    throw new Exception(string.Format("unknown operator ({0})", op.ToString()));
             }
 
             switch (spop)
