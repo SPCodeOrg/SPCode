@@ -103,22 +103,10 @@ namespace Lysis
             return entry(offset).declaration;
         }
 
-        public int nargs
-        {
-            get { return args_.Length; }
-        }
-        public int depth
-        {
-            get { return -(stack_.Count * 4); }
-        }
-        public DNode pri
-        {
-            get { return pri_; }
-        }
-        public DNode alt
-        {
-            get { return alt_; }
-        }
+        public int nargs => args_.Length;
+        public int depth => -(stack_.Count * 4);
+        public DNode pri => pri_;
+        public DNode alt => alt_;
         public DNode reg(Register reg)
         {
             return (reg == Register.Pri) ? pri_ : alt_;
@@ -232,18 +220,9 @@ namespace Lysis
             nodes_.replace(where, with);
         }
 
-        public LBlock lir
-        {
-            get { return lir_; }
-        }
-        public AbstractStack stack
-        {
-            get { return stack_; }
-        }
-        public NodeList nodes
-        {
-            get { return nodes_; }
-        }
+        public LBlock lir => lir_;
+        public AbstractStack stack => stack_;
+        public NodeList nodes => nodes_;
     }
 
     public class NodeGraph
@@ -260,22 +239,10 @@ namespace Lysis
             nameCounter_ = 0;
             function_ = file_.lookupFunction(blocks[0].lir.pc);
         }
-        public NodeBlock this[int i]
-        {
-            get { return blocks_[i]; }
-        }
-        public SourcePawnFile file
-        {
-            get { return file_; }
-        }
-        public Function function
-        {
-            get { return function_; }
-        }
-        public int numBlocks
-        {
-            get { return blocks_.Length; }
-        }
+        public NodeBlock this[int i] => blocks_[i];
+        public SourcePawnFile file => file_;
+        public Function function => function_;
+        public int numBlocks => blocks_.Length;
         public string tempName()
         {
             return "var" + ++nameCounter_;

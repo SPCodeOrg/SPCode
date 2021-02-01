@@ -25,10 +25,7 @@ namespace Lysis
             source_ = source;
         }
 
-        public NodeBlock source
-        {
-            get { return source_; }
-        }
+        public NodeBlock source => source_;
     }
 
     public enum LogicOperator
@@ -53,22 +50,11 @@ namespace Lysis
                 subChain_ = subChain;
             }
 
-            public DNode expression
-            {
-                get
-                {
+            public DNode expression =>
                     //Debug.Assert(!isSubChain);
-                    return expression_;
-                }
-            }
-            public bool isSubChain
-            {
-                get { return subChain_ != null; }
-            }
-            public LogicChain subChain
-            {
-                get { return subChain_; }
-            }
+                    expression_;
+            public bool isSubChain => subChain_ != null;
+            public LogicChain subChain => subChain_;
         }
 
         private LogicOperator op_;
@@ -88,14 +74,8 @@ namespace Lysis
             nodes_.Add(new Node(subChain));
         }
 
-        public LogicOperator op
-        {
-            get { return op_; }
-        }
-        public List<Node> nodes
-        {
-            get { return nodes_; }
-        }
+        public LogicOperator op => op_;
+        public List<Node> nodes => nodes_;
     };
 
     public class IfBlock : ControlBlock
@@ -143,30 +123,12 @@ namespace Lysis
             logic_ = logic;
         }
 
-        public override ControlType type
-        {
-            get { return ControlType.If; }
-        }
-        public ControlBlock trueArm
-        {
-            get { return trueArm_; }
-        }
-        public ControlBlock falseArm
-        {
-            get { return falseArm_; }
-        }
-        public ControlBlock join
-        {
-            get { return join_; }
-        }
-        public bool invert
-        {
-            get { return invert_; }
-        }
-        public LogicChain logic
-        {
-            get { return logic_; }
-        }
+        public override ControlType type => ControlType.If;
+        public ControlBlock trueArm => trueArm_;
+        public ControlBlock falseArm => falseArm_;
+        public ControlBlock join => join_;
+        public bool invert => invert_;
+        public LogicChain logic => logic_;
     }
 
     public class WhileLoop : ControlBlock
@@ -193,22 +155,10 @@ namespace Lysis
             type_ = type;
         }
 
-        public override ControlType type
-        {
-            get { return type_; }
-        }
-        public ControlBlock body
-        {
-            get { return body_; }
-        }
-        public ControlBlock join
-        {
-            get { return join_; }
-        }
-        public LogicChain logic
-        {
-            get { return logic_; }
-        }
+        public override ControlType type => type_;
+        public ControlBlock body => body_;
+        public ControlBlock join => join_;
+        public LogicChain logic => logic_;
     }
 
     public class SwitchBlock : ControlBlock
@@ -224,14 +174,8 @@ namespace Lysis
                 target_ = target;
             }
 
-            public int value
-            {
-                get { return value_; }
-            }
-            public ControlBlock target
-            {
-                get { return target_; }
-            }
+            public int value => value_;
+            public ControlBlock target => target_;
         }
 
         ControlBlock defaultCase_;
@@ -246,26 +190,14 @@ namespace Lysis
             join_ = join;
         }
 
-        public override ControlType type
-        {
-            get { return ControlType.Switch; }
-        }
-        public int numCases
-        {
-            get { return cases_.Count; }
-        }
-        public ControlBlock defaultCase
-        {
-            get { return defaultCase_; }
-        }
+        public override ControlType type => ControlType.Switch;
+        public int numCases => cases_.Count;
+        public ControlBlock defaultCase => defaultCase_;
         public Case getCase(int i)
         {
             return cases_[i];
         }
-        public ControlBlock join
-        {
-            get { return join_; }
-        }
+        public ControlBlock join => join_;
     }
 
     public class ReturnBlock : ControlBlock
@@ -275,10 +207,7 @@ namespace Lysis
         {
         }
 
-        public override ControlType type
-        {
-            get { return ControlType.Return; }
-        }
+        public override ControlType type => ControlType.Return;
     }
 
     public class StatementBlock : ControlBlock
@@ -291,14 +220,8 @@ namespace Lysis
             next_ = next;
         }
 
-        public override ControlType type
-        {
-            get { return ControlType.Statement; }
-        }
-        public ControlBlock next
-        {
-            get { return next_; }
-        }
+        public override ControlType type => ControlType.Statement;
+        public ControlBlock next => next_;
     }
 
     public class SourceStructureBuilder

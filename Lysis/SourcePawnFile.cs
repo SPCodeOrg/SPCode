@@ -295,18 +295,9 @@ namespace SourcePawn
                 version_ = version;
             }
 
-            public byte[] bytes
-            {
-                get { return code_; }
-            }
-            public int flags
-            {
-                get { return flags_; }
-            }
-            public int version
-            {
-                get { return version_; }
-            }
+            public byte[] bytes => code_;
+            public int flags => flags_;
+            public int version => version_;
         }
 
         public class Data
@@ -320,14 +311,8 @@ namespace SourcePawn
                 memory_ = memory;
             }
 
-            public byte[] bytes
-            {
-                get { return data_; }
-            }
-            public int memory
-            {
-                get { return memory_; }
-            }
+            public byte[] bytes => data_;
+            public int memory => memory_;
         }
 
         public class PubVar
@@ -341,14 +326,8 @@ namespace SourcePawn
                 address_ = address;
             }
 
-            public string name
-            {
-                get { return name_; }
-            }
-            public uint address
-            {
-                get { return address_; }
-            }
+            public string name => name_;
+            public uint address => address_;
         }
 
         public class DebugFile
@@ -362,14 +341,8 @@ namespace SourcePawn
                 address_ = address;
             }
 
-            public string name
-            {
-                get { return name_; }
-            }
-            public uint address
-            {
-                get { return address_; }
-            }
+            public string name => name_;
+            public uint address => address_;
         }
 
         public class DebugLine
@@ -383,14 +356,8 @@ namespace SourcePawn
                 address_ = address;
             }
 
-            public int line
-            {
-                get { return line_; }
-            }
-            public uint address
-            {
-                get { return address_; }
-            }
+            public int line => line_;
+            public uint address => address_;
         }
 
         /// <summary>
@@ -727,24 +694,12 @@ namespace SourcePawn
             }
         }
 
-        public Code code
-        {
-            get { return code_; }
-        }
+        public Code code => code_;
 
-        public Data data
-        {
-            get { return data_; }
-        }
+        public Data data => data_;
 
-        public PubVar[] pubvars
-        {
-            get { return pubvars_; }
-        }
-        public Native[] natives
-        {
-            get { return natives_; }
-        }
+        public PubVar[] pubvars => pubvars_;
+        public Native[] natives => natives_;
 
         public string lookupFile(uint address)
         {
@@ -870,10 +825,7 @@ namespace SourcePawn
         {
             return BitConverter.ToSingle(data.bytes, address);
         }
-        public override byte[] DAT
-        {
-            get { return data.bytes; }
-        }
+        public override byte[] DAT => data.bytes;
     }
 
     public static class OpcodeHelpers

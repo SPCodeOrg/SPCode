@@ -388,10 +388,7 @@ namespace Lysis
                     stack_.Push(pred);
                 }
             }
-            public bool empty
-            {
-                get { return stack_.Count() == 0; }
-            }
+            public bool empty => stack_.Count() == 0;
             public LBlock pop()
             {
                 return stack_.Pop();

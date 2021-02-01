@@ -33,13 +33,7 @@ namespace SPCode.UI.Components
             this.textView.BackgroundRenderers.Add(this);
         }
 
-        public KnownLayer Layer
-        {
-            get
-            {
-                return KnownLayer.Selection;
-            }
-        }
+        public KnownLayer Layer => KnownLayer.Selection;
 
         public void Draw(TextView textView, DrawingContext drawingContext)
         {

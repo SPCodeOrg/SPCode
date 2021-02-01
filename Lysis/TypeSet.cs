@@ -21,18 +21,9 @@ namespace Lysis
         {
             return type_ == other.type_ && tag_ == other.tag_;
         }
-        public CellType type
-        {
-            get { return type_; }
-        }
-        public Tag tag
-        {
-            get { return tag_; }
-        }
-        public bool isString
-        {
-            get { return type_ == CellType.Tag && tag_.name == "String"; }
-        }
+        public CellType type => type_;
+        public Tag tag => tag_;
+        public bool isString => type_ == CellType.Tag && tag_.name == "String";
 
         public PawnType(Tag tag)
         {
@@ -99,34 +90,16 @@ namespace Lysis
             kind_ = Kind.Reference;
             ref_ = other;
         }
-        public Kind kind
-        {
-            get { return kind_; }
-        }
-        public int dims
-        {
-            get
-            {
+        public Kind kind => kind_;
+        public int dims =>
                 //Debug.Assert(kind_ == Kind.Array);
-                return dims_;
-            }
-        }
-        public PawnType type
-        {
-            get
-            {
+                dims_;
+        public PawnType type =>
                 //Debug.Assert(kind_ == Kind.Cell || kind_ == Kind.Array);
-                return type_;
-            }
-        }
-        public TypeUnit inner
-        {
-            get
-            {
+                type_;
+        public TypeUnit inner =>
                 //Debug.Assert(kind_ == Kind.Reference);
-                return ref_;
-            }
-        }
+                ref_;
 
         public TypeUnit load()
         {
@@ -236,14 +209,8 @@ namespace Lysis
     {
         private List<TypeUnit> types_ = null;
 
-        public int numTypes
-        {
-            get { return types_ == null ? 0 : types_.Count; }
-        }
-        public TypeUnit this[int i]
-        {
-            get { return types_[i]; }
-        }
+        public int numTypes => types_ == null ? 0 : types_.Count;
+        public TypeUnit this[int i] => types_[i];
 
         public void addType(TypeUnit tu)
         {

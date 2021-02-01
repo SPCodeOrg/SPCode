@@ -15,14 +15,8 @@ namespace Lysis
             address_ = address;
         }
 
-        public string name
-        {
-            get { return name_; }
-        }
-        public uint address
-        {
-            get { return address_; }
-        }
+        public string name => name_;
+        public uint address => address_;
     }
 
     public abstract class PawnFile
@@ -91,18 +85,9 @@ namespace Lysis
             return null;
         }
 
-        public Function[] functions
-        {
-            get { return functions_; }
-        }
-        public Public[] publics
-        {
-            get { return publics_; }
-        }
-        public Variable[] globals
-        {
-            get { return globals_; }
-        }
+        public Function[] functions => functions_;
+        public Public[] publics => publics_;
+        public Variable[] globals => globals_;
         public abstract byte[] DAT
         {
             get;

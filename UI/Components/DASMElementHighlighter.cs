@@ -7,7 +7,7 @@ namespace SPCode.UI.Components
 {
     public class DASMHighlighting : IHighlightingDefinition
     {
-        public string Name { get { return "SM"; } }
+        public string Name => "SM";
 
         public HighlightingRuleSet MainRuleSet
         {
