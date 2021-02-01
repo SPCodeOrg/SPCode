@@ -74,10 +74,8 @@ namespace SPCode.Interop.Updater
 
             try
             {
-                using (var client = new WebClient())
-                {
-                    client.DownloadFile(asset.BrowserDownloadUrl, asset.Name);
-                }
+                using var client = new WebClient();
+                client.DownloadFile(asset.BrowserDownloadUrl, asset.Name);
             }
             catch (Exception e)
             {

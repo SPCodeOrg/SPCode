@@ -118,106 +118,104 @@ namespace SPCode.UI
                         stringOutput.AppendLine(fileInfo.Name);
                         if (fileInfo.Exists)
                         {
-                            using (var process = new Process())
+                            using var process = new Process();
+                            process.StartInfo.WorkingDirectory =
+                                fileInfo.DirectoryName ?? throw new NullReferenceException();
+                            process.StartInfo.UseShellExecute = true;
+                            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                            process.StartInfo.CreateNoWindow = true;
+                            process.StartInfo.FileName = spCompInfo.FullName;
+                            var destinationFileName = ShortenScriptFileName(fileInfo.Name) + ".smx";
+                            var outFile = Path.Combine(fileInfo.DirectoryName, destinationFileName);
+                            if (File.Exists(outFile))
                             {
-                                process.StartInfo.WorkingDirectory =
-                                    fileInfo.DirectoryName ?? throw new NullReferenceException();
-                                process.StartInfo.UseShellExecute = true;
-                                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                                process.StartInfo.CreateNoWindow = true;
-                                process.StartInfo.FileName = spCompInfo.FullName;
-                                var destinationFileName = ShortenScriptFileName(fileInfo.Name) + ".smx";
-                                var outFile = Path.Combine(fileInfo.DirectoryName, destinationFileName);
-                                if (File.Exists(outFile))
-                                {
-                                    File.Delete(outFile);
-                                }
-
-                                var errorFile = Environment.CurrentDirectory + @"\sourcepawn\errorfiles\error_" +
-                                                Environment.TickCount + "_" + file.GetHashCode().ToString("X") + "_" +
-                                                i + ".txt";
-                                if (File.Exists(errorFile))
-                                {
-                                    File.Delete(errorFile);
-                                }
-
-                                var includeDirectories = new StringBuilder();
-                                foreach (var dir in c.SMDirectories)
-                                {
-                                    includeDirectories.Append(" -i=\"" + dir + "\"");
-                                }
-
-                                var includeStr = includeDirectories.ToString();
-
-                                process.StartInfo.Arguments =
-                                    "\"" + fileInfo.FullName + "\" -o=\"" + outFile + "\" -e=\"" + errorFile + "\"" +
-                                    includeStr + " -O=" + c.OptimizeLevel + " -v=" + c.VerboseLevel;
-                                progressTask.SetProgress((i + 1 - 0.5d) / compileCount);
-                                var execResult = ExecuteCommandLine(c.PreCmd, fileInfo.DirectoryName, c.CopyDirectory,
-                                    fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
-                                if (!string.IsNullOrWhiteSpace(execResult))
-                                {
-                                    stringOutput.AppendLine(execResult.Trim('\n', '\r'));
-                                }
-
-                                ProcessUITasks();
-                                try
-                                {
-                                    process.Start();
-                                    process.WaitForExit();
-                                }
-                                catch (Exception)
-                                {
-                                    InCompiling = false;
-                                }
-
-                                if (!InCompiling) //cannot await in catch
-                                {
-                                    await progressTask.CloseAsync();
-                                    await this.ShowMessageAsync(Program.Translations.GetLanguage("SPCompNotStarted"),
-                                        Program.Translations.GetLanguage("Error"), MessageDialogStyle.Affirmative,
-                                        MetroDialogOptions);
-                                    return;
-                                }
-
-                                if (File.Exists(errorFile))
-                                {
-                                    var errorStr = File.ReadAllText(errorFile);
-                                    stringOutput.AppendLine(errorStr.Trim('\n', '\r'));
-                                    var mc = errorFilterRegex.Matches(errorStr);
-                                    for (var j = 0; j < mc.Count; ++j)
-                                    {
-                                        ErrorResultGrid.Items.Add(new ErrorDataGridRow
-                                        {
-                                            file = mc[j].Groups["file"].Value.Trim(),
-                                            line = mc[j].Groups["line"].Value.Trim(),
-                                            type = mc[j].Groups["type"].Value.Trim(),
-                                            details = mc[j].Groups["details"].Value.Trim()
-                                        });
-                                    }
-
-                                    File.Delete(errorFile);
-                                }
-
-                                stringOutput.AppendLine(Program.Translations.GetLanguage("Done"));
-                                if (File.Exists(outFile))
-                                {
-                                    compiledFiles.Add(outFile);
-                                    nonUploadedFiles.Add(outFile);
-                                    compiledFileNames.Add(destinationFileName);
-                                }
-
-                                var execResult_Post = ExecuteCommandLine(c.PostCmd, fileInfo.DirectoryName,
-                                    c.CopyDirectory, fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
-                                if (!string.IsNullOrWhiteSpace(execResult_Post))
-                                {
-                                    stringOutput.AppendLine(execResult_Post.Trim('\n', '\r'));
-                                }
-
-                                stringOutput.AppendLine();
-                                progressTask.SetProgress((double)(i + 1) / compileCount);
-                                ProcessUITasks();
+                                File.Delete(outFile);
                             }
+
+                            var errorFile = Environment.CurrentDirectory + @"\sourcepawn\errorfiles\error_" +
+                                            Environment.TickCount + "_" + file.GetHashCode().ToString("X") + "_" +
+                                            i + ".txt";
+                            if (File.Exists(errorFile))
+                            {
+                                File.Delete(errorFile);
+                            }
+
+                            var includeDirectories = new StringBuilder();
+                            foreach (var dir in c.SMDirectories)
+                            {
+                                includeDirectories.Append(" -i=\"" + dir + "\"");
+                            }
+
+                            var includeStr = includeDirectories.ToString();
+
+                            process.StartInfo.Arguments =
+                                "\"" + fileInfo.FullName + "\" -o=\"" + outFile + "\" -e=\"" + errorFile + "\"" +
+                                includeStr + " -O=" + c.OptimizeLevel + " -v=" + c.VerboseLevel;
+                            progressTask.SetProgress((i + 1 - 0.5d) / compileCount);
+                            var execResult = ExecuteCommandLine(c.PreCmd, fileInfo.DirectoryName, c.CopyDirectory,
+                                fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
+                            if (!string.IsNullOrWhiteSpace(execResult))
+                            {
+                                stringOutput.AppendLine(execResult.Trim('\n', '\r'));
+                            }
+
+                            ProcessUITasks();
+                            try
+                            {
+                                process.Start();
+                                process.WaitForExit();
+                            }
+                            catch (Exception)
+                            {
+                                InCompiling = false;
+                            }
+
+                            if (!InCompiling) //cannot await in catch
+                            {
+                                await progressTask.CloseAsync();
+                                await this.ShowMessageAsync(Program.Translations.GetLanguage("SPCompNotStarted"),
+                                    Program.Translations.GetLanguage("Error"), MessageDialogStyle.Affirmative,
+                                    MetroDialogOptions);
+                                return;
+                            }
+
+                            if (File.Exists(errorFile))
+                            {
+                                var errorStr = File.ReadAllText(errorFile);
+                                stringOutput.AppendLine(errorStr.Trim('\n', '\r'));
+                                var mc = errorFilterRegex.Matches(errorStr);
+                                for (var j = 0; j < mc.Count; ++j)
+                                {
+                                    ErrorResultGrid.Items.Add(new ErrorDataGridRow
+                                    {
+                                        file = mc[j].Groups["file"].Value.Trim(),
+                                        line = mc[j].Groups["line"].Value.Trim(),
+                                        type = mc[j].Groups["type"].Value.Trim(),
+                                        details = mc[j].Groups["details"].Value.Trim()
+                                    });
+                                }
+
+                                File.Delete(errorFile);
+                            }
+
+                            stringOutput.AppendLine(Program.Translations.GetLanguage("Done"));
+                            if (File.Exists(outFile))
+                            {
+                                compiledFiles.Add(outFile);
+                                nonUploadedFiles.Add(outFile);
+                                compiledFileNames.Add(destinationFileName);
+                            }
+
+                            var execResult_Post = ExecuteCommandLine(c.PostCmd, fileInfo.DirectoryName,
+                                c.CopyDirectory, fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
+                            if (!string.IsNullOrWhiteSpace(execResult_Post))
+                            {
+                                stringOutput.AppendLine(execResult_Post.Trim('\n', '\r'));
+                            }
+
+                            stringOutput.AppendLine();
+                            progressTask.SetProgress((double)(i + 1) / compileCount);
+                            ProcessUITasks();
                         }
                     }
 
@@ -499,10 +497,8 @@ namespace SPCode.UI
                 process.StartInfo.RedirectStandardOutput = true;
                 process.Start();
                 process.WaitForExit();
-                using (var reader = process.StandardOutput)
-                {
-                    result = reader.ReadToEnd();
-                }
+                using var reader = process.StandardOutput;
+                result = reader.ReadToEnd();
             }
 
             File.Delete(batchFile);

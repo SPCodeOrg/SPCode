@@ -40,13 +40,9 @@ namespace SPCode.UI.Components
         {
             try
             {
-                using (var stream = fInfo.OpenRead())
-                {
-                    using (var reader = new BinaryReader(stream))
-                    {
-                        file_ = new SmxFile(reader);
-                    }
-                }
+                using var stream = fInfo.OpenRead();
+                using var reader = new BinaryReader(stream);
+                file_ = new SmxFile(reader);
             }
             catch (Exception e)
             {

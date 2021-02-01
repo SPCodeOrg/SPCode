@@ -18,12 +18,10 @@ namespace SPCode.Interop
                 stream.Write(stringLengthData, 0, stringLengthData.Length);
                 stream.Write(stringData, 0, stringData.Length);
             }
-            using (var pipeClient = new NamedPipeClientStream(".", "SPCodeNamedPipeServer", PipeDirection.Out, PipeOptions.Asynchronous))
-            {
-                pipeClient.Connect(5000);
-                pipeClient.Write(array, 0, array.Length);
-                pipeClient.Flush();
-            }
+            using var pipeClient = new NamedPipeClientStream(".", "SPCodeNamedPipeServer", PipeDirection.Out, PipeOptions.Asynchronous);
+            pipeClient.Connect(5000);
+            pipeClient.Write(array, 0, array.Length);
+            pipeClient.Flush();
         }
     }
 }

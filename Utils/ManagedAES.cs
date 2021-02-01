@@ -22,13 +22,11 @@ namespace SPCode.Utils
                 byte[] cipherTextBytes;
                 using (var memoryStream = new MemoryStream())
                 {
-                    using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
-                    {
-                        var buffer = Encoding.UTF8.GetBytes(plainText);
-                        cryptoStream.Write(buffer, 0, buffer.Length);
-                        cryptoStream.FlushFinalBlock();
-                        cipherTextBytes = memoryStream.ToArray();
-                    }
+                    using var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write);
+                    var buffer = Encoding.UTF8.GetBytes(plainText);
+                    cryptoStream.Write(buffer, 0, buffer.Length);
+                    cryptoStream.FlushFinalBlock();
+                    cipherTextBytes = memoryStream.ToArray();
                 }
                 return Convert.ToBase64String(cipherTextBytes);
             }
@@ -54,12 +52,10 @@ namespace SPCode.Utils
                 string outString;
                 using (var memoryStream = new MemoryStream(cipherTextBytes))
                 {
-                    using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
-                    {
-                        var plainTextBytes = new byte[cipherTextBytes.Length];
-                        var decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
-                        outString = Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount).TrimEnd('\0');
-                    }
+                    using var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+                    var plainTextBytes = new byte[cipherTextBytes.Length];
+                    var decryptedByteCount = cryptoStream.Read(plainTextBytes, 0, plainTextBytes.Length);
+                    outString = Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount).TrimEnd('\0');
                 }
                 return outString;
             }

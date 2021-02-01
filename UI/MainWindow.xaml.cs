@@ -151,33 +151,31 @@ namespace SPCode.UI
                     AddEditorElement(finalPath, fileInfo.Name, SelectMe);
                     if (TryOpenIncludes && Program.OptionsObject.Program_OpenCustomIncludes)
                     {
-                        using (var textReader = fileInfo.OpenText())
+                        using var textReader = fileInfo.OpenText();
+                        var source = Regex.Replace(textReader.ReadToEnd(), @"/\*.*?\*/", string.Empty,
+                            RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
+                        var regex = new Regex(@"^\s*\#include\s+((\<|"")(?<name>.+?)(\>|""))",
+                            RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
+                        var mc = regex.Matches(source);
+                        for (var i = 0; i < mc.Count; ++i)
                         {
-                            var source = Regex.Replace(textReader.ReadToEnd(), @"/\*.*?\*/", string.Empty,
-                                RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
-                            var regex = new Regex(@"^\s*\#include\s+((\<|"")(?<name>.+?)(\>|""))",
-                                RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
-                            var mc = regex.Matches(source);
-                            for (var i = 0; i < mc.Count; ++i)
+                            try
                             {
-                                try
+                                var fileName = mc[i].Groups["name"].Value;
+                                if (!(fileName.EndsWith(".inc", StringComparison.InvariantCultureIgnoreCase) ||
+                                      fileName.EndsWith(".sp", StringComparison.InvariantCultureIgnoreCase)))
                                 {
-                                    var fileName = mc[i].Groups["name"].Value;
-                                    if (!(fileName.EndsWith(".inc", StringComparison.InvariantCultureIgnoreCase) ||
-                                          fileName.EndsWith(".sp", StringComparison.InvariantCultureIgnoreCase)))
-                                    {
-                                        fileName += ".inc";
-                                    }
+                                    fileName += ".inc";
+                                }
 
-                                    fileName = Path.Combine(
-                                        fileInfo.DirectoryName ?? throw new NullReferenceException(), fileName);
-                                    TryLoadSourceFile(fileName, false,
-                                        Program.OptionsObject.Program_OpenIncludesRecursively);
-                                }
-                                catch (Exception)
-                                {
-                                    // ignored
-                                }
+                                fileName = Path.Combine(
+                                    fileInfo.DirectoryName ?? throw new NullReferenceException(), fileName);
+                                TryLoadSourceFile(fileName, false,
+                                    Program.OptionsObject.Program_OpenIncludesRecursively);
+                            }
+                            catch (Exception)
+                            {
+                                // ignored
                             }
                         }
                     }

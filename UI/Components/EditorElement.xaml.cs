@@ -140,13 +140,11 @@ namespace SPCode.UI.Components
 
             using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                using (var reader = FileReader.OpenStream(fs, Encoding.UTF8))
-                {
-                    var source = reader.ReadToEnd();
-                    source = source.Replace("\r\n", "\n").Replace("\r", "\n")
-                        .Replace("\n", "\r\n"); //normalize line endings
-                    editor.Text = source;
-                }
+                using var reader = FileReader.OpenStream(fs, Encoding.UTF8);
+                var source = reader.ReadToEnd();
+                source = source.Replace("\r\n", "\n").Replace("\r", "\n")
+                    .Replace("\n", "\r\n"); //normalize line endings
+                editor.Text = source;
             }
 
             _NeedsSave = false;
@@ -607,10 +605,8 @@ namespace SPCode.UI.Components
 
                 try
                 {
-                    using (var fs = new FileStream(_FullFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
-                    {
-                        editor.Save(fs);
-                    }
+                    using var fs = new FileStream(_FullFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
+                    editor.Save(fs);
                 }
                 catch (Exception e)
                 {

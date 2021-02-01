@@ -80,45 +80,43 @@ namespace SPCode.UI.Windows
             TemplateDictionary = new Dictionary<string, TemplateInfo>();
             if (File.Exists("sourcepawn\\templates\\Templates.xml"))
             {
-                using (Stream stream = File.OpenRead("sourcepawn\\templates\\Templates.xml"))
+                using Stream stream = File.OpenRead("sourcepawn\\templates\\Templates.xml");
+                var doc = new XmlDocument();
+                doc.Load(stream);
+                if (doc.ChildNodes.Count <= 0)
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(stream);
-                    if (doc.ChildNodes.Count <= 0)
-                    {
-                        return;
-                    }
+                    return;
+                }
 
-                    if (doc.ChildNodes[0].Name != "Templates")
-                    {
-                        return;
-                    }
+                if (doc.ChildNodes[0].Name != "Templates")
+                {
+                    return;
+                }
 
-                    var mainNode = doc.ChildNodes[0];
-                    for (var i = 0; i < mainNode.ChildNodes.Count; ++i)
+                var mainNode = doc.ChildNodes[0];
+                for (var i = 0; i < mainNode.ChildNodes.Count; ++i)
+                {
+                    if (mainNode.ChildNodes[i].Name == "Template")
                     {
-                        if (mainNode.ChildNodes[i].Name == "Template")
+                        var attributes = mainNode.ChildNodes[i].Attributes;
+                        var NameStr = attributes?["Name"].Value;
+                        var FileNameStr = attributes?["File"].Value;
+                        var NewNameStr = attributes?["NewName"].Value;
+
+                        Debug.Assert(FileNameStr != null, nameof(FileNameStr) + " != null");
+                        var FilePathStr = Path.Combine("sourcepawn\\templates\\", FileNameStr);
+                        if (File.Exists(FilePathStr))
                         {
-                            var attributes = mainNode.ChildNodes[i].Attributes;
-                            var NameStr = attributes?["Name"].Value;
-                            var FileNameStr = attributes?["File"].Value;
-                            var NewNameStr = attributes?["NewName"].Value;
-
-                            Debug.Assert(FileNameStr != null, nameof(FileNameStr) + " != null");
-                            var FilePathStr = Path.Combine("sourcepawn\\templates\\", FileNameStr);
-                            if (File.Exists(FilePathStr))
-                            {
-                                Debug.Assert(NameStr != null, nameof(NameStr) + " != null");
-                                TemplateDictionary.Add(NameStr,
-                                    new TemplateInfo
-                                    {
-                                        Name = NameStr,
-                                        FileName = FileNameStr,
-                                        Path = FilePathStr,
-                                        NewName = NewNameStr
-                                    });
-                                TemplateListBox.Items.Add(NameStr);
-                            }
+                            Debug.Assert(NameStr != null, nameof(NameStr) + " != null");
+                            TemplateDictionary.Add(NameStr,
+                                new TemplateInfo
+                                {
+                                    Name = NameStr,
+                                    FileName = FileNameStr,
+                                    Path = FilePathStr,
+                                    NewName = NewNameStr
+                                });
+                            TemplateListBox.Items.Add(NameStr);
                         }
                     }
                 }

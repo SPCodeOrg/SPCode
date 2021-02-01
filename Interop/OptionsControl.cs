@@ -219,12 +219,10 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
             try
             {
                 var formatter = new BinaryFormatter();
-                using (var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Create, FileAccess.ReadWrite,
-                    FileShare.None))
-                {
-                    formatter.Serialize(fileStream, Program.OptionsObject);
-                    var test = Program.OptionsObject;
-                }
+                using var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Create, FileAccess.ReadWrite,
+                    FileShare.None);
+                formatter.Serialize(fileStream, Program.OptionsObject);
+                var test = Program.OptionsObject;
             }
             catch (Exception)
             {

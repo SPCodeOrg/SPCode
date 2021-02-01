@@ -20,25 +20,23 @@ namespace SPCode.Utils
             if (requestUri.Scheme == "sftp")
             {
                 var connectionInfo = new ConnectionInfo(requestUri.Host, requestUri.Port == -1 ? 22 : requestUri.Port, _user, new PasswordAuthenticationMethod(_user, _pass));
-                using (var sftp = new SftpClient(connectionInfo))
+                using var sftp = new SftpClient(connectionInfo);
+                sftp.Connect();
+
+                using (var stream = File.OpenRead(localFile))
                 {
-                    sftp.Connect();
-
-                    using (var stream = File.OpenRead(localFile))
-                    {
-                        sftp.UploadFile(stream, remoteFile, true);
-                    }
-
-                    sftp.Disconnect();
+                    sftp.UploadFile(stream, remoteFile, true);
                 }
+
+                sftp.Disconnect();
             }
             else
             {
-                using (var client = new WebClient())
+                using var client = new WebClient
                 {
-                    client.Credentials = new NetworkCredential(_user, _pass);
-                    client.UploadFile(requestUri, WebRequestMethods.Ftp.UploadFile, localFile);
-                }
+                    Credentials = new NetworkCredential(_user, _pass)
+                };
+                client.UploadFile(requestUri, WebRequestMethods.Ftp.UploadFile, localFile);
             }
         }
     }
