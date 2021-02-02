@@ -131,15 +131,6 @@ namespace SPCode.UI.Windows
             PathBox.Text = Path.Combine(PathStr, templateInfo.NewName);
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            var destFile = new FileInfo(PathBox.Text);
-            var templateInfo = TemplateDictionary[(string)TemplateListBox.SelectedItem];
-            File.Copy(templateInfo.Path, destFile.FullName, true);
-            Program.MainWindow.TryLoadSourceFile(destFile.FullName, true, true, true);
-            Close();
-        }
-
         private void Language_Translate()
         {
             if (Program.Translations.IsDefault)
@@ -171,6 +162,33 @@ namespace SPCode.UI.Windows
             {
                 ExecuteAction?.Invoke(parameter);
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            GoToSelectedTemplate();
+        }
+
+        private void TemplateListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            GoToSelectedTemplate();
+        }
+
+        private void TemplateListBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                GoToSelectedTemplate();
+            }
+        }
+
+        private void GoToSelectedTemplate()
+        {
+            var destFile = new FileInfo(PathBox.Text);
+            var templateInfo = TemplateDictionary[(string)TemplateListBox.SelectedItem];
+            File.Copy(templateInfo.Path, destFile.FullName, true);
+            Program.MainWindow.TryLoadSourceFile(destFile.FullName, true, true, true);
+            Close();
         }
     }
 
