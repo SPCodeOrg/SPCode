@@ -64,7 +64,7 @@ namespace SPCode.Interop
                         // (calculate it based on installation being standalone or portable)
                         if (IsStandardConfig && string.IsNullOrEmpty(_SMDirectoryStr))
                         {
-                            SMDirs.Add(Paths.GetConfigsFolderPath());
+                            SMDirs.Add(Paths.GetConfigsDirectory());
                         }
 
                         foreach (var dir in SMDirectoriesSplitted)
@@ -79,7 +79,7 @@ namespace SPCode.Interop
                         // Extra assurance for the program to always load a proper config
                         if (IsStandardConfig && SMDirs.Count == 0)
                         {
-                            SMDirs.Add(Paths.GetConfigsFolderPath());
+                            SMDirs.Add(Paths.GetConfigsDirectory());
                         }
 
                         int _OptimizationLevel = 2, _VerboseLevel = 1;
