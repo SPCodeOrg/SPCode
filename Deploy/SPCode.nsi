@@ -56,9 +56,9 @@ File Microsoft.WindowsAPICodePack.Shell.dll
 File lang_0_spcode.xml
 File GPLv3.txt
 
+CreateDirectory "$APPDATA\spcode\crashlogs"
 CreateDirectory "$APPDATA\spcode\sourcepawn"
 CreateDirectory "$APPDATA\spcode\sourcepawn\errorfiles"
-CreateDirectory "$APPDATA\spcode\sourcepawn\scripts"
 CreateDirectory "$APPDATA\spcode\sourcepawn\temp"
 CreateDirectory "$APPDATA\spcode\sourcepawn\templates"
 CreateDirectory "$APPDATA\spcode\sourcepawn\configs"
