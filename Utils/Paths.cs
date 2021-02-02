@@ -35,14 +35,14 @@ namespace SPCode.Utils
 
         public static string GetErrorFilesDirectory()
         {
-            var appDataPath = SPCodeAppDataPath + @"\spcode\sourcepawn\errorfiles";
+            var appDataPath = SPCodeAppDataPath + @"\sourcepawn\errorfiles";
             var localPath = @".\sourcepawn\errorfiles";
             return LocalInstallation ? localPath : appDataPath;
         }
 
         public static string GetCrashLogDirectory()
         {
-            var appDataPath = SPCodeAppDataPath + @$"\spcode\crashlogs";
+            var appDataPath = SPCodeAppDataPath + @"\crashlogs";
             var localPath = @".\crashlogs";
             if (LocalInstallation && !Directory.Exists(localPath))
             {
@@ -54,8 +54,15 @@ namespace SPCode.Utils
 
         public static string GetTempDirectory()
         {
-            var appDataPath = SPCodeAppDataPath + @$"\spcode\sourcepawn\temp";
+            var appDataPath = SPCodeAppDataPath + @"\sourcepawn\temp";
             var localPath = @".\sourcepawn\temp";
+            return LocalInstallation ? localPath : appDataPath;
+        }
+
+        public static string GetTemplatesDirectory()
+        {
+            var appDataPath = SPCodeAppDataPath + @"\sourcepawn\templates";
+            var localPath = @".\sourcepawn\templates";
             return LocalInstallation ? localPath : appDataPath;
         }
 
@@ -68,14 +75,16 @@ namespace SPCode.Utils
 
         public static string GetTemplatesFilePath()
         {
-            var appDataPath = SPCodeAppDataPath + @"\spcode\sourcepawn\templates\Templates.xml";
+            var appDataPath = SPCodeAppDataPath + @"\sourcepawn\templates\Templates.xml";
             var localPath = @".\sourcepawn\templates\Templates.xml";
             return LocalInstallation ? localPath : appDataPath;
         }
 
         public static string GetOptionsFilePath()
         {
-            return LocalInstallation ? @".\options_0.dat" : SPCodeAppDataPath + @"\options_0.dat";
+            var appDataPath = SPCodeAppDataPath + @"\options_0.dat";
+            var localPath = @".\options_0.dat";
+            return LocalInstallation ? localPath : appDataPath;
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Xml;
 using MahApps.Metro;
 using Microsoft.Win32;
+using SPCode.Utils;
 
 namespace SPCode.UI.Windows
 {
@@ -78,9 +79,9 @@ namespace SPCode.UI.Windows
         private void ParseTemplateFile()
         {
             TemplateDictionary = new Dictionary<string, TemplateInfo>();
-            if (File.Exists("sourcepawn\\templates\\Templates.xml"))
+            if (File.Exists(Paths.GetTemplatesFilePath()))
             {
-                using Stream stream = File.OpenRead("sourcepawn\\templates\\Templates.xml");
+                using Stream stream = File.OpenRead(Paths.GetTemplatesFilePath());
                 var doc = new XmlDocument();
                 doc.Load(stream);
                 if (doc.ChildNodes.Count <= 0)
@@ -104,7 +105,7 @@ namespace SPCode.UI.Windows
                         var NewNameStr = attributes?["NewName"].Value;
 
                         Debug.Assert(FileNameStr != null, nameof(FileNameStr) + " != null");
-                        var FilePathStr = Path.Combine("sourcepawn\\templates\\", FileNameStr);
+                        var FilePathStr = Path.Combine(Paths.GetTemplatesDirectory(), FileNameStr);
                         if (File.Exists(FilePathStr))
                         {
                             Debug.Assert(NameStr != null, nameof(NameStr) + " != null");
