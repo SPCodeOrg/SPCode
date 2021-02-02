@@ -35,7 +35,7 @@
             <Grid Margin="0,5,0,5">
                 <TextBlock Name="NameBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,00,0,0" Text="Name: " IsHitTestVisible="False" />
                 <TextBlock Name="ScriptingDirBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,30,0,0" Text="Scripting Directories: " IsHitTestVisible="False" />
-                <TextBlock x:Name="DelimitWiBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,43,0,0" IsHitTestVisible="False" Foreground="Gray" Width="150" ><Run Text="(Delimit with "/><Run Text="sem"/><Run Text="icolon"/><Run Text=" )"/></TextBlock>
+                <TextBlock x:Name="DelimitWiBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,43,0,0" IsHitTestVisible="False" Foreground="Gray" Width="150" ><Run Text="(Delimit with "/><Run Text="sem"/><Run Text="icolon)"/></TextBlock>
                 <TextBlock Name="CopyDirBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,65,0,0" Text="Copy Directory: " IsHitTestVisible="False" />
                 <TextBlock Name="ServerExeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,95,0,0" Text="Server Executable: " IsHitTestVisible="False" />
                 <TextBlock Name="ServerStartArgBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,125,0,0" Text="Server-Start Arguments: " IsHitTestVisible="False" />

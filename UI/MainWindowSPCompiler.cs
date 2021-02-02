@@ -505,7 +505,7 @@ namespace SPCode.UI
             return result;
         }
 
-        private string ReplaceCMDVaraibles(string CMD, string scriptDir, string copyDir, string scriptFile,
+        private string ReplaceCMDVariables(string CMD, string scriptDir, string copyDir, string scriptFile,
             string scriptName, string pluginFile, string pluginName)
         {
             CMD = CMD.Replace("{editordir}", Environment.CurrentDirectory.Trim('\\'));
