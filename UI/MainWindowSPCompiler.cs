@@ -132,9 +132,7 @@ namespace SPCode.UI
                                 File.Delete(outFile);
                             }
 
-                            var errorFile = Environment.CurrentDirectory + @"\sourcepawn\errorfiles\error_" +
-                                            Environment.TickCount + "_" + file.GetHashCode().ToString("X") + "_" +
-                                            i + ".txt";
+                            var errorFile = $@"{Paths.GetErrorFilesDirectory()}\error_{Environment.TickCount}_{file.GetHashCode():X}_{i}.txt";
                             if (File.Exists(errorFile))
                             {
                                 File.Delete(errorFile);
@@ -475,15 +473,13 @@ namespace SPCode.UI
         private string ExecuteCommandLine(string code, string directory, string copyDir, string scriptFile,
             string scriptName, string pluginFile, string pluginName)
         {
-            code = ReplaceCMDVaraibles(code, directory, copyDir, scriptFile, scriptName, pluginFile, pluginName);
+            code = ReplaceCMDVariables(code, directory, copyDir, scriptFile, scriptName, pluginFile, pluginName);
             if (string.IsNullOrWhiteSpace(code))
             {
                 return null;
             }
 
-            var batchFile = new FileInfo(Path.Combine("sourcepawn\\temp\\",
-                Environment.TickCount + "_" + ((uint)code.GetHashCode() ^ (uint)directory.GetHashCode()) +
-                "_temp.bat")).FullName;
+            var batchFile = new FileInfo(@$"{Paths.GetTempDirectory()}\{Environment.TickCount}_{(uint)code.GetHashCode() ^ (uint)directory.GetHashCode()}_temp.bat").FullName;
             File.WriteAllText(batchFile, code);
             string result;
             using (var process = new Process())
