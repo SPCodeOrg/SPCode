@@ -140,12 +140,12 @@ namespace SPCode
                     }
                     catch (Exception e)
                     {
-                        File.WriteAllText("CRASH_" + Environment.TickCount + ".txt",
+                        File.WriteAllText($@"{Paths.GetCrashLogDirectory()}\CRASH_{Environment.TickCount}.txt",
                             BuildExceptionString(e, "SPCODE LOADING"));
                         MessageBox.Show(
-                            "An error occured while loading." + Environment.NewLine +
-                            "A crash report was written in the editor-directory.",
-                            "Error while Loading",
+                            "An error occured." + Environment.NewLine +
+                            $"A crash report was written in {Paths.GetCrashLogDirectory()}",
+                            "Error",
                             MessageBoxButton.OK,
                             MessageBoxImage.Error);
                         Environment.Exit(Environment.ExitCode);
@@ -167,11 +167,11 @@ namespace SPCode
                     }
                     catch (Exception e)
                     {
-                        File.WriteAllText("CRASH_" + Environment.TickCount + ".txt",
+                        File.WriteAllText($@"{Paths.GetCrashLogDirectory()}\CRASH_{Environment.TickCount}.txt",
                             BuildExceptionString(e, "SPCODE MAIN"));
                         MessageBox.Show(
                             "An error occured." + Environment.NewLine +
-                            "A crash report was written in the editor-directory.",
+                            $"A crash report was written in {Paths.GetCrashLogDirectory()}",
                             "Error",
                             MessageBoxButton.OK,
                             MessageBoxImage.Error);
@@ -258,6 +258,7 @@ namespace SPCode
             var outString = new StringBuilder();
             outString.AppendLine("Section: " + SectionName);
             outString.AppendLine(".NET Version: " + Environment.Version);
+            outString.AppendLine("Is local installation?: " + _IsLocalInstallation);
             outString.AppendLine("OS: " + Environment.OSVersion.VersionString);
             outString.AppendLine("64 bit OS: " + (Environment.Is64BitOperatingSystem ? "TRUE" : "FALSE"));
             outString.AppendLine("64 bit mode: " + (Environment.Is64BitProcess ? "TRUE" : "FALSE"));
