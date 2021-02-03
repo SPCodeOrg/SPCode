@@ -268,11 +268,12 @@ namespace SPCode.UI
         {
             if (compiledFiles.Count > 0)
             {
-                nonUploadedFiles.Clear();
                 var copyCount = 0;
                 var c = Program.Configs[Program.SelectedConfig];
                 if (!string.IsNullOrWhiteSpace(c.CopyDirectory))
                 {
+                    nonUploadedFiles.Clear();
+
                     var stringOutput = new StringBuilder();
                     foreach (var file in compiledFiles)
                     {
