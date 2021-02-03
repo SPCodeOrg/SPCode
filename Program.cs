@@ -39,10 +39,10 @@ namespace SPCode
 
         public static bool _IsLocalInstallation;
 
+
         [STAThread]
         public static void Main(string[] args)
         {
-            _IsLocalInstallation = Paths.IsLocalInstallation();
 #if DEBUG     
             System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level =
                 System.Diagnostics.SourceLevels.Critical;
@@ -57,6 +57,7 @@ namespace SPCode
                     try
                     {
 #endif
+
                     var splashScreen = new SplashScreen("Resources/Icon256x.png");
                     splashScreen.Show(false, true);
                     Environment.CurrentDirectory =
@@ -66,6 +67,7 @@ namespace SPCode
                         ProfileOptimization.SetProfileRoot(Environment.CurrentDirectory);
                         ProfileOptimization.StartProfile("Startup.Profile");
 #endif
+                    _IsLocalInstallation = Paths.IsLocalInstallation();
                     UpdateStatus = new UpdateInfo();
                     OptionsObject = OptionsControlIOObject.Load(out var ProgramIsNew);
 
