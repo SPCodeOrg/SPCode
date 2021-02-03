@@ -42,6 +42,7 @@ namespace SPCode
         [STAThread]
         public static void Main(string[] args)
         {
+            _IsLocalInstallation = Paths.IsLocalInstallation();
 #if DEBUG     
             System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level =
                 System.Diagnostics.SourceLevels.Critical;
@@ -85,7 +86,6 @@ namespace SPCode
                         });
                     }
 
-                    _IsLocalInstallation = Paths.IsLocalInstallation();
 
                     Translations = new TranslationProvider();
                     Translations.LoadLanguage(OptionsObject.Language, true);
