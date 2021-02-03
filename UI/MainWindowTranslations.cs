@@ -36,6 +36,7 @@ namespace SPCode.UI
             MenuI_Close.Header = Program.Translations.GetLanguage("Close");
             MenuI_CloseAll.Header = Program.Translations.GetLanguage("CloseAll");
 
+            MenuI_File.Header = Program.Translations.GetLanguage("File");
             MenuI_Edit.Header = Program.Translations.GetLanguage("Edit");
             MenuI_Undo.Header = Program.Translations.GetLanguage("Undo");
             MenuI_Redo.Header = Program.Translations.GetLanguage("Redo");
