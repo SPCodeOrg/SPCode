@@ -531,7 +531,6 @@
             md ".\sourcepawn\templates"
             md ".\sourcepawn\configs"
             md ".\sourcepawn\temp"
-            md ".\sourcepawn\scripts"
             md ".\sourcepawn\errorfiles"
             md ".\nsis-plugins"
             C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Templates\*.*" ".\sourcepawn\templates\*.*" /e /y /q
