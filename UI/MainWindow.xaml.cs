@@ -185,16 +185,22 @@ namespace SPCode.UI
         private void DockingManager_DocumentClosed(object sender, DocumentClosedEventArgs e)
         {
             (e.Document.Content as EditorElement)?.Close();
-            var new_ee = GetCurrentEditorElement();
-            if (new_ee == null)
-            {
-                var er = EditorsReferences;
-                if (er.Count > 0)
-                {
-                    e.Document.Content = er[0];
-                }
-            }
             UpdateWindowTitle();
+        }
+
+        // Code taken from VisualPawn Editer (Not published yet)
+        private void DockingPaneGroup_ChildrenTreeChanged(object sender, ChildrenTreeChangedEventArgs e)
+        {
+            // if the active LayoutDocumentPane gets closed 
+            // 1. it will not be in the LayoutDocumentPaneGroup.
+            // 2. editor that get added to it will not be shown in the client.
+            // Solution: Set the active LayoutDocumentPane to the first LayoutDocumentPaneGroup avilable child.
+            if (e.Change == ChildrenTreeChange.DirectChildrenChanged
+                && !DockingPaneGroup.Children.Contains(DockingPane)
+                && DockingPaneGroup.Children[0] is LayoutDocumentPane)
+            {
+                DockingPane = (LayoutDocumentPane)DockingPaneGroup.Children[0];
+            }
         }
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)

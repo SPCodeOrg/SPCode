@@ -1,4 +1,4 @@
-﻿<controls:MetroWindow x:Class="SPCode.UI.MainWindow"
+﻿<controls:MetroWindow x:Name="metroWindow" x:Class="SPCode.UI.MainWindow"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:dock="http://schemas.xceed.com/wpf/xaml/avalondock"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -208,7 +208,7 @@
             <Grid Grid.Row="0" Name="EditorObjectBrowserGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Name="ObjectBrowserColumn" Width="300" MinWidth="3" />
+                    <ColumnDefinition Name="ObjectBrowserColumn" Width="300" MinWidth="3" MaxWidth="{Binding ActualHeight, ElementName=metroWindow, Mode=OneWay}"/>
                 </Grid.ColumnDefinitions>
                 <dock:DockingManager Grid.Column="0" x:Name="DockingManager" Margin="0,0,5,0" AllowMixedOrientation="True" Background="{DynamicResource WhiteColorBrush}" Foreground="{DynamicResource BlackColorBrush}"
                                  ActiveContentChanged="DockingManager_ActiveContentChanged" DocumentClosed="DockingManager_DocumentClosed" >
@@ -217,7 +217,7 @@
                     </dock:DockingManager.Theme>
                     <dock:LayoutRoot>
                         <dock:LayoutPanel>
-                            <dock:LayoutDocumentPaneGroup x:Name="DockingPaneGroup">
+                            <dock:LayoutDocumentPaneGroup x:Name="DockingPaneGroup" ChildrenTreeChanged="DockingPaneGroup_ChildrenTreeChanged">
                                 <dock:LayoutDocumentPane x:Name="DockingPane" />
                             </dock:LayoutDocumentPaneGroup>
                         </dock:LayoutPanel>

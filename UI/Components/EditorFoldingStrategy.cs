@@ -34,53 +34,95 @@ namespace SPCode.UI.Components
 
             Stack<int> startOffsets = new Stack<int>();
             int lastNewLineOffset = 0;
-            bool InCommentMode = false;
+            int CommentMode = 0; // 0 = None, 1 = Single, 2 = Multi, 3 = String
             for (int i = 0; i < document.TextLength; ++i)
             {
                 char c = document.GetCharAt(i);
                 if (c == '\n' || c == '\r')
                 {
                     lastNewLineOffset = i + 1;
-                }
-                else if (InCommentMode)
-                {
-                    if (c == '/')
+                    if (CommentMode == 1)
                     {
-                        if (i > 0)
-                        {
-                            if (document.GetCharAt(i - 1) == '*')
+                        CommentMode = 0;
+                    }
+                }
+                else
+                {
+                    switch (CommentMode)
+                    {
+                        case 0:
                             {
-                                int startOffset = startOffsets.Pop();
-                                InCommentMode = false;
-                                if (startOffset < lastNewLineOffset)
+                                switch (c)
                                 {
-                                    newFoldings.Add(new NewFolding(startOffset, i + 1));
+                                    case '/':
+                                        {
+                                            if ((i + 1) < document.TextLength)
+                                            {
+                                                char oneCharAfter = document.GetCharAt(i + 1);
+                                                if (oneCharAfter == '*')
+                                                {
+                                                    CommentMode = 2;
+                                                    startOffsets.Push(i);
+                                                }
+                                                else if (oneCharAfter == '/')
+                                                {
+                                                    CommentMode = 1;
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    case '{':
+                                        {
+                                            startOffsets.Push(i);
+                                            break;
+                                        }
+                                    case '}':
+                                        {
+                                            if (startOffsets.Count > 0)
+                                            {
+                                                int startOffset = startOffsets.Pop();
+                                                if (startOffset < lastNewLineOffset)
+                                                {
+                                                    newFoldings.Add(new NewFolding(startOffset, i + 1));
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    case '\"':
+                                        {
+                                            CommentMode = 3;
+                                            break;
+                                        }
                                 }
+                                break;
                             }
-                        }
-                    }
-                }
-                else if (c == '/')
-                {
-                    if ((i + 1) < document.TextLength)
-                    {
-                        if (document.GetCharAt(i + 1) == '*')
-                        {
-                            InCommentMode = true;
-                            startOffsets.Push(i);
-                        }
-                    }
-                }
-                else if (c == '{')
-                {
-                    startOffsets.Push(i);
-                }
-                else if (c == '}' && startOffsets.Count > 0)
-                {
-                    int startOffset = startOffsets.Pop();
-                    if (startOffset < lastNewLineOffset)
-                    {
-                        newFoldings.Add(new NewFolding(startOffset, i + 1));
+                        case 2:
+                            {
+                                if (c == '/')
+                                {
+                                    if (i > 0)
+                                    {
+                                        if (document.GetCharAt(i - 1) == '*')
+                                        {
+                                            int startOffset = startOffsets.Pop();
+                                            CommentMode = 0;
+                                            if (startOffset < lastNewLineOffset)
+                                            {
+                                                newFoldings.Add(new NewFolding(startOffset, i + 1));
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        case 3:
+                            {
+                                if (c == '\"')
+                                {
+                                    CommentMode = 1;
+                                }
+                                break;
+                            }
                     }
                 }
             }
