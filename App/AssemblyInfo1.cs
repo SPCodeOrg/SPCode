@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SPCode")]
-[assembly: AssemblyDescription("SPCode - a lightweight sourcepawn editor")]
+[assembly: AssemblyDescription("SPCode - A lightweight SourcePawn editor")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SPCode")]
-[assembly: AssemblyCopyright("Copyright © Julien Kluge 2015 - Hexah 2020")]
+[assembly: AssemblyCopyright("Copyright © Julien Kluge 2015 - Hexah 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en-US")]
@@ -30,4 +30,4 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.6.2.1")]
+[assembly: AssemblyVersion("1.6.3.0")]
