@@ -16,7 +16,7 @@ namespace SPCodeUpdater
         [STAThread]
         public static void Main()
         {
-            var processes = Process.GetProcessesByName("Spcode");
+            var processes = Process.GetProcessesByName("SPCode");
             foreach (var process in processes)
             {
                 try

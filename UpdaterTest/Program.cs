@@ -92,7 +92,7 @@ namespace UpdaterTest
         private static async Task<Release> GetLatest()
         {
             var client = new GitHubClient(new ProductHeaderValue("spcode-client"));
-            var releases = await client.Repository.Release.GetAll("Hexer10", "Spcode");
+            var releases = await client.Repository.Release.GetAll("Hexer10", "SPCode");
             return releases[0];
         }
     }

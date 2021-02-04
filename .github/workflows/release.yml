@@ -48,7 +48,7 @@ jobs:
 
       # Build Updater
       - name: Build Updater
-        run: msbuild Deploy\SpcodeUpdater\SpcodeUpdater.csproj /p:Configuration=Release
+        run: msbuild Deploy\SPCodeUpdater\SPCodeUpdater.csproj /p:Configuration=Release
 
       - name: Create Release
         id: create_release
@@ -91,6 +91,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: .\Deploy\SpcodeUpdater\bin\Release\SpcodeUpdater.exe
-          asset_name: SpcodeUpdater.exe
+          asset_path: .\Deploy\SpcodeUpdater\bin\Release\SPCodeUpdater.exe
+          asset_name: SPCodeUpdater.exe
           asset_content_type: application/octet-stream

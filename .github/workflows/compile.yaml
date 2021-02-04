@@ -62,4 +62,4 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: SpcodeUpdater.exe
-          path: .\Deploy\SpcodeUpdater\bin\Release\SpcodeUpdater.exe
+          path: .\Deploy\SpcodeUpdater\bin\Release\SPCodeUpdater.exe
