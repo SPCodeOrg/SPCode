@@ -2,13 +2,14 @@
 #### _SPCode - A lightweight SourcePawn editor._
 [Thread in Alliedmodders](https://forums.alliedmods.net/showthread.php?p=2693577)
 
-This is an updated/improved fork of AeonOne's [SPEdit](https://forums.alliedmods.net/showthread.php?t=259917)!
+_This is an updated/improved fork of AeonOne's [SPEdit](https://forums.alliedmods.net/showthread.php?t=259917)!_
+
 ##### List of features:
-* Compiling-Config System (fully customizable)
+* Compiling-config system (fully customizable)
 * Syntax highlighting (parsed from the include directories / fully customizable)
 * Autocomplete (parsed from the include directories)
 * IntelliSense (parsed from the include directories)
-* Sourcepawn templates (customizable)
+* SourcePawn templates (customizable)
 * Copying after/before compiling (& pre/post commandlines)
 * FTP upload
 * Server start feature
