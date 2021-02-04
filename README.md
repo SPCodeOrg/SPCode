@@ -1,9 +1,8 @@
 # SPCode
 #### _SPCode - A lightweight SourcePawn editor._
+[Thread in Alliedmodders](https://forums.alliedmods.net/showthread.php?p=2693577)
 
-[Thread in Alliedmodders](https://forums.alliedmods.net/showthread.php?t=259917)
-
-
+This is an updated/improved fork of AeonOne's [SPEdit](https://forums.alliedmods.net/showthread.php?t=259917)!
 ##### List of features:
 * Compiling-Config System (fully customizable)
 * Syntax highlighting (parsed from the include directories / fully customizable)
@@ -25,7 +24,7 @@
 * Lysis Decompiler (improved version)
 * SMX dissassembler (fixed)
 * RCON querying
-* Dynamic autocomplete/IntelliSense from all opened include-files [NEW]
+* Dynamic autocomplete/IntelliSense from all opened include-files **[NEW]**
 * Auto bracket-closing
 * Object browser
 * Translations in multiple languages
