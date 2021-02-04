@@ -1,7 +1,7 @@
-﻿using SourcepawnCondenser.SourcemodDefinition;
-using SourcepawnCondenser.Tokenizer;
-using System;
+﻿using System;
 using System.Text;
+using SourcepawnCondenser.SourcemodDefinition;
+using SourcepawnCondenser.Tokenizer;
 
 namespace SourcepawnCondenser
 {
@@ -23,7 +23,10 @@ namespace SourcepawnCondenser
             def = new SMDefinition();
             source = sourceCode;
             if (fileName.EndsWith(".inc", StringComparison.InvariantCultureIgnoreCase))
+            {
                 fileName = fileName.Substring(0, fileName.Length - 4);
+            }
+
             FileName = fileName;
         }
 
@@ -165,10 +168,20 @@ namespace SourcepawnCondenser
             for (var i = StartPosition; i >= 0; --i)
             {
                 if (t[i].Kind == TestKind)
+                {
                     return i;
+                }
+
                 if (IgnoreOtherTokens)
+                {
                     continue;
-                if (t[i].Kind == TokenKind.EOL && IgnoreEOL) continue;
+                }
+
+                if (t[i].Kind == TokenKind.EOL && IgnoreEOL)
+                {
+                    continue;
+                }
+
                 return -1;
             }
 
@@ -180,10 +193,20 @@ namespace SourcepawnCondenser
             for (var i = StartPosition; i < length; ++i)
             {
                 if (t[i].Kind == TestKind)
+                {
                     return i;
+                }
+
                 if (IgnoreOtherTokens)
+                {
                     continue;
-                if (t[i].Kind == TokenKind.EOL && IgnoreEOL) continue;
+                }
+
+                if (t[i].Kind == TokenKind.EOL && IgnoreEOL)
+                {
+                    continue;
+                }
+
                 return -1;
             }
 
@@ -200,11 +223,19 @@ namespace SourcepawnCondenser
                 line = lines[i].Trim().TrimStart('/', '*', ' ', '\t');
                 if (!string.IsNullOrWhiteSpace(line))
                 {
-                    if (i > 0) outString.AppendLine();
+                    if (i > 0)
+                    {
+                        outString.AppendLine();
+                    }
+
                     if (line.StartsWith("@param"))
+                    {
                         outString.Append(FormatParamLineString(line));
+                    }
                     else
+                    {
                         outString.Append(line);
+                    }
                 }
             }
 
@@ -216,11 +247,17 @@ namespace SourcepawnCondenser
             var outString = new StringBuilder();
             var lines = name.Split('\r', '\n');
             for (var i = 0; i < lines.Length; ++i)
+            {
                 if (!string.IsNullOrWhiteSpace(lines[i]))
                 {
-                    if (i > 0) outString.Append(" ");
+                    if (i > 0)
+                    {
+                        outString.Append(" ");
+                    }
+
                     outString.Append(lines[i].Trim(' ', '\t'));
                 }
+            }
 
             return outString.ToString();
         }
@@ -228,7 +265,11 @@ namespace SourcepawnCondenser
         private static string FormatParamLineString(string line)
         {
             var split = line.Replace('\t', ' ').Split(new[] { ' ' }, 3);
-            if (split.Length > 2) return ("@param " + split[1]).PadRight(24, ' ') + " " + split[2].Trim(' ', '\t');
+            if (split.Length > 2)
+            {
+                return ("@param " + split[1]).PadRight(24, ' ') + " " + split[2].Trim(' ', '\t');
+            }
+
             return line;
         }
     }

@@ -11,9 +11,9 @@ namespace Lysis
 
     public class LBlock
     {
-        private uint pc_;
+        private readonly uint pc_;
         private LInstruction[] instructions_;
-        private List<LBlock> predecessors_ = new List<LBlock>();
+        private readonly List<LBlock> predecessors_ = new List<LBlock>();
         private bool marked_ = false;
         private int id_;
         private LBlock backedge_ = null;
@@ -56,10 +56,7 @@ namespace Lysis
             marked_ = false;
         }
 
-        public bool marked
-        {
-            get { return marked_; }
-        }
+        public bool marked => marked_;
 
         public void setId(int id)
         {
@@ -88,35 +85,14 @@ namespace Lysis
             idominated_ = idominated;
         }
 
-        public int id
-        {
-            get { return id_; }
-        }
-        public LBlock idom
-        {
-            get { return idom_; }
-        }
-        public uint pc
-        {
-            get { return pc_; }
-        }
-        public LInstruction[] instructions
-        {
-            get { return instructions_; }
-        }
+        public int id => id_;
+        public LBlock idom => idom_;
+        public uint pc => pc_;
+        public LInstruction[] instructions => instructions_;
 
-        public LBlock backedge
-        {
-            get { return backedge_; }
-        }
-        public int numPredecessors
-        {
-            get { return predecessors_.Count; }
-        }
-        public int numSuccessors
-        {
-            get { return last.numSuccessors; }
-        }
+        public LBlock backedge => backedge_;
+        public int numPredecessors => predecessors_.Count;
+        public int numSuccessors => last.numSuccessors;
         public LBlock getSuccessor(int successor)
         {
             return last.getSuccessor(successor);
@@ -137,18 +113,9 @@ namespace Lysis
             //Debug.Assert(getPredecessor(1).id < id);
             return getPredecessor(1);
         }
-        public LBlock[] dominators
-        {
-            get { return dominators_; }
-        }
-        public LBlock[] idominated
-        {
-            get { return idominated_; }
-        }
-        public LBlock loop
-        {
-            get { return loop_; }
-        }
+        public LBlock[] dominators => dominators_;
+        public LBlock[] idominated => idominated_;
+        public LBlock loop => loop_;
 
         public void replaceSuccessor(int pos, LBlock split)
         {
@@ -158,7 +125,7 @@ namespace Lysis
         public void replacePredecessor(LBlock from, LBlock split)
         {
             //Debug.Assert(predecessors_.Contains(from));
-            for (int i = 0; i < numPredecessors; i++)
+            for (var i = 0; i < numPredecessors; i++)
             {
                 if (getPredecessor(i) == from)
                 {
@@ -169,10 +136,7 @@ namespace Lysis
             //Debug.Assert(!predecessors_.Contains(from));
         }
 
-        public LControlInstruction last
-        {
-            get { return (LControlInstruction)instructions[instructions.Length - 1]; }
-        }
+        public LControlInstruction last => (LControlInstruction)instructions[instructions.Length - 1];
     }
 
     public enum VariableType : uint
@@ -186,8 +150,8 @@ namespace Lysis
 
     public class Tag
     {
-        private uint tag_id_;
-        private string name_;
+        private readonly uint tag_id_;
+        private readonly string name_;
 
         public Tag(string name, uint tag_id)
         {
@@ -195,21 +159,15 @@ namespace Lysis
             name_ = name;
         }
 
-        public uint tag_id
-        {
-            get { return tag_id_; }
-        }
-        public string name
-        {
-            get { return name_; }
-        }
+        public uint tag_id => tag_id_;
+        public string name => name_;
     }
 
     public class Dimension
     {
-        int tag_id_;
-        Tag tag_;
-        int size_;
+        private readonly int tag_id_;
+        private readonly Tag tag_;
+        private readonly int size_;
 
         public Dimension(int tag_id, Tag tag, int size)
         {
@@ -218,23 +176,17 @@ namespace Lysis
             size_ = size;
         }
 
-        public Tag tag
-        {
-            get { return tag_; }
-        }
-        public int size
-        {
-            get { return size_; }
-        }
+        public Tag tag => tag_;
+        public int size => size_;
     }
 
     public class Argument
     {
-        VariableType type_;
-        string name_;
-        int tag_id_;
-        Tag tag_;
-        Dimension[] dims_;
+        private readonly VariableType type_;
+        private readonly string name_;
+        private readonly int tag_id_;
+        private readonly Tag tag_;
+        private readonly Dimension[] dims_;
 
         public Argument(VariableType type, string name, int tag_id, Tag tag, Dimension[] dims)
         {
@@ -245,22 +197,10 @@ namespace Lysis
             dims_ = dims;
         }
 
-        public VariableType type
-        {
-            get { return type_; }
-        }
-        public string name
-        {
-            get { return name_; }
-        }
-        public Tag tag
-        {
-            get { return tag_; }
-        }
-        public Dimension[] dimensions
-        {
-            get { return dims_; }
-        }
+        public VariableType type => type_;
+        public string name => name_;
+        public Tag tag => tag_;
+        public Dimension[] dimensions => dims_;
     }
 
     public class Signature
@@ -275,22 +215,10 @@ namespace Lysis
             name_ = name;
         }
 
-        public Tag returnType
-        {
-            get { return tag_; }
-        }
-        public uint tag_id
-        {
-            get { return tag_id_; }
-        }
-        public string name
-        {
-            get { return name_; }
-        }
-        public Argument[] args
-        {
-            get { return args_; }
-        }
+        public Tag returnType => tag_;
+        public uint tag_id => tag_id_;
+        public string name => name_;
+        public Argument[] args => args_;
         public void setTag(Tag tag)
         {
             tag_ = tag;
@@ -299,7 +227,7 @@ namespace Lysis
 
     public class Native : Signature
     {
-        int index_;
+        private readonly int index_;
 
         public Native(string name, int index)
           : base(name)
@@ -314,10 +242,7 @@ namespace Lysis
             args_ = args;
         }
 
-        public int index
-        {
-            get { return index_; }
-        }
+        public int index => index_;
     }
 
     public enum Register : uint
@@ -335,15 +260,15 @@ namespace Lysis
 
     public class Variable
     {
-        int addr_;
-        uint tag_id_;
-        Tag tag_;
-        uint codeStart_;
-        uint codeEnd_;
-        VariableType type_;
-        Scope scope_;
-        string name_;
-        Dimension[] dims_;
+        private readonly int addr_;
+        private readonly uint tag_id_;
+        private Tag tag_;
+        private readonly uint codeStart_;
+        private readonly uint codeEnd_;
+        private readonly VariableType type_;
+        private readonly Scope scope_;
+        private readonly string name_;
+        private readonly Dimension[] dims_;
 
         public Variable(int addr, int tag_id, Tag tag, uint codeStart,
                         uint codeEnd, VariableType type, Scope scope,
@@ -360,42 +285,15 @@ namespace Lysis
             dims_ = dims;
         }
 
-        public int address
-        {
-            get { return addr_; }
-        }
-        public uint codeStart
-        {
-            get { return codeStart_; }
-        }
-        public uint codeEnd
-        {
-            get { return codeEnd_; }
-        }
-        public string name
-        {
-            get { return name_; }
-        }
-        public VariableType type
-        {
-            get { return type_; }
-        }
-        public Scope scope
-        {
-            get { return scope_; }
-        }
-        public Tag tag
-        {
-            get { return tag_; }
-        }
-        public uint tag_id
-        {
-            get { return tag_id_; }
-        }
-        public Dimension[] dims
-        {
-            get { return dims_; }
-        }
+        public int address => addr_;
+        public uint codeStart => codeStart_;
+        public uint codeEnd => codeEnd_;
+        public string name => name_;
+        public VariableType type => type_;
+        public Scope scope => scope_;
+        public Tag tag => tag_;
+        public uint tag_id => tag_id_;
+        public Dimension[] dims => dims_;
         public void setTag(Tag tag)
         {
             tag_ = tag;
@@ -404,9 +302,9 @@ namespace Lysis
 
     public class Function : Signature
     {
-        uint addr_;
-        uint codeStart_;
-        uint codeEnd_;
+        private readonly uint addr_;
+        private readonly uint codeStart_;
+        private readonly uint codeEnd_;
 
         public Function(uint addr, uint codeStart, uint codeEnd, string name, Tag tag)
           : base(name)
@@ -430,17 +328,8 @@ namespace Lysis
         {
             args_ = from.ToArray();
         }
-        public uint address
-        {
-            get { return addr_; }
-        }
-        public uint codeStart
-        {
-            get { return codeStart_; }
-        }
-        public uint codeEnd
-        {
-            get { return codeEnd_; }
-        }
+        public uint address => addr_;
+        public uint codeStart => codeStart_;
+        public uint codeEnd => codeEnd_;
     }
 }

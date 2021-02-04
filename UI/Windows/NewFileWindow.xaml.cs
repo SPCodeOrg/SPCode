@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Xml;
 using MahApps.Metro;
 using Microsoft.Win32;
+using SPCode.Utils;
 
 namespace SPCode.UI.Windows
 {
@@ -27,8 +28,11 @@ namespace SPCode.UI.Windows
             InitializeComponent();
             Language_Translate();
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
+            {
                 ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
+            }
+
             ParseTemplateFile();
             TemplateListBox.SelectedIndex = 0;
         }
@@ -57,7 +61,10 @@ namespace SPCode.UI.Windows
                                 var result = dialog.ShowDialog();
 
                                 Debug.Assert(result != null, nameof(result) + " != null");
-                                if (result.Value) box.Text = dialog.FileName;
+                                if (result.Value)
+                                {
+                                    box.Text = dialog.FileName;
+                                }
                             }
                         }
                     };
@@ -72,40 +79,49 @@ namespace SPCode.UI.Windows
         private void ParseTemplateFile()
         {
             TemplateDictionary = new Dictionary<string, TemplateInfo>();
-            if (File.Exists("sourcepawn\\templates\\Templates.xml"))
-                using (Stream stream = File.OpenRead("sourcepawn\\templates\\Templates.xml"))
+            if (File.Exists(Paths.GetTemplatesFilePath()))
+            {
+                using Stream stream = File.OpenRead(Paths.GetTemplatesFilePath());
+                var doc = new XmlDocument();
+                doc.Load(stream);
+                if (doc.ChildNodes.Count <= 0)
                 {
-                    var doc = new XmlDocument();
-                    doc.Load(stream);
-                    if (doc.ChildNodes.Count <= 0) return;
-                    if (doc.ChildNodes[0].Name != "Templates") return;
-
-                    var mainNode = doc.ChildNodes[0];
-                    for (var i = 0; i < mainNode.ChildNodes.Count; ++i)
-                        if (mainNode.ChildNodes[i].Name == "Template")
-                        {
-                            var attributes = mainNode.ChildNodes[i].Attributes;
-                            var NameStr = attributes?["Name"].Value;
-                            var FileNameStr = attributes?["File"].Value;
-                            var NewNameStr = attributes?["NewName"].Value;
-
-                            Debug.Assert(FileNameStr != null, nameof(FileNameStr) + " != null");
-                            var FilePathStr = Path.Combine("sourcepawn\\templates\\", FileNameStr);
-                            if (File.Exists(FilePathStr))
-                            {
-                                Debug.Assert(NameStr != null, nameof(NameStr) + " != null");
-                                TemplateDictionary.Add(NameStr,
-                                    new TemplateInfo
-                                    {
-                                        Name = NameStr,
-                                        FileName = FileNameStr,
-                                        Path = FilePathStr,
-                                        NewName = NewNameStr
-                                    });
-                                TemplateListBox.Items.Add(NameStr);
-                            }
-                        }
+                    return;
                 }
+
+                if (doc.ChildNodes[0].Name != "Templates")
+                {
+                    return;
+                }
+
+                var mainNode = doc.ChildNodes[0];
+                for (var i = 0; i < mainNode.ChildNodes.Count; ++i)
+                {
+                    if (mainNode.ChildNodes[i].Name == "Template")
+                    {
+                        var attributes = mainNode.ChildNodes[i].Attributes;
+                        var NameStr = attributes?["Name"].Value;
+                        var FileNameStr = attributes?["File"].Value;
+                        var NewNameStr = attributes?["NewName"].Value;
+
+                        Debug.Assert(FileNameStr != null, nameof(FileNameStr) + " != null");
+                        var FilePathStr = Path.Combine(Paths.GetTemplatesDirectory(), FileNameStr);
+                        if (File.Exists(FilePathStr))
+                        {
+                            Debug.Assert(NameStr != null, nameof(NameStr) + " != null");
+                            TemplateDictionary.Add(NameStr,
+                                new TemplateInfo
+                                {
+                                    Name = NameStr,
+                                    FileName = FileNameStr,
+                                    Path = FilePathStr,
+                                    NewName = NewNameStr
+                                });
+                            TemplateListBox.Items.Add(NameStr);
+                        }
+                    }
+                }
+            }
         }
 
         private void TemplateListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -115,18 +131,13 @@ namespace SPCode.UI.Windows
             PathBox.Text = Path.Combine(PathStr, templateInfo.NewName);
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            var destFile = new FileInfo(PathBox.Text);
-            var templateInfo = TemplateDictionary[(string)TemplateListBox.SelectedItem];
-            File.Copy(templateInfo.Path, destFile.FullName, true);
-            Program.MainWindow.TryLoadSourceFile(destFile.FullName, true, true, true);
-            Close();
-        }
-
         private void Language_Translate()
         {
-            if (Program.Translations.IsDefault) return;
+            if (Program.Translations.IsDefault)
+            {
+                return;
+            }
+
             PreviewBlock.Text = $"{Program.Translations.GetLanguage("Preview")}:";
             SaveButton.Content = Program.Translations.GetLanguage("Save");
         }
@@ -151,6 +162,33 @@ namespace SPCode.UI.Windows
             {
                 ExecuteAction?.Invoke(parameter);
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            GoToSelectedTemplate();
+        }
+
+        private void TemplateListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            GoToSelectedTemplate();
+        }
+
+        private void TemplateListBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                GoToSelectedTemplate();
+            }
+        }
+
+        private void GoToSelectedTemplate()
+        {
+            var destFile = new FileInfo(PathBox.Text);
+            var templateInfo = TemplateDictionary[(string)TemplateListBox.SelectedItem];
+            File.Copy(templateInfo.Path, destFile.FullName, true);
+            Program.MainWindow.TryLoadSourceFile(destFile.FullName, true, true, true);
+            Close();
         }
     }
 

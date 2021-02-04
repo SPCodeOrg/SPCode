@@ -10,11 +10,11 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
-        bool IsSearchFieldOpen;
+        private bool IsSearchFieldOpen;
 
         private void ToggleSearchField()
         {
-            EditorElement ee = GetCurrentEditorElement();
+            var ee = GetCurrentEditorElement();
             if (IsSearchFieldOpen)
             {
                 if (ee != null)
@@ -122,19 +122,19 @@ namespace SPCode.UI
 
         private void Search()
         {
-            EditorElement[] editors = GetEditorElementsForFRAction(out var editorIndex);
+            var editors = GetEditorElementsForFRAction(out var editorIndex);
             if (editors == null) { return; }
             if (editors.Length < 1) { return; }
             if (editors[0] == null) { return; }
-            Regex regex = GetSearchRegex();
+            var regex = GetSearchRegex();
             if (regex == null) { return; }
-            int startFileCaretOffset = 0;
-            bool foundOccurence = false;
-            for (int i = editorIndex; i < (editors.Length + editorIndex + 1); ++i)
+            var startFileCaretOffset = 0;
+            var foundOccurence = false;
+            for (var i = editorIndex; i < (editors.Length + editorIndex + 1); ++i)
             {
-                int index = ValueUnderMap(i, editors.Length);
+                var index = ValueUnderMap(i, editors.Length);
                 string searchText;
-                int addToOffset = 0;
+                var addToOffset = 0;
                 if (i == editorIndex)
                 {
                     startFileCaretOffset = editors[index].editor.CaretOffset;
@@ -154,7 +154,7 @@ namespace SPCode.UI
                 }
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
-                    Match m = regex.Match(searchText);
+                    var m = regex.Match(searchText);
                     if (m.Success) //can this happen?
                     {
                         foundOccurence = true;
@@ -177,20 +177,20 @@ namespace SPCode.UI
 
         private void Replace()
         {
-            EditorElement[] editors = GetEditorElementsForFRAction(out var editorIndex);
+            var editors = GetEditorElementsForFRAction(out var editorIndex);
             if (editors == null) { return; }
             if (editors.Length < 1) { return; }
             if (editors[0] == null) { return; }
-            Regex regex = GetSearchRegex();
+            var regex = GetSearchRegex();
             if (regex == null) { return; }
-            string replaceString = ReplaceBox.Text;
-            int startFileCaretOffset = 0;
-            bool foundOccurence = false;
-            for (int i = editorIndex; i < (editors.Length + editorIndex + 1); ++i)
+            var replaceString = ReplaceBox.Text;
+            var startFileCaretOffset = 0;
+            var foundOccurence = false;
+            for (var i = editorIndex; i < (editors.Length + editorIndex + 1); ++i)
             {
-                int index = ValueUnderMap(i, editors.Length);
+                var index = ValueUnderMap(i, editors.Length);
                 string searchText;
-                int addToOffset = 0;
+                var addToOffset = 0;
                 if (i == editorIndex)
                 {
                     startFileCaretOffset = editors[index].editor.CaretOffset;
@@ -210,12 +210,12 @@ namespace SPCode.UI
                 }
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
-                    Match m = regex.Match(searchText);
+                    var m = regex.Match(searchText);
                     if (m.Success)
                     {
                         foundOccurence = true;
                         editors[index].Parent.IsSelected = true;
-                        string result = m.Result(replaceString);
+                        var result = m.Result(replaceString);
                         editors[index].editor.Document.Replace(m.Index + addToOffset, m.Length, result);
                         editors[index].editor.CaretOffset = m.Index + addToOffset + result.Length;
                         editors[index].editor.Select(m.Index + addToOffset, result.Length);
@@ -234,28 +234,28 @@ namespace SPCode.UI
 
         private void ReplaceAll()
         {
-            EditorElement[] editors = GetEditorElementsForFRAction(out _);
+            var editors = GetEditorElementsForFRAction(out _);
             if (editors == null) { return; }
             if (editors.Length < 1) { return; }
             if (editors[0] == null) { return; }
-            Regex regex = GetSearchRegex();
+            var regex = GetSearchRegex();
             if (regex == null) { return; }
 
-            int count = 0;
-            int fileCount = 0;
+            var count = 0;
+            var fileCount = 0;
 
-            string replaceString = ReplaceBox.Text;
+            var replaceString = ReplaceBox.Text;
             foreach (var editor in editors)
             {
-                MatchCollection mc = regex.Matches(editor.editor.Text);
+                var mc = regex.Matches(editor.editor.Text);
                 if (mc.Count > 0)
                 {
                     fileCount++;
                     count += mc.Count;
                     editor.editor.BeginChange();
-                    for (int j = mc.Count - 1; j >= 0; --j)
+                    for (var j = mc.Count - 1; j >= 0; --j)
                     {
-                        string replace = mc[j].Result(replaceString);
+                        var replace = mc[j].Result(replaceString);
                         editor.editor.Document.Replace(mc[j].Index, mc[j].Length, replace);
                     }
                     editor.editor.EndChange();
@@ -268,16 +268,16 @@ namespace SPCode.UI
 
         private void Count()
         {
-            EditorElement[] editors = GetEditorElementsForFRAction(out _);
+            var editors = GetEditorElementsForFRAction(out _);
             if (editors == null) { return; }
             if (editors.Length < 1) { return; }
             if (editors[0] == null) { return; }
-            Regex regex = GetSearchRegex();
+            var regex = GetSearchRegex();
             if (regex == null) { return; }
-            int count = 0;
+            var count = 0;
             foreach (var editor in editors)
             {
-                MatchCollection mc = regex.Matches(editor.editor.Text);
+                var mc = regex.Matches(editor.editor.Text);
                 count += mc.Count;
             }
             FindResultBlock.Text = count.ToString() + " " + Program.Translations.GetLanguage("OccFound");
@@ -285,14 +285,14 @@ namespace SPCode.UI
 
         private Regex GetSearchRegex()
         {
-            string findString = FindBox.Text;
+            var findString = FindBox.Text;
             if (string.IsNullOrEmpty(findString))
             {
                 FindResultBlock.Text = Program.Translations.GetLanguage("EmptyPatt");
                 return null;
             }
             Regex regex;
-            RegexOptions regexOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant;
+            var regexOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant;
             Debug.Assert(CCBox.IsChecked != null, "CCBox.IsChecked != null");
             Debug.Assert(NSearch_RButton.IsChecked != null, "NSearch_RButton.IsChecked != null");
 
@@ -317,9 +317,9 @@ namespace SPCode.UI
                     if (ASearch_RButton.IsChecked.Value)
                     {
                         findString = findString.Replace("\\t", "\t").Replace("\\r", "\r").Replace("\\n", "\n");
-                        Regex rx = new Regex(@"\\[uUxX]([0-9A-F]{4})");
+                        var rx = new Regex(@"\\[uUxX]([0-9A-F]{4})");
                         findString = rx.Replace(findString,
-                            match => ((char)Int32.Parse(match.Value.Substring(2), NumberStyles.HexNumber)).ToString());
+                            match => ((char)int.Parse(match.Value.Substring(2), NumberStyles.HexNumber)).ToString());
                         regex = new Regex(Regex.Escape(findString), regexOptions);
                     }
                     else //if (RSearch_RButton.IsChecked.Value)
@@ -342,17 +342,17 @@ namespace SPCode.UI
 
         private EditorElement[] GetEditorElementsForFRAction(out int editorIndex)
         {
-            int editorStartIndex = 0;
+            var editorStartIndex = 0;
             EditorElement[] editors;
             if (FindDestinies.SelectedIndex == 0)
             { editors = new[] { GetCurrentEditorElement() }; }
             else
             {
                 editors = GetAllEditorElements();
-                object checkElement = DockingPane.SelectedContent?.Content;
+                var checkElement = DockingPane.SelectedContent?.Content;
                 if (checkElement is EditorElement)
                 {
-                    for (int i = 0; i < editors.Length; ++i)
+                    for (var i = 0; i < editors.Length; ++i)
                     {
                         if (editors[i] == checkElement)
                         {

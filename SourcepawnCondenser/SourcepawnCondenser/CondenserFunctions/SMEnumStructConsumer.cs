@@ -1,8 +1,8 @@
-﻿using SourcepawnCondenser.SourcemodDefinition;
-using SourcepawnCondenser.Tokenizer;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SourcepawnCondenser.SourcemodDefinition;
+using SourcepawnCondenser.Tokenizer;
 
 namespace SourcepawnCondenser
 {
@@ -26,6 +26,7 @@ namespace SourcepawnCondenser
                 var braceIndex = 0;
                 var lastIndex = -1;
                 for (; iteratePosition < length; ++iteratePosition)
+                {
                     if (t[iteratePosition].Kind == TokenKind.BraceOpen)
                     {
                         ++braceIndex;
@@ -89,6 +90,7 @@ namespace SourcepawnCondenser
                             var foundCurentParameter = false;
                             var InSearchForComma = false;
                             for (var i = iteratePosition; i < length; ++i)
+                            {
                                 if (InCodeSection)
                                 {
                                     if (t[i].Kind == TokenKind.BraceOpen)
@@ -192,8 +194,10 @@ namespace SourcepawnCondenser
                                         InSearchForComma = true;
                                     }
                                 }
+                            }
 
                             if (mStartIndex < mEndIndex)
+                            {
                                 methods.Add(new SMEnumStructMethod
                                 {
                                     Index = mStartIndex,
@@ -207,14 +211,20 @@ namespace SourcepawnCondenser
                                     MethodmapName = enumStructName,
                                     File = FileName
                                 });
+                            }
                         }
                         else if (t[iteratePosition].Kind == TokenKind.Identifier)
                         {
                             var fStartIndex = t[iteratePosition].Index;
                             var fEndIndex = fStartIndex;
                             if (iteratePosition - 1 >= 0)
+                            {
                                 if (t[iteratePosition - 1].Kind == TokenKind.FunctionIndicator)
+                                {
                                     fStartIndex = t[iteratePosition - 1].Index;
+                                }
+                            }
+
                             var fieldName = string.Empty;
                             var InPureSemicolonSearch = false;
                             var fBracketIndex = 0;
@@ -233,12 +243,14 @@ namespace SourcepawnCondenser
                                 }
 
                                 if (t[j].Kind == TokenKind.Semicolon)
+                                {
                                     if (fStartIndex == fEndIndex && fBracketIndex == 0)
                                     {
                                         iteratePosition = j;
                                         fEndIndex = t[j].Index;
                                         break;
                                     }
+                                }
 
                                 if (t[j].Kind == TokenKind.BraceOpen)
                                 {
@@ -258,9 +270,13 @@ namespace SourcepawnCondenser
                                         if (j + 1 < length)
                                         {
                                             if (t[j + 1].Kind == TokenKind.Semicolon)
+                                            {
                                                 iteratePosition = j + 1;
+                                            }
                                             else
+                                            {
                                                 iteratePosition = j;
+                                            }
                                         }
 
                                         break;
@@ -269,6 +285,7 @@ namespace SourcepawnCondenser
                             }
 
                             if (fStartIndex < fEndIndex)
+                            {
                                 fields.Add(new SMEnumStructField
                                 {
                                     Index = fStartIndex,
@@ -278,8 +295,10 @@ namespace SourcepawnCondenser
                                     MethodmapName = enumStructName,
                                     FullName = source.Substring(fStartIndex, fEndIndex - fStartIndex + 1)
                                 });
+                            }
                         }
                     }
+                }
 
                 if (enteredBlock && braceIndex == 0)
                 {

@@ -19,7 +19,10 @@ namespace SPCode.UI
             if (DockingPane.SelectedContent?.Content != null)
             {
                 var possElement = DockingManager.ActiveContent;
-                if (possElement is EditorElement element) outElement = element;
+                if (possElement is EditorElement element)
+                {
+                    outElement = element;
+                }
             }
 
             return outElement;
@@ -55,7 +58,10 @@ namespace SPCode.UI
                 if (ofd.FileNames.Length > 0)
                 {
                     for (var i = 0; i < ofd.FileNames.Length; ++i)
+                    {
                         AnyFileLoaded |= TryLoadSourceFile(ofd.FileNames[i], i == 0, true, i == 0);
+                    }
+
                     if (!AnyFileLoaded)
                     {
                         MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
@@ -105,10 +111,17 @@ namespace SPCode.UI
         private void Command_SaveAll()
         {
             var editors = GetAllEditorElements();
-            if (editors == null) return;
+            if (editors == null)
+            {
+                return;
+            }
+
             if (editors.Length > 0)
             {
-                foreach (var editor in editors) editor.Save();
+                foreach (var editor in editors)
+                {
+                    editor.Save();
+                }
 
                 BlendOverEffect.Begin();
             }
@@ -117,7 +130,11 @@ namespace SPCode.UI
         private void Command_Close()
         {
             var ee = GetCurrentEditorElement();
-            if (ee == null) return;
+            if (ee == null)
+            {
+                return;
+            }
+
             DockingPane.RemoveChild(ee.Parent);
             ee.Close();
         }
@@ -125,23 +142,41 @@ namespace SPCode.UI
         private async void Command_CloseAll()
         {
             var editors = GetAllEditorElements();
-            if (editors == null) return;
+            if (editors == null)
+            {
+                return;
+            }
+
             if (editors.Length > 0)
             {
                 var UnsavedEditorsExisting = false;
-                foreach (var editor in editors) UnsavedEditorsExisting |= editor.NeedsSave;
+                foreach (var editor in editors)
+                {
+                    UnsavedEditorsExisting |= editor.NeedsSave;
+                }
+
                 var ForceSave = false;
                 if (UnsavedEditorsExisting)
                 {
                     var str = new StringBuilder();
                     for (var i = 0; i < editors.Length; ++i)
+                    {
                         if (i == 0)
+                        {
                             str.Append(editors[i].Parent.Title.Trim('*'));
+                        }
                         else
+                        {
                             str.AppendLine(editors[i].Parent.Title.Trim('*'));
+                        }
+                    }
+
                     var Result = await this.ShowMessageAsync(Program.Translations.GetLanguage("SaveFollow"),
                         str.ToString(), MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions);
-                    if (Result == MessageDialogResult.Affirmative) ForceSave = true;
+                    if (Result == MessageDialogResult.Affirmative)
+                    {
+                        ForceSave = true;
+                    }
                 }
 
                 foreach (var editor in editors)
@@ -156,16 +191,24 @@ namespace SPCode.UI
         {
             var ee = GetCurrentEditorElement();
             if (ee != null)
+            {
                 if (ee.editor.CanUndo)
+                {
                     ee.editor.Undo();
+                }
+            }
         }
 
         private void Command_Redo()
         {
             var ee = GetCurrentEditorElement();
             if (ee != null)
+            {
                 if (ee.editor.CanRedo)
+                {
                     ee.editor.Redo();
+                }
+            }
         }
 
         private void Command_Cut()
@@ -192,7 +235,10 @@ namespace SPCode.UI
             if (ee?.foldingManager != null)
             {
                 var foldings = ee.foldingManager.AllFoldings;
-                foreach (var folding in foldings) folding.IsFolded = state;
+                foreach (var folding in foldings)
+                {
+                    folding.IsFolded = state;
+                }
             }
         }
 
@@ -222,26 +268,36 @@ namespace SPCode.UI
                 return;
             }
             foreach (var ee in editors)
+            {
                 if (ee != null)
                 {
                     int currentCaret = ee.editor.TextArea.Caret.Offset, numOfSpacesOrTabsBefore = 0;
                     var line = ee.editor.Document.GetLineByOffset(currentCaret);
-                    int lineNumber = line.LineNumber;
+                    var lineNumber = line.LineNumber;
                     // 0 - start | any other - middle | -1 - EOS
-                    int curserLinePos = currentCaret == line.Offset ? 0 : currentCaret == line.EndOffset ? -1 : currentCaret - line.Offset;
+                    var curserLinePos = currentCaret == line.Offset ? 0 : currentCaret == line.EndOffset ? -1 : currentCaret - line.Offset;
 
-                    if (curserLinePos > 0) numOfSpacesOrTabsBefore = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
+                    if (curserLinePos > 0)
+                    {
+                        numOfSpacesOrTabsBefore = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
+                    }
 
 #if DEBUG
                     Debug.WriteLine($"Curser offset before format: {currentCaret}");
 
                     // Where is out curser?
                     if (currentCaret == line.Offset)
+                    {
                         Debug.WriteLine("Curser is at the start of the line");
+                    }
                     else if (currentCaret == line.EndOffset)
+                    {
                         Debug.WriteLine("Curser is at the end of the line");
+                    }
                     else
+                    {
                         Debug.WriteLine("Curser is somewhere in the middle of the line");
+                    }
 #endif
                     // Formatting Start //
                     ee.editor.Document.BeginUpdate();
@@ -251,14 +307,14 @@ namespace SPCode.UI
                     // Formatting End //
 
                     line = ee.editor.Document.GetLineByNumber(lineNumber);
-                    int newCaretPos = line.Offset;
+                    var newCaretPos = line.Offset;
                     if (curserLinePos == -1)
                     {
                         newCaretPos += line.Length;
                     }
                     else if (curserLinePos != 0)
                     {
-                        int numOfSpacesOrTabsAfter = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
+                        var numOfSpacesOrTabsAfter = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
                         newCaretPos += curserLinePos + (numOfSpacesOrTabsAfter - numOfSpacesOrTabsBefore);
 #if DEBUG
                         Debug.WriteLine($"Curser offset after format: {newCaretPos}");
@@ -266,6 +322,7 @@ namespace SPCode.UI
                     }
                     ee.editor.TextArea.Caret.Offset = newCaretPos;
                 }
+            }
         }
 
         private async void Command_Decompile(MainWindow win)
@@ -294,7 +351,10 @@ namespace SPCode.UI
                     var destFile = fInfo.FullName + ".sp";
                     File.WriteAllText(destFile, LysisDecompiler.Analyze(fInfo), Encoding.UTF8);
                     TryLoadSourceFile(destFile, true, false);
-                    if (task != null) await task.CloseAsync();
+                    if (task != null)
+                    {
+                        await task.CloseAsync();
+                    }
                 }
             }
         }

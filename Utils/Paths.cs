@@ -8,38 +8,83 @@ namespace SPCode.Utils
         public Paths() { }
 
         private static readonly string SPCodeAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\spcode";
+        private static bool LocalInstallation;
 
         public static bool IsLocalInstallation()
         {
             var localConfigsPath = @".\sourcepawn\configs\Configs.xml";
             var localTemplatesPath = @".\sourcepawn\templates\Templates.xml";
-            return File.Exists(localTemplatesPath) && File.Exists(localConfigsPath);
+            if (File.Exists(localTemplatesPath) && File.Exists(localConfigsPath))
+            {
+                LocalInstallation = true;
+                return true;
+            }
+            else
+            {
+                LocalInstallation = false;
+                return false;
+            }
         }
 
-        public static string GetConfigsFolderPath()
+        public static string GetConfigsDirectory()
         {
             var appDataPath = SPCodeAppDataPath + @"\sourcepawn\configs\sm_1_10_0_6478";
             var localPath = @".\sourcepawn\configs\sm_1_10_0_6478";
-            return IsLocalInstallation() ? localPath : appDataPath;
+            return LocalInstallation ? localPath : appDataPath;
+        }
+
+        public static string GetErrorFilesDirectory()
+        {
+            var appDataPath = SPCodeAppDataPath + @"\sourcepawn\errorfiles";
+            var localPath = @".\sourcepawn\errorfiles";
+            return LocalInstallation ? localPath : appDataPath;
+        }
+
+        public static string GetCrashLogDirectory()
+        {
+            var appDataPath = SPCodeAppDataPath + @"\crashlogs";
+            var localPath = @".\crashlogs";
+            if (LocalInstallation && !Directory.Exists(localPath))
+            {
+                Directory.CreateDirectory(localPath);
+                return localPath;
+            }
+            return LocalInstallation ? localPath : appDataPath;
+        }
+
+        public static string GetTempDirectory()
+        {
+            var appDataPath = SPCodeAppDataPath + @"\sourcepawn\temp";
+            var localPath = @".\sourcepawn\temp";
+            return LocalInstallation ? localPath : appDataPath;
+        }
+
+        public static string GetTemplatesDirectory()
+        {
+            var appDataPath = SPCodeAppDataPath + @"\sourcepawn\templates";
+            var localPath = @".\sourcepawn\templates";
+            return LocalInstallation ? localPath : appDataPath;
         }
 
         public static string GetConfigFilePath()
         {
             var appDataPath = SPCodeAppDataPath + @"\sourcepawn\configs\Configs.xml";
             var localPath = @".\sourcepawn\configs\Configs.xml";
-            return IsLocalInstallation() ? localPath : appDataPath;
+            return LocalInstallation ? localPath : appDataPath;
         }
 
         public static string GetTemplatesFilePath()
         {
-            var appDataPath = SPCodeAppDataPath + @"\spcode\sourcepawn\templates\Templates.xml";
+            var appDataPath = SPCodeAppDataPath + @"\sourcepawn\templates\Templates.xml";
             var localPath = @".\sourcepawn\templates\Templates.xml";
-            return IsLocalInstallation() ? localPath : appDataPath;
+            return LocalInstallation ? localPath : appDataPath;
         }
 
         public static string GetOptionsFilePath()
         {
-            return IsLocalInstallation() ? @".\options_0.dat" : SPCodeAppDataPath + @"\options_0.dat";
+            var appDataPath = SPCodeAppDataPath + @"\options_0.dat";
+            var localPath = @".\options_0.dat";
+            return LocalInstallation ? localPath : appDataPath;
         }
     }
 }

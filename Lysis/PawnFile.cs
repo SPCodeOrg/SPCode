@@ -6,8 +6,8 @@ namespace Lysis
 {
     public class Public
     {
-        private uint address_;
-        private string name_;
+        private readonly uint address_;
+        private readonly string name_;
 
         public Public(string name, uint address)
         {
@@ -15,14 +15,8 @@ namespace Lysis
             address_ = address;
         }
 
-        public string name
-        {
-            get { return name_; }
-        }
-        public uint address
-        {
-            get { return address_; }
-        }
+        public string name => name_;
+        public uint address => address_;
     }
 
     public abstract class PawnFile
@@ -33,15 +27,21 @@ namespace Lysis
 
         public static PawnFile FromFile(string path)
         {
-            FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            List<byte> bytes = new List<byte>();
+            var fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var bytes = new List<byte>();
             int b;
             while ((b = fs.ReadByte()) >= 0)
+            {
                 bytes.Add((byte)b);
-            byte[] vec = bytes.ToArray();
-            uint magic = BitConverter.ToUInt32(vec, 0);
+            }
+
+            var vec = bytes.ToArray();
+            var magic = BitConverter.ToUInt32(vec, 0);
             if (magic == SourcePawn.SourcePawnFile.MAGIC)
+            {
                 return new SourcePawn.SourcePawnFile(vec);
+            }
+
             throw new Exception("not a .smx file!");
         }
 
@@ -51,46 +51,43 @@ namespace Lysis
 
         public Function lookupFunction(uint pc)
         {
-            for (int i = 0; i < functions_.Length; i++)
+            for (var i = 0; i < functions_.Length; i++)
             {
-                Function f = functions_[i];
+                var f = functions_[i];
                 if (pc >= f.codeStart && pc < f.codeEnd)
+                {
                     return f;
+                }
             }
             return null;
         }
         public Public lookupPublic(string name)
         {
-            for (int i = 0; i < publics_.Length; i++)
+            for (var i = 0; i < publics_.Length; i++)
             {
                 if (publics_[i].name == name)
+                {
                     return publics_[i];
+                }
             }
             return null;
         }
 
         public Public lookupPublic(uint addr)
         {
-            for (int i = 0; i < publics_.Length; i++)
+            for (var i = 0; i < publics_.Length; i++)
             {
                 if (publics_[i].address == addr)
+                {
                     return publics_[i];
+                }
             }
             return null;
         }
 
-        public Function[] functions
-        {
-            get { return functions_; }
-        }
-        public Public[] publics
-        {
-            get { return publics_; }
-        }
-        public Variable[] globals
-        {
-            get { return globals_; }
-        }
+        public Function[] functions => functions_;
+        public Public[] publics => publics_;
+        public Variable[] globals => globals_;
         public abstract byte[] DAT
         {
             get;

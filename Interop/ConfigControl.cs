@@ -64,7 +64,7 @@ namespace SPCode.Interop
                         // (calculate it based on installation being standalone or portable)
                         if (IsStandardConfig && string.IsNullOrEmpty(_SMDirectoryStr))
                         {
-                            SMDirs.Add(Paths.GetConfigsFolderPath());
+                            SMDirs.Add(Paths.GetConfigsDirectory());
                         }
 
                         foreach (var dir in SMDirectoriesSplitted)
@@ -79,7 +79,7 @@ namespace SPCode.Interop
                         // Extra assurance for the program to always load a proper config
                         if (IsStandardConfig && SMDirs.Count == 0)
                         {
-                            SMDirs.Add(Paths.GetConfigsFolderPath());
+                            SMDirs.Add(Paths.GetConfigsDirectory());
                         }
 
                         int _OptimizationLevel = 2, _VerboseLevel = 1;
@@ -106,7 +106,7 @@ namespace SPCode.Interop
                         var _FTPPW = ManagedAES.Decrypt(encryptedFTPPW);
                         var _FTPDir = ReadAttributeStringSafe(ref node, "FTPDir");
                         var _RConEngineSourceStr = ReadAttributeStringSafe(ref node, "RConSourceEngine", "1");
-                        bool _RConEngineTypeSource = !(_RConEngineSourceStr == "0" || string.IsNullOrWhiteSpace(_RConEngineSourceStr));
+                        var _RConEngineTypeSource = !(_RConEngineSourceStr == "0" || string.IsNullOrWhiteSpace(_RConEngineSourceStr));
                         var _RConIP = ReadAttributeStringSafe(ref node, "RConIP", "127.0.0.1");
                         var _RConPortStr = ReadAttributeStringSafe(ref node, "RConPort", "27015");
 
@@ -177,8 +177,13 @@ namespace SPCode.Interop
         private static string ReadAttributeStringSafe(ref XmlNode node, string attributeName, string defaultValue = "")
         {
             for (var i = 0; i < node.Attributes.Count; ++i)
+            {
                 if (node.Attributes[i].Name == attributeName)
+                {
                     return node.Attributes[i].Value;
+                }
+            }
+
             return defaultValue;
         }
     }
@@ -225,7 +230,11 @@ namespace SPCode.Interop
 
         public SMDefinition GetSMDef()
         {
-            if (SMDef == null) LoadSMDef();
+            if (SMDef == null)
+            {
+                LoadSMDef();
+            }
+
             return SMDef;
         }
 
@@ -236,7 +245,11 @@ namespace SPCode.Interop
 
         public void LoadSMDef()
         {
-            if (SMDef != null) return;
+            if (SMDef != null)
+            {
+                return;
+            }
+
             try
             {
                 var def = new SMDefinition();

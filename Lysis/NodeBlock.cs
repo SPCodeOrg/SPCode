@@ -1,6 +1,6 @@
-﻿using SourcePawn;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -18,8 +18,8 @@ namespace Lysis
             }
         }
 
-        private List<StackEntry> stack_;
-        private StackEntry[] args_;
+        private readonly List<StackEntry> stack_;
+        private readonly StackEntry[] args_;
         private DNode pri_;
         private DNode alt_;
 
@@ -27,18 +27,26 @@ namespace Lysis
         {
             stack_ = new List<StackEntry>();
             args_ = new StackEntry[nargs];
-            for (int i = 0; i < args_.Length; i++)
+            for (var i = 0; i < args_.Length; i++)
+            {
                 args_[i] = new StackEntry(null, null);
+            }
         }
 
         public AbstractStack(AbstractStack other)
         {
             stack_ = new List<StackEntry>();
-            for (int i = 0; i < other.stack_.Count; i++)
+            for (var i = 0; i < other.stack_.Count; i++)
+            {
                 stack_.Add(new StackEntry(other.stack_[i].declaration, other.stack_[i].assignment));
+            }
+
             args_ = new StackEntry[other.args_.Length];
-            for (int i = 0; i < args_.Length; i++)
+            for (var i = 0; i < args_.Length; i++)
+            {
                 args_[i] = new StackEntry(other.args_[i].declaration, other.args_[i].assignment);
+            }
+
             pri_ = other.pri_;
             alt_ = other.alt_;
         }
@@ -50,7 +58,7 @@ namespace Lysis
         }
         private StackEntry popEntry()
         {
-            StackEntry e = stack_[stack_.Count - 1];
+            var e = stack_[stack_.Count - 1];
             stack_.RemoveRange(stack_.Count - 1, 1);
             return e;
         }
@@ -60,9 +68,11 @@ namespace Lysis
         }
         public DNode popAsTemp()
         {
-            StackEntry entry = popEntry();
+            var entry = popEntry();
             if (entry.declaration.uses.Count == 0)
+            {
                 return entry.assignment;
+            }
             //Debug.Assert(false, "not yet handled");
             return null;
         }
@@ -74,7 +84,7 @@ namespace Lysis
         }
         public DNode popValue()
         {
-            DNode value = stack_[stack_.Count - 1].assignment;
+            var value = stack_[stack_.Count - 1].assignment;
             pop();
             return value;
         }
@@ -82,7 +92,10 @@ namespace Lysis
         private StackEntry entry(int offset)
         {
             if (offset < 0)
+            {
                 return stack_.ElementAt((-offset / 4) - 1);
+            }
+
             return args_[(offset - 12) / 4];
         }
         public DDeclareLocal getName(int offset)
@@ -90,22 +103,10 @@ namespace Lysis
             return entry(offset).declaration;
         }
 
-        public int nargs
-        {
-            get { return args_.Length; }
-        }
-        public int depth
-        {
-            get { return -(stack_.Count * 4); }
-        }
-        public DNode pri
-        {
-            get { return pri_; }
-        }
-        public DNode alt
-        {
-            get { return alt_; }
-        }
+        public int nargs => args_.Length;
+        public int depth => -(stack_.Count * 4);
+        public DNode pri => pri_;
+        public DNode alt => alt_;
         public DNode reg(Register reg)
         {
             return (reg == Register.Pri) ? pri_ : alt_;
@@ -113,9 +114,13 @@ namespace Lysis
         public void set(Register reg, DNode node)
         {
             if (reg == Register.Pri)
+            {
                 pri_ = node;
+            }
             else
+            {
                 alt_ = node;
+            }
         }
         public void set(int offset, DNode value)
         {
@@ -130,9 +135,9 @@ namespace Lysis
 
     public class NodeBlock
     {
-        private LBlock lir_;
+        private readonly LBlock lir_;
         private AbstractStack stack_;
-        private NodeList nodes_;
+        private readonly NodeList nodes_;
 
         public NodeBlock(LBlock lir)
         {
@@ -143,7 +148,10 @@ namespace Lysis
         private void joinRegs(Register reg, DNode value)
         {
             if (value == null || stack_.reg(reg) == value)
+            {
                 return;
+            }
+
             if (stack_.reg(reg) == null)
             {
                 stack_.set(reg, value);
@@ -151,7 +159,7 @@ namespace Lysis
             }
 
             DPhi phi;
-            DNode node = stack_.reg(reg);
+            var node = stack_.reg(reg);
             if (node.type != NodeType.Phi || node.block != this)
             {
                 phi = new DPhi(node);
@@ -170,9 +178,9 @@ namespace Lysis
             if (other == null)
             {
                 stack_ = new AbstractStack(graph.nargs);
-                for (int i = 0; i < graph.nargs; i++)
+                for (var i = 0; i < graph.nargs; i++)
                 {
-                    DDeclareLocal local = new DDeclareLocal(lir_.pc, null);
+                    var local = new DDeclareLocal(lir_.pc, null);
                     local.setOffset((i * 4) + 12);
                     add(local);
                     stack_.init((i * 4) + 12, local);
@@ -212,26 +220,17 @@ namespace Lysis
             nodes_.replace(where, with);
         }
 
-        public LBlock lir
-        {
-            get { return lir_; }
-        }
-        public AbstractStack stack
-        {
-            get { return stack_; }
-        }
-        public NodeList nodes
-        {
-            get { return nodes_; }
-        }
+        public LBlock lir => lir_;
+        public AbstractStack stack => stack_;
+        public NodeList nodes => nodes_;
     }
 
     public class NodeGraph
     {
-        private SourcePawnFile file_;
-        private NodeBlock[] blocks_;
+        private readonly SourcePawnFile file_;
+        private readonly NodeBlock[] blocks_;
         private int nameCounter_;
-        private Function function_;
+        private readonly Function function_;
 
         public NodeGraph(SourcePawnFile file, NodeBlock[] blocks)
         {
@@ -240,22 +239,10 @@ namespace Lysis
             nameCounter_ = 0;
             function_ = file_.lookupFunction(blocks[0].lir.pc);
         }
-        public NodeBlock this[int i]
-        {
-            get { return blocks_[i]; }
-        }
-        public SourcePawnFile file
-        {
-            get { return file_; }
-        }
-        public Function function
-        {
-            get { return function_; }
-        }
-        public int numBlocks
-        {
-            get { return blocks_.Length; }
-        }
+        public NodeBlock this[int i] => blocks_[i];
+        public SourcePawnFile file => file_;
+        public Function function => function_;
+        public int numBlocks => blocks_.Length;
         public string tempName()
         {
             return "var" + ++nameCounter_;

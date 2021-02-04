@@ -16,7 +16,7 @@ namespace SPCode.UI.Components
     public class AeonEditorHighlighting : IHighlightingDefinition
     {
 
-        private SMDefinition smDef;
+        private readonly SMDefinition smDef;
         public AeonEditorHighlighting() { }
 
         public AeonEditorHighlighting(SMDefinition smDef)
@@ -30,8 +30,10 @@ namespace SPCode.UI.Components
         {
             get
             {
-                var commentMarkerSet = new HighlightingRuleSet();
-                commentMarkerSet.Name = "CommentMarkerSet";
+                var commentMarkerSet = new HighlightingRuleSet
+                {
+                    Name = "CommentMarkerSet"
+                };
                 commentMarkerSet.Rules.Add(new HighlightingRule
                 {
                     Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
@@ -182,63 +184,78 @@ namespace SPCode.UI.Components
                 if (smDef != null)
                 {
                     if (smDef.Defines.Count > 0)
+                    {
                         rs.Rules.Add(new HighlightingRule
                         {
                             Regex = new Regex(string.Join("|", smDef.Defines.Select(e => "\\b" + Regex.Escape(e.Name) + "\\b").ToArray())),
                             Color = new HighlightingColor
                             { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants) }
                         });
+                    }
                 }
                 var def = Program.Configs[Program.SelectedConfig].GetSMDef();
                 if (def.TypeStrings.Length > 0)
+                {
                     rs.Rules.Add(new HighlightingRule //types
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.TypeStrings, true),
                         Color = new HighlightingColor
                         { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Types) }
                     });
+                }
 
                 if (def.ConstantsStrings.Length > 0)
+                {
                     rs.Rules.Add(new HighlightingRule //constants
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.ConstantsStrings, true),
                         Color = new HighlightingColor
                         { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants) }
                     });
+                }
 
                 if (def.FunctionStrings.Length > 0)
+                {
                     rs.Rules.Add(new HighlightingRule //Functions
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.FunctionStrings, true),
                         Color = new HighlightingColor
                         { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Functions) }
                     });
+                }
 
                 if (def.MethodsStrings.Length > 0)
+                {
                     rs.Rules.Add(new HighlightingRule //Methods
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.MethodsStrings),
                         Color = new HighlightingColor
                         { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
                     });
+                }
 
                 if (def.FieldStrings.Length > 0)
+                {
                     rs.Rules.Add(new HighlightingRule //Methods
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.FieldStrings),
                         Color = new HighlightingColor
                         { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
                     });
+                }
 
                 if (def.StructFieldStrings.Length > 0)
+                {
                     rs.Rules.Add(new HighlightingRule //Methods
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.StructFieldStrings),
                         Color = new HighlightingColor
                         { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
                     });
+                }
 
                 if (def.StructMethodStrings.Length > 0)
+                {
                     rs.Rules.Add(new HighlightingRule //Methods
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords2(
@@ -246,6 +263,7 @@ namespace SPCode.UI.Components
                         Color = new HighlightingColor
                         { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
                     });
+                }
 
                 rs.Rules.Add(new HighlightingRule //unknown function calls
                 {
@@ -276,8 +294,10 @@ namespace SPCode.UI.Components
         {
             get
             {
-                var propertiesDictionary = new Dictionary<string, string>();
-                propertiesDictionary.Add("DocCommentMarker", "///");
+                var propertiesDictionary = new Dictionary<string, string>
+                {
+                    { "DocCommentMarker", "///" }
+                };
                 return propertiesDictionary;
             }
         }
@@ -323,7 +343,10 @@ namespace SPCode.UI.Components
         {
             var other = obj as SimpleHighlightingBrush;
             if (other == null)
+            {
                 return false;
+            }
+
             return brush.Color.Equals(other.brush.Color);
         }
 
@@ -337,30 +360,45 @@ namespace SPCode.UI.Components
     {
         public static Regex GetRegexFromKeywords(string[] keywords, bool ForceAtomicRegex = false)
         {
-            if (ForceAtomicRegex) keywords = ConvertToAtomicRegexAbleStringArray(keywords);
+            if (ForceAtomicRegex)
+            {
+                keywords = ConvertToAtomicRegexAbleStringArray(keywords);
+            }
 
-            if (keywords.Length == 0) return new Regex("SPEdit_Error"); //hehe 
+            if (keywords.Length == 0)
+            {
+                return new Regex("SPEdit_Error"); //hehe 
+            }
 
             var UseAtomicRegex = true;
             for (var j = 0; j < keywords.Length; ++j)
+            {
                 if (!char.IsLetterOrDigit(keywords[j][0]) ||
                     !char.IsLetterOrDigit(keywords[j][keywords[j].Length - 1]))
                 {
                     UseAtomicRegex = false;
                     break;
                 }
+            }
 
             var regexBuilder = new StringBuilder();
             if (UseAtomicRegex)
+            {
                 regexBuilder.Append(@"\b(?>");
+            }
             else
+            {
                 regexBuilder.Append(@"(");
+            }
 
             var orderedKeyWords = new List<string>(keywords);
             var i = 0;
             foreach (var keyword in orderedKeyWords.OrderByDescending(w => w.Length))
             {
-                if (i++ > 0) regexBuilder.Append('|');
+                if (i++ > 0)
+                {
+                    regexBuilder.Append('|');
+                }
 
                 if (UseAtomicRegex)
                 {
@@ -368,17 +406,27 @@ namespace SPCode.UI.Components
                 }
                 else
                 {
-                    if (char.IsLetterOrDigit(keyword[0])) regexBuilder.Append(@"\b");
+                    if (char.IsLetterOrDigit(keyword[0]))
+                    {
+                        regexBuilder.Append(@"\b");
+                    }
 
                     regexBuilder.Append(Regex.Escape(keyword));
-                    if (char.IsLetterOrDigit(keyword[keyword.Length - 1])) regexBuilder.Append(@"\b");
+                    if (char.IsLetterOrDigit(keyword[keyword.Length - 1]))
+                    {
+                        regexBuilder.Append(@"\b");
+                    }
                 }
             }
 
             if (UseAtomicRegex)
+            {
                 regexBuilder.Append(@")\b");
+            }
             else
+            {
                 regexBuilder.Append(@")");
+            }
 
             return new Regex(regexBuilder.ToString(), RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture);
         }
@@ -387,10 +435,16 @@ namespace SPCode.UI.Components
         {
             var atomicRegexAbleList = new List<string>();
             for (var j = 0; j < keywords.Length; ++j)
+            {
                 if (keywords[j].Length > 0)
+                {
                     if (char.IsLetterOrDigit(keywords[j][0]) &&
                         char.IsLetterOrDigit(keywords[j][keywords[j].Length - 1]))
+                    {
                         atomicRegexAbleList.Add(keywords[j]);
+                    }
+                }
+            }
 
             return atomicRegexAbleList.ToArray();
         }
@@ -402,7 +456,9 @@ namespace SPCode.UI.Components
             foreach (var keyword in keywords)
             {
                 if (i++ > 0)
+                {
                     regexBuilder.Append("|");
+                }
 
                 regexBuilder.Append(keyword);
             }

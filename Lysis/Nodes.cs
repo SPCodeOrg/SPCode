@@ -1,7 +1,7 @@
-﻿using SourcePawn;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -71,8 +71,8 @@ namespace Lysis
 
     public class DUse
     {
-        private DNode node_;
-        private int index_;
+        private readonly DNode node_;
+        private readonly int index_;
 
         public DUse(DNode node, int index)
         {
@@ -80,20 +80,14 @@ namespace Lysis
             index_ = index;
         }
 
-        public DNode node
-        {
-            get { return node_; }
-        }
-        public int index
-        {
-            get { return index_; }
-        }
+        public DNode node => node_;
+        public int index => index_;
     }
 
     public abstract class DNode
     {
         private NodeBlock block_;
-        private LinkedList<DUse> uses_ = new LinkedList<DUse>();
+        private readonly LinkedList<DUse> uses_ = new LinkedList<DUse>();
         private DNode next_;
         private DNode prev_;
         private bool usedAsArrayIndex_ = false;
@@ -108,28 +102,38 @@ namespace Lysis
         public void initOperand(int i, DNode node)
         {
             if (node != null)
+            {
                 node.addUse(this, i);
+            }
+
             setOperand(i, node);
         }
         public void replaceOperand(int i, DNode node)
         {
             if (getOperand(i) == node)
+            {
                 return;
+            }
 
             if (getOperand(i) != null)
+            {
                 getOperand(i).removeUse(i, this);
+            }
+
             initOperand(i, node);
         }
         public void replaceAllUsesWith(DNode node)
         {
-            DUse[] copies = uses.ToArray();
-            foreach (DUse use in copies)
+            var copies = uses.ToArray();
+            foreach (var use in copies)
+            {
                 use.node.replaceOperand(use.index, node);
+            }
         }
         public void removeUse(int index, DNode node)
         {
             DUse use = null;
-            foreach (DUse u in uses)
+            foreach (var u in uses)
             {
                 if (u.index == index && u.node == node)
                 {
@@ -144,8 +148,10 @@ namespace Lysis
         // Remove this node from all use chains.
         public void removeFromUseChains()
         {
-            for (int i = 0; i < numOperands; i++)
+            for (var i = 0; i < numOperands; i++)
+            {
                 replaceOperand(i, null);
+            }
         }
 
         public void setBlock(NodeBlock block)
@@ -153,17 +159,11 @@ namespace Lysis
             block_ = block;
         }
 
-        public LinkedList<DUse> uses
-        {
-            get { return uses_; }
-        }
-        public NodeBlock block
-        {
-            get { return block_; }
-        }
+        public LinkedList<DUse> uses => uses_;
+        public NodeBlock block => block_;
         public DNode next
         {
-            get { return next_; }
+            get => next_;
             set
             {
                 if ((next_ != null && next_.type == NodeType.Store) ||
@@ -176,21 +176,15 @@ namespace Lysis
         }
         public DNode prev
         {
-            get { return prev_; }
-            set { prev_ = value; }
+            get => prev_;
+            set => prev_ = value;
         }
-        public bool usedAsArrayIndex
-        {
-            get { return usedAsArrayIndex_; }
-        }
+        public bool usedAsArrayIndex => usedAsArrayIndex_;
         public void setUsedAsArrayIndex()
         {
             usedAsArrayIndex_ = true;
         }
-        public bool usedAsReference
-        {
-            get { return usedAsReference_; }
-        }
+        public bool usedAsReference => usedAsReference_;
         public void setUsedAsReference()
         {
             usedAsReference_ = true;
@@ -198,7 +192,10 @@ namespace Lysis
         private TypeSet ensureTypeSet()
         {
             if (typeSet_ == null)
+            {
                 typeSet_ = new TypeSet();
+            }
+
             return typeSet_;
         }
         public void addType(TypeUnit tu)
@@ -210,23 +207,11 @@ namespace Lysis
         {
             ensureTypeSet().addTypes(ts);
         }
-        public TypeSet typeSet
-        {
-            get { return ensureTypeSet(); }
-        }
+        public TypeSet typeSet => ensureTypeSet();
 
-        public virtual bool guard
-        {
-            get { return false; }
-        }
-        public virtual bool idempotent
-        {
-            get { return true; }
-        }
-        public virtual bool controlFlow
-        {
-            get { return false; }
-        }
+        public virtual bool guard => false;
+        public virtual bool idempotent => true;
+        public virtual bool controlFlow => false;
         public abstract NodeType type { get; }
         public abstract int numOperands { get; }
         public abstract DNode getOperand(int i);
@@ -241,10 +226,7 @@ namespace Lysis
 
     public abstract class DNullaryNode : DNode
     {
-        public override int numOperands
-        {
-            get { return 0; }
-        }
+        public override int numOperands => 0;
         public override DNode getOperand(int i)
         {
             throw new Exception("not reached");
@@ -264,10 +246,7 @@ namespace Lysis
             initOperand(0, operand);
         }
 
-        public override int numOperands
-        {
-            get { return 1; }
-        }
+        public override int numOperands => 1;
         public override DNode getOperand(int i)
         {
             //Debug.Assert(i == 0);
@@ -282,7 +261,7 @@ namespace Lysis
 
     public abstract class DBinaryNode : DNode
     {
-        private DNode[] operands_ = new DNode[2];
+        private readonly DNode[] operands_ = new DNode[2];
 
         public DBinaryNode(DNode operand1, DNode operand2)
         {
@@ -290,10 +269,7 @@ namespace Lysis
             initOperand(1, operand2);
         }
 
-        public override int numOperands
-        {
-            get { return 2; }
-        }
+        public override int numOperands => 2;
         public override DNode getOperand(int i)
         {
             return operands_[i];
@@ -302,19 +278,13 @@ namespace Lysis
         {
             operands_[i] = node;
         }
-        public DNode lhs
-        {
-            get { return getOperand(0); }
-        }
-        public DNode rhs
-        {
-            get { return getOperand(1); }
-        }
+        public DNode lhs => getOperand(0);
+        public DNode rhs => getOperand(1);
     }
 
     public class DDeclareLocal : DUnaryNode
     {
-        private uint pc_;
+        private readonly uint pc_;
         private int offset_;
         private Variable var_;
 
@@ -332,76 +302,55 @@ namespace Lysis
             var_ = var;
         }
 
-        public uint pc
-        {
-            get { return pc_; }
-        }
-        public DNode value
-        {
-            get { return getOperand(0); }
-        }
-        public int offset
-        {
-            get { return offset_; }
-        }
-        public Variable var
-        {
-            get { return var_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.DeclareLocal; }
-        }
+        public uint pc => pc_;
+        public DNode value => getOperand(0);
+        public int offset => offset_;
+        public Variable var => var_;
+        public override NodeType type => NodeType.DeclareLocal;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
         }
-        public override bool idempotent
-        {
-            get { return false; }
-        }
+        public override bool idempotent => false;
         public override DNode applyType(SourcePawnFile file, Tag tag, VariableType type)
         {
             if (value == null)
+            {
                 return null;
-            DNode replacement = value.applyType(file, tag, type);
+            }
+
+            var replacement = value.applyType(file, tag, type);
             if (replacement != value)
+            {
                 replaceOperand(0, replacement);
+            }
+
             return this;
         }
     }
 
     public class DDeclareStatic : DNullaryNode
     {
-        private Variable var_;
+        private readonly Variable var_;
 
         public DDeclareStatic(Variable var)
         {
             var_ = var;
         }
 
-        public Variable var
-        {
-            get { return var_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.DeclareStatic; }
-        }
+        public Variable var => var_;
+        public override NodeType type => NodeType.DeclareStatic;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
         }
-        public override bool idempotent
-        {
-            get { return false; }
-        }
+        public override bool idempotent => false;
     }
 
     public class DConstant : DNullaryNode
     {
-        private int value_;
-        private uint pc_;
+        private readonly int value_;
+        private readonly uint pc_;
 
         public DConstant(int value)
         {
@@ -414,18 +363,9 @@ namespace Lysis
             pc_ = pc;
         }
 
-        public int value
-        {
-            get { return value_; }
-        }
-        public uint pc
-        {
-            get { return pc_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.Constant; }
-        }
+        public int value => value_;
+        public uint pc => pc_;
+        public override NodeType type => NodeType.Constant;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
@@ -439,11 +379,17 @@ namespace Lysis
                 case VariableType.Reference:
                 case VariableType.Variadic:
                     {
-                        Variable global = file.lookupGlobal(value);
+                        var global = file.lookupGlobal(value);
                         if (global != null)
+                        {
                             return new DGlobal(global);
+                        }
+
                         if (tag.name == "String")
+                        {
                             return new DString(file.stringFromData(value));
+                        }
+
                         break;
                     }
             }
@@ -473,7 +419,7 @@ namespace Lysis
         {
             get
             {
-                DNode operator_ = getOperand(0);
+                var operator_ = getOperand(0);
                 if (operator_ is DTempName)
                 {
                     return ((DTempName)operator_).name;
@@ -485,10 +431,7 @@ namespace Lysis
                 return ((DDeclareLocal)operator_).var.name;
             }
         }
-        public override NodeType type
-        {
-            get { return NodeType.LocalRef; }
-        }
+        public override NodeType type => NodeType.LocalRef;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
@@ -497,7 +440,7 @@ namespace Lysis
 
     public class DJump : DNullaryNode
     {
-        private NodeBlock target_;
+        private readonly NodeBlock target_;
         private bool isBreak_;
 
         public DJump(NodeBlock target)
@@ -505,34 +448,19 @@ namespace Lysis
             target_ = target;
         }
 
-        public NodeBlock target
-        {
-            get { return target_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.Jump; }
-        }
+        public NodeBlock target => target_;
+        public override NodeType type => NodeType.Jump;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
         }
-        public override bool idempotent
-        {
-            get { return false; }
-        }
-        public override bool controlFlow
-        {
-            get { return true; }
-        }
+        public override bool idempotent => false;
+        public override bool controlFlow => true;
         public void setBreak()
         {
             isBreak_ = true;
         }
-        public bool isBreak
-        {
-            get { return isBreak_; }
-        }
+        public bool isBreak => isBreak_;
     }
 
     public class DJumpCondition : DUnaryNode
@@ -557,38 +485,17 @@ namespace Lysis
             replaceOperand(0, node);
         }
 
-        public SPOpcode spop
-        {
-            get { return spop_; }
-        }
-        public NodeBlock trueTarget
-        {
-            get { return trueTarget_; }
-        }
-        public NodeBlock falseTarget
-        {
-            get { return falseTarget_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.JumpCondition; }
-        }
+        public SPOpcode spop => spop_;
+        public NodeBlock trueTarget => trueTarget_;
+        public NodeBlock falseTarget => falseTarget_;
+        public override NodeType type => NodeType.JumpCondition;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
         }
-        public override bool idempotent
-        {
-            get { return false; }
-        }
-        public override bool controlFlow
-        {
-            get { return true; }
-        }
-        public NodeBlock joinTarget
-        {
-            get { return joinTarget_; }
-        }
+        public override bool idempotent => false;
+        public override bool controlFlow => true;
+        public NodeBlock joinTarget => joinTarget_;
         public void setTrueTarget(NodeBlock block)
         {
             trueTarget_ = block;
@@ -609,7 +516,7 @@ namespace Lysis
 
     public class DSwitch : DUnaryNode
     {
-        private LSwitch lir_;
+        private readonly LSwitch lir_;
 
         public DSwitch(DNode node, LSwitch lir)
             : base(node)
@@ -617,30 +524,15 @@ namespace Lysis
             lir_ = lir;
         }
 
-        public override NodeType type
-        {
-            get { return NodeType.Switch; }
-        }
+        public override NodeType type => NodeType.Switch;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
         }
-        public override bool idempotent
-        {
-            get { return false; }
-        }
-        public override bool controlFlow
-        {
-            get { return true; }
-        }
-        public LBlock defaultCase
-        {
-            get { return lir_.defaultCase; }
-        }
-        public int numCases
-        {
-            get { return lir_.numCases; }
-        }
+        public override bool idempotent => false;
+        public override bool controlFlow => true;
+        public LBlock defaultCase => lir_.defaultCase;
+        public int numCases => lir_.numCases;
         public SwitchCase getCase(int i)
         {
             return lir_.getCase(i);
@@ -649,19 +541,18 @@ namespace Lysis
 
     public abstract class DCallNode : DNode
     {
-        private DNode[] arguments_;
+        private readonly DNode[] arguments_;
 
         public DCallNode(DNode[] arguments)
         {
             arguments_ = new DNode[arguments.Length];
-            for (int i = 0; i < arguments.Length; i++)
+            for (var i = 0; i < arguments.Length; i++)
+            {
                 initOperand(i, arguments[i]);
+            }
         }
 
-        public override int numOperands
-        {
-            get { return arguments_.Length; }
-        }
+        public override int numOperands => arguments_.Length;
         public override DNode getOperand(int i)
         {
             return arguments_[i];
@@ -670,29 +561,20 @@ namespace Lysis
         {
             arguments_[i] = node;
         }
-        public override bool idempotent
-        {
-            get { return false; }
-        }
+        public override bool idempotent => false;
     }
 
     public class DSysReq : DCallNode
     {
-        private Native native_;
+        private readonly Native native_;
 
         public DSysReq(Native native, DNode[] arguments) : base(arguments)
         {
             native_ = native;
         }
 
-        public Native native
-        {
-            get { return native_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.SysReq; }
-        }
+        public Native native => native_;
+        public override NodeType type => NodeType.SysReq;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
@@ -701,7 +583,7 @@ namespace Lysis
 
     public class DCall : DCallNode
     {
-        private Function function_;
+        private readonly Function function_;
 
         public DCall(Function function, DNode[] arguments)
             : base(arguments)
@@ -709,14 +591,8 @@ namespace Lysis
             function_ = function;
         }
 
-        public Function function
-        {
-            get { return function_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.Call; }
-        }
+        public Function function => function_;
+        public override NodeType type => NodeType.Call;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
@@ -725,21 +601,15 @@ namespace Lysis
 
     public class DUnary : DUnaryNode
     {
-        private SPOpcode spop_;
+        private readonly SPOpcode spop_;
 
         public DUnary(SPOpcode op, DNode node) : base(node)
         {
             spop_ = op;
         }
 
-        public SPOpcode spop
-        {
-            get { return spop_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.Unary; }
-        }
+        public SPOpcode spop => spop_;
+        public override NodeType type => NodeType.Unary;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
@@ -748,21 +618,15 @@ namespace Lysis
 
     public class DBinary : DBinaryNode
     {
-        private SPOpcode spop_;
+        private readonly SPOpcode spop_;
 
         public DBinary(SPOpcode op, DNode lhs, DNode rhs) : base(lhs, rhs)
         {
             spop_ = op;
         }
 
-        public SPOpcode spop
-        {
-            get { return spop_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.Binary; }
-        }
+        public SPOpcode spop => spop_;
+        public override NodeType type => NodeType.Binary;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
@@ -775,45 +639,30 @@ namespace Lysis
         {
         }
 
-        public override NodeType type
-        {
-            get { return NodeType.BoundsCheck; }
-        }
+        public override NodeType type => NodeType.BoundsCheck;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
         }
-        public override bool guard
-        {
-            get { return true; }
-        }
+        public override bool guard => true;
     }
 
     public class DArrayRef : DBinaryNode
     {
-        private int shift_;
+        private readonly int shift_;
 
         public DArrayRef(DNode bas, DNode index, int shift = 2) : base(bas, index)
         {
             shift_ = shift;
         }
 
-        public override NodeType type
-        {
-            get { return NodeType.ArrayRef; }
-        }
+        public override NodeType type => NodeType.ArrayRef;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
         }
-        public DNode abase
-        {
-            get { return getOperand(0); }
-        }
-        public DNode index
-        {
-            get { return getOperand(1); }
-        }
+        public DNode abase => getOperand(0);
+        public DNode index => getOperand(1);
     }
 
     public class DStore : DBinaryNode
@@ -831,22 +680,13 @@ namespace Lysis
             spop_ = op;
         }
 
-        public override NodeType type
-        {
-            get { return NodeType.Store; }
-        }
+        public override NodeType type => NodeType.Store;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
         }
-        public override bool idempotent
-        {
-            get { return false; }
-        }
-        public SPOpcode spop
-        {
-            get { return spop_; }
-        }
+        public override bool idempotent => false;
+        public SPOpcode spop => spop_;
     }
 
     public class DLoad : DUnaryNode
@@ -855,18 +695,12 @@ namespace Lysis
         {
         }
 
-        public override NodeType type
-        {
-            get { return NodeType.Load; }
-        }
+        public override NodeType type => NodeType.Load;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
         }
-        public DNode from
-        {
-            get { return getOperand(0); }
-        }
+        public DNode from => getOperand(0);
     }
 
     public class DReturn : DUnaryNode
@@ -875,27 +709,18 @@ namespace Lysis
         {
         }
 
-        public override NodeType type
-        {
-            get { return NodeType.Return; }
-        }
+        public override NodeType type => NodeType.Return;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
         }
-        public override bool idempotent
-        {
-            get { return false; }
-        }
-        public override bool controlFlow
-        {
-            get { return true; }
-        }
+        public override bool idempotent => false;
+        public override bool controlFlow => true;
     }
 
     public class DGlobal : DNullaryNode
     {
-        private Variable var_;
+        private readonly Variable var_;
 
         public DGlobal(Variable var)
         {
@@ -903,14 +728,8 @@ namespace Lysis
             var_ = var;
         }
 
-        public Variable var
-        {
-            get { return var_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.Global; }
-        }
+        public Variable var => var_;
+        public override NodeType type => NodeType.Global;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
@@ -919,21 +738,15 @@ namespace Lysis
 
     public class DString : DNullaryNode
     {
-        private string value_;
+        private readonly string value_;
 
         public DString(string value)
         {
             value_ = value;
         }
 
-        public string value
-        {
-            get { return value_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.String; }
-        }
+        public string value => value_;
+        public override NodeType type => NodeType.String;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
@@ -942,21 +755,15 @@ namespace Lysis
 
     public class DBoolean : DNullaryNode
     {
-        private bool value_;
+        private readonly bool value_;
 
         public DBoolean(bool value)
         {
             value_ = value;
         }
 
-        public bool value
-        {
-            get { return value_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.Boolean; }
-        }
+        public bool value => value_;
+        public override NodeType type => NodeType.Boolean;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
@@ -965,21 +772,15 @@ namespace Lysis
 
     public class DCharacter : DNullaryNode
     {
-        private char value_;
+        private readonly char value_;
 
         public DCharacter(char value)
         {
             value_ = value;
         }
 
-        public char value
-        {
-            get { return value_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.Character; }
-        }
+        public char value => value_;
+        public override NodeType type => NodeType.Character;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
@@ -988,21 +789,15 @@ namespace Lysis
 
     public class DFloat : DNullaryNode
     {
-        private float value_;
+        private readonly float value_;
 
         public DFloat(float value)
         {
             value_ = value;
         }
 
-        public float value
-        {
-            get { return value_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.Float; }
-        }
+        public float value => value_;
+        public override NodeType type => NodeType.Float;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
@@ -1011,8 +806,8 @@ namespace Lysis
 
     public class DFunction : DNullaryNode
     {
-        private Function function_;
-        private uint pc_;
+        private readonly Function function_;
+        private readonly uint pc_;
 
         public DFunction(uint pc, Function value)
         {
@@ -1020,18 +815,9 @@ namespace Lysis
             function_ = value;
         }
 
-        public uint pc
-        {
-            get { return pc_; }
-        }
-        public Function function
-        {
-            get { return function_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.Function; }
-        }
+        public uint pc => pc_;
+        public Function function => function_;
+        public override NodeType type => NodeType.Function;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
@@ -1040,10 +826,7 @@ namespace Lysis
 
     public class DSentinel : DNullaryNode
     {
-        public override NodeType type
-        {
-            get { return NodeType.Sentinel; }
-        }
+        public override NodeType type => NodeType.Sentinel;
         public override void accept(NodeVisitor visitor)
         {
         }
@@ -1051,7 +834,7 @@ namespace Lysis
 
     public class DTempName : DUnaryNode
     {
-        private string name_;
+        private readonly string name_;
 
         public DTempName(string name) : base(null)
         {
@@ -1062,26 +845,17 @@ namespace Lysis
         {
             initOperand(0, node);
         }
-        public string name
-        {
-            get { return name_; }
-        }
-        public override NodeType type
-        {
-            get { return NodeType.TempName; }
-        }
+        public string name => name_;
+        public override NodeType type => NodeType.TempName;
         public override void accept(NodeVisitor visitor)
         {
         }
-        public override bool idempotent
-        {
-            get { return false; }
-        }
+        public override bool idempotent => false;
     }
 
     public class DPhi : DNode
     {
-        private List<DNode> inputs_ = new List<DNode>();
+        private readonly List<DNode> inputs_ = new List<DNode>();
 
         public DPhi(DNode node)
         {
@@ -1094,14 +868,8 @@ namespace Lysis
             initOperand(inputs_.Count - 1, node);
         }
 
-        public override NodeType type
-        {
-            get { return NodeType.Phi; }
-        }
-        public override int numOperands
-        {
-            get { return inputs_.Count; }
-        }
+        public override NodeType type => NodeType.Phi;
+        public override int numOperands => inputs_.Count;
         public override DNode getOperand(int i)
         {
             return inputs_[i];
@@ -1118,7 +886,7 @@ namespace Lysis
 
     public class DIncDec : DUnaryNode
     {
-        private int amount_;
+        private readonly int amount_;
 
         public DIncDec(DNode node, int amount)
             : base(node)
@@ -1126,50 +894,35 @@ namespace Lysis
             amount_ = amount;
         }
 
-        public override NodeType type
-        {
-            get { return NodeType.IncDec; }
-        }
-        public override bool idempotent
-        {
-            get { return false; }
-        }
+        public override NodeType type => NodeType.IncDec;
+        public override bool idempotent => false;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
         }
-        public int amount
-        {
-            get { return amount_; }
-        }
+        public int amount => amount_;
     }
 
     public class DHeap : DNullaryNode
     {
-        private int amount_;
+        private readonly int amount_;
 
         public DHeap(int amount)
         {
             amount_ = amount;
         }
 
-        public override NodeType type
-        {
-            get { return NodeType.Heap; }
-        }
+        public override NodeType type => NodeType.Heap;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
         }
-        public int amount
-        {
-            get { return amount_; }
-        }
+        public int amount => amount_;
     }
 
     public class DMemCopy : DBinaryNode
     {
-        private int bytes_;
+        private readonly int bytes_;
 
         public DMemCopy(DNode to, DNode from, int bytes)
             : base(to, from)
@@ -1177,36 +930,21 @@ namespace Lysis
             bytes_ = bytes;
         }
 
-        public override NodeType type
-        {
-            get { return NodeType.MemCopy; }
-        }
+        public override NodeType type => NodeType.MemCopy;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
         }
-        public override bool idempotent
-        {
-            get { return false; }
-        }
-        public int bytes
-        {
-            get { return bytes_; }
-        }
-        public DNode from
-        {
-            get { return getOperand(1); }
-        }
-        public DNode to
-        {
-            get { return getOperand(0); }
-        }
+        public override bool idempotent => false;
+        public int bytes => bytes_;
+        public DNode from => getOperand(1);
+        public DNode to => getOperand(0);
     }
 
     public class DInlineArray : DNullaryNode
     {
-        private int address_;
-        private int size_;
+        private readonly int address_;
+        private readonly int size_;
 
         public DInlineArray(int address, int size)
         {
@@ -1214,21 +952,12 @@ namespace Lysis
             size_ = size;
         }
 
-        public override NodeType type
-        {
-            get { return NodeType.InlineArray; }
-        }
+        public override NodeType type => NodeType.InlineArray;
         public override void accept(NodeVisitor visitor)
         {
             visitor.visit(this);
         }
-        public int address
-        {
-            get { return address_; }
-        }
-        public int size
-        {
-            get { return size_; }
-        }
+        public int address => address_;
+        public int size => size_;
     }
 }

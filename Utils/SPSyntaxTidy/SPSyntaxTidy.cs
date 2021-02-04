@@ -6,18 +6,18 @@ namespace SPCode.Utils.SPSyntaxTidy
     {
         public static string TidyUp(string source)
         {
-            bool LookForSingleIndentationSegment = false;
-            int SingleIndentationSegmentScope = 0;
-            int indentationLevel = 0;
-            StringBuilder outString = new StringBuilder();
-            SPToken[] token = SPTokenizer.Tokenize(source);
-            int length = token.Length;
-            for (int i = 0; i < length; ++i)
+            var LookForSingleIndentationSegment = false;
+            var SingleIndentationSegmentScope = 0;
+            var indentationLevel = 0;
+            var outString = new StringBuilder();
+            var token = SPTokenizer.Tokenize(source);
+            var length = token.Length;
+            for (var i = 0; i < length; ++i)
             {
                 if (token[i].Kind == SPTokenKind.Newline)
                 {
                     outString.AppendLine();
-                    int subIndentLevel = indentationLevel;
+                    var subIndentLevel = indentationLevel;
                     var nextToken = GetTokenSave(i + 1, token, length);
                     if (nextToken.Kind == SPTokenKind.BracketClose)
                     {
@@ -40,7 +40,7 @@ namespace SPCode.Utils.SPSyntaxTidy
                     }
                     LookForSingleIndentationSegment = false;
                     SingleIndentationSegmentScope = 0;
-                    for (int j = 0; j < subIndentLevel; ++j)
+                    for (var j = 0; j < subIndentLevel; ++j)
                     {
                         outString.Append(Program.Indentation);
                     }
@@ -99,20 +99,20 @@ namespace SPCode.Utils.SPSyntaxTidy
                     {
                         var lastToken = GetTokenSave(i - 1, token, length);
                         var nextToken = GetTokenSave(i + 1, token, length);
-                        bool lastTokenIsName = lastToken.Kind == SPTokenKind.Name;
-                        bool lastTokenValid = (lastTokenIsName || IsTokenNumber(lastToken));
+                        var lastTokenIsName = lastToken.Kind == SPTokenKind.Name;
+                        var lastTokenValid = lastTokenIsName || IsTokenNumber(lastToken);
                         if (!lastTokenValid)
                         {
                             if (lastToken.Kind == SPTokenKind.Symbol)
                             {
-                                lastTokenValid = ((lastToken.Value == ")") || (lastToken.Value == "]"));
+                                lastTokenValid = (lastToken.Value == ")") || (lastToken.Value == "]");
                             }
                         }
                         if (lastTokenIsName)
                         {
                             lastTokenValid = lastToken.Value != "e" && lastToken.Value != "return";
                         }
-                        bool nextTokenValid = ((nextToken.Kind == SPTokenKind.Name) || IsTokenNumber(nextToken));
+                        var nextTokenValid = (nextToken.Kind == SPTokenKind.Name) || IsTokenNumber(nextToken);
                         if (!nextTokenValid)
                         {
                             if (nextToken.Kind == SPTokenKind.Symbol)
@@ -217,15 +217,15 @@ namespace SPCode.Utils.SPSyntaxTidy
 
         public static bool IsPreWhiteSpaceName(string name)
         {
-            switch (name)
+            return name switch
             {
-                case "if": return true;
-                case "for": return true;
-                case "while": return true;
-                case "switch": return true;
-                case "case": return true;
-            }
-            return false;
+                "if" => true,
+                "for" => true,
+                "while" => true,
+                "switch" => true,
+                "case" => true,
+                _ => false,
+            };
         }
 
         public static bool IsTokenNumber(SPToken token)

@@ -16,15 +16,14 @@ namespace SPCode.UI.Windows
     /// </summary>
     public partial class OptionsWindow
     {
-        readonly string[] AvailableAccents =
+        private readonly string[] AvailableAccents =
         {
             "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald", "Teal", "Cyan", "Cobalt", "Indigo", "Violet",
             "Pink", "Magenta", "Crimson", "Amber",
             "Yellow", "Brown", "Olive", "Steel", "Mauve", "Taupe", "Sienna"
         };
-
-        bool RestartTextIsShown;
-        readonly bool AllowChanging;
+        private bool RestartTextIsShown;
+        private readonly bool AllowChanging;
 
         public OptionsWindow()
         {
@@ -178,9 +177,9 @@ namespace SPCode.UI.Windows
                 return;
             }
 
-            double size = FontSizeD.Value;
+            var size = FontSizeD.Value;
             Program.OptionsObject.Editor_FontSize = size;
-            EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
+            var editors = Program.MainWindow.GetAllEditorElements();
             if (editors != null)
             {
                 foreach (var editor in editors)
@@ -208,9 +207,9 @@ namespace SPCode.UI.Windows
             }
 
             Debug.Assert(WordWrap.IsChecked != null, "WordWrap.IsChecked != null");
-            bool wrapping = WordWrap.IsChecked.Value;
+            var wrapping = WordWrap.IsChecked.Value;
             Program.OptionsObject.Editor_WordWrap = wrapping;
-            EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
+            var editors = Program.MainWindow.GetAllEditorElements();
             if (editors != null)
             {
                 foreach (var editor in editors)
@@ -250,9 +249,9 @@ namespace SPCode.UI.Windows
             }
 
             Debug.Assert(TabToSpace.IsChecked != null, "TabToSpace.IsChecked != null");
-            bool replaceTabs = TabToSpace.IsChecked.Value;
+            var replaceTabs = TabToSpace.IsChecked.Value;
             Program.OptionsObject.Editor_ReplaceTabsToWhitespace = replaceTabs;
-            EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
+            var editors = Program.MainWindow.GetAllEditorElements();
             if (editors != null)
             {
                 foreach (var editor in editors)
@@ -292,8 +291,8 @@ namespace SPCode.UI.Windows
             }
 
             Debug.Assert(ShowSpaces.IsChecked != null, "ShowSpaces.IsChecked != null");
-            bool showSpacesValue = Program.OptionsObject.Editor_ShowSpaces = ShowSpaces.IsChecked.Value;
-            EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
+            var showSpacesValue = Program.OptionsObject.Editor_ShowSpaces = ShowSpaces.IsChecked.Value;
+            var editors = Program.MainWindow.GetAllEditorElements();
             if (editors != null)
             {
                 foreach (var editor in editors)
@@ -311,8 +310,8 @@ namespace SPCode.UI.Windows
             }
 
             Debug.Assert(ShowTabs.IsChecked != null, "ShowTabs.IsChecked != null");
-            bool showTabsValue = Program.OptionsObject.Editor_ShowTabs = ShowTabs.IsChecked.Value;
-            EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
+            var showTabsValue = Program.OptionsObject.Editor_ShowTabs = ShowTabs.IsChecked.Value;
+            var editors = Program.MainWindow.GetAllEditorElements();
             if (editors != null)
             {
                 foreach (var editor in editors)
@@ -329,11 +328,11 @@ namespace SPCode.UI.Windows
                 return;
             }
 
-            FontFamily family = (FontFamily)FontFamilyCB.SelectedItem;
-            string FamilyString = family.Source;
+            var family = (FontFamily)FontFamilyCB.SelectedItem;
+            var FamilyString = family.Source;
             Program.OptionsObject.Editor_FontFamily = FamilyString;
             FontFamilyTB.Text = "Font (" + FamilyString + "):";
-            EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
+            var editors = Program.MainWindow.GetAllEditorElements();
             if (editors != null)
             {
                 foreach (var editor in editors)
@@ -350,9 +349,9 @@ namespace SPCode.UI.Windows
                 return;
             }
 
-            int indentationSizeValue =
+            var indentationSizeValue =
                 Program.OptionsObject.Editor_IndentationSize = (int)Math.Round(IndentationSize.Value);
-            EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
+            var editors = Program.MainWindow.GetAllEditorElements();
             if (editors != null)
             {
                 foreach (var editor in editors)
@@ -440,8 +439,8 @@ namespace SPCode.UI.Windows
                 return;
             }
 
-            int newIndex = AutoSave.SelectedIndex;
-            EditorElement[] editors = Program.MainWindow.GetAllEditorElements();
+            var newIndex = AutoSave.SelectedIndex;
+            var editors = Program.MainWindow.GetAllEditorElements();
             if (newIndex == 0)
             {
                 Program.OptionsObject.Editor_AutoSave = false;
@@ -460,13 +459,22 @@ namespace SPCode.UI.Windows
             {
                 Program.OptionsObject.Editor_AutoSave = true;
                 if (newIndex == 1)
+                {
                     Program.OptionsObject.Editor_AutoSaveInterval = 30;
+                }
                 else if (newIndex == 7)
+                {
                     Program.OptionsObject.Editor_AutoSaveInterval = 600;
+                }
                 else if (newIndex == 8)
+                {
                     Program.OptionsObject.Editor_AutoSaveInterval = 900;
+                }
                 else
+                {
                     Program.OptionsObject.Editor_AutoSaveInterval = (newIndex - 1) * 60;
+                }
+
                 if (editors != null)
                 {
                     foreach (var editor in editors)
@@ -496,8 +504,8 @@ namespace SPCode.UI.Windows
 
             ShowToolBar.IsChecked = Program.OptionsObject.UI_ShowToolBar;
             DynamicISAC.IsChecked = Program.OptionsObject.Program_DynamicISAC;
-            DarkTheme.IsChecked = (Program.OptionsObject.Program_Theme == "BaseDark");
-            for (int i = 0; i < AvailableAccents.Length; ++i)
+            DarkTheme.IsChecked = Program.OptionsObject.Program_Theme == "BaseDark";
+            for (var i = 0; i < AvailableAccents.Length; ++i)
             {
                 if (AvailableAccents[i] == Program.OptionsObject.Program_AccentColor)
                 {
@@ -506,7 +514,7 @@ namespace SPCode.UI.Windows
                 }
             }
 
-            for (int i = 0; i < Program.Translations.AvailableLanguages.Length; ++i)
+            for (var i = 0; i < Program.Translations.AvailableLanguages.Length; ++i)
             {
                 var item = new ComboboxItem
                 {
@@ -522,15 +530,23 @@ namespace SPCode.UI.Windows
 
             if (Program.OptionsObject.Editor_AutoSave)
             {
-                int seconds = Program.OptionsObject.Editor_AutoSaveInterval;
+                var seconds = Program.OptionsObject.Editor_AutoSaveInterval;
                 if (seconds < 60)
+                {
                     AutoSave.SelectedIndex = 1;
+                }
                 else if (seconds <= 300)
+                {
                     AutoSave.SelectedIndex = Math.Max(1, Math.Min(seconds / 60, 5)) + 1;
+                }
                 else if (seconds == 600)
+                {
                     AutoSave.SelectedIndex = 7;
+                }
                 else
+                {
                     AutoSave.SelectedIndex = 8;
+                }
             }
             else
             {
@@ -563,7 +579,7 @@ namespace SPCode.UI.Windows
             {
                 if (!RestartTextIsShown)
                 {
-                    StatusTextBlock.Content = (FullEffect)
+                    StatusTextBlock.Content = FullEffect
                         ? Program.Translations.GetLanguage("RestartEdiFullEff")
                         : Program.Translations.GetLanguage("RestartEdiEff");
                     RestartTextIsShown = true;

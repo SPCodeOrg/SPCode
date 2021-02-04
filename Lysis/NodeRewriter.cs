@@ -1,11 +1,11 @@
-﻿using SourcePawn;
-using System;
+﻿using System;
+using SourcePawn;
 
 namespace Lysis
 {
     public class NodeRewriter : NodeVisitor
     {
-        private NodeGraph graph_;
+        private readonly NodeGraph graph_;
         private NodeBlock current_;
         private NodeList.iterator iterator_;
 
@@ -69,16 +69,16 @@ namespace Lysis
         {
             // Convert a phi into a move on each incoming edge. Declare the
             // temporary name in the dominator.
-            NodeBlock idom = graph_[phi.block.lir.idom.id];
+            var idom = graph_[phi.block.lir.idom.id];
 
-            DTempName name = new DTempName(graph_.tempName());
+            var name = new DTempName(graph_.tempName());
             idom.prepend(name);
 
-            for (int i = 0; i < phi.numOperands; i++)
+            for (var i = 0; i < phi.numOperands; i++)
             {
-                DNode input = phi.getOperand(i);
-                DStore store = new DStore(name, input);
-                NodeBlock pred = graph_[phi.block.lir.getPredecessor(i).id];
+                var input = phi.getOperand(i);
+                var store = new DStore(name, input);
+                var pred = graph_[phi.block.lir.getPredecessor(i).id];
                 pred.prepend(store);
             }
 
@@ -92,15 +92,23 @@ namespace Lysis
             // looking for bytecode patterns instead or something, but that would
             // need a whole-program analysis.
             if (call.function.name.Length < 8)
+            {
                 return;
-            if (call.function.name.Substring(0, 8) != "operator")
-                return;
+            }
 
-            string op = "";
-            for (int i = 8; i < call.function.name.Length; i++)
+            if (call.function.name.Substring(0, 8) != "operator")
+            {
+                return;
+            }
+
+            var op = "";
+            for (var i = 8; i < call.function.name.Length; i++)
             {
                 if (call.function.name[i] == '(')
+                {
                     break;
+                }
+
                 op += call.function.name[i];
             }
 
@@ -135,7 +143,7 @@ namespace Lysis
                     spop = SPOpcode.sub;
                     break;
                 default:
-                    throw new Exception(String.Format("unknown operator ({0})", op.ToString()));
+                    throw new Exception(string.Format("unknown operator ({0})", op.ToString()));
             }
 
             switch (spop)
@@ -151,8 +159,11 @@ namespace Lysis
                 case SPOpcode.sub:
                     {
                         if (call.numOperands != 2)
+                        {
                             return;
-                        DBinary binary = new DBinary(spop, call.getOperand(0), call.getOperand(1));
+                        }
+
+                        var binary = new DBinary(spop, call.getOperand(0), call.getOperand(1));
                         call.replaceAllUsesWith(binary);
                         call.removeFromUseChains();
                         current_.replace(iterator_, binary);
@@ -183,8 +194,10 @@ namespace Lysis
         public void rewrite()
         {
             // We rewrite nodes in forward order so they are collapsed by the time we see their uses.
-            for (int i = 0; i < graph_.numBlocks; i++)
+            for (var i = 0; i < graph_.numBlocks; i++)
+            {
                 rewriteBlock(graph_[i]);
+            }
         }
     }
 }

@@ -7,15 +7,15 @@ namespace SourcepawnCondenser
     {
         private int ConsumeSMTypedef()
         {
-            int startIndex = t[position].Index;
+            var startIndex = t[position].Index;
             if ((position + 2) < length)
             {
                 ++position;
-                string name = string.Empty;
+                var name = string.Empty;
                 if (t[position].Kind == TokenKind.Identifier)
                 {
                     name = t[position].Value;
-                    for (int iteratePosition = position + 1; iteratePosition < length; ++iteratePosition)
+                    for (var iteratePosition = position + 1; iteratePosition < length; ++iteratePosition)
                     {
                         if (t[iteratePosition].Kind == TokenKind.Semicolon)
                         {
@@ -37,16 +37,16 @@ namespace SourcepawnCondenser
 
         private int ConsumeSMTypeset()
         {
-            int startIndex = t[position].Index;
+            var startIndex = t[position].Index;
             if ((position + 2) < length)
             {
                 ++position;
-                string name = string.Empty;
+                var name = string.Empty;
                 if (t[position].Kind == TokenKind.Identifier)
                 {
                     name = t[position].Value;
-                    int bracketIndex = 0;
-                    for (int iteratePosition = position + 1; iteratePosition < length; ++iteratePosition)
+                    var bracketIndex = 0;
+                    for (var iteratePosition = position + 1; iteratePosition < length; ++iteratePosition)
                     {
                         if (t[iteratePosition].Kind == TokenKind.BraceClose)
                         {

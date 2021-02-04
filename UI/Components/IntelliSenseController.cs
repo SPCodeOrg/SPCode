@@ -61,7 +61,11 @@ namespace SPCode.UI.Components
                 AnimationsLoaded = true;
             }
 
-            if (ISAC_Open) HideISAC();
+            if (ISAC_Open)
+            {
+                HideISAC();
+            }
+
             var def = Program.Configs[Program.SelectedConfig].GetSMDef();
             funcNames = def.FunctionStrings;
             funcs = def.Functions.ToArray();
@@ -87,7 +91,7 @@ namespace SPCode.UI.Components
             });
         }
 
-        private Regex methodExp = new Regex(@"(?<=\.)[A-Za-z_]\w*", RegexOptions.RightToLeft);
+        private readonly Regex methodExp = new Regex(@"(?<=\.)[A-Za-z_]\w*", RegexOptions.RightToLeft);
         private void EvaluateIntelliSense()
         {
             if (editor.SelectionLength > 0)
@@ -114,17 +118,30 @@ namespace SPCode.UI.Components
             for (var i = 0; i < lineOffset; ++i)
             {
                 if (text[i] == '"')
+                {
                     if (i != 0)
+                    {
                         if (text[i - 1] != '\\')
+                        {
                             quotationCount++;
+                        }
+                    }
+                }
+
                 if (quotationCount % 2 == 0)
+                {
                     if (text[i] == '/')
+                    {
                         if (i != 0)
+                        {
                             if (text[i - 1] == '/')
                             {
                                 HideISAC();
                                 return;
                             }
+                        }
+                    }
+                }
             }
 
             foreach (var c in text)
@@ -137,13 +154,17 @@ namespace SPCode.UI.Components
                     break;
                 }
 
-                if (!char.IsWhiteSpace(c)) break;
+                if (!char.IsWhiteSpace(c))
+                {
+                    break;
+                }
             }
 
             var mc = multilineCommentRegex.Matches(editor.Text,
                 0); //it hurts me to do it here..but i have no other choice...
             var mlcCount = mc.Count;
             for (var i = 0; i < mlcCount; ++i)
+            {
                 if (caretOffset >= mc[i].Index)
                 {
                     if (caretOffset <= mc[i].Index + mc[i].Length)
@@ -156,6 +177,7 @@ namespace SPCode.UI.Components
                 {
                     break;
                 }
+            }
 
             if (lineOffset > 0)
             {
@@ -164,6 +186,7 @@ namespace SPCode.UI.Components
                 var ISMatches = ISFindRegex.Matches(text);
                 var scopeLevel = 0;
                 for (var i = lineOffset - 1; i >= 0; --i)
+                {
                     if (text[i] == ')')
                     {
                         scopeLevel++;
@@ -171,10 +194,15 @@ namespace SPCode.UI.Components
                     else if (text[i] == '(')
                     {
                         scopeLevel--;
-                        if (scopeLevel >= 0) continue;
+                        if (scopeLevel >= 0)
+                        {
+                            continue;
+                        }
+
                         var FoundMatch = false;
                         var searchIndex = i;
                         for (var j = 0; j < ISMatches.Count; ++j)
+                        {
                             if (searchIndex >= ISMatches[j].Index &&
                                 searchIndex <= ISMatches[j].Index + ISMatches[j].Length)
                             {
@@ -237,7 +265,9 @@ namespace SPCode.UI.Components
                                                 methodMap.Methods.FirstOrDefault(e => e.Name == methodString);
 
                                             if (method == null)
+                                            {
                                                 continue;
+                                            }
 
                                             xPos = ISMatches[j].Groups["method"].Index +
                                                    ISMatches[j].Groups["method"].Length;
@@ -264,6 +294,7 @@ namespace SPCode.UI.Components
 
                                 break;
                             }
+                        }
 
                         if (FoundMatch)
                         {
@@ -272,6 +303,7 @@ namespace SPCode.UI.Components
                             break;
                         }
                     }
+                }
 
                 #endregion
 
@@ -281,8 +313,13 @@ namespace SPCode.UI.Components
                 {
                     var IsNextCharValid = true;
                     if (text.Length > lineOffset)
+                    {
                         if (IsValidFunctionChar(text[lineOffset]) || text[lineOffset] == '(')
+                        {
                             IsNextCharValid = false;
+                        }
+                    }
+
                     if (IsNextCharValid)
                     {
                         var endOffset = lineOffset - 1;
@@ -290,7 +327,11 @@ namespace SPCode.UI.Components
                         {
                             if (!IsValidFunctionChar(text[i]))
                             {
-                                if (text[i] == '.') MethodAC = true;
+                                if (text[i] == '.')
+                                {
+                                    MethodAC = true;
+                                }
+
                                 break;
                             }
 
@@ -303,8 +344,10 @@ namespace SPCode.UI.Components
                             if (MethodAC)
                             {
                                 for (var i = 0; i < isEntrys.Length; ++i)
+                                {
                                     if (isEntrys[i].EntryName.StartsWith(testString,
                                         StringComparison.InvariantCultureIgnoreCase))
+                                    {
                                         if (testString != isEntrys[i].EntryName)
                                         {
                                             ForwardShowAC = true;
@@ -312,12 +355,16 @@ namespace SPCode.UI.Components
                                             MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
                                             break;
                                         }
+                                    }
+                                }
                             }
                             else
                             {
                                 for (var i = 0; i < acEntrys.Length; ++i)
+                                {
                                     if (acEntrys[i].EntryName.StartsWith(testString,
                                         StringComparison.InvariantCultureIgnoreCase))
+                                    {
                                         if (testString != acEntrys[i].EntryName)
                                         {
                                             ForwardShowAC = true;
@@ -325,6 +372,8 @@ namespace SPCode.UI.Components
                                             AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
                                             break;
                                         }
+                                    }
+                                }
                             }
                         }
                     }
@@ -334,19 +383,38 @@ namespace SPCode.UI.Components
             }
 
             if (!ForwardShowAC)
+            {
                 if (ForceISKeepsClosed)
+                {
                     ForwardShowIS = false;
+                }
+            }
+
             if (ForwardShowAC | ForwardShowIS)
             {
                 if (ForwardShowAC)
+                {
                     ShowAC(!MethodAC);
+                }
                 else
+                {
                     HideAC();
+                }
+
                 if (ForwardShowIS)
+                {
                     ShowIS(ISFuncNameStr, ISFuncDescriptionStr);
+                }
                 else
+                {
                     HideIS();
-                if (ForceReSet && ISAC_Open) SetISACPosition(xPos);
+                }
+
+                if (ForceReSet && ISAC_Open)
+                {
+                    SetISACPosition(xPos);
+                }
+
                 ShowISAC(xPos);
             }
             else
@@ -358,6 +426,7 @@ namespace SPCode.UI.Components
         private bool ISAC_EvaluateKeyDownEvent(Key k)
         {
             if (ISAC_Open && AC_Open)
+            {
                 switch (k)
                 {
                     case Key.Enter:
@@ -366,7 +435,11 @@ namespace SPCode.UI.Components
                             var endOffset = startOffset;
                             for (var i = startOffset; i >= 0; --i)
                             {
-                                if (!IsValidFunctionChar(editor.Document.GetCharAt(i))) break;
+                                if (!IsValidFunctionChar(editor.Document.GetCharAt(i)))
+                                {
+                                    break;
+                                }
+
                                 endOffset = i;
                             }
 
@@ -394,7 +467,10 @@ namespace SPCode.UI.Components
 
                             editor.Document.Replace(endOffset, length + 1, replaceString);
                             if (setCaret)
+                            {
                                 editor.CaretOffset -= 1;
+                            }
+
                             return true;
                         }
                     case Key.Up:
@@ -435,6 +511,7 @@ namespace SPCode.UI.Components
                             return true;
                         }
                 }
+            }
 
             return false;
         }
@@ -447,9 +524,13 @@ namespace SPCode.UI.Components
                 ISAC_Grid.Visibility = Visibility.Visible;
                 SetISACPosition(forcedXPos);
                 if (Program.OptionsObject.UI_Animations)
+                {
                     FadeISACIn.Begin();
+                }
                 else
+                {
                     ISAC_Grid.Opacity = 1.0;
+                }
             }
         }
 
@@ -617,12 +698,19 @@ namespace SPCode.UI.Components
 
         private void FadeACOut_Completed(object sender, EventArgs e)
         {
-            if (FadeACIn.GetCurrentState() != ClockState.Active) ACBorder.Height = 0.0;
+            if (FadeACIn.GetCurrentState() != ClockState.Active)
+            {
+                ACBorder.Height = 0.0;
+            }
         }
 
         private bool IsValidFunctionChar(char c)
         {
-            if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '_') return true;
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_')
+            {
+                return true;
+            }
+
             return false;
         }
     }

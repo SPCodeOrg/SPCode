@@ -2,7 +2,7 @@
 {
     public class NodeList
     {
-        private DNode head_;
+        private readonly DNode head_;
 
         public NodeList()
         {
@@ -39,7 +39,7 @@
         }
         public void remove(iterator_base where)
         {
-            DNode node = where.node;
+            var node = where.node;
             where.next();
             remove(node);
         }
@@ -65,14 +65,8 @@
             where.node = with;
         }
 
-        public DNode last
-        {
-            get { return head_.prev; }
-        }
-        public DNode first
-        {
-            get { return head_.next; }
-        }
+        public DNode last => head_.prev;
+        public DNode first => head_.next;
 
         public abstract class iterator_base
         {
@@ -92,8 +86,8 @@
 
             public DNode node
             {
-                get { return node_; }
-                set { node_ = value; }
+                get => node_;
+                set => node_ = value;
             }
         }
 

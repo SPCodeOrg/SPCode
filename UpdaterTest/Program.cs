@@ -1,11 +1,11 @@
-﻿using Octokit;
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Octokit;
 
 namespace UpdaterTest
 {
@@ -47,7 +47,10 @@ namespace UpdaterTest
 
             // Dont override the sourcemod files
             var files = zip.Entries.Where(e => !e.FullName.StartsWith(@"sourcepawn\"));
-            foreach (var file in files) file.ExtractToFile("Update/" + file.FullName, true);
+            foreach (var file in files)
+            {
+                file.ExtractToFile("Update/" + file.FullName, true);
+            }
         }
         /*
          * 0 -> Major
@@ -61,17 +64,26 @@ namespace UpdaterTest
             var latestSplit = latest.Split('.').Select(int.Parse).ToList();
 
             if (currentSplit.Count != 4)
+            {
                 throw new ArgumentException("Invalid current version string", nameof(current));
+            }
 
             if (currentSplit.Count != 4)
+            {
                 throw new ArgumentException("Invalid latest version string", nameof(latest));
+            }
 
             for (var i = 0; i < currentSplit.Count; i++)
             {
                 if (latestSplit[i] > currentSplit[i])
+                {
                     return false;
+                }
+
                 if (latestSplit[i] < currentSplit[i])
+                {
                     return true;
+                }
             }
 
             return true;

@@ -18,6 +18,7 @@ namespace SpcodeUpdater
         {
             var processes = Process.GetProcessesByName("Spcode");
             foreach (var process in processes)
+            {
                 try
                 {
                     process.WaitForExit();
@@ -26,7 +27,7 @@ namespace SpcodeUpdater
                 {
                     // ignored
                 }
-
+            }
 
             Application.EnableVisualStyles();
             Thread.Sleep(2000);
@@ -54,7 +55,10 @@ namespace SpcodeUpdater
             {
                 // Dont override the sourcemod files
                 var files = archive.Entries.Where(e => !e.FullName.StartsWith(@"sourcepawn\"));
-                foreach (var file in files) file.ExtractToFile(file.FullName, true);
+                foreach (var file in files)
+                {
+                    file.ExtractToFile(file.FullName, true);
+                }
             }
 
             zipInfo.Delete();

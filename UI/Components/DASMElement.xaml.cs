@@ -14,10 +14,10 @@ namespace SPCode.UI.Components
     /// </summary>
     public partial class DASMElement : UserControl
     {
-        double LineHeight = 0.0;
+        private double LineHeight = 0.0;
 
         private SmxFile file_;
-        private StringBuilder detail_buffer_ = new StringBuilder();
+        private readonly StringBuilder detail_buffer_ = new StringBuilder();
 
         public DASMElement()
         {
@@ -40,13 +40,9 @@ namespace SPCode.UI.Components
         {
             try
             {
-                using (var stream = fInfo.OpenRead())
-                {
-                    using (var reader = new BinaryReader(stream))
-                    {
-                        file_ = new SmxFile(reader);
-                    }
-                }
+                using var stream = fInfo.OpenRead();
+                using var reader = new BinaryReader(stream);
+                file_ = new SmxFile(reader);
             }
             catch (Exception e)
             {
@@ -93,32 +89,69 @@ namespace SPCode.UI.Components
 
             // Add specific sections.
             if (roots.ContainsKey(".natives"))
+            {
                 renderNativeList(roots[".natives"], file_.Natives);
-            if (roots.ContainsKey(".tags"))
-                renderTagList(roots[".tags"], file_.Tags);
-            if (roots.ContainsKey(".pubvars"))
-                renderPubvarList(roots[".pubvars"], file_.Pubvars);
-            if (roots.ContainsKey(".publics"))
-                renderPublicsList(roots[".publics"], file_.Publics);
-            if (roots.ContainsKey(".code"))
-                renderCodeSection(roots[".code"], file_.CodeV1);
-            if (roots.ContainsKey(".data"))
-                renderDataList(roots[".data"], file_.Data);
-            if (roots.ContainsKey(".names"))
-                renderNamesList(roots[".names"], file_.Names);
-            if (roots.ContainsKey(".dbg.files"))
-                renderDebugFiles(roots[".dbg.files"], file_.DebugFiles);
-            if (roots.ContainsKey(".dbg.lines"))
-                renderDebugLines(roots[".dbg.lines"], file_.DebugLines);
-            if (roots.ContainsKey(".dbg.info"))
-                renderDebugInfo(roots[".dbg.info"], file_.DebugInfo);
-            if (roots.ContainsKey(".dbg.strings"))
-                renderNamesList(roots[".dbg.strings"], file_.DebugNames);
-            if (roots.ContainsKey(".dbg.symbols"))
-                renderDebugSymbols(roots[".dbg.symbols"], file_.DebugSymbols);
-            if (roots.ContainsKey(".dbg.natives"))
-                renderDebugNatives(roots[".dbg.natives"], file_.DebugNatives);
+            }
 
+            if (roots.ContainsKey(".tags"))
+            {
+                renderTagList(roots[".tags"], file_.Tags);
+            }
+
+            if (roots.ContainsKey(".pubvars"))
+            {
+                renderPubvarList(roots[".pubvars"], file_.Pubvars);
+            }
+
+            if (roots.ContainsKey(".publics"))
+            {
+                renderPublicsList(roots[".publics"], file_.Publics);
+            }
+
+            if (roots.ContainsKey(".code"))
+            {
+                renderCodeSection(roots[".code"], file_.CodeV1);
+            }
+
+            if (roots.ContainsKey(".data"))
+            {
+                renderDataList(roots[".data"], file_.Data);
+            }
+
+            if (roots.ContainsKey(".names"))
+            {
+                renderNamesList(roots[".names"], file_.Names);
+            }
+
+            if (roots.ContainsKey(".dbg.files"))
+            {
+                renderDebugFiles(roots[".dbg.files"], file_.DebugFiles);
+            }
+
+            if (roots.ContainsKey(".dbg.lines"))
+            {
+                renderDebugLines(roots[".dbg.lines"], file_.DebugLines);
+            }
+
+            if (roots.ContainsKey(".dbg.info"))
+            {
+                renderDebugInfo(roots[".dbg.info"], file_.DebugInfo);
+            }
+
+            if (roots.ContainsKey(".dbg.strings"))
+            {
+                renderNamesList(roots[".dbg.strings"], file_.DebugNames);
+            }
+
+            if (roots.ContainsKey(".dbg.symbols"))
+            {
+                renderDebugSymbols(roots[".dbg.symbols"], file_.DebugSymbols);
+            }
+
+            if (roots.ContainsKey(".dbg.natives"))
+            {
+                renderDebugNatives(roots[".dbg.natives"], file_.DebugNatives);
+            }
 
             renderFileDetail();
         }
@@ -136,7 +169,7 @@ namespace SPCode.UI.Components
 
         private void addDetailLine(string fmt, params object[] args)
         {
-            detail_buffer_.Append(String.Format(fmt, args) + "\r\n");
+            detail_buffer_.Append(string.Format(fmt, args) + "\r\n");
         }
 
         private void endDetailUpdate()
@@ -174,7 +207,7 @@ namespace SPCode.UI.Components
             var chars = new StringBuilder();
 
             startDetailUpdate();
-            for (int i = 0; i < size; i++)
+            for (var i = 0; i < size; i++)
             {
                 if (i % 16 == 0)
                 {
@@ -197,9 +230,13 @@ namespace SPCode.UI.Components
                 detail_buffer_.Append(string.Format("{0:x2} ", value));
 
                 if (value >= 0x21 && value <= 0x7f)
+                {
                     chars.Append(Convert.ToChar(value));
+                }
                 else
+                {
                     chars.Append(".");
+                }
             }
             detail_buffer_.Append("  ");
             detail_buffer_.Append(chars);
@@ -214,7 +251,7 @@ namespace SPCode.UI.Components
             var addrfmt = "0x{0:x" + ndigits + "}: ";
 
             startDetailUpdate();
-            for (int i = 0; i < size; i += 4)
+            for (var i = 0; i < size; i += 4)
             {
                 if (i % 32 == 0)
                 {
@@ -243,7 +280,7 @@ namespace SPCode.UI.Components
             var current = new StringBuilder();
             for (var i = 0; i < size; i++)
             {
-                byte b = reader.ReadByte();
+                var b = reader.ReadByte();
                 if (b == 0 && current.Length > 0)
                 {
                     addDetailLine("0x{0:x6}: {1}", i, current.ToString());
@@ -290,7 +327,7 @@ namespace SPCode.UI.Components
 
 
             // Find the largest address so we can get consistent column length.
-            int last_address = insns[insns.Length - 1].Address;
+            var last_address = insns[insns.Length - 1].Address;
             var ndigits = string.Format("{0:x}", last_address).Length;
             var addrfmt = "0x{0:x" + ndigits + "}: ";
 
@@ -305,7 +342,10 @@ namespace SPCode.UI.Components
                 for (var i = 0; i < insn.Params.Length; i++)
                 {
                     if (i >= insn.Info.Params.Length)
+                    {
                         break;
+                    }
+
                     var kind = insn.Info.Params[i];
                     var value = insn.Params[i];
 
@@ -319,42 +359,66 @@ namespace SPCode.UI.Components
                         case V1Param.Native:
                             buffer.Append(string.Format(" {0}", value));
                             if (file_.Natives != null && value < file_.Natives.Length)
+                            {
                                 comment.Append(string.Format(" {0}", file_.Natives[value].Name));
+                            }
+
                             break;
                         case V1Param.Jump:
-                            int delta = value - insn.Address;
+                            var delta = value - insn.Address;
                             buffer.Append(string.Format(" 0x{0:x}", value));
                             if (delta >= 0)
+                            {
                                 comment.Append(string.Format(" +0x{0:x}", delta));
+                            }
                             else
+                            {
                                 comment.Append(string.Format(" -0x{0:x}", -delta));
+                            }
+
                             break;
                         case V1Param.Address:
                             {
                                 DebugSymbolEntry sym = null;
                                 if (file_.DebugSymbols != null)
+                                {
                                     sym = file_.DebugSymbols.FindDataRef(value);
+                                }
+
                                 buffer.Append(string.Format(" 0x{0:x}", value));
                                 if (sym != null)
+                                {
                                     comment.Append(string.Format(" {0}", sym.Name));
+                                }
                                 else
+                                {
                                     comment.Append(string.Format(" {0}", value));
+                                }
+
                                 break;
                             }
                         case V1Param.Stack:
                             {
                                 DebugSymbolEntry sym = null;
                                 if (file_.DebugSymbols != null)
+                                {
                                     sym = file_.DebugSymbols.FindStackRef(insn.Address, value);
+                                }
+
                                 buffer.Append(string.Format(" 0x{0:x}", value));
                                 if (sym != null)
+                                {
                                     comment.Append(string.Format(" {0}", sym.Name));
+                                }
                                 else
+                                {
                                     comment.Append(string.Format(" {0}", value));
+                                }
+
                                 break;
                             }
                         case V1Param.Function:
-                            string fun = file_.FindFunctionName(value);
+                            var fun = file_.FindFunctionName(value);
                             buffer.Append(string.Format(" 0x{0:x}", value));
                             comment.Append(string.Format(" {0}", fun));
                             break;
@@ -391,7 +455,7 @@ namespace SPCode.UI.Components
             root.Items.Add(node);
             node.Tag = new NodeData(delegate ()
             {
-                renderHexView(code.Reader(), (int)code.Header.CodeSize);
+                renderHexView(code.Reader(), code.Header.CodeSize);
             }, null);
 
             var functionMap = new Dictionary<string, uint>();
@@ -408,7 +472,10 @@ namespace SPCode.UI.Components
                 foreach (var sym in file_.DebugSymbols.Entries)
                 {
                     if (sym.Ident != SymKind.Function)
+                    {
                         continue;
+                    }
+
                     functionMap[sym.Name] = sym.CodeStart;
                 }
             }
@@ -459,11 +526,11 @@ namespace SPCode.UI.Components
 
         private void renderPublicsList(TreeViewItem root, SmxPublicTable publics)
         {
-            for (int i = 0; i < publics.Length; i++)
+            for (var i = 0; i < publics.Length; i++)
             {
                 var index = i;
                 var pubfun = publics[i];
-                var node = new TreeViewItem() { Header = (i.ToString() + ": " + pubfun.Name) };
+                var node = new TreeViewItem() { Header = i.ToString() + ": " + pubfun.Name };
                 root.Items.Add(node);
                 node.Tag = new NodeData(delegate ()
                 {
@@ -477,11 +544,11 @@ namespace SPCode.UI.Components
 
         private void renderPubvarList(TreeViewItem root, SmxPubvarTable pubvars)
         {
-            for (int i = 0; i < pubvars.Length; i++)
+            for (var i = 0; i < pubvars.Length; i++)
             {
                 var index = i;
                 var pubvar = pubvars[i];
-                var node = new TreeViewItem() { Header = (i.ToString() + ": " + pubvar.Name) };
+                var node = new TreeViewItem() { Header = i.ToString() + ": " + pubvar.Name };
                 root.Items.Add(node);
                 node.Tag = new NodeData(delegate ()
                 {
@@ -499,8 +566,11 @@ namespace SPCode.UI.Components
             {
                 var tag = tags[i];
                 var text = tag.Id + ": " + tag.Name;
-                if ((tag.Flags & ~(TagFlags.Fixed)) != 0)
-                    text += " (" + (tag.Flags & ~(TagFlags.Fixed)) + ")";
+                if ((tag.Flags & ~TagFlags.Fixed) != 0)
+                {
+                    text += " (" + (tag.Flags & ~TagFlags.Fixed) + ")";
+                }
+
                 var node = new TreeViewItem() { Header = text };
                 root.Items.Add(node);
                 node.Tag = new NodeData(delegate ()
@@ -532,7 +602,7 @@ namespace SPCode.UI.Components
             {
                 var index = i;
                 var native = natives[i];
-                var node = new TreeViewItem() { Header = ("[" + i + "] " + native.Name) };
+                var node = new TreeViewItem() { Header = "[" + i + "] " + native.Name };
                 root.Items.Add(node);
                 node.Tag = new NodeData(delegate ()
                 {
@@ -587,18 +657,27 @@ namespace SPCode.UI.Components
 
         private string dimsToString(Tag tag, DebugSymbolDimEntry[] dims)
         {
-            string str = "";
+            var str = "";
             for (var i = 0; i < dims.Length; i++)
             {
                 int size;
                 if (i == dims.Length - 1 && tag != null && tag.Name == "String")
+                {
                     size = dims[i].Size * 4;
+                }
                 else
+                {
                     size = dims[i].Size;
+                }
+
                 if (size == 0)
+                {
                     str += "[]";
+                }
                 else
+                {
                     str += string.Format("[{0}]", size);
+                }
             }
             return str;
         }
@@ -607,17 +686,29 @@ namespace SPCode.UI.Components
         {
             Tag tag = null;
             if (file_.Tags != null)
+            {
                 tag = file_.Tags.FindTag(entry.TagId);
+            }
 
             startDetail("; {0}", entry.Name);
             if (entry.Address < 0)
+            {
                 addDetailLine("address = -0x{0:x}", -entry.Address);
+            }
             else
+            {
                 addDetailLine("address = 0x{0:x}", entry.Address);
+            }
+
             if (tag == null)
+            {
                 addDetailLine("tagid = 0x{0:x}", entry.TagId);
+            }
             else
+            {
                 addDetailLine("tagid = 0x{0:x} ; {1}", entry.TagId, tag.Name);
+            }
+
             addDetailLine("codestart = 0x{0:x}", entry.CodeStart);
             addDetailLine("codeend = 0x{0:x}", entry.CodeEnd);
             addDetailLine("nameoffs = 0x{0:x} ; {1}", entry.nameoffs, entry.Name);
@@ -631,15 +722,26 @@ namespace SPCode.UI.Components
 
             string file = null;
             if (file_.DebugFiles != null)
+            {
                 file = file_.DebugFiles.FindFile(entry.CodeStart);
+            }
+
             if (file != null)
+            {
                 addDetailLine("file: \"{0}\"", (string)file);
+            }
 
             uint? line = null;
             if (file_.DebugLines != null)
+            {
                 line = file_.DebugLines.FindLine(entry.CodeStart);
+            }
+
             if (line != null)
+            {
                 addDetailLine("line: \"{0}\"", (uint)line);
+            }
+
             endDetailUpdate();
         }
 
@@ -656,13 +758,23 @@ namespace SPCode.UI.Components
             {
                 var sym = sym_;
                 if (sym.Scope == SymScope.Global)
+                {
                     continue;
+                }
+
                 if (sym.CodeStart < fun.CodeStart || sym.CodeEnd > fun.CodeEnd)
+                {
                     continue;
+                }
+
                 if (sym.Address < 0)
+                {
                     locals.Add(sym);
+                }
                 else
+                {
                     args.Add(sym);
+                }
             }
 
             args.Sort(delegate (DebugSymbolEntry e1, DebugSymbolEntry e2)
@@ -703,9 +815,15 @@ namespace SPCode.UI.Components
             {
                 var sym = sym_;
                 if (sym.Scope != SymScope.Global)
+                {
                     continue;
+                }
+
                 if (sym.Ident == SymKind.Function)
+                {
                     continue;
+                }
+
                 var node = new TreeViewItem() { Header = sym.Name };
                 root.Items.Add(node);
                 node.Tag = new NodeData(delegate ()
@@ -719,9 +837,15 @@ namespace SPCode.UI.Components
             {
                 var sym = sym_;
                 if (sym.Scope != SymScope.Global)
+                {
                     continue;
+                }
+
                 if (sym.Ident != SymKind.Function)
+                {
                     continue;
+                }
+
                 var node = new TreeViewItem() { Header = sym.Name };
                 root.Items.Add(node);
                 renderDebugFunction(syms, node, sym);
@@ -732,14 +856,21 @@ namespace SPCode.UI.Components
         {
             Tag tag = null;
             if (file_.Tags != null)
+            {
                 tag = file_.Tags.FindTag(entry.tagid);
+            }
 
             startDetailUpdate();
             addDetailLine("nameoffs = 0x{0:x}", entry.nameoffs, entry.Name);
             if (tag == null)
+            {
                 addDetailLine("tagid = 0x{0:x}", entry.tagid);
+            }
             else
+            {
                 addDetailLine("tagid = 0x{0:x} ; {1}", entry.tagid, entry.Name);
+            }
+
             addDetailLine("index = {0}", entry.Index);
             for (var i = 0; i < entry.Args.Length; i++)
             {

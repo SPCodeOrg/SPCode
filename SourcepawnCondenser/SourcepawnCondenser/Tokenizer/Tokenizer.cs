@@ -20,21 +20,38 @@ namespace SourcepawnCondenser.Tokenizer
 
                 #region Whitespace
 
-                if (c == ' ' || c == '\t') continue;
+                if (c == ' ' || c == '\t')
+                {
+                    continue;
+                }
 
                 if (c == '\n' || c == '\r')
                 {
                     token.Add(new Token("\r\n", TokenKind.EOL, i));
                     if (IgnoreMultipleEOL)
+                    {
                         while (i + 1 < sArrayLength)
+                        {
                             if (sArray[i + 1] == '\n' || sArray[i + 1] == '\r')
+                            {
                                 ++i;
+                            }
                             else
+                            {
                                 break;
+                            }
+                        }
+                    }
                     else if (c == '\r')
+                    {
                         if (i + 1 < sArrayLength)
+                        {
                             if (sArray[i + 1] == '\n')
+                            {
                                 ++i;
+                            }
+                        }
+                    }
 
                     continue;
                 }
@@ -90,6 +107,7 @@ namespace SourcepawnCondenser.Tokenizer
                 #region Comments
 
                 if (c == '/')
+                {
                     if (i + 1 < sArrayLength)
                     {
                         if (sArray[i + 1] == '/') //singleline comment
@@ -97,11 +115,13 @@ namespace SourcepawnCondenser.Tokenizer
                             var startIndex = i;
                             var endIndex = -1;
                             for (var j = i + 1; j < sArrayLength; ++j)
+                            {
                                 if (sArray[j] == '\r' || sArray[j] == '\n')
                                 {
                                     endIndex = j;
                                     break;
                                 }
+                            }
 
                             if (endIndex == -1)
                             {
@@ -126,12 +146,16 @@ namespace SourcepawnCondenser.Tokenizer
                                 var startIndex = i;
                                 var endIndex = -1;
                                 for (var j = i + 3; j < sArrayLength; ++j)
+                                {
                                     if (sArray[j] == '/')
+                                    {
                                         if (sArray[j - 1] == '*')
                                         {
                                             endIndex = j;
                                             break;
                                         }
+                                    }
+                                }
 
                                 if (endIndex == -1)
                                 {
@@ -150,6 +174,7 @@ namespace SourcepawnCondenser.Tokenizer
                             }
                         }
                     }
+                }
 
                 #endregion
 
@@ -160,12 +185,16 @@ namespace SourcepawnCondenser.Tokenizer
                     var startIndex = i;
                     var endIndex = -1;
                     for (var j = i + 1; j < sArrayLength; ++j)
+                    {
                         if (sArray[j] == '"')
+                        {
                             if (sArray[j - 1] != '\\')
                             {
                                 endIndex = j;
                                 break;
                             }
+                        }
+                    }
 
                     if (endIndex != -1)
                     {
@@ -182,12 +211,16 @@ namespace SourcepawnCondenser.Tokenizer
                     var startIndex = i;
                     var endIndex = -1;
                     for (var j = i + 1; j < sArrayLength; ++j)
+                    {
                         if (sArray[j] == '\'')
+                        {
                             if (sArray[j - 1] != '\\')
                             {
                                 endIndex = j;
                                 break;
                             }
+                        }
+                    }
 
                     if (endIndex != -1)
                     {
@@ -202,7 +235,7 @@ namespace SourcepawnCondenser.Tokenizer
 
                 #region Identifier
 
-                if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c == '_') //identifier
+                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_') //identifier
                 {
                     int startIndex = i, endIndex = i + 1;
                     var nextChar = '\0';
@@ -211,19 +244,24 @@ namespace SourcepawnCondenser.Tokenizer
                         nextChar = sArray[i + 1];
                         endIndex = -1;
                         for (var j = i + 1; j < sArrayLength; ++j)
-                            if (!(sArray[j] >= 'a' && sArray[j] <= 'z' || sArray[j] >= 'A' && sArray[j] <= 'Z' ||
-                                  sArray[j] >= '0' && sArray[j] <= '9' || sArray[j] == '_'))
+                        {
+                            if (!((sArray[j] >= 'a' && sArray[j] <= 'z') || (sArray[j] >= 'A' && sArray[j] <= 'Z') ||
+                                  (sArray[j] >= '0' && sArray[j] <= '9') || sArray[j] == '_'))
                             {
                                 endIndex = j;
                                 break;
                             }
+                        }
 
-                        if (endIndex == -1) endIndex = sArrayLength;
+                        if (endIndex == -1)
+                        {
+                            endIndex = sArrayLength;
+                        }
                     }
 
-                    if (c != '_' || c == '_' && (nextChar >= 'a' && nextChar <= 'z' ||
-                                                 nextChar >= 'A' && nextChar <= 'Z' ||
-                                                 nextChar >= '0' && nextChar <= '9' || nextChar == '_'))
+                    if (c != '_' || (c == '_' && ((nextChar >= 'a' && nextChar <= 'z') ||
+                                                 (nextChar >= 'A' && nextChar <= 'Z') ||
+                                                 (nextChar >= '0' && nextChar <= '9') || nextChar == '_')))
                     {
                         var identString = Source.Substring(startIndex, endIndex - startIndex);
                         switch (identString)
@@ -255,7 +293,9 @@ namespace SourcepawnCondenser.Tokenizer
                                         // Avoid double matches
                                         var fullString = Source.Substring(enumStructStart, endIndex - enumStructStart);
                                         if (fullString == "enum struct")
+                                        {
                                             break;
+                                        }
                                     }
 
                                     token.Add(new Token(identString, TokenKind.Struct, startIndex));
@@ -320,12 +360,16 @@ namespace SourcepawnCondenser.Tokenizer
                         if (sArray[j] == '.')
                         {
                             if (!gotDecimal)
+                            {
                                 if (j + 1 < sArrayLength)
+                                {
                                     if (sArray[j + 1] >= '0' && sArray[j + 1] <= '9')
                                     {
                                         gotDecimal = true;
                                         continue;
                                     }
+                                }
+                            }
 
                             endIndex = j - 1;
                             break;
@@ -334,17 +378,20 @@ namespace SourcepawnCondenser.Tokenizer
                         if (sArray[j] == 'e' || sArray[j] == 'E')
                         {
                             if (!gotExponent)
+                            {
                                 if (j + 1 < sArrayLength)
                                 {
                                     if (sArray[j + 1] == '+' || sArray[j + 1] == '-')
                                     {
                                         if (j + 2 < sArrayLength)
+                                        {
                                             if (sArray[j + 2] >= '0' && sArray[j + 2] <= '9')
                                             {
                                                 ++j;
                                                 gotDecimal = gotExponent = true;
                                                 continue;
                                             }
+                                        }
                                     }
                                     else if (sArray[j + 1] >= '0' && sArray[j + 1] <= '9')
                                     {
@@ -352,6 +399,7 @@ namespace SourcepawnCondenser.Tokenizer
                                         continue;
                                     }
                                 }
+                            }
 
                             endIndex = j - 1;
                             break;
@@ -364,7 +412,10 @@ namespace SourcepawnCondenser.Tokenizer
                         }
                     }
 
-                    if (endIndex == -1) endIndex = sArrayLength - 1;
+                    if (endIndex == -1)
+                    {
+                        endIndex = sArrayLength - 1;
+                    }
 
                     token.Add(new Token(Source.Substring(startIndex, endIndex - startIndex + 1), TokenKind.Number,
                         startIndex));
@@ -382,15 +433,17 @@ namespace SourcepawnCondenser.Tokenizer
                     if (i + 1 < sArrayLength)
                     {
                         var testChar = sArray[i + 1];
-                        if (testChar >= 'a' && testChar <= 'z' || testChar >= 'A' && testChar <= 'Z')
+                        if ((testChar >= 'a' && testChar <= 'z') || (testChar >= 'A' && testChar <= 'Z'))
                         {
                             var endIndex = i + 1;
                             for (var j = i + 1; j < sArrayLength; ++j)
-                                if (!(sArray[j] >= 'a' && sArray[j] <= 'z' || sArray[j] >= 'A' && sArray[j] <= 'Z'))
+                            {
+                                if (!((sArray[j] >= 'a' && sArray[j] <= 'z') || (sArray[j] >= 'A' && sArray[j] <= 'Z')))
                                 {
                                     endIndex = j;
                                     break;
                                 }
+                            }
 
                             var directiveString = Source.Substring(startIndex, endIndex - startIndex);
                             token.Add(new Token(directiveString, TokenKind.PrePocessorDirective, startIndex));
@@ -416,11 +469,13 @@ namespace SourcepawnCondenser.Tokenizer
                             }
 
                             for (var j = i + 1; j < sArrayLength; ++j)
+                            {
                                 if (sArray[j] == '\n' || sArray[j] == '\r')
                                 {
                                     i = j - 1;
                                     break;
                                 }
+                            }
 
                             continue;
                         }

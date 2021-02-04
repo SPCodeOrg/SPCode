@@ -1,8 +1,8 @@
 // vim set: ts=4 sw=4 tw=99 et:
-using SourcePawn;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -85,10 +85,7 @@ namespace Lysis
             pc_ = pc;
         }
 
-        public uint pc
-        {
-            get { return pc_; }
-        }
+        public uint pc => pc_;
 
         public static string RegisterName(Register reg)
         {
@@ -111,10 +108,7 @@ namespace Lysis
             successors_[i] = block;
         }
 
-        public virtual int numSuccessors
-        {
-            get { return successors_.Length; }
-        }
+        public virtual int numSuccessors => successors_.Length;
 
         public virtual LBlock getSuccessor(int i)
         {
@@ -129,38 +123,32 @@ namespace Lysis
 
     public abstract class LInstructionReg : LInstruction
     {
-        private Register reg_;
+        private readonly Register reg_;
 
         public LInstructionReg(Register reg)
         {
             reg_ = reg;
         }
 
-        public Register reg
-        {
-            get { return reg_; }
-        }
+        public Register reg => reg_;
     }
 
     public abstract class LInstructionStack : LInstruction
     {
-        private int offs_;
+        private readonly int offs_;
 
         public LInstructionStack(int offset)
         {
             offs_ = offset;
         }
 
-        public int offset
-        {
-            get { return offs_; }
-        }
+        public int offset => offs_;
     }
 
     public abstract class LInstructionRegStack : LInstruction
     {
-        private Register reg_;
-        private int offs_;
+        private readonly Register reg_;
+        private readonly int offs_;
 
         public LInstructionRegStack(Register reg, int offset)
         {
@@ -168,20 +156,14 @@ namespace Lysis
             offs_ = offset;
         }
 
-        public Register reg
-        {
-            get { return reg_; }
-        }
+        public Register reg => reg_;
 
-        public int offset
-        {
-            get { return offs_; }
-        }
+        public int offset => offs_;
     }
 
     public abstract class LInstructionJump : LControlInstruction
     {
-        private uint target_offs_;
+        private readonly uint target_offs_;
 
         public LInstructionJump(uint target_offs, params LBlock[] targets)
             : base(targets)
@@ -189,10 +171,7 @@ namespace Lysis
             target_offs_ = target_offs;
         }
 
-        public uint target_offs
-        {
-            get { return target_offs_; }
-        }
+        public uint target_offs => target_offs_;
     }
 
     public class LLoadLocal : LInstructionRegStack
@@ -202,10 +181,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.LoadLocal; }
-        }
+        public override Opcode op => Opcode.LoadLocal;
 
         public override void print(TextWriter tw)
         {
@@ -220,10 +196,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.LoadLocalRef; }
-        }
+        public override Opcode op => Opcode.LoadLocalRef;
 
         public override void print(TextWriter tw)
         {
@@ -238,10 +211,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.StoreLocal; }
-        }
+        public override Opcode op => Opcode.StoreLocal;
 
         public override void print(TextWriter tw)
         {
@@ -256,10 +226,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.StoreLocalRef; }
-        }
+        public override Opcode op => Opcode.StoreLocalRef;
 
         public override void print(TextWriter tw)
         {
@@ -269,22 +236,16 @@ namespace Lysis
 
     public class LLoad : LInstruction
     {
-        private int bytes_;
+        private readonly int bytes_;
 
         public LLoad(int bytes)
         {
             bytes_ = bytes;
         }
 
-        private int bytes
-        {
-            get { return bytes_; }
-        }
+        private int bytes => bytes_;
 
-        public override Opcode op
-        {
-            get { return Opcode.Load; }
-        }
+        public override Opcode op => Opcode.Load;
 
         public override void print(TextWriter tw)
         {
@@ -294,22 +255,16 @@ namespace Lysis
 
     public class LConstant : LInstructionReg
     {
-        private int val_;
+        private readonly int val_;
 
         public LConstant(int val, Register reg) : base(reg)
         {
             val_ = val;
         }
 
-        public int val
-        {
-            get { return val_; }
-        }
+        public int val => val_;
 
-        public override Opcode op
-        {
-            get { return Opcode.Constant; }
-        }
+        public override Opcode op => Opcode.Constant;
 
         public override void print(TextWriter tw)
         {
@@ -325,10 +280,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.StackAddress; }
-        }
+        public override Opcode op => Opcode.StackAddress;
 
         public override void print(TextWriter tw)
         {
@@ -338,22 +290,16 @@ namespace Lysis
 
     public class LStore : LInstruction
     {
-        private int bytes_;
+        private readonly int bytes_;
 
         public LStore(int bytes)
         {
             bytes_ = bytes;
         }
 
-        public int bytes
-        {
-            get { return bytes_; }
-        }
+        public int bytes => bytes_;
 
-        public override Opcode op
-        {
-            get { return Opcode.Store; }
-        }
+        public override Opcode op => Opcode.Store;
 
         public override void print(TextWriter tw)
         {
@@ -363,22 +309,16 @@ namespace Lysis
 
     public class LIndexAddress : LInstruction
     {
-        private int shift_;
+        private readonly int shift_;
 
         public LIndexAddress(int shift)
         {
             shift_ = shift;
         }
 
-        public int shift
-        {
-            get { return shift_; }
-        }
+        public int shift => shift_;
 
-        public override Opcode op
-        {
-            get { return Opcode.IndexAddress; }
-        }
+        public override Opcode op => Opcode.IndexAddress;
 
         public override void print(TextWriter tw)
         {
@@ -393,10 +333,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.Move; }
-        }
+        public override Opcode op => Opcode.Move;
 
         public override void print(TextWriter tw)
         {
@@ -412,10 +349,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.PushReg; }
-        }
+        public override Opcode op => Opcode.PushReg;
 
         public override void print(TextWriter tw)
         {
@@ -430,10 +364,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.IncReg; }
-        }
+        public override Opcode op => Opcode.IncReg;
 
         public override void print(TextWriter tw)
         {
@@ -448,10 +379,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.DecReg; }
-        }
+        public override Opcode op => Opcode.DecReg;
 
         public override void print(TextWriter tw)
         {
@@ -461,22 +389,16 @@ namespace Lysis
 
     public class LPushConstant : LInstruction
     {
-        private int val_;
+        private readonly int val_;
 
         public LPushConstant(int val)
         {
             val_ = val;
         }
 
-        public int val
-        {
-            get { return val_; }
-        }
+        public int val => val_;
 
-        public override Opcode op
-        {
-            get { return Opcode.PushConstant; }
-        }
+        public override Opcode op => Opcode.PushConstant;
 
         public override void print(TextWriter tw)
         {
@@ -491,10 +413,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.Pop; }
-        }
+        public override Opcode op => Opcode.Pop;
 
         public override void print(TextWriter tw)
         {
@@ -504,22 +423,16 @@ namespace Lysis
 
     public class LStack : LInstruction
     {
-        private int val_;
+        private readonly int val_;
 
         public LStack(int val)
         {
             val_ = val;
         }
 
-        public int amount
-        {
-            get { return val_; }
-        }
+        public int amount => val_;
 
-        public override Opcode op
-        {
-            get { return Opcode.Stack; }
-        }
+        public override Opcode op => Opcode.Stack;
 
         public override void print(TextWriter tw)
         {
@@ -533,10 +446,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.Return; }
-        }
+        public override Opcode op => Opcode.Return;
 
         public override void print(TextWriter tw)
         {
@@ -551,15 +461,9 @@ namespace Lysis
         {
         }
 
-        public LBlock target
-        {
-            get { return getSuccessor(0); }
-        }
+        public LBlock target => getSuccessor(0);
 
-        public override Opcode op
-        {
-            get { return Opcode.Goto; }
-        }
+        public override Opcode op => Opcode.Goto;
 
         public override void print(TextWriter tw)
         {
@@ -574,15 +478,9 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.Jump; }
-        }
+        public override Opcode op => Opcode.Jump;
 
-        public LBlock target
-        {
-            get { return getSuccessor(0); }
-        }
+        public LBlock target => getSuccessor(0);
 
         public override void print(TextWriter tw)
         {
@@ -592,7 +490,7 @@ namespace Lysis
 
     public class LJumpCondition : LInstructionJump
     {
-        private SPOpcode op_;
+        private readonly SPOpcode op_;
 
         public LJumpCondition(SPOpcode op, LBlock true_target, LBlock false_target, uint target_offs)
             : base(target_offs, true_target, false_target)
@@ -600,23 +498,11 @@ namespace Lysis
             op_ = op;
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.JumpCondition; }
-        }
+        public override Opcode op => Opcode.JumpCondition;
 
-        public SPOpcode spop
-        {
-            get { return op_; }
-        }
-        public LBlock trueTarget
-        {
-            get { return getSuccessor(0); }
-        }
-        public LBlock falseTarget
-        {
-            get { return getSuccessor(1); }
-        }
+        public SPOpcode spop => op_;
+        public LBlock trueTarget => getSuccessor(0);
+        public LBlock falseTarget => getSuccessor(1);
 
         public override void print(TextWriter tw)
         {
@@ -655,22 +541,16 @@ namespace Lysis
 
     public class LAddConstant : LInstruction
     {
-        private int amount_;
+        private readonly int amount_;
 
         public LAddConstant(int amount)
         {
             amount_ = amount;
         }
 
-        public int amount
-        {
-            get { return amount_; }
-        }
+        public int amount => amount_;
 
-        public override Opcode op
-        {
-            get { return Opcode.AddConstant; }
-        }
+        public override Opcode op => Opcode.AddConstant;
 
         public override void print(TextWriter tw)
         {
@@ -680,22 +560,16 @@ namespace Lysis
 
     public class LMulConstant : LInstruction
     {
-        private int amount_;
+        private readonly int amount_;
 
         public LMulConstant(int amount)
         {
             amount_ = amount;
         }
 
-        public int amount
-        {
-            get { return amount_; }
-        }
+        public int amount => amount_;
 
-        public override Opcode op
-        {
-            get { return Opcode.MulConstant; }
-        }
+        public override Opcode op => Opcode.MulConstant;
 
         public override void print(TextWriter tw)
         {
@@ -705,22 +579,16 @@ namespace Lysis
 
     public class LZeroGlobal : LInstruction
     {
-        private int address_;
+        private readonly int address_;
 
         public LZeroGlobal(int address)
         {
             address_ = address;
         }
 
-        public int address
-        {
-            get { return address_; }
-        }
+        public int address => address_;
 
-        public override Opcode op
-        {
-            get { return Opcode.ZeroGlobal; }
-        }
+        public override Opcode op => Opcode.ZeroGlobal;
         public override void print(TextWriter tw)
         {
             tw.Write("zero " + address);
@@ -729,22 +597,16 @@ namespace Lysis
 
     public class LZeroLocal : LInstruction
     {
-        private int address_;
+        private readonly int address_;
 
         public LZeroLocal(int address)
         {
             address_ = address;
         }
 
-        public int address
-        {
-            get { return address_; }
-        }
+        public int address => address_;
 
-        public override Opcode op
-        {
-            get { return Opcode.ZeroLocal; }
-        }
+        public override Opcode op => Opcode.ZeroLocal;
         public override void print(TextWriter tw)
         {
             tw.Write("zero.s " + address);
@@ -753,22 +615,16 @@ namespace Lysis
 
     public class LIncGlobal : LInstruction
     {
-        private int address_;
+        private readonly int address_;
 
         public LIncGlobal(int address)
         {
             address_ = address;
         }
 
-        public int address
-        {
-            get { return address_; }
-        }
+        public int address => address_;
 
-        public override Opcode op
-        {
-            get { return Opcode.IncGlobal; }
-        }
+        public override Opcode op => Opcode.IncGlobal;
         public override void print(TextWriter tw)
         {
             tw.Write("inc " + address);
@@ -782,10 +638,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.IncLocal; }
-        }
+        public override Opcode op => Opcode.IncLocal;
 
         public override void print(TextWriter tw)
         {
@@ -800,10 +653,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.DecLocal; }
-        }
+        public override Opcode op => Opcode.DecLocal;
 
         public override void print(TextWriter tw)
         {
@@ -817,10 +667,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.IncI; }
-        }
+        public override Opcode op => Opcode.IncI;
 
         public override void print(TextWriter tw)
         {
@@ -834,10 +681,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.DecI; }
-        }
+        public override Opcode op => Opcode.DecI;
 
         public override void print(TextWriter tw)
         {
@@ -847,22 +691,16 @@ namespace Lysis
 
     public class LFill : LInstruction
     {
-        private int amount_;
+        private readonly int amount_;
 
         public LFill(int amount)
         {
             amount_ = amount;
         }
 
-        public int amount
-        {
-            get { return amount_; }
-        }
+        public int amount => amount_;
 
-        public override Opcode op
-        {
-            get { return Opcode.Fill; }
-        }
+        public override Opcode op => Opcode.Fill;
 
         public override void print(TextWriter tw)
         {
@@ -872,22 +710,16 @@ namespace Lysis
 
     public class LBounds : LInstruction
     {
-        private int amount_;
+        private readonly int amount_;
 
         public LBounds(int amount)
         {
             amount_ = amount;
         }
 
-        public int amount
-        {
-            get { return amount_; }
-        }
+        public int amount => amount_;
 
-        public override Opcode op
-        {
-            get { return Opcode.Bounds; }
-        }
+        public override Opcode op => Opcode.Bounds;
 
         public override void print(TextWriter tw)
         {
@@ -897,22 +729,16 @@ namespace Lysis
 
     public class LSysReq : LInstruction
     {
-        private Native native_;
+        private readonly Native native_;
 
         public LSysReq(Native native)
         {
             native_ = native;
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.SysReq; }
-        }
+        public override Opcode op => Opcode.SysReq;
 
-        public Native native
-        {
-            get { return native_; }
-        }
+        public Native native => native_;
 
         public override void print(TextWriter tw)
         {
@@ -927,10 +753,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.Swap; }
-        }
+        public override Opcode op => Opcode.Swap;
 
         public override void print(TextWriter tw)
         {
@@ -945,10 +768,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.PushStackAddress; }
-        }
+        public override Opcode op => Opcode.PushStackAddress;
 
         public override void print(TextWriter tw)
         {
@@ -962,10 +782,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.DebugBreak; }
-        }
+        public override Opcode op => Opcode.DebugBreak;
 
         public override void print(TextWriter tw)
         {
@@ -975,21 +792,15 @@ namespace Lysis
 
     public class LPushLocal : LInstruction
     {
-        private int offset_;
+        private readonly int offset_;
 
         public LPushLocal(int offset)
         {
             offset_ = offset;
         }
 
-        public int offset
-        {
-            get { return offset_; }
-        }
-        public override Opcode op
-        {
-            get { return Opcode.PushLocal; }
-        }
+        public int offset => offset_;
+        public override Opcode op => Opcode.PushLocal;
         public override void print(TextWriter tw)
         {
             tw.Write("push.s " + offset);
@@ -1002,10 +813,7 @@ namespace Lysis
         {
         }
 
-        public override Opcode op
-        {
-            get { return Opcode.Exchange; }
-        }
+        public override Opcode op => Opcode.Exchange;
         public override void print(TextWriter tw)
         {
             tw.Write("xchg");
@@ -1014,8 +822,8 @@ namespace Lysis
 
     public class LUnary : LInstruction
     {
-        private SPOpcode spop_;
-        private Register reg_;
+        private readonly SPOpcode spop_;
+        private readonly Register reg_;
 
         public LUnary(SPOpcode op, Register reg)
         {
@@ -1023,18 +831,9 @@ namespace Lysis
             reg_ = reg;
         }
 
-        public SPOpcode spop
-        {
-            get { return spop_; }
-        }
-        public override Opcode op
-        {
-            get { return Opcode.Unary; }
-        }
-        public Register reg
-        {
-            get { return reg_; }
-        }
+        public SPOpcode spop => spop_;
+        public override Opcode op => Opcode.Unary;
+        public Register reg => reg_;
         public override void print(TextWriter tw)
         {
             switch (spop)
@@ -1054,9 +853,9 @@ namespace Lysis
 
     public class LBinary : LInstruction
     {
-        private SPOpcode spop_;
-        private Register lhs_;
-        private Register rhs_;
+        private readonly SPOpcode spop_;
+        private readonly Register lhs_;
+        private readonly Register rhs_;
 
         public LBinary(SPOpcode op, Register lhs, Register rhs)
         {
@@ -1065,22 +864,10 @@ namespace Lysis
             rhs_ = rhs;
         }
 
-        public SPOpcode spop
-        {
-            get { return spop_; }
-        }
-        public override Opcode op
-        {
-            get { return Opcode.Binary; }
-        }
-        public Register lhs
-        {
-            get { return lhs_; }
-        }
-        public Register rhs
-        {
-            get { return rhs_; }
-        }
+        public SPOpcode spop => spop_;
+        public override Opcode op => Opcode.Binary;
+        public Register lhs => lhs_;
+        public Register rhs => rhs_;
         public override void print(TextWriter tw)
         {
             switch (spop)
@@ -1145,21 +932,15 @@ namespace Lysis
 
     public class LPushGlobal : LInstruction
     {
-        private int address_;
+        private readonly int address_;
 
         public LPushGlobal(int address)
         {
             address_ = address;
         }
 
-        public int address
-        {
-            get { return address_; }
-        }
-        public override Opcode op
-        {
-            get { return Opcode.PushGlobal; }
-        }
+        public int address => address_;
+        public override Opcode op => Opcode.PushGlobal;
         public override void print(TextWriter tw)
         {
             tw.Write("push " + address);
@@ -1168,7 +949,7 @@ namespace Lysis
 
     public class LStoreGlobal : LInstructionReg
     {
-        private int address_;
+        private readonly int address_;
 
         public LStoreGlobal(int address, Register reg)
             : base(reg)
@@ -1176,14 +957,8 @@ namespace Lysis
             address_ = address;
         }
 
-        public int address
-        {
-            get { return address_; }
-        }
-        public override Opcode op
-        {
-            get { return Opcode.StoreGlobal; }
-        }
+        public int address => address_;
+        public override Opcode op => Opcode.StoreGlobal;
         public override void print(TextWriter tw)
         {
             tw.Write("stor." + RegisterName(reg) + " " + address);
@@ -1192,7 +967,7 @@ namespace Lysis
 
     public class LLoadGlobal : LInstructionReg
     {
-        private int address_;
+        private readonly int address_;
 
         public LLoadGlobal(int address, Register reg)
             : base(reg)
@@ -1200,14 +975,8 @@ namespace Lysis
             address_ = address;
         }
 
-        public int address
-        {
-            get { return address_; }
-        }
-        public override Opcode op
-        {
-            get { return Opcode.LoadGlobal; }
-        }
+        public int address => address_;
+        public override Opcode op => Opcode.LoadGlobal;
         public override void print(TextWriter tw)
         {
             tw.Write("load." + RegisterName(reg) + " " + address);
@@ -1216,21 +985,15 @@ namespace Lysis
 
     public class LCall : LInstruction
     {
-        private int address_;
+        private readonly int address_;
 
         public LCall(int address)
         {
             address_ = address;
         }
 
-        public int address
-        {
-            get { return address_; }
-        }
-        public override Opcode op
-        {
-            get { return Opcode.Call; }
-        }
+        public int address => address_;
+        public override Opcode op => Opcode.Call;
         public override void print(TextWriter tw)
         {
             tw.Write("call");
@@ -1239,7 +1002,7 @@ namespace Lysis
 
     public class LEqualConstant : LInstructionReg
     {
-        private int value_;
+        private readonly int value_;
 
         public LEqualConstant(Register reg, int value)
             : base(reg)
@@ -1247,14 +1010,8 @@ namespace Lysis
             value_ = value;
         }
 
-        public int value
-        {
-            get { return value_; }
-        }
-        public override Opcode op
-        {
-            get { return Opcode.EqualConstant; }
-        }
+        public int value => value_;
+        public override Opcode op => Opcode.EqualConstant;
         public override void print(TextWriter tw)
         {
             tw.Write("eq.c." + RegisterName(reg) + " " + value);
@@ -1263,21 +1020,15 @@ namespace Lysis
 
     public class LLoadIndex : LInstruction
     {
-        private int shift_;
+        private readonly int shift_;
 
         public LLoadIndex(int shift)
         {
             shift_ = shift;
         }
 
-        public int shift
-        {
-            get { return shift_; }
-        }
-        public override Opcode op
-        {
-            get { return Opcode.LoadIndex; }
-        }
+        public int shift => shift_;
+        public override Opcode op => Opcode.LoadIndex;
         public override void print(TextWriter tw)
         {
             tw.Write("lidx." + shift + " ; [pri=alt+(pri<<" + shift + ")]");
@@ -1286,8 +1037,8 @@ namespace Lysis
 
     public class LStoreGlobalConstant : LInstruction
     {
-        private int address_;
-        private int value_;
+        private readonly int address_;
+        private readonly int value_;
 
         public LStoreGlobalConstant(int address, int value)
         {
@@ -1295,18 +1046,9 @@ namespace Lysis
             value_ = value;
         }
 
-        public int address
-        {
-            get { return address_; }
-        }
-        public int value
-        {
-            get { return value_; }
-        }
-        public override Opcode op
-        {
-            get { return Opcode.StoreGlobalConstant; }
-        }
+        public int address => address_;
+        public int value => value_;
+        public override Opcode op => Opcode.StoreGlobalConstant;
         public override void print(TextWriter tw)
         {
             tw.Write("const [" + address + "]" + " = value");
@@ -1315,8 +1057,8 @@ namespace Lysis
 
     public class LStoreLocalConstant : LInstruction
     {
-        private int address_;
-        private int value_;
+        private readonly int address_;
+        private readonly int value_;
 
         public LStoreLocalConstant(int address, int value)
         {
@@ -1324,18 +1066,9 @@ namespace Lysis
             value_ = value;
         }
 
-        public int address
-        {
-            get { return address_; }
-        }
-        public int value
-        {
-            get { return value_; }
-        }
-        public override Opcode op
-        {
-            get { return Opcode.StoreLocalConstant; }
-        }
+        public int address => address_;
+        public int value => value_;
+        public override Opcode op => Opcode.StoreLocalConstant;
         public override void print(TextWriter tw)
         {
             tw.Write("const.s [" + address + "]" + " = value");
@@ -1344,21 +1077,15 @@ namespace Lysis
 
     public class LHeap : LInstruction
     {
-        private int amount_;
+        private readonly int amount_;
 
         public LHeap(int amount)
         {
             amount_ = amount;
         }
 
-        public int amount
-        {
-            get { return amount_; }
-        }
-        public override Opcode op
-        {
-            get { return Opcode.Heap; }
-        }
+        public int amount => amount_;
+        public override Opcode op => Opcode.Heap;
         public override void print(TextWriter tw)
         {
             tw.Write("heap " + amount);
@@ -1367,21 +1094,15 @@ namespace Lysis
 
     public class LMemCopy : LInstruction
     {
-        private int bytes_;
+        private readonly int bytes_;
 
         public LMemCopy(int bytes)
         {
             bytes_ = bytes;
         }
 
-        public int bytes
-        {
-            get { return bytes_; }
-        }
-        public override Opcode op
-        {
-            get { return Opcode.MemCopy; }
-        }
+        public int bytes => bytes_;
+        public override Opcode op => Opcode.MemCopy;
         public override void print(TextWriter tw)
         {
             tw.Write("movs " + bytes);
@@ -1390,7 +1111,7 @@ namespace Lysis
 
     public class SwitchCase
     {
-        private int value_;
+        private readonly int value_;
         public LBlock target;
 
         public SwitchCase(int value, LBlock target)
@@ -1399,65 +1120,58 @@ namespace Lysis
             this.target = target;
         }
 
-        public int value
-        {
-            get { return value_; }
-        }
+        public int value => value_;
     }
 
     public class LSwitch : LControlInstruction
     {
         private LBlock defaultCase_;
-        private List<SwitchCase> cases_;
+        private readonly List<SwitchCase> cases_;
 
         public LSwitch(LBlock defaultCase, List<SwitchCase> cases)
         {
             defaultCase_ = defaultCase;
             cases_ = cases;
         }
-        public LBlock defaultCase
-        {
-            get { return defaultCase_; }
-        }
-        public override Opcode op
-        {
-            get { return Opcode.Switch; }
-        }
+        public LBlock defaultCase => defaultCase_;
+        public override Opcode op => Opcode.Switch;
         public override void replaceSuccessor(int i, LBlock block)
         {
             if (i == 0)
+            {
                 defaultCase_ = block;
+            }
+
             if (cases_.Count >= i && i > 0)
             {
                 cases_[i - 1].target = block;
             }
         }
-        public override int numSuccessors
-        {
-            get { return cases_.Count + 1; }
-        }
+        public override int numSuccessors => cases_.Count + 1;
         public override LBlock getSuccessor(int i)
         {
             if (i == 0)
+            {
                 return defaultCase_;
+            }
+
             return cases_[i - 1].target;
         }
-        public int numCases
-        {
-            get { return cases_.Count; }
-        }
+        public int numCases => cases_.Count;
         public SwitchCase getCase(int i)
         {
             return cases_[i];
         }
         public override void print(TextWriter tw)
         {
-            string text = defaultCase.id + (numCases > 0 ? "," : "");
-            for (int i = 0; i < numCases; i++)
+            var text = defaultCase.id + (numCases > 0 ? "," : "");
+            for (var i = 0; i < numCases; i++)
             {
                 text += getCase(i).target.id;
                 if (i != numCases - 1)
+                {
                     text += ",";
+                }
             }
             tw.Write("switch.pri -> " + text);
         }

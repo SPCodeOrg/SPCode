@@ -1,7 +1,7 @@
-﻿using SourcePawn;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SourcePawn;
 
 namespace Lysis
 {
@@ -17,7 +17,7 @@ namespace Lysis
 
     public abstract class ControlBlock
     {
-        NodeBlock source_;
+        private readonly NodeBlock source_;
         public abstract ControlType type { get; }
 
         public ControlBlock(NodeBlock source)
@@ -25,10 +25,7 @@ namespace Lysis
             source_ = source;
         }
 
-        public NodeBlock source
-        {
-            get { return source_; }
-        }
+        public NodeBlock source => source_;
     }
 
     public enum LogicOperator
@@ -41,8 +38,8 @@ namespace Lysis
     {
         public class Node
         {
-            private DNode expression_;
-            private LogicChain subChain_;
+            private readonly DNode expression_;
+            private readonly LogicChain subChain_;
 
             public Node(DNode expression)
             {
@@ -53,26 +50,15 @@ namespace Lysis
                 subChain_ = subChain;
             }
 
-            public DNode expression
-            {
-                get
-                {
+            public DNode expression =>
                     //Debug.Assert(!isSubChain);
-                    return expression_;
-                }
-            }
-            public bool isSubChain
-            {
-                get { return subChain_ != null; }
-            }
-            public LogicChain subChain
-            {
-                get { return subChain_; }
-            }
+                    expression_;
+            public bool isSubChain => subChain_ != null;
+            public LogicChain subChain => subChain_;
         }
 
-        private LogicOperator op_;
-        private List<Node> nodes_ = new List<Node>();
+        private readonly LogicOperator op_;
+        private readonly List<Node> nodes_ = new List<Node>();
 
         public LogicChain(LogicOperator op)
         {
@@ -88,23 +74,17 @@ namespace Lysis
             nodes_.Add(new Node(subChain));
         }
 
-        public LogicOperator op
-        {
-            get { return op_; }
-        }
-        public List<Node> nodes
-        {
-            get { return nodes_; }
-        }
+        public LogicOperator op => op_;
+        public List<Node> nodes => nodes_;
     };
 
     public class IfBlock : ControlBlock
     {
-        ControlBlock trueArm_;
-        ControlBlock falseArm_;
-        ControlBlock join_;
-        LogicChain logic_;
-        bool invert_;
+        private readonly ControlBlock trueArm_;
+        private readonly ControlBlock falseArm_;
+        private readonly ControlBlock join_;
+        private readonly LogicChain logic_;
+        private readonly bool invert_;
 
         public IfBlock(NodeBlock source, bool invert, ControlBlock trueArm, ControlBlock join)
           : base(source)
@@ -143,38 +123,20 @@ namespace Lysis
             logic_ = logic;
         }
 
-        public override ControlType type
-        {
-            get { return ControlType.If; }
-        }
-        public ControlBlock trueArm
-        {
-            get { return trueArm_; }
-        }
-        public ControlBlock falseArm
-        {
-            get { return falseArm_; }
-        }
-        public ControlBlock join
-        {
-            get { return join_; }
-        }
-        public bool invert
-        {
-            get { return invert_; }
-        }
-        public LogicChain logic
-        {
-            get { return logic_; }
-        }
+        public override ControlType type => ControlType.If;
+        public ControlBlock trueArm => trueArm_;
+        public ControlBlock falseArm => falseArm_;
+        public ControlBlock join => join_;
+        public bool invert => invert_;
+        public LogicChain logic => logic_;
     }
 
     public class WhileLoop : ControlBlock
     {
-        ControlBlock body_;
-        ControlBlock join_;
-        LogicChain logic_;
-        ControlType type_;
+        private readonly ControlBlock body_;
+        private readonly ControlBlock join_;
+        private readonly LogicChain logic_;
+        private readonly ControlType type_;
 
         public WhileLoop(ControlType type, NodeBlock source, ControlBlock body, ControlBlock join)
           : base(source)
@@ -193,30 +155,18 @@ namespace Lysis
             type_ = type;
         }
 
-        public override ControlType type
-        {
-            get { return type_; }
-        }
-        public ControlBlock body
-        {
-            get { return body_; }
-        }
-        public ControlBlock join
-        {
-            get { return join_; }
-        }
-        public LogicChain logic
-        {
-            get { return logic_; }
-        }
+        public override ControlType type => type_;
+        public ControlBlock body => body_;
+        public ControlBlock join => join_;
+        public LogicChain logic => logic_;
     }
 
     public class SwitchBlock : ControlBlock
     {
         public class Case
         {
-            private int value_;
-            private ControlBlock target_;
+            private readonly int value_;
+            private readonly ControlBlock target_;
 
             public Case(int value, ControlBlock target)
             {
@@ -224,19 +174,13 @@ namespace Lysis
                 target_ = target;
             }
 
-            public int value
-            {
-                get { return value_; }
-            }
-            public ControlBlock target
-            {
-                get { return target_; }
-            }
+            public int value => value_;
+            public ControlBlock target => target_;
         }
 
-        ControlBlock defaultCase_;
-        List<Case> cases_;
-        ControlBlock join_;
+        private readonly ControlBlock defaultCase_;
+        private readonly List<Case> cases_;
+        private readonly ControlBlock join_;
 
         public SwitchBlock(NodeBlock source, ControlBlock defaultCase, List<Case> cases, ControlBlock join)
           : base(source)
@@ -246,26 +190,14 @@ namespace Lysis
             join_ = join;
         }
 
-        public override ControlType type
-        {
-            get { return ControlType.Switch; }
-        }
-        public int numCases
-        {
-            get { return cases_.Count; }
-        }
-        public ControlBlock defaultCase
-        {
-            get { return defaultCase_; }
-        }
+        public override ControlType type => ControlType.Switch;
+        public int numCases => cases_.Count;
+        public ControlBlock defaultCase => defaultCase_;
         public Case getCase(int i)
         {
             return cases_[i];
         }
-        public ControlBlock join
-        {
-            get { return join_; }
-        }
+        public ControlBlock join => join_;
     }
 
     public class ReturnBlock : ControlBlock
@@ -275,15 +207,12 @@ namespace Lysis
         {
         }
 
-        public override ControlType type
-        {
-            get { return ControlType.Return; }
-        }
+        public override ControlType type => ControlType.Return;
     }
 
     public class StatementBlock : ControlBlock
     {
-        ControlBlock next_;
+        private readonly ControlBlock next_;
 
         public StatementBlock(NodeBlock source, ControlBlock next)
             : base(source)
@@ -291,20 +220,14 @@ namespace Lysis
             next_ = next;
         }
 
-        public override ControlType type
-        {
-            get { return ControlType.Statement; }
-        }
-        public ControlBlock next
-        {
-            get { return next_; }
-        }
+        public override ControlType type => ControlType.Statement;
+        public ControlBlock next => next_;
     }
 
     public class SourceStructureBuilder
     {
-        private NodeGraph graph_;
-        private Stack<NodeBlock> joinStack_ = new Stack<NodeBlock>();
+        private readonly NodeGraph graph_;
+        private readonly Stack<NodeBlock> joinStack_ = new Stack<NodeBlock>();
 
         public SourceStructureBuilder(NodeGraph graph)
         {
@@ -321,21 +244,28 @@ namespace Lysis
         }
         private bool isJoin(NodeBlock block)
         {
-            for (int i = joinStack_.Count - 1; i >= 0; i--)
+            for (var i = joinStack_.Count - 1; i >= 0; i--)
             {
                 if (joinStack_.ElementAt(i) == block)
+                {
                     return true;
+                }
             }
             return false;
         }
 
         private static bool HasSharedTarget(NodeBlock pred, DJumpCondition jcc)
         {
-            NodeBlock trueTarget = BlockAnalysis.EffectiveTarget(jcc.trueTarget);
+            var trueTarget = BlockAnalysis.EffectiveTarget(jcc.trueTarget);
             if (trueTarget.lir.numPredecessors == 1)
+            {
                 return false;
+            }
+
             if (pred.lir.idominated.Length > 3)
+            {
                 return true;
+            }
 
             // Hack... sniff out the case we care about, the true target
             // probably having a conditional.
@@ -353,12 +283,12 @@ namespace Lysis
 
         private static LogicOperator ToLogicOp(DJumpCondition jcc)
         {
-            NodeBlock trueTarget = BlockAnalysis.EffectiveTarget(jcc.trueTarget);
-            bool targetIsTruthy = false;
+            var trueTarget = BlockAnalysis.EffectiveTarget(jcc.trueTarget);
+            var targetIsTruthy = false;
             if (trueTarget.lir.instructions[0] is LConstant)
             {
-                LConstant constant = (LConstant)trueTarget.lir.instructions[0];
-                targetIsTruthy = (constant.val == 1);
+                var constant = (LConstant)trueTarget.lir.instructions[0];
+                targetIsTruthy = constant.val == 1;
             }
 
             // jump on true -> 1 == ||
@@ -366,7 +296,7 @@ namespace Lysis
             // other combinations are nonsense, so assert.
             ////Debug.Assert((jcc.spop == SPOpcode.jnz && targetIsTruthy) ||
             //             (jcc.spop == SPOpcode.jzer && !targetIsTruthy));
-            LogicOperator logicop = (jcc.spop == SPOpcode.jnz && targetIsTruthy)
+            var logicop = (jcc.spop == SPOpcode.jnz && targetIsTruthy)
                                     ? LogicOperator.Or
                                     : LogicOperator.And;
             return logicop;
@@ -374,36 +304,35 @@ namespace Lysis
 
         private static NodeBlock SingleTarget(NodeBlock block)
         {
-            DJump jump = (DJump)block.nodes.last;
+            var jump = (DJump)block.nodes.last;
             return jump.target;
         }
 
         private static void AssertInnerJoinValidity(NodeBlock join, NodeBlock earlyExit)
         {
-            DJumpCondition jcc = (DJumpCondition)join.nodes.last;
+            var jcc = (DJumpCondition)join.nodes.last;
             //Debug.Assert(BlockAnalysis.EffectiveTarget(jcc.trueTarget) == earlyExit || join == SingleTarget(earlyExit));
         }
 
         private LogicChain buildLogicChain(NodeBlock block, NodeBlock earlyExitStop, out NodeBlock join)
         {
-            DJumpCondition jcc = (DJumpCondition)block.nodes.last;
-            LogicChain chain = new LogicChain(ToLogicOp(jcc));
+            var jcc = (DJumpCondition)block.nodes.last;
+            var chain = new LogicChain(ToLogicOp(jcc));
 
             // Grab the true target, which will be either the "1" or "0"
             // branch of the AND/OR expression.
-            NodeBlock earlyExit = BlockAnalysis.EffectiveTarget(jcc.trueTarget);
+            var earlyExit = BlockAnalysis.EffectiveTarget(jcc.trueTarget);
 
-            NodeBlock exprBlock = block;
+            var exprBlock = block;
             do
             {
                 do
                 {
-                    DJumpCondition childJcc = (DJumpCondition)exprBlock.nodes.last;
+                    var childJcc = (DJumpCondition)exprBlock.nodes.last;
                     if (BlockAnalysis.EffectiveTarget(childJcc.trueTarget) != earlyExit)
                     {
                         // Parse a sub-expression.
-                        NodeBlock innerJoin;
-                        LogicChain rhs = buildLogicChain(exprBlock, earlyExit, out innerJoin);
+                        var rhs = buildLogicChain(exprBlock, earlyExit, out var innerJoin);
                         AssertInnerJoinValidity(innerJoin, earlyExit);
                         chain.append(rhs);
                         exprBlock = innerJoin;
@@ -423,7 +352,7 @@ namespace Lysis
                     //Debug.Assert(exprBlock.lir.instructions[0].op == Opcode.Constant);
 
                     // The next block is the join point.
-                    NodeBlock condBlock = SingleTarget(exprBlock);
+                    var condBlock = SingleTarget(exprBlock);
                     var last = condBlock.nodes.last;
                     DJumpCondition condJcc;
                     try
@@ -441,17 +370,23 @@ namespace Lysis
                     // gone a tad too far. This is the case for a simple
                     // expression like (a && b) || c.
                     if (earlyExitStop != null && SingleTarget(earlyExitStop) == condBlock)
+                    {
                         return chain;
+                    }
 
                     // If the true connects back to the early exit stop, we're
                     // done.
                     if (BlockAnalysis.EffectiveTarget(condJcc.trueTarget) == earlyExitStop)
+                    {
                         return chain;
+                    }
 
                     // If the true target does not have a shared target, we're
                     // done parsing the whole logic chain.
                     if (!HasSharedTarget(condBlock, condJcc))
+                    {
                         return chain;
+                    }
 
                     // Otherwise, there is another link in the chain. This link
                     // joins the existing chain to a new subexpression, which
@@ -460,19 +395,18 @@ namespace Lysis
                     earlyExit = BlockAnalysis.EffectiveTarget(condJcc.trueTarget);
 
                     // Build the right-hand side of the expression.
-                    NodeBlock innerJoin;
-                    LogicChain rhs = buildLogicChain(condJcc.falseTarget, earlyExit, out innerJoin);
+                    var rhs = buildLogicChain(condJcc.falseTarget, earlyExit, out var innerJoin);
                     AssertInnerJoinValidity(innerJoin, earlyExit);
 
                     // Build the full expression.
-                    LogicChain root = new LogicChain(ToLogicOp(condJcc));
+                    var root = new LogicChain(ToLogicOp(condJcc));
                     root.append(chain);
                     root.append(rhs);
                     chain = root;
 
                     // If the inner join's false target is a conditional, the
                     // outer expression may continue.
-                    DJumpCondition innerJcc = (DJumpCondition)innerJoin.nodes.last;
+                    var innerJcc = (DJumpCondition)innerJoin.nodes.last;
                     if (innerJcc.falseTarget.nodes.last.type == NodeType.JumpCondition)
                     {
                         exprBlock = innerJcc.falseTarget;
@@ -496,9 +430,15 @@ namespace Lysis
             if (block.lir.idominated.Length == 2)
             {
                 if (jcc.trueTarget != BlockAnalysis.EffectiveTarget(jcc.trueTarget))
+                {
                     return jcc.trueTarget;
+                }
+
                 if (jcc.falseTarget != BlockAnalysis.EffectiveTarget(jcc.falseTarget))
+                {
                     return jcc.falseTarget;
+                }
+
                 return null;
             }
             return graph_[block.lir.idominated[2].id];
@@ -511,17 +451,16 @@ namespace Lysis
             // |n| has a target to a shared "success" block, setting a
             // phony variable. We decompose this giant mess into the intended
             // sequence of expressions.
-            NodeBlock join;
-            LogicChain chain = buildLogicChain(block, null, out join);
+            var chain = buildLogicChain(block, null, out var join);
 
-            DJumpCondition finalJcc = (DJumpCondition)join.nodes.last;
+            var finalJcc = (DJumpCondition)join.nodes.last;
             //Debug.Assert(finalJcc.spop == SPOpcode.jzer);
 
             // The final conditional should have the normal dominator
             // properties: 2 or 3 idoms, depending on the number of arms.
             // Because of critical edge splitting, we may have 3 idoms
             // even if there are only actually two arms.
-            NodeBlock joinBlock = findJoinOfSimpleIf(join, finalJcc);
+            var joinBlock = findJoinOfSimpleIf(join, finalJcc);
 
             // If an AND chain reaches its end, the result is 1. jzer tests
             // for zero, so this is effectively testing (!success).
@@ -530,62 +469,72 @@ namespace Lysis
             //
             // In both cases, the true target represents a failure, so flip
             // the targets around.
-            NodeBlock trueBlock = finalJcc.falseTarget;
-            NodeBlock falseBlock = finalJcc.trueTarget;
+            var trueBlock = finalJcc.falseTarget;
+            var falseBlock = finalJcc.trueTarget;
 
             // If there is no join block, both arms terminate control flow,
             // eliminate one arm and use the other as a join point.
             if (joinBlock == null)
+            {
                 joinBlock = falseBlock;
+            }
 
             if (join.lir.idominated.Length == 2 ||
                 BlockAnalysis.EffectiveTarget(falseBlock) == joinBlock)
             {
                 if (join.lir.idominated.Length == 3)
+                {
                     joinBlock = BlockAnalysis.EffectiveTarget(falseBlock);
+                }
 
                 // One-armed structure.
                 pushScope(joinBlock);
-                ControlBlock trueArm1 = traverseBlock(trueBlock);
+                var trueArm1 = traverseBlock(trueBlock);
                 popScope();
 
-                ControlBlock joinArm1 = traverseBlock(joinBlock);
+                var joinArm1 = traverseBlock(joinBlock);
                 return new IfBlock(block, chain, trueArm1, joinArm1);
             }
 
             //Debug.Assert(join.lir.idominated.Length == 3);
 
             pushScope(joinBlock);
-            ControlBlock trueArm2 = traverseBlock(trueBlock);
-            ControlBlock falseArm = traverseBlock(falseBlock);
+            var trueArm2 = traverseBlock(trueBlock);
+            var falseArm = traverseBlock(falseBlock);
             popScope();
 
-            ControlBlock joinArm2 = traverseBlock(joinBlock);
+            var joinArm2 = traverseBlock(joinBlock);
             return new IfBlock(block, chain, trueArm2, falseArm, joinArm2);
         }
 
         private IfBlock traverseIf(NodeBlock block, DJumpCondition jcc)
         {
             if (HasSharedTarget(block, jcc))
+            {
                 return traverseComplexIf(block, jcc);
+            }
 
-            NodeBlock trueTarget = (jcc.spop == SPOpcode.jzer) ? jcc.falseTarget : jcc.trueTarget;
-            NodeBlock falseTarget = (jcc.spop == SPOpcode.jzer) ? jcc.trueTarget : jcc.falseTarget;
-            NodeBlock joinTarget = findJoinOfSimpleIf(block, jcc);
+            var trueTarget = (jcc.spop == SPOpcode.jzer) ? jcc.falseTarget : jcc.trueTarget;
+            var falseTarget = (jcc.spop == SPOpcode.jzer) ? jcc.trueTarget : jcc.falseTarget;
+            var joinTarget = findJoinOfSimpleIf(block, jcc);
 
             // If there is no join block (both arms terminate control flow),
             // eliminate one arm and use the other as a join point.
             if (joinTarget == null)
+            {
                 joinTarget = falseTarget;
+            }
 
             // If the false target is equivalent to the join point, eliminate
             // it.
             if (BlockAnalysis.EffectiveTarget(falseTarget) == joinTarget)
+            {
                 falseTarget = null;
+            }
 
             // If the true target is equivalent to the join point, promote
             // the false target to the true target and undo the inversion.
-            bool invert = false;
+            var invert = false;
             if (BlockAnalysis.EffectiveTarget(trueTarget) == joinTarget)
             {
                 trueTarget = falseTarget;
@@ -595,15 +544,17 @@ namespace Lysis
 
             // If there is always a true target and a join target.
             pushScope(joinTarget);
-            ControlBlock trueArm = traverseBlock(trueTarget);
+            var trueArm = traverseBlock(trueTarget);
             popScope();
 
-            ControlBlock joinArm = traverseJoin(joinTarget);
+            var joinArm = traverseJoin(joinTarget);
             if (falseTarget == null)
+            {
                 return new IfBlock(block, invert, trueArm, joinArm);
+            }
 
             pushScope(joinTarget);
-            ControlBlock falseArm = traverseBlock(falseTarget);
+            var falseArm = traverseBlock(falseTarget);
             popScope();
 
             return new IfBlock(block, invert, trueArm, falseArm, joinArm);
@@ -614,8 +565,8 @@ namespace Lysis
         {
             //Debug.Assert(effectiveHeader.lir.numSuccessors == 2);
 
-            LBlock succ1 = effectiveHeader.lir.getSuccessor(0);
-            LBlock succ2 = effectiveHeader.lir.getSuccessor(1);
+            var succ1 = effectiveHeader.lir.getSuccessor(0);
+            var succ2 = effectiveHeader.lir.getSuccessor(1);
 
             if (succ1.loop != header.lir || succ2.loop != header.lir)
             {
@@ -650,7 +601,7 @@ namespace Lysis
                 // Neither successor of the header exits the loop, so this is
                 // probably a do-while loop. For now, assume it's simple.
                 //Debug.Assert(header == effectiveHeader);
-                LBlock backedge = header.lir.backedge;
+                var backedge = header.lir.backedge;
                 if (BlockAnalysis.GetEmptyTarget(graph_[backedge.id]) == header)
                 {
                     // Skip an empty block sitting in between the backedge and
@@ -680,15 +631,17 @@ namespace Lysis
 
         private ControlBlock traverseLoop(NodeBlock block)
         {
-            DNode last = block.nodes.last;
+            var last = block.nodes.last;
 
-            NodeBlock effectiveHeader = block;
+            var effectiveHeader = block;
             LogicChain chain = null;
             if (last.type == NodeType.JumpCondition)
             {
-                DJumpCondition jcc = (DJumpCondition)last;
+                var jcc = (DJumpCondition)last;
                 if (HasSharedTarget(block, jcc))
+                {
                     chain = buildLogicChain(block, null, out effectiveHeader);
+                }
             }
 
             last = effectiveHeader.nodes.last;
@@ -699,9 +652,8 @@ namespace Lysis
                 // Assert that the backedge is a straight jump.
                 //Debug.Assert(BlockAnalysis.GetSingleTarget(graph_[block.lir.backedge.id]) == block);
 
-                NodeBlock join, body, cond;
-                ControlType type = findLoopJoinAndBody(block, effectiveHeader, out join, out body, out cond);
-                ControlBlock joinArm = traverseBlock(join);
+                var type = findLoopJoinAndBody(block, effectiveHeader, out var join, out var body, out var cond);
+                var joinArm = traverseBlock(join);
 
                 ControlBlock bodyArm = null;
                 if (body != null)
@@ -714,7 +666,10 @@ namespace Lysis
                 }
 
                 if (chain != null)
+                {
                     return new WhileLoop(type, chain, bodyArm, joinArm);
+                }
+
                 return new WhileLoop(type, cond, bodyArm, joinArm);
             }
 
@@ -724,12 +679,16 @@ namespace Lysis
         private ControlBlock traverseSwitch(NodeBlock block, DSwitch switch_)
         {
             var dominators = new List<LBlock>();
-            for (int i = 0; i < block.lir.idominated.Length; i++)
+            for (var i = 0; i < block.lir.idominated.Length; i++)
+            {
                 dominators.Add(block.lir.idominated[i]);
+            }
 
             dominators.Remove(switch_.defaultCase);
-            for (int i = 0; i < switch_.numCases; i++)
+            for (var i = 0; i < switch_.numCases; i++)
+            {
                 dominators.Remove(switch_.getCase(i).target);
+            }
 
             NodeBlock join = null;
             if (dominators.Count > 0)
@@ -740,14 +699,16 @@ namespace Lysis
 
             ControlBlock joinArm = null;
             if (join != null)
+            {
                 joinArm = traverseBlock(join);
+            }
 
             pushScope(join);
             var cases = new List<SwitchBlock.Case>();
-            ControlBlock defaultArm = traverseBlock(graph_[switch_.defaultCase.id]);
-            for (int i = 0; i < switch_.numCases; i++)
+            var defaultArm = traverseBlock(graph_[switch_.defaultCase.id]);
+            for (var i = 0; i < switch_.numCases; i++)
             {
-                ControlBlock arm = traverseBlock(graph_[switch_.getCase(i).target.id]);
+                var arm = traverseBlock(graph_[switch_.getCase(i).target.id]);
                 cases.Add(new SwitchBlock.Case(switch_.getCase(i).value, arm));
             }
             popScope();
@@ -758,7 +719,10 @@ namespace Lysis
         private ControlBlock traverseJoin(NodeBlock block)
         {
             if (isJoin(block))
+            {
                 return null;
+            }
+
             return traverseBlock(block);
         }
 
@@ -769,25 +733,31 @@ namespace Lysis
                 return null;
             }
 
-            DNode last = block.nodes.last;
+            var last = block.nodes.last;
 
             if (last.type == NodeType.JumpCondition)
+            {
                 return traverseIf(block, (DJumpCondition)last);
+            }
 
             if (last.type == NodeType.Jump)
             {
-                DJump jump = (DJump)last;
-                NodeBlock target = BlockAnalysis.EffectiveTarget(jump.target);
+                var jump = (DJump)last;
+                var target = BlockAnalysis.EffectiveTarget(jump.target);
 
                 ControlBlock next = null;
                 if (!isJoin(target))
+                {
                     next = traverseBlock(target);
+                }
 
                 return new StatementBlock(block, next);
             }
 
             if (last.type == NodeType.Switch)
+            {
                 return traverseSwitch(block, (DSwitch)last);
+            }
 
             //Debug.Assert(last.type == NodeType.Return);
             return new ReturnBlock(block);
