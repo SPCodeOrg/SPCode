@@ -5,9 +5,9 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using SpcodeUpdater.Properties;
+using SPCodeUpdater.Properties;
 
-namespace SpcodeUpdater
+namespace SPCodeUpdater
 {
     public static class Program
     {

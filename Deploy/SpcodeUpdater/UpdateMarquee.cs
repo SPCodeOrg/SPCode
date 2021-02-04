@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using SpcodeUpdater.Properties;
+using SPCodeUpdater.Properties;
 
-namespace SpcodeUpdater
+namespace SPCodeUpdater
 {
     public partial class UpdateMarquee : Form
     {

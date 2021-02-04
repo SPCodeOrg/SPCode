@@ -1,4 +1,4 @@
-﻿namespace SpcodeUpdater
+﻿namespace SPCodeUpdater
 {
     partial class UpdateMarquee
     {
