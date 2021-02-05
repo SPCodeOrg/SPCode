@@ -1027,7 +1027,7 @@
         <saveas>Guardar como...</saveas>
         <close>Cerrar</close>
         <closeall>Cerrar todo</closeall>
-        <build>Construir</build>
+        <build>Compilar</build>
         <copyplugin>Copiar plugins</copyplugin>
         <sendrcon>Enviar comandos RCON</sendrcon>
         <config>Configuración</config>
@@ -1042,7 +1042,7 @@
         <jumpto>Ir a...</jumpto>
         <togglcomment>Comentar línea</togglcomment>
         <selectall>Seleccionar todo</selectall>
-        <findreplace>Buscar &amp; Reemplazar</findreplace>
+        <findreplace>Buscar y reemplazar</findreplace>
         <tools>Herramientas</tools>
         <options>Opciones</options>
         <parsedincdir>Analizar el directorio include</parsedincdir>
