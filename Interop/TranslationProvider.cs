@@ -94,6 +94,7 @@ namespace SPCode.Interop
         private void FillToEnglishDefaults()
         {
             language.Clear();
+            language.Add("File", "File");
             language.Add("Language", "English");
             language.Add("ServerRunning", "Server running");
             language.Add("Saving", "Saving");
