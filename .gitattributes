@@ -17,5 +17,12 @@
 *.RTF	 diff=astextplain
 
 # Language override for sourcemod files
-*.sp linguist-vendored=false
-*.inc linguist-vendored=false
+*.sp -linguist-detectable
+*.smx -linguist-detectable
+*.inc -linguist-detectable
+*.cpp -linguist-detectable
+*.dll -linguist-detectable
+*.nsi -linguist-detectable
+*.nsh -linguist-detectable
+*.ps1 -linguist-detectable
+Deploy/ -linguist-vendored
