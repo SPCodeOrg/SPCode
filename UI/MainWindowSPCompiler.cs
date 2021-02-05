@@ -132,7 +132,7 @@ namespace SPCode.UI
                                 File.Delete(outFile);
                             }
 
-                            var errorFile = $@"{Paths.GetErrorFilesDirectory()}\error_{Environment.TickCount}_{file.GetHashCode():X}_{i}.txt";
+                            var errorFile = $@"{fileInfo.DirectoryName}\error_{Environment.TickCount}_{file.GetHashCode():X}_{i}.txt";
                             if (File.Exists(errorFile))
                             {
                                 File.Delete(errorFile);
