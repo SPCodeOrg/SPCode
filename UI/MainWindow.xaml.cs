@@ -86,9 +86,7 @@ namespace SPCode.UI
             DisableServerAnim = (Storyboard)Resources["DisableServerAnim"];
             ChangeObjectBrowserToDirectory(Program.OptionsObject.Program_ObjectBrowserDirectory);
             Language_Translate(true);
-#if DEBUG
-            TryLoadSourceFile(@"C:\Users\Jelle\Desktop\scripting\AeroControler.sp", false);
-#endif
+
             if (Program.OptionsObject.LastOpenFiles != null)
             {
                 foreach (var file in Program.OptionsObject.LastOpenFiles)

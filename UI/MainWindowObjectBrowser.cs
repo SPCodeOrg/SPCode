@@ -84,7 +84,7 @@ namespace SPCode.UI
             if (sender is ListViewItem item)
             {
                 var cc = Program.Configs[Program.SelectedConfig];
-                if (cc.SMDirectories.Length > 0)
+                if (cc.SMDirectories.Count > 0)
                 {
                     ChangeObjectBrowserToDirectory(cc.SMDirectories[0]);
                 }
@@ -129,7 +129,7 @@ namespace SPCode.UI
             if (string.IsNullOrWhiteSpace(dir))
             {
                 var cc = Program.Configs[Program.SelectedConfig];
-                if (cc.SMDirectories.Length > 0)
+                if (cc.SMDirectories.Count > 0)
                 {
                     dir = cc.SMDirectories[0];
                 }

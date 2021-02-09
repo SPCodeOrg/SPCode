@@ -23,7 +23,7 @@ namespace SPCode.UI.Windows
     public partial class ConfigWindow
     {
         private bool AllowChange;
-        private bool NeedsSMDefInvalidation;
+        //private bool NeedsSMDefInvalidation;
         private readonly string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
         private ICommand textBoxButtonFileCmd;
@@ -144,14 +144,9 @@ namespace SPCode.UI.Windows
 
             AllowChange = false;
             var c = Program.Configs[index];
-            C_Name.Text = c.Name;
-            var SMDirOut = new StringBuilder();
-            foreach (var dir in c.SMDirectories)
-            {
-                SMDirOut.Append(dir.Trim() + ";");
-            }
 
-            C_SMDir.Text = SMDirOut.ToString();
+            C_Name.Text = c.Name;
+            C_SMDir.ItemsSource = c.SMDirectories;
             C_AutoCopy.IsChecked = c.AutoCopy;
             C_AutoUpload.IsChecked = c.AutoUpload;
             C_AutoRCON.IsChecked = c.AutoRCON;
@@ -207,6 +202,37 @@ namespace SPCode.UI.Windows
             ConfigListBox.SelectedIndex = 0;
         }
 
+        private void AddSMDirButton_Click(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog
+            {
+                InitialDirectory = "C:\\Users",
+                IsFolderPicker = true
+            };
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                var c = Program.Configs[Program.SelectedConfig];
+                if (c.SMDirectories.Contains(dialog.FileName))
+                {
+                    return;
+                }
+                c.SMDirectories.Add(dialog.FileName);
+                C_SMDir.Items.Refresh();
+            }
+        }
+
+        private void RemoveSMDirButton_Click(object sender, RoutedEventArgs e)
+        {
+            var c = Program.Configs[Program.SelectedConfig];
+            if (C_SMDir.SelectedItem == null)
+            {
+                return;
+            }
+            c.SMDirectories.Remove(C_SMDir.SelectedItem.ToString());
+            C_SMDir.Items.Refresh();
+
+        }
+
         private void C_Name_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!AllowChange)
@@ -217,25 +243,6 @@ namespace SPCode.UI.Windows
             var Name = C_Name.Text;
             Program.Configs[ConfigListBox.SelectedIndex].Name = Name;
             ((ListBoxItem)ConfigListBox.SelectedItem).Content = Name;
-        }
-
-        private void C_SMDir_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!AllowChange)
-            {
-                return;
-            }
-
-            var SMDirs = C_SMDir.Text.Split(';');
-            var dirs = new List<string>();
-            foreach (var dir in SMDirs)
-            {
-                var d = dir.Trim();
-                dirs.Add(d);
-            }
-
-            Program.Configs[ConfigListBox.SelectedIndex].SMDirectories = dirs.ToArray();
-            NeedsSMDefInvalidation = true;
         }
 
         private void C_CopyDir_TextChanged(object sender, TextChangedEventArgs e)
@@ -453,13 +460,13 @@ namespace SPCode.UI.Windows
 
         private void MetroWindow_Closed(object sender, EventArgs e)
         {
-            if (NeedsSMDefInvalidation)
-            {
-                foreach (var config in Program.Configs)
-                {
-                    config.InvalidateSMDef();
-                }
-            }
+            //if (NeedsSMDefInvalidation)
+            //{
+            //    foreach (var config in Program.Configs)
+            //    {
+            //        config.InvalidateSMDef();
+            //    }
+            //}
 
             Program.MainWindow.FillConfigMenu();
             Program.MainWindow.ChangeConfig(Program.SelectedConfig);
@@ -527,7 +534,6 @@ namespace SPCode.UI.Windows
             DeleteButton.Content = Program.Translations.GetLanguage("Delete");
             NameBlock.Text = Program.Translations.GetLanguage("Name");
             ScriptingDirBlock.Text = Program.Translations.GetLanguage("ScriptDir");
-            DelimitWiBlock.Text = $"({Program.Translations.GetLanguage("DelimiedWi")}";
             CopyDirBlock.Text = Program.Translations.GetLanguage("CopyDir");
             ServerExeBlock.Text = Program.Translations.GetLanguage("ServerExe");
             ServerStartArgBlock.Text = Program.Translations.GetLanguage("serverStartArgs");

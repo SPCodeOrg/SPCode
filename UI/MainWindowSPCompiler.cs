@@ -24,25 +24,33 @@ namespace SPCode.UI
         private bool ServerIsRunning;
         private Process ServerProcess;
 
-        private async void Compile_SPScripts(bool All = true)
+        private async void Compile_SPScripts(bool compileAll = true)
         {
+            // Checks if the program is compiling to avoid doing it again
             if (InCompiling)
             {
                 return;
             }
 
+            // Saves all editors, sets InCompiling flag, clears all fields
             Command_SaveAll();
             InCompiling = true;
             compiledFiles.Clear();
             compiledFileNames.Clear();
             nonUploadedFiles.Clear();
+
+            // Grabs current config
             var c = Program.Configs[Program.SelectedConfig];
+
+            // Creates all flags and wrappers
             FileInfo spCompInfo = null;
             var SpCompFound = false;
             var PressedEscape = false;
+
+            // Searches for the spcomp.exe compiler
             foreach (var dir in c.SMDirectories)
             {
-                spCompInfo = new FileInfo(Path.Combine(dir, "spcomp.exe"));
+                spCompInfo = new FileInfo(Path.Combine(dir, Constants.CompilerFileName));
                 if (spCompInfo.Exists)
                 {
                     SpCompFound = true;
@@ -52,8 +60,9 @@ namespace SPCode.UI
 
             if (SpCompFound)
             {
+                // If the compiler was found, it starts adding to a list all of the files to compile
                 var filesToCompile = new List<string>();
-                if (All)
+                if (compileAll)
                 {
                     var editors = GetAllEditorElements();
                     if (editors == null)
@@ -88,12 +97,13 @@ namespace SPCode.UI
                     if (ee.FullFilePath.EndsWith(".sp"))
                     {
                         filesToCompile.Add(ee.FullFilePath);
-                    }
+                   }
                 }
 
                 var compileCount = filesToCompile.Count;
                 if (compileCount > 0)
                 {
+                    // Shows the 'Compiling...' window
                     ErrorResultGrid.Items.Clear();
                     var progressTask = await this.ShowProgressAsync(Program.Translations.GetLanguage("Compiling"), "",
                         false, MetroDialogOptions);
@@ -103,6 +113,8 @@ namespace SPCode.UI
                         new Regex(
                             @"^(?<file>.+?)\((?<line>[0-9]+(\s*--\s*[0-9]+)?)\)\s*:\s*(?<type>[a-zA-Z]+\s+([a-zA-Z]+\s+)?[0-9]+)\s*:(?<details>.+)",
                             RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
+
+                    // Loops through all files to compile
                     for (var i = 0; i < compileCount; ++i)
                     {
                         if (!InCompiling) //pressed escape

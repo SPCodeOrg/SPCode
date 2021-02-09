@@ -122,7 +122,7 @@ namespace SPCode.Interop
                         var c = new Config
                         {
                             Name = _Name,
-                            SMDirectories = SMDirs.ToArray(),
+                            SMDirectories = SMDirs,
                             Standard = IsStandardConfig,
                             AutoCopy = _AutoCopy,
                             AutoRCON = _AutoRCON,
@@ -223,7 +223,7 @@ namespace SPCode.Interop
 
         private SMDefinition SMDef;
 
-        public string[] SMDirectories = new string[0];
+        public List<string> SMDirectories;
 
         public bool Standard;
         public int VerboseLevel = 1;

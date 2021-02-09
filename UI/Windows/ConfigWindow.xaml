@@ -33,44 +33,41 @@
         <Line X1="200" X2="200" Y1="0" Y2="500" VerticalAlignment="Stretch" Stroke="#44000000" StrokeThickness="1" />
         <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="201,35,0,0">
             <Grid Margin="0,5,0,5">
-                <TextBlock Name="NameBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,00,0,0" Text="Name: " IsHitTestVisible="False" />
-                <TextBlock Name="ScriptingDirBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,30,0,0" Text="Scripting Directories: " IsHitTestVisible="False" />
-                <TextBlock x:Name="DelimitWiBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,43,0,0" IsHitTestVisible="False" Foreground="Gray" Width="150" ><Run Text="(Delimit with "/><Run Text="sem"/><Run Text="icolon)"/></TextBlock>
-                <TextBlock Name="CopyDirBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,65,0,0" Text="Copy Directory: " IsHitTestVisible="False" />
-                <TextBlock Name="ServerExeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,95,0,0" Text="Server Executable: " IsHitTestVisible="False" />
-                <TextBlock Name="ServerStartArgBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,125,0,0" Text="Server-Start Arguments: " IsHitTestVisible="False" />
-                <TextBlock Name="PreBuildBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,158,0,0" Text="Pre-Build Commandline: " IsHitTestVisible="False" />
-                <TextBlock Name="PostBuildBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,265,0,0" Text="Post-Build Commandline: " IsHitTestVisible="False" />
-                <TextBlock Name="OptimizeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,370,0,0" Text="Optimization Level: " IsHitTestVisible="False" />
-                <TextBlock Name="VerboseBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,400,0,0" Text="Verbose Level: " IsHitTestVisible="False" />
-                <CheckBox Name="C_AutoCopy" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="321,370,0,0" Content="Auto Copy after Compile" Checked="C_AutoCopy_Changed" Unchecked="C_AutoCopy_Changed" />
-                <CheckBox Name="C_DeleteAfterCopy" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="321,399,0,0" Content="Delete old .smx after copy" Checked="C_DeleteAfterCopy_Changed" Unchecked="C_DeleteAfterCopy_Changed" />
-                <CheckBox Name="C_AutoUpload" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="500,370,0,0" Content="Upload .smx after Compile" Checked="C_AutoUpload_Changed" Unchecked="C_AutoUpload_Changed" />
-                <CheckBox Name="C_AutoRCON" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="500,399,0,0" Content="Send RCON Commands after Compile" Checked="C_AutoRCON_Changed" Unchecked="C_AutoRCON_Changed" />
+                <TextBlock Name="NameBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,6,0,0" Text="Name: " IsHitTestVisible="False" />
+                <TextBlock Name="ScriptingDirBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,70,0,0" Text="Scripting Directories: " IsHitTestVisible="False" />
+
+                <TextBlock Name="CopyDirBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,131,0,0" Text="Copy Directory: " IsHitTestVisible="False" />
+                <TextBlock Name="ServerExeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,161,0,0" Text="Server Executable: " IsHitTestVisible="False" />
+                <TextBlock Name="ServerStartArgBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,191,0,0" Text="Server-Start Arguments: " IsHitTestVisible="False" />
+                <TextBlock Name="PreBuildBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,224,0,0" Text="Pre-Build Commandline: " IsHitTestVisible="False" />
+                <TextBlock Name="PostBuildBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,331,0,0" Text="Post-Build Commandline: " IsHitTestVisible="False" />
+                <TextBlock Name="OptimizeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,436,0,0" Text="Optimization Level: " IsHitTestVisible="False" />
+                <TextBlock Name="VerboseBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,466,0,0" Text="Verbose Level: " IsHitTestVisible="False" />
+                <CheckBox Name="C_AutoCopy" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="321,436,0,0" Content="Auto Copy after Compile" Checked="C_AutoCopy_Changed" Unchecked="C_AutoCopy_Changed" />
+                <CheckBox Name="C_DeleteAfterCopy" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="321,465,0,0" Content="Delete old .smx after copy" Checked="C_DeleteAfterCopy_Changed" Unchecked="C_DeleteAfterCopy_Changed" />
+                <CheckBox Name="C_AutoUpload" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="500,436,0,0" Content="Upload .smx after Compile" Checked="C_AutoUpload_Changed" Unchecked="C_AutoUpload_Changed" />
+                <CheckBox Name="C_AutoRCON" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="500,465,0,0" Content="Send RCON Commands after Compile" Checked="C_AutoRCON_Changed" Unchecked="C_AutoRCON_Changed" />
                 <TextBox Name="C_Name" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,0,5,0" TextChanged="C_Name_TextChanged" />
-                <TextBox Name="C_SMDir" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,30,5,0" TextChanged="C_SMDir_TextChanged"
+                <TextBox Name="C_CopyDir" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,126,5,0" TextChanged="C_CopyDir_TextChanged"
                          Style="{DynamicResource SearchMetroTextBox}"
-                         controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFolderCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
-                <TextBox Name="C_CopyDir" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,60,5,0" TextChanged="C_CopyDir_TextChanged"
-                         Style="{DynamicResource SearchMetroTextBox}"
-                         controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFolderCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
-                <TextBox Name="C_ServerFile" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,90,5,0" TextChanged="C_ServerFile_TextChanged"
+                         controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFolderCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Background="#FF252525" />
+                <TextBox Name="C_ServerFile" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,156,5,0" TextChanged="C_ServerFile_TextChanged"
                          Style="{StaticResource SearchMetroTextBox}"
                          controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFileCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
-                <TextBox Name="C_ServerArgs" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,120,5,0" TextChanged="C_ServerArgs_TextChanged" />
-                <TextBox Name="C_PreBuildCmd" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,180,5,0" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PreBuildCmd_TextChanged" />
-                <TextBox Name="C_PostBuildCmd" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,285,5,0" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PostBuildCmd_TextChanged" />
-                <Slider Name="C_OptimizationLevel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="195,370,0,0" Width="75" Minimum="0" Maximum="2" TickFrequency="2" IsSnapToTickEnabled="True" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="C_OptimizationLevel_ValueChanged" />
-                <Slider Name="C_VerboseLevel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="195,400,0,0" Width="75" Minimum="0" Maximum="2" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="C_VerboseLevel_ValueChanged" />
-                <TextBlock Name="FTPHostBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,435,0,0" Text="FTP Host:" IsHitTestVisible="False" />
-                <TextBlock Name="FTPUserBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,465,0,0" Text="FTP User:" IsHitTestVisible="False" />
-                <TextBlock Name="FTPPWBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,495,0,0" Text="FTP Password:" IsHitTestVisible="False" />
-                <TextBlock Name="FTPDirBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,525,0,0" Text="FTP Directory:" IsHitTestVisible="False" />
-                <TextBox Name="C_FTPHost" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,430,5,0" TextChanged="C_FTPHost_TextChanged" />
-                <TextBox Name="C_FTPUser" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,460,5,0" TextChanged="C_FTPUser_TextChanged" />
-                <PasswordBox Name="C_FTPPW" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,490,5,0" PasswordChanged="C_FTPPW_TextChanged" />
-                <TextBox Name="C_FTPDir" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,520,5,0" TextChanged="C_FTPDir_TextChanged" />
-                <ComboBox Name="CMD_ItemC" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,150,5,0" Text="Commandline variables" Width="200" SelectedIndex="0">
+                <TextBox Name="C_ServerArgs" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,186,5,0" TextChanged="C_ServerArgs_TextChanged" />
+                <TextBox Name="C_PreBuildCmd" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,246,5,0" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PreBuildCmd_TextChanged" />
+                <TextBox Name="C_PostBuildCmd" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,351,5,0" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PostBuildCmd_TextChanged" />
+                <Slider Name="C_OptimizationLevel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="195,436,0,0" Width="75" Minimum="0" Maximum="2" TickFrequency="2" IsSnapToTickEnabled="True" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="C_OptimizationLevel_ValueChanged" />
+                <Slider Name="C_VerboseLevel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="195,466,0,0" Width="75" Minimum="0" Maximum="2" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="C_VerboseLevel_ValueChanged" />
+                <TextBlock Name="FTPHostBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,501,0,0" Text="FTP Host:" IsHitTestVisible="False" />
+                <TextBlock Name="FTPUserBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,531,0,0" Text="FTP User:" IsHitTestVisible="False" />
+                <TextBlock Name="FTPPWBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,561,0,0" Text="FTP Password:" IsHitTestVisible="False" />
+                <TextBlock Name="FTPDirBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,591,0,0" Text="FTP Directory:" IsHitTestVisible="False" />
+                <TextBox Name="C_FTPHost" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,496,5,0" TextChanged="C_FTPHost_TextChanged" />
+                <TextBox Name="C_FTPUser" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,526,5,0" TextChanged="C_FTPUser_TextChanged" />
+                <PasswordBox Name="C_FTPPW" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,556,5,0" PasswordChanged="C_FTPPW_TextChanged" />
+                <TextBox Name="C_FTPDir" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,586,5,0" TextChanged="C_FTPDir_TextChanged" />
+                <ComboBox Name="CMD_ItemC" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,216,5,0" Text="Commandline variables" Width="200" SelectedIndex="0">
                     <ComboBoxItem Name="ItemC_EditorDir" Content="{}{editordir} - Directory of the SPEdit binary" />
                     <ComboBoxItem Name="ItemC_ScriptDir" Content="{}{scriptdir} - Directory of the Compiling script" />
                     <ComboBoxItem Name="ItemC_CopyDir" Content="{}{copydir} - Directory where the smx should be copied" />
@@ -79,24 +76,28 @@
                     <ComboBoxItem Name="ItemC_PluginFile" Content="{}{pluginfile} - Full Directory and Name of the compiled script" />
                     <ComboBoxItem Name="ItemC_PluginName" Content="{}{pluginname} - File Name of the compiled script" />
                 </ComboBox>
-                <TextBlock Name="RConEngineBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,570,0,0" Text="RCon Server Engine:" IsHitTestVisible="False" />
-                <TextBlock Name="RConIPBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,600,0,0" Text="RCon Server IP:" IsHitTestVisible="False" />
-                <TextBlock Name="RConPortBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,630,0,0" Text="RCon Server Port:" IsHitTestVisible="False" />
-                <TextBlock Name="RConPWBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,660,0,0" Text="RCon Password:" IsHitTestVisible="False" />
-                <TextBlock Name="RConComBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,690,0,0" Text="RCon Commands:" IsHitTestVisible="False" />
-                <ComboBox Name="C_RConEngine" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,565,5,0" SelectionChanged="C_RConEngine_Changed">
+                <TextBlock Name="RConEngineBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,636,0,0" Text="RCon Server Engine:" IsHitTestVisible="False" />
+                <TextBlock Name="RConIPBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,666,0,0" Text="RCon Server IP:" IsHitTestVisible="False" />
+                <TextBlock Name="RConPortBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,696,0,0" Text="RCon Server Port:" IsHitTestVisible="False" />
+                <TextBlock Name="RConPWBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,726,0,0" Text="RCon Password:" IsHitTestVisible="False" />
+                <TextBlock Name="RConComBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,756,0,0" Text="RCon Commands:" IsHitTestVisible="False" />
+                <ComboBox Name="C_RConEngine" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,631,5,0" SelectionChanged="C_RConEngine_Changed">
                     <ComboBoxItem Content="Source Engine" IsSelected="True" />
                     <ComboBoxItem Content="Gold Source Engine" />
                 </ComboBox>
-                <TextBox Name="C_RConIP" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,595,5,0" TextChanged="C_RConIP_TextChanged" />
-                <TextBox Name="C_RConPort" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,625,5,0" TextChanged="C_RConPort_TextChanged" />
-                <PasswordBox Name="C_RConPW" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,655,5,0" PasswordChanged="C_RConPW_TextChanged" />
-                <ComboBox Name="Rcon_MenuC" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,685,5,0" Text="Rcon commandline variables" Width="200" SelectedIndex="0">
+                <TextBox Name="C_RConIP" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,661,5,0" TextChanged="C_RConIP_TextChanged" />
+                <TextBox Name="C_RConPort" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,691,5,0" TextChanged="C_RConPort_TextChanged" />
+                <PasswordBox Name="C_RConPW" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,721,5,0" PasswordChanged="C_RConPW_TextChanged" />
+                <ComboBox Name="Rcon_MenuC" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,751,5,0" Text="Rcon commandline variables" Width="200" SelectedIndex="0">
                     <ComboBoxItem Name="MenuC_PluginsReload" Content="{}{plugins_reload} - Reloads all compiled plugins" />
                     <ComboBoxItem Name="MenuC_PluginsLoad" Content="{}{plugins_load} - Loads all compiled plugins" />
                     <ComboBoxItem Name="MenuC_PluginsUnload" Content="{}{plugins_unload} - Unloads all compiled plugins" />
                 </ComboBox>
-                <TextBox Name="C_RConCmds" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,715,5,0" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_RConCmds_TextChanged" />
+                <TextBox Name="C_RConCmds" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,781,5,0" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_RConCmds_TextChanged" />
+                <Rectangle Fill="#FFCCCCCC" HorizontalAlignment="Left" Height="93" Margin="195,30,0,0" Stroke="#FFCCCCCC" VerticalAlignment="Top" Width="668"/>
+                <ListBox x:Name="C_SMDir" Height="91" Margin="196,31,6,0" VerticalAlignment="Top" SelectionMode="Extended"/>
+                <Button x:Name="AddSMDirButton" HorizontalAlignment="Center" Margin="128.671,51.667,678,786.295" VerticalAlignment="Center" Width="57.329" Height="23.038" FontSize="9" FontWeight="Bold" Content="Add" MinHeight="0" Padding="0,-1,0,0" UseLayoutRounding="False" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" Click="AddSMDirButton_Click"/>
+                <Button x:Name="RemoveSMDirButton" HorizontalAlignment="Center" Margin="128.671,81.241,678,756.721" VerticalAlignment="Center" Width="57.329" Height="23.038" Click="RemoveSMDirButton_Click" FontSize="9" FontWeight="Bold" Content="Remove&#xD;&#xA;" MinHeight="0" Padding="0,4,0,0" UseLayoutRounding="False" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center"/>
             </Grid>
         </ScrollViewer>
     </Grid>
