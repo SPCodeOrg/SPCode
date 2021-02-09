@@ -23,7 +23,7 @@ namespace SPCode.UI.Windows
     public partial class ConfigWindow
     {
         private bool AllowChange;
-        //private bool NeedsSMDefInvalidation;
+        private bool NeedsSMDefInvalidation;
         private readonly string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
         private ICommand textBoxButtonFileCmd;
@@ -172,7 +172,14 @@ namespace SPCode.UI.Windows
 
         private void NewButton_Clicked(object sender, RoutedEventArgs e)
         {
-            var c = new Config { Name = "New Config", Standard = false, OptimizeLevel = 2, VerboseLevel = 1 };
+            var c = new Config
+            {
+                Name = "New Config",
+                Standard = false,
+                OptimizeLevel = 2,
+                VerboseLevel = 1,
+                SMDirectories = new List<string>()
+            };
             var configList = new List<Config>(Program.Configs) { c };
             Program.Configs = configList.ToArray();
             ConfigListBox.Items.Add(new ListBoxItem { Content = Program.Translations.GetLanguage("NewConfig") });
@@ -206,18 +213,18 @@ namespace SPCode.UI.Windows
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog
             {
-                InitialDirectory = "C:\\Users",
                 IsFolderPicker = true
             };
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                var c = Program.Configs[Program.SelectedConfig];
+                var c = Program.Configs[ConfigListBox.SelectedIndex];
                 if (c.SMDirectories.Contains(dialog.FileName))
                 {
                     return;
                 }
                 c.SMDirectories.Add(dialog.FileName);
                 C_SMDir.Items.Refresh();
+                NeedsSMDefInvalidation = true;
             }
         }
 
@@ -230,7 +237,7 @@ namespace SPCode.UI.Windows
             }
             c.SMDirectories.Remove(C_SMDir.SelectedItem.ToString());
             C_SMDir.Items.Refresh();
-
+            NeedsSMDefInvalidation = true;
         }
 
         private void C_Name_TextChanged(object sender, TextChangedEventArgs e)
@@ -460,13 +467,13 @@ namespace SPCode.UI.Windows
 
         private void MetroWindow_Closed(object sender, EventArgs e)
         {
-            //if (NeedsSMDefInvalidation)
-            //{
-            //    foreach (var config in Program.Configs)
-            //    {
-            //        config.InvalidateSMDef();
-            //    }
-            //}
+            if (NeedsSMDefInvalidation)
+            {
+                foreach (var config in Program.Configs)
+                {
+                    config.InvalidateSMDef();
+                }
+            }
 
             Program.MainWindow.FillConfigMenu();
             Program.MainWindow.ChangeConfig(Program.SelectedConfig);
