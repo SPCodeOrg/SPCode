@@ -230,7 +230,7 @@ namespace SPCode.UI.Windows
 
         private void RemoveSMDirButton_Click(object sender, RoutedEventArgs e)
         {
-            var c = Program.Configs[Program.SelectedConfig];
+            var c = Program.Configs[ConfigListBox.SelectedIndex];
             if (C_SMDir.SelectedItem == null)
             {
                 return;
