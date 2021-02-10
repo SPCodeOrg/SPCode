@@ -1,12 +1,14 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Lysis;
+using System.Windows;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using SPCode.UI.Components;
 using SPCode.UI.Windows;
+using SPCode.Utils;
 using SPCode.Utils.SPSyntaxTidy;
 
 namespace SPCode.UI
@@ -334,7 +336,6 @@ namespace SPCode.UI
             };
             var result = ofd.ShowDialog();
 
-            Debug.Assert(result != null, nameof(result) + " != null");
             if (result.Value && !string.IsNullOrWhiteSpace(ofd.FileName))
             {
                 var fInfo = new FileInfo(ofd.FileName);
@@ -348,13 +349,50 @@ namespace SPCode.UI
                         ProcessUITasks();
                     }
 
-                    var destFile = fInfo.FullName + ".sp";
-                    File.WriteAllText(destFile, LysisDecompiler.Analyze(fInfo), Encoding.UTF8);
-                    TryLoadSourceFile(destFile, true, false);
-                    if (task != null)
+                    //var destFile = fInfo.FullName + ".sp";
+                    //File.WriteAllText(destFile, LysisDecompiler.Analyze(fInfo), Encoding.UTF8);
+
+                    // here is the lysis-java part, apparently the OpenFileDialog has been called
+                    // and at this point you should have the file to decompile
+                    // let's prepare the new Process() part to execute the cmd lines to lysis
+
+                    using var process = new Process();
+                    process.StartInfo.WorkingDirectory = Paths.GetLysisDirectory();
+                    process.StartInfo.UseShellExecute = true;
+                    process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+                    process.StartInfo.CreateNoWindow = false;
+                    process.StartInfo.FileName = "java";
+
+                    process.StartInfo.Arguments = $"-jar lysis-java.jar {fInfo.FullName}";
+
+                    try
                     {
-                        await task.CloseAsync();
+                        process.Start();
+                        process.StartInfo.RedirectStandardOutput = true;
+                        var standardOutput = new StringBuilder();
+
+                        // read chunk-wise while process is running.
+                        while (!process.HasExited)
+                        {
+                            standardOutput.Append(process.StandardOutput.ReadToEnd());
+                        }
+
+                        // make sure not to miss out on any remaindings.
+                        standardOutput.Append(process.StandardOutput.ReadToEnd());
+
+                        MessageBox.Show(standardOutput.ToString());
                     }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Exception: {ex.Message}");
+                        task.CloseAsync();
+                    }
+
+                    //TryLoadSourceFile(destFile, true, false);
+                    //if (task != null)
+                    //{
+                    //    await task.CloseAsync();
+                    //}
                 }
             }
         }

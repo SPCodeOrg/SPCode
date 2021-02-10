@@ -118,7 +118,7 @@ namespace SPCode.UI
                         stringOutput.AppendLine(fileInfo.Name);
                         if (fileInfo.Exists)
                         {
-                            using var process = new Process();
+                            var process = new Process();
                             process.StartInfo.WorkingDirectory =
                                 fileInfo.DirectoryName ?? throw new NullReferenceException();
                             process.StartInfo.UseShellExecute = true;
