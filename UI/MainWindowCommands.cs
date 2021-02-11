@@ -331,11 +331,19 @@ namespace SPCode.UI
         private async void Command_Decompile(MainWindow win)
         {
             // First we check the java version of the user, and act accordingly
+            ProgressDialogController checkingJavaDialog = null;
+            if (win != null)
+            {
+                checkingJavaDialog = await this.ShowProgressAsync("Checking for Java installation...",
+                    "", false, MetroDialogOptions);
+                ProcessUITasks();
+            }
             JavaVersionChecker jvc = new JavaVersionChecker();
             switch (jvc.GetJavaStatus())
             {
                 case JavaResults.Absent:
                     {
+                        await checkingJavaDialog.CloseAsync();
                         if (await this.ShowMessageAsync("Java was not found",
                             "Java could not be executed properly by SPCode. We suspect it's not properly installed, or not installed at all. " +
                             "Do you wish to download and install it now?",
@@ -351,6 +359,7 @@ namespace SPCode.UI
                     }
                 case JavaResults.Outdated:
                     {
+                        await checkingJavaDialog.CloseAsync();
                         if (await this.ShowMessageAsync("Java found is outdated",
                              "Lysis-Java requires Java 11 SDK or later to decompile plugins. We found an outdated version in your system. " +
                              "Do you wish to download and upgrade it now?",
@@ -366,6 +375,7 @@ namespace SPCode.UI
                     }
                 case JavaResults.Correct:
                     {
+                        await checkingJavaDialog.CloseAsync();
                         break;
                     }
             }
