@@ -336,14 +336,14 @@ namespace SPCode.UI
             {
                 case JavaResults.Absent:
                     {
-                        if (await this.ShowMessageAsync("Java was not found", 
-                            "Java could not be executed properly by SPCode. We suspect it's not properly installed, or not installed at all." +
-                            "Do you wish to download and install it now?", 
+                        if (await this.ShowMessageAsync("Java was not found",
+                            "Java could not be executed properly by SPCode. We suspect it's not properly installed, or not installed at all. " +
+                            "Do you wish to download and install it now?",
                             MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
                         {
                             Process.Start(new ProcessStartInfo
                             {
-                                FileName = Constants.JavaDownloadSite,
+                                FileName = Environment.Is64BitOperatingSystem ? Constants.JavaDownloadSite64 : Constants.JavaDownloadSite32,
                                 UseShellExecute = true
                             });
                         }
@@ -352,13 +352,13 @@ namespace SPCode.UI
                 case JavaResults.Outdated:
                     {
                         if (await this.ShowMessageAsync("Java found is outdated",
-                             "SPCode requires Java 11 SDK or later to decompile plugins. We found an outdated version in your system." +
+                             "Lysis-Java requires Java 11 SDK or later to decompile plugins. We found an outdated version in your system. " +
                              "Do you wish to download and upgrade it now?",
                              MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
                         {
                             Process.Start(new ProcessStartInfo
                             {
-                                FileName = Constants.JavaDownloadSite,
+                                FileName = Environment.Is64BitOperatingSystem ? Constants.JavaDownloadSite64 : Constants.JavaDownloadSite32,
                                 UseShellExecute = true
                             });
                         }
