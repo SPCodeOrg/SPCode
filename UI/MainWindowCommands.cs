@@ -10,6 +10,7 @@ using SPCode.UI.Components;
 using SPCode.UI.Windows;
 using SPCode.Utils;
 using SPCode.Utils.SPSyntaxTidy;
+using static SPCode.Utils.JavaVersionChecker;
 
 namespace SPCode.UI
 {
@@ -329,6 +330,46 @@ namespace SPCode.UI
 
         private async void Command_Decompile(MainWindow win)
         {
+            // First we check the java version of the user, and act accordingly
+            JavaVersionChecker jvc = new JavaVersionChecker();
+            switch (jvc.GetJavaStatus())
+            {
+                case JavaResults.Absent:
+                    {
+                        if (await this.ShowMessageAsync("Java was not found", 
+                            "Java could not be executed properly by SPCode. We suspect it's not properly installed, or not installed at all." +
+                            "Do you wish to download and install it now?", 
+                            MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
+                        {
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = Constants.JavaDownloadSite,
+                                UseShellExecute = true
+                            });
+                        }
+                        return;
+                    }
+                case JavaResults.Outdated:
+                    {
+                        if (await this.ShowMessageAsync("Java found is outdated",
+                             "SPCode requires Java 11 SDK or later to decompile plugins. We found an outdated version in your system." +
+                             "Do you wish to download and upgrade it now?",
+                             MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
+                        {
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = Constants.JavaDownloadSite,
+                                UseShellExecute = true
+                            });
+                        }
+                        return;
+                    }
+                case JavaResults.Correct:
+                    {
+                        break;
+                    }
+            }
+
             var ofd = new OpenFileDialog
             {
                 Filter = "Sourcepawn Plugins (*.smx)|*.smx",
@@ -349,50 +390,39 @@ namespace SPCode.UI
                         ProcessUITasks();
                     }
 
-                    //var destFile = fInfo.FullName + ".sp";
-                    //File.WriteAllText(destFile, LysisDecompiler.Analyze(fInfo), Encoding.UTF8);
-
-                    // here is the lysis-java part, apparently the OpenFileDialog has been called
-                    // and at this point you should have the file to decompile
-                    // let's prepare the new Process() part to execute the cmd lines to lysis
-
+                    var destFile = fInfo.FullName + ".sp";
+                    var standardOutput = new StringBuilder();
                     using var process = new Process();
                     process.StartInfo.WorkingDirectory = Paths.GetLysisDirectory();
-                    process.StartInfo.UseShellExecute = true;
-                    process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-                    process.StartInfo.CreateNoWindow = false;
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.CreateNoWindow = true;
                     process.StartInfo.FileName = "java";
 
-                    process.StartInfo.Arguments = $"-jar lysis-java.jar {fInfo.FullName}";
+                    process.StartInfo.Arguments = $"-jar lysis-java.jar \"{fInfo.FullName}\"";
 
                     try
                     {
                         process.Start();
-                        process.StartInfo.RedirectStandardOutput = true;
-                        var standardOutput = new StringBuilder();
-
-                        // read chunk-wise while process is running.
                         while (!process.HasExited)
                         {
                             standardOutput.Append(process.StandardOutput.ReadToEnd());
                         }
-
-                        // make sure not to miss out on any remaindings.
                         standardOutput.Append(process.StandardOutput.ReadToEnd());
-
-                        MessageBox.Show(standardOutput.ToString());
+                        File.WriteAllText(destFile, standardOutput.ToString(), Encoding.UTF8);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Exception: {ex.Message}");
-                        task.CloseAsync();
+                        await this.ShowMessageAsync($"{fInfo.Name} failed to decompile",
+                            $"{ex.Message}", MessageDialogStyle.Affirmative,
+                        MetroDialogOptions);
                     }
 
-                    //TryLoadSourceFile(destFile, true, false);
-                    //if (task != null)
-                    //{
-                    //    await task.CloseAsync();
-                    //}
+                    TryLoadSourceFile(destFile, true, false, true);
+                    if (task != null)
+                    {
+                        await task.CloseAsync();
+                    }
                 }
             }
         }
