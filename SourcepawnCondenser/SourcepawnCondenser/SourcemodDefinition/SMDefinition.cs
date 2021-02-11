@@ -70,20 +70,27 @@ namespace SourcepawnCondenser.SourcemodDefinition
             {
                 if (Directory.Exists(path))
                 {
-                    var files = Directory.GetFiles(path, "*.inc", SearchOption.AllDirectories);
-                    foreach (var file in files)
+                    try
                     {
-                        var fInfo = new FileInfo(file);
-                        var subCondenser = new Condenser(File.ReadAllText(fInfo.FullName), fInfo.Name);
-                        var subDefinition = subCondenser.Condense();
-                        Functions.AddRange(subDefinition.Functions);
-                        Enums.AddRange(subDefinition.Enums);
-                        Structs.AddRange(subDefinition.Structs);
-                        Defines.AddRange(subDefinition.Defines);
-                        Constants.AddRange(subDefinition.Constants);
-                        Methodmaps.AddRange(subDefinition.Methodmaps);
-                        Typedefs.AddRange(subDefinition.Typedefs);
-                        EnumStructs.AddRange(subDefinition.EnumStructs);
+                        var files = Directory.GetFiles(path, "*.inc", SearchOption.AllDirectories);
+                        foreach (var file in files)
+                        {
+                            var fInfo = new FileInfo(file);
+                            var subCondenser = new Condenser(File.ReadAllText(fInfo.FullName), fInfo.Name);
+                            var subDefinition = subCondenser.Condense();
+                            Functions.AddRange(subDefinition.Functions);
+                            Enums.AddRange(subDefinition.Enums);
+                            Structs.AddRange(subDefinition.Structs);
+                            Defines.AddRange(subDefinition.Defines);
+                            Constants.AddRange(subDefinition.Constants);
+                            Methodmaps.AddRange(subDefinition.Methodmaps);
+                            Typedefs.AddRange(subDefinition.Typedefs);
+                            EnumStructs.AddRange(subDefinition.EnumStructs);
+                        }
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        // ignored
                     }
                 }
             }
