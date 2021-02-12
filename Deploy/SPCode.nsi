@@ -44,6 +44,7 @@ File smxdasm.dll
 File QueryMaster.dll
 File Ionic.BZip2.dll
 File SourcepawnCondenser.dll
+File ByteSize.dll
 File Renci.SshNet.dll
 File Newtonsoft.Json.dll
 File DiscordRPC.dll

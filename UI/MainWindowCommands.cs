@@ -463,6 +463,7 @@ namespace SPCode.UI
         {
             dwJavaInCourse.CloseAsync();
             Process.Start(outFile);
+            this.ShowMessageAsync("Java installation opened", "After you install Java, it is highly suggested you restart SPCode.");
         }
 
         #endregion
