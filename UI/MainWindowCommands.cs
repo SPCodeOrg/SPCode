@@ -1,16 +1,18 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
-using System.Windows;
+using ByteSizeLib;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using SPCode.UI.Components;
 using SPCode.UI.Windows;
 using SPCode.Utils;
 using SPCode.Utils.SPSyntaxTidy;
-using static SPCode.Utils.JavaVersionChecker;
+using static SPCode.Utils.JavaUtils;
 
 namespace SPCode.UI
 {
@@ -338,8 +340,8 @@ namespace SPCode.UI
                     "", false, MetroDialogOptions);
                 ProcessUITasks();
             }
-            JavaVersionChecker jvc = new JavaVersionChecker();
-            switch (jvc.GetJavaStatus())
+            JavaUtils ju = new JavaUtils();
+            switch (ju.GetJavaStatus())
             {
                 case JavaResults.Absent:
                     {
@@ -349,11 +351,7 @@ namespace SPCode.UI
                             "Do you wish to download and install it now?",
                             MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
                         {
-                            Process.Start(new ProcessStartInfo
-                            {
-                                FileName = Environment.Is64BitOperatingSystem ? Constants.JavaDownloadSite64 : Constants.JavaDownloadSite32,
-                                UseShellExecute = true
-                            });
+                            await InstallJava();
                         }
                         return;
                     }
@@ -365,11 +363,7 @@ namespace SPCode.UI
                              "Do you wish to download and upgrade it now?",
                              MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
                         {
-                            Process.Start(new ProcessStartInfo
-                            {
-                                FileName = Environment.Is64BitOperatingSystem ? Constants.JavaDownloadSite64 : Constants.JavaDownloadSite32,
-                                UseShellExecute = true
-                            });
+                            await InstallJava();
                         }
                         return;
                     }
@@ -436,6 +430,42 @@ namespace SPCode.UI
                 }
             }
         }
+
+        #region Java Installation
+
+        private async System.Threading.Tasks.Task InstallJava()
+        {
+            dwJavaInCourse = await this.ShowProgressAsync("Downloading Java... hang tight!", "Fetching installation file...", false, MetroDialogOptions);
+            dwJavaInCourse.SetProgress(0.0);
+            ProcessUITasks();
+
+            using WebClient wc = new WebClient();
+            wc.DownloadProgressChanged += DownloadProgressed;
+            wc.DownloadFileCompleted += DownloadCompleted;
+            wc.DownloadFileAsync(new Uri(Environment.Is64BitOperatingSystem ? Constants.JavaDownloadSite64 : Constants.JavaDownloadSite32), outFile);
+        }
+
+        public ProgressDialogController dwJavaInCourse;
+        public string outFile = Environment.ExpandEnvironmentVariables(@"%userprofile%\Downloads\adoptopenjdk-java-15-spcode.msi");
+
+        void DownloadProgressed(object sender, DownloadProgressChangedEventArgs e)
+        {
+            dwJavaInCourse.SetMessage(
+                $"{e.ProgressPercentage}% completed, " +
+                $"downloaded {Math.Round(ByteSize.FromBytes(e.BytesReceived).MegaBytes),0} MB / " +
+                $"{Math.Round(ByteSize.FromBytes(e.TotalBytesToReceive).MegaBytes),0} MB");
+            dwJavaInCourse.SetProgress(e.ProgressPercentage * 0.01d);
+            Console.WriteLine(e.ProgressPercentage);
+            Debug.Print(e.ProgressPercentage.ToString());
+        }
+
+        void DownloadCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            dwJavaInCourse.CloseAsync();
+            Process.Start(outFile);
+        }
+
+        #endregion
 
         private void Command_OpenSPDef()
         {

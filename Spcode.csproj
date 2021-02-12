@@ -200,7 +200,7 @@
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\Constants.cs" />
-    <Compile Include="Utils\JavaVersionChecker.cs" />
+    <Compile Include="Utils\JavaUtils.cs" />
     <Compile Include="Utils\Paths.cs" />
     <Compile Include="Utils\FTP.cs" />
     <Compile Include="Utils\ManagedAES.cs" />

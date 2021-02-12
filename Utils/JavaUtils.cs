@@ -8,7 +8,7 @@ using Microsoft.Win32;
 
 namespace SPCode.Utils
 {
-    public class JavaVersionChecker
+    public class JavaUtils
     {
         private static readonly int JavaVersionForLysis = 11;
 
