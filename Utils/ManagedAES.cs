@@ -98,7 +98,7 @@ namespace SPCode.Utils
             byte[] buffer;
             using (MD5 md5Provider = new MD5CryptoServiceProvider())
             {
-                var inString = $"SPEditSalt {cpuId()}{diskId()}{Environment.ProcessorCount}{(Environment.Is64BitOperatingSystem ? "T" : "F")}";
+                var inString = $"SPEditSalt {CpuId()}{DiskId()}{Environment.ProcessorCount}{(Environment.Is64BitOperatingSystem ? "T" : "F")}";
                 var encoder = new UTF8Encoding();
                 buffer = md5Provider.ComputeHash(encoder.GetBytes(inString));
             }
@@ -106,7 +106,7 @@ namespace SPCode.Utils
         }
 
         //thanks to: http://jai-on-asp.blogspot.de/2010/03/finding-hardware-id-of-computer.html
-        private static string cpuId()
+        private static string CpuId()
         {
             var id = string.Empty;
             try
@@ -127,7 +127,7 @@ namespace SPCode.Utils
 
             return id;
         }
-        private static string diskId()
+        private static string DiskId()
         {
             var id = string.Empty;
             try

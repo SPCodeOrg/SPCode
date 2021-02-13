@@ -12,7 +12,7 @@
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <TextBox Name="textBox" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AcceptsReturn="True" AcceptsTab="True" TextChanged="textBox_TextChanged" Margin="0,0,0,25" SelectionChanged="CaretPositionChangedEvent" />
+        <TextBox Name="textBox" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" AcceptsReturn="True" AcceptsTab="True" TextChanged="TextBox_TextChanged" Margin="0,0,0,25" SelectionChanged="CaretPositionChangedEvent" />
         <Label Name="CaretLabel" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="0 / 0" />
         <ScrollViewer Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <StackPanel Name="tokenStack" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Orientation="Vertical" />

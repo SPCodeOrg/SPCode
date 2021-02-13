@@ -234,9 +234,9 @@ namespace SPCode.UI
             // Solution: Set the active LayoutDocumentPane to the first LayoutDocumentPaneGroup avilable child.
             if (e.Change == ChildrenTreeChange.DirectChildrenChanged
                 && !DockingPaneGroup.Children.Contains(DockingPane)
-                && DockingPaneGroup.Children[0] is LayoutDocumentPane)
+                && DockingPaneGroup.Children[0] is LayoutDocumentPane pane)
             {
-                DockingPane = (LayoutDocumentPane)DockingPaneGroup.Children[0];
+                DockingPane = pane;
             }
         }
 
@@ -327,7 +327,7 @@ namespace SPCode.UI
                 return;
             }
 
-            var fileName = row.file;
+            var fileName = row.File;
             var editors = GetAllEditorElements();
             if (editors == null)
             {
@@ -339,7 +339,7 @@ namespace SPCode.UI
                 if (editor.FullFilePath == fileName)
                 {
                     editor.Parent.IsSelected = true;
-                    var line = GetLineInteger(row.line);
+                    var line = GetLineInteger(row.Line);
                     if (line > 0 && line <= editor.editor.LineCount)
                     {
                         var lineObj = editor.editor.Document.Lines[line - 1];

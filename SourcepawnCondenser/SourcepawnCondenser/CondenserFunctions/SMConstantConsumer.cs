@@ -22,7 +22,6 @@ namespace SourcepawnCondenser
                             if (t[i - 1].Kind == TokenKind.Identifier)
                             {
                                 constantName = t[i - 1].Value;
-                                foundIdentifier = true;
                             }
                         }
 

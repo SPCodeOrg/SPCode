@@ -86,8 +86,8 @@ namespace SPCode.UI.Components
             editor.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(TextArea_MouseDown), true);
 
             editor.PreviewMouseWheel += PrevMouseWheel;
-            editor.MouseDown += editor_MouseDown;
-            editor.Loaded += editor_Loaded;
+            editor.MouseDown += Editor_MouseDown;
+            editor.Loaded += Editor_Loaded;
 
             editor.TextArea.TextEntered += TextArea_TextEntered;
             editor.TextArea.TextEntering += TextArea_TextEntering;
@@ -100,7 +100,7 @@ namespace SPCode.UI.Components
                     NotifyFilter = NotifyFilters.Size | NotifyFilters.LastWrite,
                     Filter = "*" + fInfo.Extension
                 };
-                fileWatcher.Changed += fileWatcher_Changed;
+                fileWatcher.Changed += FileWatcher_Changed;
                 fileWatcher.EnableRaisingEvents = true;
             }
             else
@@ -159,7 +159,7 @@ namespace SPCode.UI.Components
             foldingStrategy.UpdateFoldings(foldingManager, editor.Document);
 
             regularyTimer = new Timer(500.0);
-            regularyTimer.Elapsed += regularyTimer_Elapsed;
+            regularyTimer.Elapsed += RegularyTimer_Elapsed;
             regularyTimer.Start();
 
             AutoSaveTimer = new Timer();
@@ -169,7 +169,7 @@ namespace SPCode.UI.Components
             CompileBox.IsChecked = filePath.EndsWith(".sp");
         }
 
-        private void editor_Loaded(object sender, RoutedEventArgs e)
+        private void Editor_Loaded(object sender, RoutedEventArgs e)
         {
             ParseIncludes(sender, e);
         }
@@ -490,7 +490,7 @@ namespace SPCode.UI.Components
             editor.Focus();
         }
 
-        private void fileWatcher_Changed(object sender, FileSystemEventArgs e)
+        private void FileWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             if (e == null)
             {
@@ -544,7 +544,7 @@ namespace SPCode.UI.Components
             }
         }
 
-        private void regularyTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void RegularyTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             Dispatcher.Invoke(() =>
             {
@@ -760,7 +760,7 @@ namespace SPCode.UI.Components
             Program.MainWindow.UpdateWindowTitle();
         }
 
-        private void editor_TextChanged(object sender, EventArgs e)
+        private void Editor_TextChanged(object sender, EventArgs e)
         {
             WantFoldingUpdate = true;
             NeedsSave = true;
@@ -874,8 +874,8 @@ namespace SPCode.UI.Components
                     }
 
 
-                    el.InterruptLoadAutoCompletes(smDef.FunctionStrings, smFunctions, acNodes,
-                        isNodes, smDef.Methodmaps.ToArray(), smDef.Variables.ToArray());
+                    el.InterruptLoadAutoCompletes(smFunctions, acNodes,
+                        isNodes, smDef.Methodmaps.ToArray());
                 }
             });
         }
@@ -1058,7 +1058,7 @@ namespace SPCode.UI.Components
             HideISAC();
         }
 
-        private void editor_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Editor_MouseDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
             HideISAC();

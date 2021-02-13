@@ -32,7 +32,7 @@ namespace SourcepawnCondenser
 
         public SMDefinition Condense()
         {
-            Token ct = null;
+            Token ct;
             while ((ct = t[position]).Kind != TokenKind.EOF)
             {
                 switch (ct.Kind)
