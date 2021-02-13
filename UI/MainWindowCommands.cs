@@ -18,6 +18,11 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
+
+        private ProgressDialogController dwJavaInCourse;
+        private readonly string OutFile = Environment.ExpandEnvironmentVariables(@"%userprofile%\Downloads\adoptopenjdk-java-15-spcode.msi");
+        private readonly string JavaLink = Environment.Is64BitOperatingSystem ? Constants.JavaDownloadSite64 : Constants.JavaDownloadSite32;
+
         public EditorElement GetCurrentEditorElement()
         {
             EditorElement outElement = null;
@@ -347,7 +352,7 @@ namespace SPCode.UI
                     {
                         await checkingJavaDialog.CloseAsync();
                         if (await this.ShowMessageAsync("Java was not found",
-                            "Java could not be executed properly by SPCode. We suspect it's not properly installed, or not installed at all. " +
+                            "SPCode needs Java to decompile plugins, but it couldn't get it to work properly - perhaps an absent or incorrect Java installation." +
                             "Do you wish to download and install it now?",
                             MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
                         {
@@ -359,7 +364,7 @@ namespace SPCode.UI
                     {
                         await checkingJavaDialog.CloseAsync();
                         if (await this.ShowMessageAsync("Java found is outdated",
-                             "Lysis-Java requires Java 11 SDK or later to decompile plugins. We found an outdated version in your system. " +
+                             "SPCode requires Java 11 SDK or later to decompile plugins. We found an outdated version in your system. " +
                              "Do you wish to download and upgrade it now?",
                              MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
                         {
@@ -435,18 +440,15 @@ namespace SPCode.UI
 
         private async System.Threading.Tasks.Task InstallJava()
         {
-            dwJavaInCourse = await this.ShowProgressAsync("Downloading Java... hang tight!", "Fetching installation file...", false, MetroDialogOptions);
+            dwJavaInCourse = await this.ShowProgressAsync("Downloading Java...", "Fetching installation file from adoptopenjdk.com...", true, MetroDialogOptions);
             dwJavaInCourse.SetProgress(0.0);
             ProcessUITasks();
 
             using WebClient wc = new WebClient();
             wc.DownloadProgressChanged += DownloadProgressed;
             wc.DownloadFileCompleted += DownloadCompleted;
-            wc.DownloadFileAsync(new Uri(Environment.Is64BitOperatingSystem ? Constants.JavaDownloadSite64 : Constants.JavaDownloadSite32), outFile);
+            wc.DownloadFileAsync(new Uri(JavaLink), OutFile);
         }
-
-        public ProgressDialogController dwJavaInCourse;
-        public string outFile = Environment.ExpandEnvironmentVariables(@"%userprofile%\Downloads\adoptopenjdk-java-15-spcode.msi");
 
         void DownloadProgressed(object sender, DownloadProgressChangedEventArgs e)
         {
@@ -455,15 +457,37 @@ namespace SPCode.UI
                 $"downloaded {Math.Round(ByteSize.FromBytes(e.BytesReceived).MegaBytes),0} MB / " +
                 $"{Math.Round(ByteSize.FromBytes(e.TotalBytesToReceive).MegaBytes),0} MB");
             dwJavaInCourse.SetProgress(e.ProgressPercentage * 0.01d);
-            Console.WriteLine(e.ProgressPercentage);
-            Debug.Print(e.ProgressPercentage.ToString());
         }
 
-        void DownloadCompleted(object sender, AsyncCompletedEventArgs e)
+        async void DownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            dwJavaInCourse.CloseAsync();
-            Process.Start(outFile);
-            this.ShowMessageAsync("Java installation opened", "After you install Java, it is highly suggested you restart SPCode.");
+            await dwJavaInCourse.CloseAsync();
+            if (File.Exists(OutFile))
+            {
+                Process.Start(OutFile);
+                await this.ShowMessageAsync(
+                    "Java installation file opened", 
+                    "After installing Java, it is highly recommended to restart SPCode.", 
+                    MessageDialogStyle.Affirmative);
+            }
+            else
+            {
+                if (await this.ShowMessageAsync(
+                    "Java download error", 
+                    "It seems the Java installation file failed to download. Do you want to download it yourself?", 
+                    MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = JavaLink,
+                        UseShellExecute = true
+                    });
+                    await this.ShowMessageAsync(
+                    "Java download link opened in browser",
+                    "After installing Java, it is highly recommended to restart SPCode.",
+                    MessageDialogStyle.Affirmative);
+                }
+            }
         }
 
         #endregion
