@@ -117,7 +117,7 @@ namespace SPCode.UI.Components
                             {
                                 if (c == '\"')
                                 {
-                                    CommentMode = 1;
+                                    CommentMode = 0;
                                 }
                                 break;
                             }
