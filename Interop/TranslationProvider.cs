@@ -292,6 +292,29 @@ namespace SPCode.Interop
             language.Add("CopyingFiles", "Copying files");
             language.Add("FTPUploading", "Uploading files");
             language.Add("RCONCommand", "Seconding RCON Commands");
+            language.Add("JavaInstallCheck", "Checking for Java installation");
+            language.Add("JavaNotFoundTitle", "Java was not found");
+            language.Add("JavaNotFoundMessage", 
+                "SPCode needs Java to decompile plugins, but it couldn't get it to work properly - " +
+                "perhaps an absent or incorrect Java installation. " +
+                "Do you wish to download and install it now?");
+            language.Add("JavaOutdatedTitle", "Java version found is outdated");
+            language.Add("JavaOutdatedMessage", 
+                "SPCode requires Java 11 SDK or later to decompile plugins. " +
+                "We found an outdated version in your system. " +
+                "Do you wish to download and upgrade it now?");
+            language.Add("FailedToDecompile", "failed to decompile");
+
+            language.Add("DownloadingJava", "Downloading Java");
+            language.Add("FetchingJava", "Fetching installation file from https://adoptopenjdk.net...");
+            language.Add("AmountCompleted", "completed");
+            language.Add("AmountDownloaded", "downloaded");
+            language.Add("JavaOpened", "Java installation file opened");
+            language.Add("JavaSuggestRestart", "After installing Java, it is highly recommended to restart SPCode.");
+            language.Add("JavaDownErrorTitle", "Java download error");
+            language.Add("JavaDownErrorMessage", "SPCode could not download Java by itself. Would you like to download it manually?");
+            language.Add("JavaOpenedBrowser", "Java download link opened in browser");
+
         }
     }
 }

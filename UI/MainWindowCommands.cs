@@ -338,10 +338,11 @@ namespace SPCode.UI
         private async void Command_Decompile(MainWindow win)
         {
             // First we check the java version of the user, and act accordingly
+
             ProgressDialogController checkingJavaDialog = null;
             if (win != null)
             {
-                checkingJavaDialog = await this.ShowProgressAsync("Checking for Java installation...",
+                checkingJavaDialog = await this.ShowProgressAsync(Program.Translations.GetLanguage("JavaInstallCheck") + "...",
                     "", false, MetroDialogOptions);
                 ProcessUITasks();
             }
@@ -351,9 +352,8 @@ namespace SPCode.UI
                 case JavaResults.Absent:
                     {
                         await checkingJavaDialog.CloseAsync();
-                        if (await this.ShowMessageAsync("Java was not found",
-                            "SPCode needs Java to decompile plugins, but it couldn't get it to work properly - perhaps an absent or incorrect Java installation." +
-                            "Do you wish to download and install it now?",
+                        if (await this.ShowMessageAsync(Program.Translations.GetLanguage("JavaNotFoundTitle"),
+                            Program.Translations.GetLanguage("JavaNotFoundMessage"),
                             MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
                         {
                             await InstallJava();
@@ -363,9 +363,8 @@ namespace SPCode.UI
                 case JavaResults.Outdated:
                     {
                         await checkingJavaDialog.CloseAsync();
-                        if (await this.ShowMessageAsync("Java found is outdated",
-                             "SPCode requires Java 11 SDK or later to decompile plugins. We found an outdated version in your system. " +
-                             "Do you wish to download and upgrade it now?",
+                        if (await this.ShowMessageAsync(Program.Translations.GetLanguage("JavaOutdatedTitle"),
+                             Program.Translations.GetLanguage("JavaOutdatedMessage"),
                              MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
                         {
                             await InstallJava();
@@ -422,7 +421,7 @@ namespace SPCode.UI
                     }
                     catch (Exception ex)
                     {
-                        await this.ShowMessageAsync($"{fInfo.Name} failed to decompile",
+                        await this.ShowMessageAsync($"{fInfo.Name} {Program.Translations.GetLanguage("FailedToDecompile")}",
                             $"{ex.Message}", MessageDialogStyle.Affirmative,
                         MetroDialogOptions);
                     }
@@ -440,7 +439,8 @@ namespace SPCode.UI
 
         private async System.Threading.Tasks.Task InstallJava()
         {
-            dwJavaInCourse = await this.ShowProgressAsync("Downloading Java...", "Fetching installation file from adoptopenjdk.com...", true, MetroDialogOptions);
+            dwJavaInCourse = await this.ShowProgressAsync(Program.Translations.GetLanguage("DownloadingJava") + "...",
+                Program.Translations.GetLanguage("FetchingJava"), false, MetroDialogOptions);
             dwJavaInCourse.SetProgress(0.0);
             ProcessUITasks();
 
@@ -453,8 +453,8 @@ namespace SPCode.UI
         void DownloadProgressed(object sender, DownloadProgressChangedEventArgs e)
         {
             dwJavaInCourse.SetMessage(
-                $"{e.ProgressPercentage}% completed, " +
-                $"downloaded {Math.Round(ByteSize.FromBytes(e.BytesReceived).MegaBytes),0} MB / " +
+                $"{e.ProgressPercentage}% {Program.Translations.GetLanguage("AmountCompleted")}, " +
+                $"{Program.Translations.GetLanguage("AmountDownloaded")} {Math.Round(ByteSize.FromBytes(e.BytesReceived).MegaBytes),0} MB / " +
                 $"{Math.Round(ByteSize.FromBytes(e.TotalBytesToReceive).MegaBytes),0} MB");
             dwJavaInCourse.SetProgress(e.ProgressPercentage * 0.01d);
         }
@@ -466,15 +466,15 @@ namespace SPCode.UI
             {
                 Process.Start(OutFile);
                 await this.ShowMessageAsync(
-                    "Java installation file opened", 
-                    "After installing Java, it is highly recommended to restart SPCode.", 
+                    Program.Translations.GetLanguage("JavaOpened"),
+                    Program.Translations.GetLanguage("JavaSuggestRestart"), 
                     MessageDialogStyle.Affirmative);
             }
             else
             {
                 if (await this.ShowMessageAsync(
-                    "Java download error", 
-                    "It seems the Java installation file failed to download. Do you want to download it yourself?", 
+                    Program.Translations.GetLanguage("JavaDownErrorTitle"),
+                    Program.Translations.GetLanguage("JavaDownErrorMessage"), 
                     MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
                 {
                     Process.Start(new ProcessStartInfo
@@ -483,8 +483,8 @@ namespace SPCode.UI
                         UseShellExecute = true
                     });
                     await this.ShowMessageAsync(
-                    "Java download link opened in browser",
-                    "After installing Java, it is highly recommended to restart SPCode.",
+                    Program.Translations.GetLanguage("JavaOpenedBrowser"),
+                    Program.Translations.GetLanguage("JavaSuggestRestart"),
                     MessageDialogStyle.Affirmative);
                 }
             }
