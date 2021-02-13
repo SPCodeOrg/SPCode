@@ -394,7 +394,7 @@ namespace SPCode.UI
                     ProgressDialogController task = null;
                     if (win != null)
                     {
-                        task = await this.ShowProgressAsync(Program.Translations.GetLanguage("Decompiling"),
+                        task = await this.ShowProgressAsync(Program.Translations.GetLanguage("Decompiling") + "...",
                             fInfo.FullName, false, MetroDialogOptions);
                         ProcessUITasks();
                     }
