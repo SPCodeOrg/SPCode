@@ -351,6 +351,7 @@ namespace SPCode.UI
             {
                 case JavaResults.Absent:
                     {
+                        // If java is not installed, offer to download it
                         await checkingJavaDialog.CloseAsync();
                         if (await this.ShowMessageAsync(Program.Translations.GetLanguage("JavaNotFoundTitle"),
                             Program.Translations.GetLanguage("JavaNotFoundMessage"),
@@ -362,6 +363,7 @@ namespace SPCode.UI
                     }
                 case JavaResults.Outdated:
                     {
+                        // If java is outdated, offer to upgrade it
                         await checkingJavaDialog.CloseAsync();
                         if (await this.ShowMessageAsync(Program.Translations.GetLanguage("JavaOutdatedTitle"),
                              Program.Translations.GetLanguage("JavaOutdatedMessage"),
@@ -373,11 +375,13 @@ namespace SPCode.UI
                     }
                 case JavaResults.Correct:
                     {
+                        // Move on
                         await checkingJavaDialog.CloseAsync();
                         break;
                     }
             }
 
+            // Pick file for decompiling
             var ofd = new OpenFileDialog
             {
                 Filter = "Sourcepawn Plugins (*.smx)|*.smx",
@@ -398,6 +402,7 @@ namespace SPCode.UI
                         ProcessUITasks();
                     }
 
+                    // Prepare Lysis execution
                     var destFile = fInfo.FullName + ".sp";
                     var standardOutput = new StringBuilder();
                     using var process = new Process();
@@ -409,6 +414,7 @@ namespace SPCode.UI
 
                     process.StartInfo.Arguments = $"-jar lysis-java.jar \"{fInfo.FullName}\"";
 
+                    // Execute Lysis, read and store output
                     try
                     {
                         process.Start();
@@ -426,6 +432,7 @@ namespace SPCode.UI
                         MetroDialogOptions);
                     }
 
+                    // Load the decompiled file to SPCode
                     TryLoadSourceFile(destFile, true, false, true);
                     if (task != null)
                     {
@@ -439,31 +446,37 @@ namespace SPCode.UI
 
         private async System.Threading.Tasks.Task InstallJava()
         {
+            // Spawn progress dialog when downloading Java
             dwJavaInCourse = await this.ShowProgressAsync(Program.Translations.GetLanguage("DownloadingJava") + "...",
                 Program.Translations.GetLanguage("FetchingJava"), false, MetroDialogOptions);
             dwJavaInCourse.SetProgress(0.0);
             ProcessUITasks();
 
+            // Setting up event callbacks to change download percentage, amount downloaded and amount left
             using WebClient wc = new WebClient();
             wc.DownloadProgressChanged += DownloadProgressed;
             wc.DownloadFileCompleted += DownloadCompleted;
             wc.DownloadFileAsync(new Uri(JavaLink), OutFile);
         }
 
-        void DownloadProgressed(object sender, DownloadProgressChangedEventArgs e)
+        private void DownloadProgressed(object sender, DownloadProgressChangedEventArgs e)
         {
+            // Handles percentage and MB downloaded/left
             dwJavaInCourse.SetMessage(
                 $"{e.ProgressPercentage}% {Program.Translations.GetLanguage("AmountCompleted")}, " +
                 $"{Program.Translations.GetLanguage("AmountDownloaded")} {Math.Round(ByteSize.FromBytes(e.BytesReceived).MegaBytes),0} MB / " +
                 $"{Math.Round(ByteSize.FromBytes(e.TotalBytesToReceive).MegaBytes),0} MB");
+
+            // Handles progress bar
             dwJavaInCourse.SetProgress(e.ProgressPercentage * 0.01d);
         }
 
-        async void DownloadCompleted(object sender, AsyncCompletedEventArgs e)
+        private async void DownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
             await dwJavaInCourse.CloseAsync();
             if (File.Exists(OutFile))
             {
+                // If file downloaded properly, it should open
                 Process.Start(OutFile);
                 await this.ShowMessageAsync(
                     Program.Translations.GetLanguage("JavaOpened"),
@@ -472,6 +485,7 @@ namespace SPCode.UI
             }
             else
             {
+                // Otherwise, just offer a manual download
                 if (await this.ShowMessageAsync(
                     Program.Translations.GetLanguage("JavaDownErrorTitle"),
                     Program.Translations.GetLanguage("JavaDownErrorMessage"), 

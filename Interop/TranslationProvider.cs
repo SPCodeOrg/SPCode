@@ -304,7 +304,6 @@ namespace SPCode.Interop
                 "We found an outdated version in your system. " +
                 "Do you wish to download and upgrade it now?");
             language.Add("FailedToDecompile", "failed to decompile");
-
             language.Add("DownloadingJava", "Downloading Java");
             language.Add("FetchingJava", "Fetching installation file from https://adoptopenjdk.net...");
             language.Add("AmountCompleted", "completed");
@@ -314,7 +313,6 @@ namespace SPCode.Interop
             language.Add("JavaDownErrorTitle", "Java download error");
             language.Add("JavaDownErrorMessage", "SPCode could not download Java by itself. Would you like to download it manually?");
             language.Add("JavaOpenedBrowser", "Java download link opened in browser");
-
         }
     }
 }
