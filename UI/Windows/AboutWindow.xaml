@@ -170,7 +170,7 @@
                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="436,5,266,0" Text="Lysis-Java" FontSize="18" IsHitTestVisible="False" />
                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="530,5,122,0" FontSize="18" FontWeight="Thin" IsHitTestVisible="False" ><Run Text=".smx Decompiler"/><LineBreak/><Run/></TextBlock>
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,40,5,0" FontSize="16" IsHitTestVisible="False" ><Run Text="Authors:  "/><Run Text="Peace-Maker"/></TextBlock>
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,70,5,0" FontSize="16" IsHitTestVisible="False" ><Run Text="License:  "/><Run Text="----"/></TextBlock>
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,70,5,0" FontSize="16" IsHitTestVisible="False" ><Run Text="License:  "/><Run Text="Unknown"/></TextBlock>
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,100,5,0" FontSize="16">
                         <Hyperlink NavigateUri="https://github.com/peace-maker/lysis-java" RequestNavigate="HyperlinkRequestNavigate">GitHub Repository</Hyperlink>
                     </TextBlock>
