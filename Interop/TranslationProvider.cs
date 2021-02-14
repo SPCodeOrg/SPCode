@@ -173,6 +173,7 @@ namespace SPCode.Interop
             language.Add("Decompile", "Decompile");
             language.Add("ReportBugGit", "Report bug on GitHub");
             language.Add("CheckUpdates", "Check for updates");
+            language.Add("CheckingUpdates", "Checking for updates");
             language.Add("About", "About");
             language.Add("FileName", "File Name");
             language.Add("Line", "Line");
@@ -296,7 +297,7 @@ namespace SPCode.Interop
             language.Add("JavaNotFoundTitle", "Java was not found");
             language.Add("JavaNotFoundMessage", 
                 "SPCode needs Java to decompile plugins, but it couldn't get it to work properly - " +
-                "perhaps an absent or incorrect Java installation. " +
+                "perhaps due to an absent or incorrect Java installation. " +
                 "Do you wish to download and install it now?");
             language.Add("JavaOutdatedTitle", "Java version found is outdated");
             language.Add("JavaOutdatedMessage", 
