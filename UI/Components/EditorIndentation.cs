@@ -40,10 +40,6 @@ namespace SPCode.UI.Components
                         {
                             indentation = indentation.Substring(0, indentation.Length) + Program.Indentation + "\n" + indentation.Substring(0, indentation.Length);
                         }
-                        else
-                        {
-                            indentation = Program.Indentation + "\n";
-                        }
                     }
                     /*if (lastLineTextTrimmed == "{" && currentLineTextTrimmed != "}")
                     {
