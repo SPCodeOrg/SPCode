@@ -314,6 +314,9 @@ namespace SPCode.Interop
             language.Add("JavaDownErrorTitle", "Java download error");
             language.Add("JavaDownErrorMessage", "SPCode could not download Java by itself. Would you like to download it manually?");
             language.Add("JavaOpenedBrowser", "Java download link opened in browser");
+            language.Add("ErrorSavingConfigs", "Could not save the current configs state");
+            language.Add("DuplicateConfigNames", "You cannot have 2 configs or more with the same name.");
+            language.Add("EmptyConfigNames", "You cannot have configs with an empty name.");
         }
     }
 }

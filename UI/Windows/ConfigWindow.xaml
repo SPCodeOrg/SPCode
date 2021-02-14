@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              Width="1085" Height="625" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" GlowBrush="{DynamicResource AccentColorBrush}"
-                      Title="Configurations" ShowTitleBar="False" Closed="MetroWindow_Closed">
+                      Title="Configurations" ShowTitleBar="False" Closing="MetroWindow_Closing">
     <controls:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

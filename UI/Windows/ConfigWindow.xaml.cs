@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -461,14 +462,49 @@ namespace SPCode.UI.Windows
             Program.Configs[ConfigListBox.SelectedIndex].RConCommands = C_RConCmds.Text;
         }
 
-        private void MetroWindow_Closed(object sender, EventArgs e)
+        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            // TODO: find out what is this for
             if (NeedsSMDefInvalidation)
             {
                 foreach (var config in Program.Configs)
                 {
                     config.InvalidateSMDef();
                 }
+            }
+
+            // Fill a list with all configs from the ListBox
+
+            var configsList = new List<string>();
+
+            for (int i = 0; i < ConfigListBox.Items.Count; i++)
+            {
+                configsList.Add(((ListBoxItem)ConfigListBox.Items[i]).Content.ToString());
+            }
+
+            // Check for empty named configs and disallow saving configs
+
+            foreach (var cfg in configsList)
+            {
+                if (cfg == string.Empty)
+                {
+                    e.Cancel = true;
+                    this.ShowMessageAsync(Program.Translations.GetLanguage("ErrorSavingConfigs"),
+                        Program.Translations.GetLanguage("EmptyConfigNames"), MessageDialogStyle.Affirmative,
+                        MetroDialogOptions);
+                    return;
+                }
+            }
+
+            // Check for duplicate names in the config list and disallow saving configs
+
+            if (configsList.Count != configsList.Distinct().Count())
+            {
+                e.Cancel = true;
+                this.ShowMessageAsync(Program.Translations.GetLanguage("ErrorSavingConfigs"),
+                    Program.Translations.GetLanguage("DuplicateConfigNames"), MessageDialogStyle.Affirmative,
+                    MetroDialogOptions);
+                return;
             }
 
             Program.MainWindow.FillConfigMenu();
