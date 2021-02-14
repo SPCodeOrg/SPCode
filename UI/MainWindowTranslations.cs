@@ -69,7 +69,7 @@ namespace SPCode.UI
             MenuI_Reformatter.Header = Program.Translations.GetLanguage("Reformatter");
             MenuI_ReformattCurr.Header = Program.Translations.GetLanguage("ReformatCurr");
             MenuI_ReformattAll.Header = Program.Translations.GetLanguage("ReformatAll");
-            MenuI_Decompile.Header = $"{Program.Translations.GetLanguage("Decompile")}  .smx (Lysis)";
+            MenuI_Decompile.Header = $"{Program.Translations.GetLanguage("Decompile")} .smx (Lysis)";
             MenuI_ReportBugGit.Header = Program.Translations.GetLanguage("ReportBugGit");
             UpdateCheckItem.Header = Program.Translations.GetLanguage("CheckUpdates");
             MenuI_About.Header = Program.Translations.GetLanguage("About");

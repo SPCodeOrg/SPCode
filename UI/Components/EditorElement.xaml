@@ -57,7 +57,7 @@
     </UserControl.Resources>
     <Grid Background="{DynamicResource WhiteColorBrush}">
         <editor:TextEditor x:Name="editor" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,20" ShowLineNumbers="True" FontFamily="Consolas"
-                           TextChanged="editor_TextChanged" Foreground="{DynamicResource BlackColorBrush}" >
+                           TextChanged="Editor_TextChanged" Foreground="{DynamicResource BlackColorBrush}" >
             <editor:TextEditor.ContextMenu>
                 <ContextMenu Opened="ContextMenu_Opening">
                     <MenuItem Name="MenuC_Undo" Header="Undo" Tag="0" Click="HandleContextMenuCommand" />

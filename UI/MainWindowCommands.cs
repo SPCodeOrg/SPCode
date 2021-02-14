@@ -1,18 +1,28 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
-using Lysis;
+using ByteSizeLib;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using SPCode.UI.Components;
 using SPCode.UI.Windows;
+using SPCode.Utils;
 using SPCode.Utils.SPSyntaxTidy;
+using static SPCode.Utils.JavaUtils;
 
 namespace SPCode.UI
 {
     public partial class MainWindow
     {
+
+        private ProgressDialogController dwJavaInCourse;
+        private readonly string OutFile = Environment.ExpandEnvironmentVariables(@"%userprofile%\Downloads\adoptopenjdk-java-15-spcode.msi");
+        private readonly string JavaLink = Environment.Is64BitOperatingSystem ? Constants.JavaDownloadSite64 : Constants.JavaDownloadSite32;
+
         public EditorElement GetCurrentEditorElement()
         {
             EditorElement outElement = null;
@@ -327,6 +337,51 @@ namespace SPCode.UI
 
         private async void Command_Decompile(MainWindow win)
         {
+            // First we check the java version of the user, and act accordingly
+
+            ProgressDialogController checkingJavaDialog = null;
+            if (win != null)
+            {
+                checkingJavaDialog = await this.ShowProgressAsync(Program.Translations.GetLanguage("JavaInstallCheck") + "...",
+                    "", false, MetroDialogOptions);
+                ProcessUITasks();
+            }
+            JavaUtils ju = new JavaUtils();
+            switch (ju.GetJavaStatus())
+            {
+                case JavaResults.Absent:
+                    {
+                        // If java is not installed, offer to download it
+                        await checkingJavaDialog.CloseAsync();
+                        if (await this.ShowMessageAsync(Program.Translations.GetLanguage("JavaNotFoundTitle"),
+                            Program.Translations.GetLanguage("JavaNotFoundMessage"),
+                            MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
+                        {
+                            await InstallJava();
+                        }
+                        return;
+                    }
+                case JavaResults.Outdated:
+                    {
+                        // If java is outdated, offer to upgrade it
+                        await checkingJavaDialog.CloseAsync();
+                        if (await this.ShowMessageAsync(Program.Translations.GetLanguage("JavaOutdatedTitle"),
+                             Program.Translations.GetLanguage("JavaOutdatedMessage"),
+                             MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
+                        {
+                            await InstallJava();
+                        }
+                        return;
+                    }
+                case JavaResults.Correct:
+                    {
+                        // Move on
+                        await checkingJavaDialog.CloseAsync();
+                        break;
+                    }
+            }
+
+            // Pick file for decompiling
             var ofd = new OpenFileDialog
             {
                 Filter = "Sourcepawn Plugins (*.smx)|*.smx",
@@ -334,7 +389,6 @@ namespace SPCode.UI
             };
             var result = ofd.ShowDialog();
 
-            Debug.Assert(result != null, nameof(result) + " != null");
             if (result.Value && !string.IsNullOrWhiteSpace(ofd.FileName))
             {
                 var fInfo = new FileInfo(ofd.FileName);
@@ -343,14 +397,43 @@ namespace SPCode.UI
                     ProgressDialogController task = null;
                     if (win != null)
                     {
-                        task = await this.ShowProgressAsync(Program.Translations.GetLanguage("Decompiling"),
+                        task = await this.ShowProgressAsync(Program.Translations.GetLanguage("Decompiling") + "...",
                             fInfo.FullName, false, MetroDialogOptions);
                         ProcessUITasks();
                     }
 
+                    // Prepare Lysis execution
                     var destFile = fInfo.FullName + ".sp";
-                    File.WriteAllText(destFile, LysisDecompiler.Analyze(fInfo), Encoding.UTF8);
-                    TryLoadSourceFile(destFile, true, false);
+                    var standardOutput = new StringBuilder();
+                    using var process = new Process();
+                    process.StartInfo.WorkingDirectory = Paths.GetLysisDirectory();
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.CreateNoWindow = true;
+                    process.StartInfo.FileName = "java";
+
+                    process.StartInfo.Arguments = $"-jar lysis-java.jar \"{fInfo.FullName}\"";
+
+                    // Execute Lysis, read and store output
+                    try
+                    {
+                        process.Start();
+                        while (!process.HasExited)
+                        {
+                            standardOutput.Append(process.StandardOutput.ReadToEnd());
+                        }
+                        standardOutput.Append(process.StandardOutput.ReadToEnd());
+                        File.WriteAllText(destFile, standardOutput.ToString(), Encoding.UTF8);
+                    }
+                    catch (Exception ex)
+                    {
+                        await this.ShowMessageAsync($"{fInfo.Name} {Program.Translations.GetLanguage("FailedToDecompile")}",
+                            $"{ex.Message}", MessageDialogStyle.Affirmative,
+                        MetroDialogOptions);
+                    }
+
+                    // Load the decompiled file to SPCode
+                    TryLoadSourceFile(destFile, true, false, true);
                     if (task != null)
                     {
                         await task.CloseAsync();
@@ -358,6 +441,70 @@ namespace SPCode.UI
                 }
             }
         }
+
+        #region Java Installation
+
+        private async System.Threading.Tasks.Task InstallJava()
+        {
+            // Spawn progress dialog when downloading Java
+            dwJavaInCourse = await this.ShowProgressAsync(Program.Translations.GetLanguage("DownloadingJava") + "...",
+                Program.Translations.GetLanguage("FetchingJava"), false, MetroDialogOptions);
+            dwJavaInCourse.SetProgress(0.0);
+            ProcessUITasks();
+
+            // Setting up event callbacks to change download percentage, amount downloaded and amount left
+            using WebClient wc = new WebClient();
+            wc.DownloadProgressChanged += DownloadProgressed;
+            wc.DownloadFileCompleted += DownloadCompleted;
+            wc.DownloadFileAsync(new Uri(JavaLink), OutFile);
+        }
+
+        private void DownloadProgressed(object sender, DownloadProgressChangedEventArgs e)
+        {
+            // Handles percentage and MB downloaded/left
+            dwJavaInCourse.SetMessage(
+                $"{e.ProgressPercentage}% {Program.Translations.GetLanguage("AmountCompleted")}, " +
+                $"{Program.Translations.GetLanguage("AmountDownloaded")} {Math.Round(ByteSize.FromBytes(e.BytesReceived).MegaBytes),0} MB / " +
+                $"{Math.Round(ByteSize.FromBytes(e.TotalBytesToReceive).MegaBytes),0} MB");
+
+            // Handles progress bar
+            dwJavaInCourse.SetProgress(e.ProgressPercentage * 0.01d);
+        }
+
+        private async void DownloadCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            await dwJavaInCourse.CloseAsync();
+            if (File.Exists(OutFile))
+            {
+                // If file downloaded properly, it should open
+                Process.Start(OutFile);
+                await this.ShowMessageAsync(
+                    Program.Translations.GetLanguage("JavaOpened"),
+                    Program.Translations.GetLanguage("JavaSuggestRestart"), 
+                    MessageDialogStyle.Affirmative);
+            }
+            else
+            {
+                // Otherwise, just offer a manual download
+                if (await this.ShowMessageAsync(
+                    Program.Translations.GetLanguage("JavaDownErrorTitle"),
+                    Program.Translations.GetLanguage("JavaDownErrorMessage"), 
+                    MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = JavaLink,
+                        UseShellExecute = true
+                    });
+                    await this.ShowMessageAsync(
+                    Program.Translations.GetLanguage("JavaOpenedBrowser"),
+                    Program.Translations.GetLanguage("JavaSuggestRestart"),
+                    MessageDialogStyle.Affirmative);
+                }
+            }
+        }
+
+        #endregion
 
         private void Command_OpenSPDef()
         {

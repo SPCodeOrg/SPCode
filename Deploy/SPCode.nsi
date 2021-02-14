@@ -41,10 +41,10 @@ File System.Windows.Interactivity.dll
 File Xceed.Wpf.AvalonDock.dll
 File Xceed.Wpf.AvalonDock.Themes.Metro.dll
 File smxdasm.dll
-File LysisForSpedit.dll
 File QueryMaster.dll
 File Ionic.BZip2.dll
 File SourcepawnCondenser.dll
+File ByteSize.dll
 File Renci.SshNet.dll
 File Newtonsoft.Json.dll
 File DiscordRPC.dll
@@ -57,6 +57,7 @@ File lang_0_spcode.xml
 File GPLv3.txt
 
 CreateDirectory "$APPDATA\spcode\crashlogs"
+CreateDirectory "$APPDATA\spcode\lysis"
 CreateDirectory "$APPDATA\spcode\sourcepawn"
 CreateDirectory "$APPDATA\spcode\sourcepawn\errorfiles"
 CreateDirectory "$APPDATA\spcode\sourcepawn\temp"
@@ -66,6 +67,7 @@ CreateDirectory "$APPDATA\spcode\sourcepawn\configs\sm_1_10_0_6478"
 
 SetOutPath $APPDATA\spcode
 File /r ".\sourcepawn"
+File /r ".\lysis"
 
 IfFileExists $APPDATA\spcode\options_0.dat OptionsExist OptionsDoesNotExist
 OptionsExist:

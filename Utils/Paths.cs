@@ -33,10 +33,10 @@ namespace SPCode.Utils
             return LocalInstallation ? localPath : appDataPath;
         }
 
-        public static string GetErrorFilesDirectory()
+        public static string GetLysisDirectory()
         {
-            var appDataPath = SPCodeAppDataPath + @"\sourcepawn\errorfiles";
-            var localPath = @".\sourcepawn\errorfiles";
+            var appDataPath = SPCodeAppDataPath + @"\lysis";
+            var localPath = @".\lysis";
             return LocalInstallation ? localPath : appDataPath;
         }
 

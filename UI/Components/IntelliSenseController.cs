@@ -27,7 +27,6 @@ namespace SPCode.UI.Components
         private Storyboard FadeISACIn;
         private Storyboard FadeISACOut;
 
-        private string[] funcNames;
         private SMFunction[] funcs;
         private bool IS_Open;
         public bool ISAC_Open;
@@ -67,7 +66,6 @@ namespace SPCode.UI.Components
             }
 
             var def = Program.Configs[Program.SelectedConfig].GetSMDef();
-            funcNames = def.FunctionStrings;
             funcs = def.Functions.ToArray();
             acEntrys = def.ProduceACNodes();
             isEntrys = def.ProduceISNodes();
@@ -76,12 +74,11 @@ namespace SPCode.UI.Components
             MethodAutoCompleteBox.ItemsSource = isEntrys;
         }
 
-        public void InterruptLoadAutoCompletes(string[] FunctionStrings, SMFunction[] FunctionArray, ACNode[] acNodes,
-            ISNode[] isNodes, SMMethodmap[] newMethodMaps, SMVariable[] newVariables)
+        public void InterruptLoadAutoCompletes(SMFunction[] FunctionArray, ACNode[] acNodes,
+            ISNode[] isNodes, SMMethodmap[] newMethodMaps)
         {
             Dispatcher?.Invoke(() =>
             {
-                funcNames = FunctionStrings;
                 funcs = FunctionArray;
                 acEntrys = acNodes;
                 isEntrys = isNodes;
@@ -91,7 +88,7 @@ namespace SPCode.UI.Components
             });
         }
 
-        private readonly Regex methodExp = new Regex(@"(?<=\.)[A-Za-z_]\w*", RegexOptions.RightToLeft);
+        //private readonly Regex methodExp = new Regex(@"(?<=\.)[A-Za-z_]\w*", RegexOptions.RightToLeft);
         private void EvaluateIntelliSense()
         {
             if (editor.SelectionLength > 0)
