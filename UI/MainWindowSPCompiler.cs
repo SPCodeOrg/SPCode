@@ -50,7 +50,7 @@ namespace SPCode.UI
             // Searches for the spcomp.exe compiler
             foreach (var dir in c.SMDirectories)
             {
-                spCompInfo = new FileInfo(Path.Combine(dir, Constants.CompilerFileName));
+                spCompInfo = new FileInfo(Path.Combine(dir, "spcode.exe"));
                 if (spCompInfo.Exists)
                 {
                     SpCompFound = true;
