@@ -240,6 +240,12 @@ namespace SPCode.UI.Components
                 foreach (var cfg in config)
                 {
                     var file = Path.GetFullPath(Path.Combine(cfg, "include", sm.File)) + ".inc";
+
+                    if (!File.Exists(file))
+                    {
+                        file = Path.GetFullPath(Path.Combine(cfg, sm.File)) + ".inc";
+                    }
+
                     await Task.Delay(100);
                     var result = Program.MainWindow.TryLoadSourceFile(file, true, false, true);
                     if (!result)
