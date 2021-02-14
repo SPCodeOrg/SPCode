@@ -11,7 +11,7 @@
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
-        <TreeView Grid.Column="0" Name="treeview_" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,5,0" SelectedItemChanged="treeview__SelectedItemChanged" />
+        <TreeView Grid.Column="0" Name="treeview_" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,5,0" SelectedItemChanged="Treeview__SelectedItemChanged" />
         <GridSplitter Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="5" Background="LightGray" />
         <controls:TextEditor Grid.Column="1" Name="detailbox_" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsReadOnly="True" ShowLineNumbers="True" FontFamily="Consolas" Foreground="{DynamicResource BlackColorBrush}" />
     </Grid>

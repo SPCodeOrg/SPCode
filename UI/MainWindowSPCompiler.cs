@@ -130,7 +130,7 @@ namespace SPCode.UI
                         stringOutput.AppendLine(fileInfo.Name);
                         if (fileInfo.Exists)
                         {
-                            using var process = new Process();
+                            var process = new Process();
                             process.StartInfo.WorkingDirectory =
                                 fileInfo.DirectoryName ?? throw new NullReferenceException();
                             process.StartInfo.UseShellExecute = true;
@@ -198,10 +198,10 @@ namespace SPCode.UI
                                 {
                                     ErrorResultGrid.Items.Add(new ErrorDataGridRow
                                     {
-                                        file = mc[j].Groups["file"].Value.Trim(),
-                                        line = mc[j].Groups["line"].Value.Trim(),
-                                        type = mc[j].Groups["type"].Value.Trim(),
-                                        details = mc[j].Groups["details"].Value.Trim()
+                                        File = mc[j].Groups["file"].Value.Trim(),
+                                        Line = mc[j].Groups["line"].Value.Trim(),
+                                        Type = mc[j].Groups["type"].Value.Trim(),
+                                        Details = mc[j].Groups["details"].Value.Trim()
                                     });
                                 }
 
@@ -530,9 +530,9 @@ namespace SPCode.UI
 
     public class ErrorDataGridRow
     {
-        public string file { set; get; }
-        public string line { set; get; }
-        public string type { set; get; }
-        public string details { set; get; }
+        public string File { set; get; }
+        public string Line { set; get; }
+        public string Type { set; get; }
+        public string Details { set; get; }
     }
 }

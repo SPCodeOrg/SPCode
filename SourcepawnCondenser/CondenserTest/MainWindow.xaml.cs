@@ -31,7 +31,7 @@ namespace CondenserTest
             textBox.Text = str.ToString();
         }
 
-        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             var text = textBox.Text;
             var watch = new Stopwatch();
@@ -247,10 +247,10 @@ namespace CondenserTest
             var token = ((TreeViewItem)sender).Tag;
             if (token != null)
             {
-                if (token is SMFunction)
+                if (token is SMFunction function)
                 {
                     textBox.Focus();
-                    textBox.Select(((SMFunction)token).Index, ((SMFunction)token).Length);
+                    textBox.Select(function.Index, function.Length);
                 }
             }
         }
@@ -260,10 +260,10 @@ namespace CondenserTest
             var token = ((TreeViewItem)sender).Tag;
             if (token != null)
             {
-                if (token is SMEnum)
+                if (token is SMEnum @enum)
                 {
                     textBox.Focus();
-                    textBox.Select(((SMEnum)token).Index, ((SMEnum)token).Length);
+                    textBox.Select(@enum.Index, @enum.Length);
                 }
             }
         }
@@ -273,10 +273,10 @@ namespace CondenserTest
             var token = ((TreeViewItem)sender).Tag;
             if (token != null)
             {
-                if (token is SMStruct)
+                if (token is SMStruct @struct)
                 {
                     textBox.Focus();
-                    textBox.Select(((SMStruct)token).Index, ((SMStruct)token).Length);
+                    textBox.Select(@struct.Index, @struct.Length);
                 }
             }
         }
@@ -286,10 +286,10 @@ namespace CondenserTest
             var token = ((TreeViewItem)sender).Tag;
             if (token != null)
             {
-                if (token is SMDefine)
+                if (token is SMDefine define)
                 {
                     textBox.Focus();
-                    textBox.Select(((SMDefine)token).Index, ((SMDefine)token).Length);
+                    textBox.Select(define.Index, define.Length);
                 }
             }
         }
@@ -299,10 +299,10 @@ namespace CondenserTest
             var token = ((TreeViewItem)sender).Tag;
             if (token != null)
             {
-                if (token is SMConstant)
+                if (token is SMConstant constant)
                 {
                     textBox.Focus();
-                    textBox.Select(((SMConstant)token).Index, ((SMConstant)token).Length);
+                    textBox.Select(constant.Index, constant.Length);
                 }
             }
         }
@@ -312,10 +312,10 @@ namespace CondenserTest
             var token = ((TreeViewItem)sender).Tag;
             if (token != null)
             {
-                if (token is SMMethodmap)
+                if (token is SMMethodmap methodmap)
                 {
                     textBox.Focus();
-                    textBox.Select(((SMMethodmap)token).Index, ((SMMethodmap)token).Length);
+                    textBox.Select(methodmap.Index, methodmap.Length);
                 }
             }
         }
@@ -325,10 +325,10 @@ namespace CondenserTest
             var token = ((Grid)sender).Tag;
             if (token != null)
             {
-                if (token is Token)
+                if (token is Token token1)
                 {
                     textBox.Focus();
-                    textBox.Select(((Token)token).Index, ((Token)token).Length);
+                    textBox.Select(token1.Index, token1.Length);
                 }
             }
         }

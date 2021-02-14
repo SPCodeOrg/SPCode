@@ -24,7 +24,6 @@ namespace SPCode.UI.Windows
     {
         private bool AllowChange;
         private bool NeedsSMDefInvalidation;
-        private readonly string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
         private ICommand textBoxButtonFileCmd;
 
@@ -72,9 +71,6 @@ namespace SPCode.UI.Windows
                                 {
                                     box.Text = dialog.FileName;
                                 }
-                                // var dialog = new FolderBrowserDialog();
-                                // var result = dialog.ShowDialog();
-                                // if (result == System.Windows.Forms.DialogResult.OK) box.Text = dialog.SelectedPath;
                             }
                         }
                     };

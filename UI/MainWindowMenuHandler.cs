@@ -84,9 +84,9 @@ namespace SPCode.UI
                 MenuI_Redo.IsEnabled = ee.editor.CanRedo;
                 for (var i = 2; i < menu.Items.Count; ++i)
                 {
-                    if (menu.Items[i] is MenuItem)
+                    if (menu.Items[i] is MenuItem item)
                     {
-                        ((MenuItem)menu.Items[i]).IsEnabled = true;
+                        item.IsEnabled = true;
                     }
                 }
             }
@@ -224,10 +224,14 @@ namespace SPCode.UI
 
         private async void UpdateCheck_Click(object sender, RoutedEventArgs e)
         {
+            var updatingWindow = await this.ShowProgressAsync(Program.Translations.GetLanguage("CheckingUpdates") + "...", "", false, MetroDialogOptions);
+            updatingWindow.SetIndeterminate();
+
             await UpdateCheck.Check();
             var status = Program.UpdateStatus;
             if (status.IsAvailable)
             {
+                await updatingWindow.CloseAsync();
                 var uWindow = new UpdateWindow(status) { Owner = this };
                 uWindow.ShowDialog();
                 if (uWindow.Succeeded)
@@ -244,6 +248,7 @@ namespace SPCode.UI
             }
             else
             {
+                await updatingWindow.CloseAsync();
                 if (status.GotException)
                 {
                     await this.ShowMessageAsync(Program.Translations.GetLanguage("FailedCheck"),

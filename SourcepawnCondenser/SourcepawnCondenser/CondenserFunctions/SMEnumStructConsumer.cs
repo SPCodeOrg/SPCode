@@ -319,9 +319,5 @@ namespace SourcepawnCondenser
             return -1;
         }
 
-        private int ConsumeSMFunctionStruct()
-        {
-            return -1;
-        }
     }
 }

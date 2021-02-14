@@ -18,22 +18,22 @@ namespace SPCode.UI
                     IsCheckable = true,
                     IsChecked = i == Program.SelectedConfig
                 };
-                item.Click += item_Click;
+                item.Click += Item_Click;
                 ConfigMenu.Items.Add(item);
             }
             ConfigMenu.Items.Add(new Separator());
             var editItem = new MenuItem() { Header = Program.Translations.GetLanguage("EditConfig") };
-            editItem.Click += editItem_Click;
+            editItem.Click += EditItem_Click;
             ConfigMenu.Items.Add(editItem);
         }
 
-        private void editItem_Click(object sender, RoutedEventArgs e)
+        private void EditItem_Click(object sender, RoutedEventArgs e)
         {
             var configWindow = new ConfigWindow() { Owner = this, ShowInTaskbar = false };
             configWindow.ShowDialog();
         }
 
-        private void item_Click(object sender, RoutedEventArgs e)
+        private void Item_Click(object sender, RoutedEventArgs e)
         {
             var name = (string)((MenuItem)sender).Header;
             ChangeConfig(name);

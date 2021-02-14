@@ -81,10 +81,10 @@ namespace SPCode.UI.Windows
                 SPBox.Items.Add(items[i]);
             }
 
-            searchTimer.Elapsed += searchTimer_Elapsed;
+            searchTimer.Elapsed += SearchTimer_Elapsed;
         }
 
-        private void searchTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void SearchTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             DoSearch();
             searchTimer.Stop();

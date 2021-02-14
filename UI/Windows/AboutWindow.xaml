@@ -90,10 +90,10 @@
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,40,5,0" Text="Authors:  Paul Jenkins + MahApps GitHub Community" FontSize="16" IsHitTestVisible="False" />
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,70,5,0" Text="License:  Microsoft Public License (Ms-PL)" FontSize="16" IsHitTestVisible="False" />
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,100,5,0" FontSize="16">
-                        <Hyperlink NavigateUri="http://mahapps.com/" RequestNavigate="HyperlinkRequestNavigate">MahApps Website</Hyperlink>
+                        <Hyperlink NavigateUri="http://mahapps.com/" RequestNavigate="HyperlinkRequestNavigate">Website</Hyperlink>
                     </TextBlock>
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="500,100,5,0" FontSize="16">
-                        <Hyperlink NavigateUri="https://github.com/MahApps/MahApps.Metro" RequestNavigate="HyperlinkRequestNavigate">MahApps GitHub Repository</Hyperlink>
+                        <Hyperlink NavigateUri="https://github.com/MahApps/MahApps.Metro" RequestNavigate="HyperlinkRequestNavigate">GitHub Repository</Hyperlink>
                     </TextBlock>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="150" Margin="0,2,0,2">
@@ -107,10 +107,10 @@
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,40,5,0" Text="Authors:  Daniel Grunwald + SharpDevelop Community" FontSize="16" IsHitTestVisible="False" />
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,70,5,0" Text="License:  The MIT License (MIT)" FontSize="16" IsHitTestVisible="False" />
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,100,5,0" FontSize="16">
-                        <Hyperlink NavigateUri="http://www.icsharpcode.net/" RequestNavigate="HyperlinkRequestNavigate">SharpDevelop Website</Hyperlink>
+                        <Hyperlink NavigateUri="http://www.icsharpcode.net/" RequestNavigate="HyperlinkRequestNavigate">Website</Hyperlink>
                     </TextBlock>
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="525,100,5,0" FontSize="16">
-                        <Hyperlink NavigateUri="https://github.com/icsharpcode/SharpDevelop/" RequestNavigate="HyperlinkRequestNavigate">SharpDevelop GitHub Repository</Hyperlink>
+                        <Hyperlink NavigateUri="https://github.com/icsharpcode/SharpDevelop/" RequestNavigate="HyperlinkRequestNavigate">GitHub Repository</Hyperlink>
                     </TextBlock>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="150" Margin="0,2,0,2">
@@ -124,10 +124,10 @@
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,40,5,0" Text="Authors:  Xceed Software Inc." FontSize="16" IsHitTestVisible="False" />
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,70,5,0" Text="License:  Microsoft Public License (Ms-PL)" FontSize="16" IsHitTestVisible="False" />
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,100,5,0" FontSize="16">
-                        <Hyperlink NavigateUri="http://xceed.com/" RequestNavigate="HyperlinkRequestNavigate">XCEED Website</Hyperlink>
+                        <Hyperlink NavigateUri="http://xceed.com/" RequestNavigate="HyperlinkRequestNavigate">Website</Hyperlink>
                     </TextBlock>
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="525,100,5,0" FontSize="16">
-                        <Hyperlink NavigateUri="https://github.com/chandramouleswaran/AvalonDock" RequestNavigate="HyperlinkRequestNavigate">AvalonDock GitHub Repository</Hyperlink>
+                        <Hyperlink NavigateUri="https://github.com/chandramouleswaran/AvalonDock" RequestNavigate="HyperlinkRequestNavigate">GitHub Repository</Hyperlink>
                     </TextBlock>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="150" Margin="0,2,0,2">
@@ -136,15 +136,15 @@
                             <ImageBrush ImageSource="/SPCode;component/Resources/AboutImages/sourcemod.png" Stretch="Uniform" />
                         </Rectangle.Fill>
                     </Rectangle>
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="80,5,0,0" Text="Sourcemod" FontSize="18" IsHitTestVisible="False" />
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="430,5,0,0" Text="Sourcemod compiler &amp; includes" FontSize="18" FontWeight="Thin" IsHitTestVisible="False" />
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="80,5,0,0" FontSize="18" IsHitTestVisible="False" ><Run Text="Source"/><Run Text="M"/><Run Text="od"/></TextBlock>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="485,5,49,0" FontSize="18" FontWeight="Thin" IsHitTestVisible="False" ><Run Text="Source"/><Run Text="M"/><Run Text="od "/><Run Text="C"/><Run Text="ompiler &amp;"/><Run Text=" I"/><Run Text="ncludes"/></TextBlock>
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,40,5,0" Text="Authors:  AlliedModders Community" FontSize="16" IsHitTestVisible="False" />
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,70,5,0" Text="License:  GNU GPLv3" FontSize="16" IsHitTestVisible="False" />
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,100,5,0" FontSize="16">
-                        <Hyperlink NavigateUri="http://www.sourcemod.net/" RequestNavigate="HyperlinkRequestNavigate">Sourcemod Website</Hyperlink>
+                        <Hyperlink NavigateUri="http://www.sourcemod.net/" RequestNavigate="HyperlinkRequestNavigate">Website</Hyperlink>
                     </TextBlock>
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="525,100,5,0" FontSize="16">
-                        <Hyperlink NavigateUri="https://github.com/alliedmodders/sourcemod" RequestNavigate="HyperlinkRequestNavigate">Soucemod GitHub Repository</Hyperlink>
+                        <Hyperlink NavigateUri="https://github.com/alliedmodders/sourcemod" RequestNavigate="HyperlinkRequestNavigate">GitHub Repository</Hyperlink>
                     </TextBlock>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="150" Margin="0,2,0,2">
@@ -158,24 +158,38 @@
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,40,5,0" Text="Authors:  Alexander Kahlkopf" FontSize="16" IsHitTestVisible="False" />
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,70,5,0" Text="License:  Own License, © 2014 iconmonstr" FontSize="16" IsHitTestVisible="False" />
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,100,5,0" FontSize="16">
-                        <Hyperlink NavigateUri="http://iconmonstr.com/" RequestNavigate="HyperlinkRequestNavigate">iconmonstr Website</Hyperlink>
+                        <Hyperlink NavigateUri="http://iconmonstr.com/" RequestNavigate="HyperlinkRequestNavigate">Website</Hyperlink>
                     </TextBlock>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="150" Margin="0,2,0,2">
                     <Rectangle HorizontalAlignment="Left" VerticalAlignment="Stretch" Height="150" Width="300" IsHitTestVisible="False">
                         <Rectangle.Fill>
-                            <ImageBrush ImageSource="/SPCode;component/Resources/AboutImages/smlib.png" Stretch="Uniform" />
+                            <ImageBrush ImageSource="/SPCode;component/Resources/AboutImages/peace-maker.jpg" Stretch="Uniform" />
                         </Rectangle.Fill>
                     </Rectangle>
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="180,5,0,0" Text="SMLib" FontSize="18" IsHitTestVisible="False" />
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="420,5,0,0" Text="Sourcemod Library" FontSize="18" FontWeight="Thin" IsHitTestVisible="False" />
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,40,5,0" Text="Authors:  berni" FontSize="16" IsHitTestVisible="False" />
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,70,5,0" Text="License:  GNU GPLv3" FontSize="16" IsHitTestVisible="False" />
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="436,5,266,0" Text="Lysis-Java" FontSize="18" IsHitTestVisible="False" />
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="530,5,122,0" FontSize="18" FontWeight="Thin" IsHitTestVisible="False" ><Run Text=".smx Decompiler"/><LineBreak/><Run/></TextBlock>
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,40,5,0" FontSize="16" IsHitTestVisible="False" ><Run Text="Authors:  "/><Run Text="Peace-Maker"/></TextBlock>
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,70,5,0" FontSize="16" IsHitTestVisible="False" ><Run Text="License:  "/><Run Text="Unknown"/></TextBlock>
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,100,5,0" FontSize="16">
-                        <Hyperlink NavigateUri="https://www.sourcemodplugins.org/smlib/" RequestNavigate="HyperlinkRequestNavigate">SMLib Website</Hyperlink>
+                        <Hyperlink NavigateUri="https://github.com/peace-maker/lysis-java" RequestNavigate="HyperlinkRequestNavigate">GitHub Repository</Hyperlink>
                     </TextBlock>
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="525,100,5,0" FontSize="16">
-                        <Hyperlink NavigateUri="https://github.com/bcserv/smlib" RequestNavigate="HyperlinkRequestNavigate">SMLib GitHub Repository</Hyperlink>
+                </Grid>
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="150" Margin="0,2,0,2">
+                    <Rectangle HorizontalAlignment="Left" VerticalAlignment="Stretch" Height="150" Width="300" IsHitTestVisible="False">
+                        <Rectangle.Fill>
+                            <ImageBrush ImageSource="/SPCode;component/Resources/AboutImages/AdoptOpenJDK.jpg" Stretch="Uniform" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="383,5,263,0" Text="AdoptOpenJDK" FontSize="18" IsHitTestVisible="False" Width="132" />
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="524,5,116,0" FontSize="18" FontWeight="Thin" IsHitTestVisible="False" Text="Java JDK Installer" />
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,40,5,0" FontSize="16" IsHitTestVisible="False" ><Run Text="Authors:  "/><Run Text="AdoptOpenJDK"/><Run Text=" Community"/></TextBlock>
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,70,5,0" FontSize="16" IsHitTestVisible="False" ><Run Text="License: A"/><Run Text="pache"/><Run Text=" L"/><Run Text="icense"/><Run Text=" v2"/></TextBlock>
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,100,5,0" FontSize="16">
+                        <Hyperlink NavigateUri="https://adoptopenjdk.net" RequestNavigate="HyperlinkRequestNavigate">Website</Hyperlink>
+                    </TextBlock>
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="525,100,0,0" FontSize="16">
+                        <Hyperlink NavigateUri="https://github.com/AdoptOpenJDK" RequestNavigate="HyperlinkRequestNavigate">GitHub Repositories</Hyperlink>
                     </TextBlock>
                 </Grid>
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="150" Margin="0,2,0,2">
@@ -184,15 +198,12 @@
                             <ImageBrush ImageSource="/SPCode;component/Resources/AboutImages/alliedmodders.png" Stretch="Uniform" />
                         </Rectangle.Fill>
                     </Rectangle>
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="120,5,0,0" Text="Lysis, smxdasm" FontSize="18" IsHitTestVisible="False" />
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="480,5,0,0" Text="Decompiler, Dissasembler" FontSize="18" FontWeight="Thin" IsHitTestVisible="False" />
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,40,5,0" Text="Authors:  Alliedmodders Community" FontSize="16" IsHitTestVisible="False" />
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="431,5,273,0" Text="smxdasm" FontSize="18" IsHitTestVisible="False" />
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="524,5,116,0" FontSize="18" FontWeight="Thin" IsHitTestVisible="False" ><Run Text=".smx "/><Run Text="Dissasembler"/></TextBlock>
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,40,5,0" FontSize="16" IsHitTestVisible="False" ><Run Text="Authors:  Allied"/><Run Text="M"/><Run Text="odders Community"/></TextBlock>
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,70,5,0" Text="License:  GNU GPLv3" FontSize="16" IsHitTestVisible="False" />
                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="325,100,5,0" FontSize="16">
-                        <Hyperlink NavigateUri="https://github.com/alliedmodders/smxtools/tree/master/smxdasm/" RequestNavigate="HyperlinkRequestNavigate">smxdasm Github Repository</Hyperlink>
-                    </TextBlock>
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="575,100,5,0" FontSize="16">
-                        <Hyperlink NavigateUri="https://hg.alliedmods.net/users/dvander_alliedmods.net/lysis/" RequestNavigate="HyperlinkRequestNavigate">Lysis Repository</Hyperlink>
+                        <Hyperlink NavigateUri="https://github.com/alliedmodders/sourcepawn/tree/master/tools/smxtools" RequestNavigate="HyperlinkRequestNavigate">Github Repository</Hyperlink>
                     </TextBlock>
                 </Grid>
             </StackPanel>

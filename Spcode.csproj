@@ -65,6 +65,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="ByteSize, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\ByteSize.2.0.0\lib\net45\ByteSize.dll</HintPath>
+    </Reference>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, PublicKeyToken=null">
       <HintPath>packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
       <Private>True</Private>
@@ -199,6 +202,7 @@
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\Constants.cs" />
+    <Compile Include="Utils\JavaUtils.cs" />
     <Compile Include="Utils\Paths.cs" />
     <Compile Include="Utils\FTP.cs" />
     <Compile Include="Utils\ManagedAES.cs" />
@@ -298,10 +302,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Lysis\LysisForSpedit.csproj">
-      <Project>{a8d94e5a-0cdc-4f01-8801-5770b3ca2b5b}</Project>
-      <Name>LysisForSpedit</Name>
-    </ProjectReference>
     <ProjectReference Include="SourcepawnCondenser\SourcepawnCondenser\SourcepawnCondenser.csproj">
       <Project>{b4e00f2d-dd73-42c7-a0ca-ba92b2a05850}</Project>
       <Name>SourcepawnCondenser</Name>
@@ -449,6 +449,8 @@
     <ClInclude Include="Resources\Misc\Templates\Template_Generic.sp" />
     <ClInclude Include="Resources\Misc\Templates\Template_TF2.sp" />
     <Content Include="Deploy\nsis-plugins\DotNetChecker.dll" />
+    <Resource Include="Resources\AboutImages\AdoptOpenJDK.jpg" />
+    <Resource Include="Resources\AboutImages\peace-maker.jpg" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Misc\Configurations\sm_1_10_0_6478\include\admin.inc" />
@@ -529,23 +531,26 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>md ".\sourcepawn"
-            md ".\sourcepawn\templates"
-            md ".\sourcepawn\configs"
-            md ".\sourcepawn\temp"
-            md ".\sourcepawn\errorfiles"
-            md ".\nsis-plugins"
-            C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Templates\*.*" ".\sourcepawn\templates\*.*" /e /y /q
-            C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Configurations" ".\sourcepawn\configs" /e /y /q /d
-            copy ".\..\..\Resources\lang_0_spcode.xml" ".\lang_0_spcode.xml" /y
-            copy ".\..\..\Deploy\SPCode.nsi" ".\SPCode.nsi" /y
-            copy ".\..\..\Deploy\Compress.ps1" ".\Compress.ps1" /y
-            copy ".\..\..\Deploy\DotNetChecker.nsh" ".\DotNetChecker.nsh" /y
-            copy ".\..\..\Deploy\FileAssociation.nsh" ".\FileAssociation.nsh" /y
-            copy ".\..\..\Deploy\GPLv3.txt" ".\GPLv3.txt" /y
-            copy ".\..\..\Deploy\icon.ico" ".\icon.ico" /y
-            copy ".\..\..\Deploy\nsis-plugins\DotNetChecker.dll" ".\nsis-plugins\DotNetChecker.dll" /y
-        </PostBuildEvent>
+    <PostBuildEvent>
+      md ".\sourcepawn"
+      md ".\sourcepawn\templates"
+      md ".\sourcepawn\configs"
+      md ".\sourcepawn\temp"
+      md ".\sourcepawn\errorfiles"
+      md ".\nsis-plugins"
+      md ".\lysis"
+      C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Templates\*.*" ".\sourcepawn\templates\*.*" /e /y /q
+      C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Configurations" ".\sourcepawn\configs" /e /y /q /d
+      C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Lysis\*.*" ".\lysis" /e /y /q
+      copy ".\..\..\Resources\lang_0_spcode.xml" ".\lang_0_spcode.xml" /y
+      copy ".\..\..\Deploy\SPCode.nsi" ".\SPCode.nsi" /y
+      copy ".\..\..\Deploy\Compress.ps1" ".\Compress.ps1" /y
+      copy ".\..\..\Deploy\DotNetChecker.nsh" ".\DotNetChecker.nsh" /y
+      copy ".\..\..\Deploy\FileAssociation.nsh" ".\FileAssociation.nsh" /y
+      copy ".\..\..\Deploy\GPLv3.txt" ".\GPLv3.txt" /y
+      copy ".\..\..\Deploy\icon.ico" ".\icon.ico" /y
+      copy ".\..\..\Deploy\nsis-plugins\DotNetChecker.dll" ".\nsis-plugins\DotNetChecker.dll" /y
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.

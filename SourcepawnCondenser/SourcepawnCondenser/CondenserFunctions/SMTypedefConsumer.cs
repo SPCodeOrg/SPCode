@@ -11,10 +11,9 @@ namespace SourcepawnCondenser
             if ((position + 2) < length)
             {
                 ++position;
-                var name = string.Empty;
                 if (t[position].Kind == TokenKind.Identifier)
                 {
-                    name = t[position].Value;
+                    var name = t[position].Value;
                     for (var iteratePosition = position + 1; iteratePosition < length; ++iteratePosition)
                     {
                         if (t[iteratePosition].Kind == TokenKind.Semicolon)
@@ -41,10 +40,9 @@ namespace SourcepawnCondenser
             if ((position + 2) < length)
             {
                 ++position;
-                var name = string.Empty;
                 if (t[position].Kind == TokenKind.Identifier)
                 {
-                    name = t[position].Value;
+                    var name = t[position].Value;
                     var bracketIndex = 0;
                     for (var iteratePosition = position + 1; iteratePosition < length; ++iteratePosition)
                     {

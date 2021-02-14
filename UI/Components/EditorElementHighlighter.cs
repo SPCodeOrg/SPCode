@@ -341,8 +341,7 @@ namespace SPCode.UI.Components
 
         public override bool Equals(object obj)
         {
-            var other = obj as SimpleHighlightingBrush;
-            if (other == null)
+            if (obj is not SimpleHighlightingBrush other)
             {
                 return false;
             }

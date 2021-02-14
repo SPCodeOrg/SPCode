@@ -13,7 +13,7 @@ namespace UpdaterTest
     {
         private const string CurrentVersion = "1.3.5.0";
 
-        public static async Task Main(string[] args)
+        public static async Task Main()
         {
             var lat = await GetLatest();
             var release = lat.Assets.First(e => e.Name == "SPCode.Portable.zip");
