@@ -477,9 +477,9 @@ namespace SPCode.UI.Windows
 
             var configsList = new List<string>();
 
-            for (int i = 0; i < ConfigListBox.Items.Count; i++)
+            foreach (ListBoxItem item in ConfigListBox.Items)
             {
-                configsList.Add(((ListBoxItem)ConfigListBox.Items[i]).Content.ToString());
+                configsList.Add(item.Content.ToString());
             }
 
             // Check for empty named configs and disallow saving configs
