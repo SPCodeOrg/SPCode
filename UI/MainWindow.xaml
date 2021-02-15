@@ -269,10 +269,10 @@
                 <DataGrid Name="ErrorResultGrid" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsReadOnly="True"
                           SelectionMode="Single" AutoGenerateColumns="False" SelectionChanged="ErrorResultGrid_SelectionChanged">
                     <DataGrid.Columns>
-                        <DataGridTextColumn x:Name="MenuC_FileName" Header="File Name" Width="7*" Binding="{Binding file}" />
-                        <DataGridTextColumn x:Name="MenuC_Line" Header="Line" Width="1*" Binding="{Binding line}" />
-                        <DataGridTextColumn x:Name="MenuC_Type" Header="Type" Width="2*" Binding="{Binding type}" />
-                        <DataGridTextColumn x:Name="MenuC_Details" Header="Details" Width="9*" Binding="{Binding details}" />
+                        <DataGridTextColumn x:Name="MenuC_FileName" Header="File Name" Width="7*" Binding="{Binding File}" />
+                        <DataGridTextColumn x:Name="MenuC_Line" Header="Line" Width="1*" Binding="{Binding Line}" />
+                        <DataGridTextColumn x:Name="MenuC_Type" Header="Type" Width="2*" Binding="{Binding Type}" />
+                        <DataGridTextColumn x:Name="MenuC_Details" Header="Details" Width="9*" Binding="{Binding Details}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

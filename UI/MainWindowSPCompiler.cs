@@ -111,7 +111,7 @@ namespace SPCode.UI
                     var stringOutput = new StringBuilder();
                     var errorFilterRegex =
                         new Regex(
-                            @"^(?<file>.+?)\((?<line>[0-9]+(\s*--\s*[0-9]+)?)\)\s*:\s*(?<type>[a-zA-Z]+\s+([a-zA-Z]+\s+)?[0-9]+)\s*:(?<details>.+)",
+                            @"^(?<File>.+?)\((?<Line>[0-9]+(\s*--\s*[0-9]+)?)\)\s*:\s*(?<Type>[a-zA-Z]+\s+([a-zA-Z]+\s+)?[0-9]+)\s*:(?<Details>.+)",
                             RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
 
                     // Loops through all files to compile
@@ -198,10 +198,10 @@ namespace SPCode.UI
                                 {
                                     ErrorResultGrid.Items.Add(new ErrorDataGridRow
                                     {
-                                        File = mc[j].Groups["file"].Value.Trim(),
-                                        Line = mc[j].Groups["line"].Value.Trim(),
-                                        Type = mc[j].Groups["type"].Value.Trim(),
-                                        Details = mc[j].Groups["details"].Value.Trim()
+                                        File = mc[j].Groups["File"].Value.Trim(),
+                                        Line = mc[j].Groups["Line"].Value.Trim(),
+                                        Type = mc[j].Groups["Type"].Value.Trim(),
+                                        Details = mc[j].Groups["Details"].Value.Trim()
                                     });
                                 }
 
