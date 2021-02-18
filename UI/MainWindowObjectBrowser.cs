@@ -173,6 +173,7 @@ namespace SPCode.UI
         private void ObjectBrowserDirList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ChangeObjectBrowserToDirectory((string)ObjectBrowserDirList.SelectedItem);
+            ObjectBrowserButtonHolder.SelectedIndex = 1;
         }
 
         private List<TreeViewItem> BuildDirectoryItems(string dir)
