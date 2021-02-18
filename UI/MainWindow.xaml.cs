@@ -194,7 +194,8 @@ namespace SPCode.UI
                 {
                     BlendOverEffect.Begin();
                 }
-
+                ChangeObjectBrowserToDirectory(fileInfo.DirectoryName);
+                ObjectBrowserButtonHolder.SelectedIndex = 0;
                 return true;
             }
 
