@@ -93,7 +93,6 @@ namespace SPCode.UI
 
             OBItemText_File.Text = Program.Translations.GetLanguage("OBTextFile");
             OBItemText_Config.Text = Program.Translations.GetLanguage("OBTextConfig");
-            OBItemText_Item.Text = Program.Translations.GetLanguage("OBTextItem");
         }
     }
 }
