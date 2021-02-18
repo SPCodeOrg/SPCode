@@ -164,7 +164,7 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
             Program_CryptoKey = buffer;
         }
 
-        private void NormalizeSHColors()
+        public void NormalizeSHColors()
         {
             SH_Comments = new SerializeableColor(0xFF, 0x57, 0xA6, 0x49);
             SH_CommentsMarker = new SerializeableColor(0xFF, 0xFF, 0x20, 0x20);

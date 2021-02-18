@@ -317,6 +317,7 @@ namespace SPCode.Interop
             language.Add("ErrorSavingConfigs", "Could not save the current configs state");
             language.Add("DuplicateConfigNames", "You cannot have 2 configs or more with the same name.");
             language.Add("EmptyConfigNames", "You cannot have configs with an empty name.");
+            language.Add("DefaultValues", "Default values");
         }
     }
 }

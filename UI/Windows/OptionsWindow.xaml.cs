@@ -622,6 +622,13 @@ namespace SPCode.UI.Windows
             SyntaxHighBlock.Text = Program.Translations.GetLanguage("SyntaxHigh");
             HighlightDeprecateds.Content = Program.Translations.GetLanguage("HighDeprecat");
             AutoSaveBlock.Text = Program.Translations.GetLanguage("AutoSaveMin");
+            DefaultButton.Content = Program.Translations.GetLanguage("DefaultValues");
+        }
+
+        private void DefaultButton_Click(object sender, RoutedEventArgs e)
+        {
+            Program.OptionsObject.NormalizeSHColors();
+            LoadSH();
         }
     }
 
