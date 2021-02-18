@@ -63,6 +63,9 @@ namespace SPCode.UI
                     editor.InvalidateVisual();
                 }
             }
+            ObjectBrowserDirList.ItemsSource = Program.Configs[index].SMDirectories;
+            ObjectBrowserDirList.Items.Refresh();
+            ObjectBrowserDirList.SelectedIndex = 0;
         }
 
         private void ChangeConfig(string name)
