@@ -12,10 +12,11 @@ namespace SPCode.UI
     public partial class MainWindow
     {
         private string CurrentObjectBrowserDirectory = string.Empty;
+        
         private void TreeViewOBItem_Expanded(object sender, RoutedEventArgs e)
         {
             var source = e.Source;
-            if (!(source is TreeViewItem))
+            if (source is not TreeViewItem)
             {
                 return;
             }
@@ -55,73 +56,45 @@ namespace SPCode.UI
 
         private void TreeViewOBItemFile_DoubleClicked(object sender, RoutedEventArgs e)
         {
-            if (sender is TreeViewItem item)
+            if (sender is not TreeViewItem item)
             {
-                var itemInfo = (ObjectBrowserTag)item.Tag;
-                if (itemInfo.Kind == ObjectBrowserItemKind.File)
-                {
-                    TryLoadSourceFile(itemInfo.Value, true, false, true);
-                }
+                return;
+            }
+            var itemInfo = (ObjectBrowserTag)item.Tag;
+            if (itemInfo.Kind == ObjectBrowserItemKind.File)
+            {
+                TryLoadSourceFile(itemInfo.Value, true, false, true);
             }
         }
 
         private void ListViewOBItem_SelectFile(object sender, RoutedEventArgs e)
         {
-            if (sender is ListViewItem item)
+            if (sender is not ListViewItem item)
             {
-                var ee = GetCurrentEditorElement();
-                if (ee != null)
-                {
-                    var fInfo = new FileInfo(ee.FullFilePath);
-                    ChangeObjectBrowserToDirectory(fInfo.DirectoryName);
-                }
-                item.IsSelected = false;
-                ObjectBrowserButtonHolder.SelectedIndex = -1;
+                return;
             }
+            var ee = GetCurrentEditorElement();
+            if (ee != null)
+            {
+                var fInfo = new FileInfo(ee.FullFilePath);
+                ChangeObjectBrowserToDirectory(fInfo.DirectoryName);
+            }
+            item.IsSelected = true;
+            ObjectBrowserButtonHolder.SelectedIndex = -1;
         }
         private void ListViewOBItem_SelectConfig(object sender, RoutedEventArgs e)
         {
-            if (sender is ListViewItem item)
+            if (sender is not ListViewItem item)
             {
-                var cc = Program.Configs[Program.SelectedConfig];
-                if (cc.SMDirectories.Count > 0)
-                {
-                    ChangeObjectBrowserToDirectory(cc.SMDirectories[0]);
-                }
-                item.IsSelected = false;
-                ObjectBrowserButtonHolder.SelectedIndex = -1;
+                return;
             }
-        }
-        private void ListViewOBItem_SelectOBItem(object sender, RoutedEventArgs e)
-        {
-            if (sender is ListViewItem viewItem)
+            var cc = Program.Configs[Program.SelectedConfig];
+            if (cc.SMDirectories.Count > 0)
             {
-                var objectBrowserSelectedItem = ObjectBrowser.SelectedItem;
-                if (objectBrowserSelectedItem is TreeViewItem item)
-                {
-                    var itemInfo = (ObjectBrowserTag)item.Tag;
-                    if (itemInfo.Kind == ObjectBrowserItemKind.Directory)
-                    {
-                        ChangeObjectBrowserToDirectory(itemInfo.Value);
-                    }
-                    else if (itemInfo.Kind == ObjectBrowserItemKind.ParentDirectory)
-                    {
-                        var currentInfo = new DirectoryInfo(CurrentObjectBrowserDirectory);
-                        var parentInfo = currentInfo.Parent;
-                        if (parentInfo != null)
-                        {
-                            if (parentInfo.Exists)
-                            {
-                                ChangeObjectBrowserToDirectory(parentInfo.FullName);
-                                return;
-                            }
-                        }
-                        ChangeObjectBrowserToDrives();
-                    }
-                }
-                viewItem.IsSelected = false;
-                ObjectBrowserButtonHolder.SelectedIndex = -1;
+                ChangeObjectBrowserToDirectory(cc.SMDirectories[0]);
             }
+            item.IsSelected = true;
+            ObjectBrowserButtonHolder.SelectedIndex = -1;
         }
 
         private void ChangeObjectBrowserToDirectory(string dir)
@@ -157,7 +130,6 @@ namespace SPCode.UI
             Debug.Assert(Dispatcher != null, nameof(Dispatcher) + " != null");
             using (Dispatcher.DisableProcessing())
             {
-                ObjectBrowserDirBlock.Text = dir;
                 ObjectBrowser.Items.Clear();
                 var parentDirItem = new TreeViewItem()
                 {
@@ -181,7 +153,6 @@ namespace SPCode.UI
             Debug.Assert(Dispatcher != null, nameof(Dispatcher) + " != null");
             using (Dispatcher.DisableProcessing())
             {
-                ObjectBrowserDirBlock.Text = string.Empty;
                 ObjectBrowser.Items.Clear();
                 foreach (var dInfo in drives)
                 {
@@ -197,6 +168,12 @@ namespace SPCode.UI
                     }
                 }
             }
+        }
+
+        private void ObjectBrowserDirList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ChangeObjectBrowserToDirectory((string)ObjectBrowserDirList.SelectedItem);
+            ObjectBrowserButtonHolder.SelectedIndex = 1;
         }
 
         private List<TreeViewItem> BuildDirectoryItems(string dir)

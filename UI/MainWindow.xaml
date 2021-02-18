@@ -224,8 +224,8 @@
                     </dock:LayoutRoot>
                 </dock:DockingManager>
                 <GridSplitter Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="5" Background="{DynamicResource GrayBrush5}" />
-                <TreeView Grid.Column="1" Name="ObjectBrowser" TreeViewItem.Expanded="TreeViewOBItem_Expanded" Margin="0,28,0,20" />
-                <TextBlock Grid.Column="1" Name="ObjectBrowserDirBlock" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="2,2,0,2" IsHitTestVisible="False" />
+                <TreeView Grid.Column="1" Name="ObjectBrowser" TreeViewItem.Expanded="TreeViewOBItem_Expanded" Margin="0,28,0,26" />
+                <ComboBox Grid.Column="1" x:Name="ObjectBrowserDirList" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0" Height="5" BorderThickness="0" SelectionChanged="ObjectBrowserDirList_SelectionChanged"/>
                 <ListView Grid.Column="1" Name="ObjectBrowserButtonHolder" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0" Height="28" ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderThickness="0" SelectionMode="Single">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -234,20 +234,14 @@
                     </ListView.ItemsPanel>
                     <ListViewItem Selected="ListViewOBItem_SelectFile">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Name="OBItemText_File" Text="File Dir." />
+                            <TextBlock Name="OBItemText_File" Text="File Directory" />
                             <Image Source="/SPCode;component/Resources/iconmonstr-code-fork-1-20.png" Width="20" Height="20" />
                         </StackPanel>
                     </ListViewItem>
                     <ListViewItem Selected="ListViewOBItem_SelectConfig">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Name="OBItemText_Config" Text="Config Dir." />
+                            <TextBlock Name="OBItemText_Config" Text="Config Directory" />
                             <Image Source="/SPCode;component/Resources/iconmonstr-code-fork-2-20.png" Width="20" Height="20" />
-                        </StackPanel>
-                    </ListViewItem>
-                    <ListViewItem Selected="ListViewOBItem_SelectOBItem">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock  Name="OBItemText_Item" Text="Item Dir." />
-                            <Image Source="/SPCode;component/Resources/iconmonstr-code-fork-4-20.png" Width="20" Height="20" />
                         </StackPanel>
                     </ListViewItem>
                 </ListView>

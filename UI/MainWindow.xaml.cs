@@ -78,6 +78,9 @@ namespace SPCode.UI
                 Win_ToolBar.Height = double.NaN;
             }
 
+            ObjectBrowserDirList.ItemsSource = Program.Configs[Program.SelectedConfig].SMDirectories;
+            ObjectBrowserDirList.SelectedIndex = 0;
+
             MetroDialogOptions.AnimateHide = MetroDialogOptions.AnimateShow = false;
             BlendOverEffect = (Storyboard)Resources["BlendOverEffect"];
             FadeFindReplaceGridIn = (Storyboard)Resources["FadeFindReplaceGridIn"];
@@ -191,7 +194,8 @@ namespace SPCode.UI
                 {
                     BlendOverEffect.Begin();
                 }
-
+                ChangeObjectBrowserToDirectory(fileInfo.DirectoryName);
+                ObjectBrowserButtonHolder.SelectedIndex = 0;
                 return true;
             }
 

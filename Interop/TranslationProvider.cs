@@ -249,7 +249,7 @@ namespace SPCode.Interop
             language.Add("ComPluginsUnload", "Unloads all compiled plugins");
             language.Add("NewConfig", "New config");
             language.Add("CannotDelConf", "Cannot delete config");
-            language.Add("YCannotDelConf", "You cannot delete this config.");
+            language.Add("YCannotDelConf", "You cannot delete the default config.");
             language.Add("SelectExe", "Select executable");
             language.Add("CMDLineCom", "Commandline variables");
             language.Add("RConCMDLineCom", "Rcon commandline variables");
