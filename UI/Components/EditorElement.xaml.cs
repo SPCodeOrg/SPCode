@@ -780,8 +780,6 @@ namespace SPCode.UI.Components
             StatusLine_Line.Text = $"{Program.Translations.GetLanguage("LnAbb")} {editor.TextArea.Caret.Line}";
 #if DEBUG
             StatusLine_Offset.Text = $"Off {editor.TextArea.Caret.Offset}";
-#else
-            StatusLine_Offset.Text = "";
 #endif
             EvaluateIntelliSense();
 
