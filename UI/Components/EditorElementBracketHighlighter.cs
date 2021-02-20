@@ -691,7 +691,6 @@ namespace SPCode.UI.Components
             for (var i = offset; i >= 0; --i)
             {
                 var ch = document.GetCharAt(i);
-                var c = document.GetLineByOffset(i);
 
                 // If we find a quote in the same line, set a flag.
                 
