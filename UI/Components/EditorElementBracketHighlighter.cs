@@ -88,6 +88,9 @@ namespace SPCode.UI.Components
     {
         private readonly string openingBrackets = "([{";
         private readonly string closingBrackets = ")]}";
+        private bool isCommentBlockForward;
+        private bool isCommentBlockBackward;
+        private bool isCommentLine;
 
         public BracketSearchResult SearchBracket(IDocument document, int offset)
         {
@@ -233,7 +236,10 @@ namespace SPCode.UI.Components
             }
 
             var quickResult = QuickSearchBracketBackward(document, offset, openBracket, closingBracket);
-            if (quickResult >= 0)
+            isCommentBlockBackward = CheckForCommentBackward(document, offset, openBracket, closingBracket);
+            isCommentLine = CheckForCommentLine(document, offset);
+
+            if (quickResult >= 0 && !isCommentBlockBackward && !isCommentLine)
             {
                 return quickResult;
             }
@@ -328,7 +334,7 @@ namespace SPCode.UI.Components
                     default:
                         if (ch == openBracket)
                         {
-                            if (!(inString || inChar || lineComment || blockComment))
+                            if (!(inString || inChar || lineComment || blockComment || isCommentBlockBackward || isCommentLine))
                             {
                                 bracketStack.Push(i);
                             }
@@ -371,7 +377,10 @@ namespace SPCode.UI.Components
             }
 
             var quickResult = QuickSearchBracketForward(document, offset, openBracket, closingBracket);
-            if (quickResult >= 0)
+            isCommentBlockForward = CheckForCommentBlockForward(document, offset);
+            isCommentLine = CheckForCommentLine(document, offset);
+
+            if (quickResult >= 0 && !isCommentBlockForward && !isCommentLine)
             {
                 return quickResult;
             }
@@ -466,7 +475,7 @@ namespace SPCode.UI.Components
                         }
                         else if (ch == closingBracket)
                         {
-                            if (!(inString || inChar || lineComment || blockComment))
+                            if (!(inString || inChar || lineComment || blockComment || isCommentBlockForward || isCommentLine))
                             {
                                 --brackets;
                                 if (brackets == 0)
@@ -568,6 +577,77 @@ namespace SPCode.UI.Components
                 }
             }
             return -1;
+        }
+
+        private bool CheckForCommentBlockForward(IDocument document, int offset)
+        {
+            for (var i = offset; i < document.TextLength; ++i)
+            {
+                var ch = document.GetCharAt(i);
+
+                // If we find the characters ' */ ' together, it means a comment block is finishing
+                // therefore, we've been inside a code block this whole time:
+                // this bracket should be ignored by the highlighter
+
+                if (ch == '*' && document.GetCharAt(i + 1) == '/')
+                {
+                    return true;
+                }
+
+                // If we find, however, ' /* ', a code block is starting - I'll try and return false on this one
+
+                if (ch == '/' && document.GetCharAt(i + 1) == '*')
+                {
+                    return false;
+                }
+
+            }
+            return false;
+        }
+
+        private bool CheckForCommentBackward(IDocument document, int offset, char openBracket, char closingBracket)
+        {
+            for (var i = offset; i >= 0; --i)
+            {
+                var ch = document.GetCharAt(i);
+
+                // If we find the characters ' /* ' together (backwards speaking), it means a comment block is starting
+                // therefore, we've been inside a code block this whole time:
+                // this bracket should be ignored by the highlighter
+
+                if (ch == '*' && document.GetCharAt(i - 1) == '/')
+                {
+                    return true;
+                }
+
+                // If we find, however, ' /* ', a code block is finishing - I'll try and return false on this one
+
+                if (ch == '/' && document.GetCharAt(i - 1) == '*')
+                {
+                    return false;
+                }
+
+            }
+            return false;
+        }
+
+        private bool CheckForCommentLine(IDocument document, int offset)
+        {
+            for (var i = offset; i >= 0; --i)
+            {
+                var ch = document.GetCharAt(i);
+
+                if (ch == '/' && document.GetCharAt(i - 1) == '/')
+                {
+                    return true;
+                }
+
+                if (ch == '\n')
+                {
+                    break;
+                }
+            }
+            return false;
         }
     }
 }
