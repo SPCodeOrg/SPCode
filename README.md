@@ -2,6 +2,8 @@
 #### _SPCode - A lightweight SourcePawn editor._
 [Thread in Alliedmodders](https://forums.alliedmods.net/showthread.php?p=2693577)
 
+[Discord Server](https://discord.com/invite/Uf6hMqnkY4) **[NEW!]**
+
 _This is an updated/improved fork of AeonOne's [SPEdit](https://forums.alliedmods.net/showthread.php?t=259917)!_
 
 ##### List of features:
