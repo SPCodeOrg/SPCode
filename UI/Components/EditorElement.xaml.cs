@@ -776,12 +776,12 @@ namespace SPCode.UI.Components
 
         private void Caret_PositionChanged(object sender, EventArgs e)
         {
-            StatusLine_Coloumn.Text = $"{Program.Translations.GetLanguage("ColAbb")} {editor.TextArea.Caret.Column}";
+            StatusLine_Column.Text = $"{Program.Translations.GetLanguage("ColAbb")} {editor.TextArea.Caret.Column}";
             StatusLine_Line.Text = $"{Program.Translations.GetLanguage("LnAbb")} {editor.TextArea.Caret.Line}";
             EvaluateIntelliSense();
+
             var result = bracketSearcher.SearchBracket(editor.Document, editor.CaretOffset);
             bracketHighlightRenderer.SetHighlight(result);
-
 
             if (!Program.OptionsObject.Program_DynamicISAC || Program.MainWindow == null)
             {
@@ -1187,7 +1187,7 @@ namespace SPCode.UI.Components
             CompileBox.Content = Program.Translations.GetLanguage("Compile");
             if (!Initial)
             {
-                StatusLine_Coloumn.Text =
+                StatusLine_Column.Text =
                     $"{Program.Translations.GetLanguage("ColAbb")} {editor.TextArea.Caret.Column}";
                 StatusLine_Line.Text = $"{Program.Translations.GetLanguage("LnAbb")} {editor.TextArea.Caret.Line}";
                 StatusLine_FontSize.Text =
