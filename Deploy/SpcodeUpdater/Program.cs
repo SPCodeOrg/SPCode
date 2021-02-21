@@ -53,11 +53,23 @@ namespace SPCodeUpdater
 
             using (var archive = ZipFile.OpenRead(zipInfo.FullName))
             {
-                // Dont override the sourcemod files
-                var files = archive.Entries.Where(e => !e.FullName.StartsWith(@"sourcepawn\"));
-                foreach (var file in files)
+                foreach (var entry in archive.Entries)
                 {
-                    file.ExtractToFile(file.FullName, true);
+                    // Dont override the sourcemod files
+                    if (!entry.FullName.StartsWith(@"sourcepawn\"))
+                    {
+                        // Get File directory
+                        var dirBuffer = Path.GetDirectoryName(entry.FullName);
+
+                        // Create directory if not empty
+                        if (!string.IsNullOrEmpty(dirBuffer))
+                        {
+                            Directory.CreateDirectory(dirBuffer);
+                        }
+
+                        // Now we can safly extact the file.
+                        entry.ExtractToFile(entry.FullName, true);
+                    }
                 }
             }
 
