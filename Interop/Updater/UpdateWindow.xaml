@@ -3,8 +3,7 @@
              xmlns:mahapps="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             Width="500" Height="200" ResizeMode="NoResize" ShowInTaskbar="False" WindowStyle="None" ShowTitleBar="False" GlowBrush="{DynamicResource AccentColorBrush}"
-                     ShowCloseButton="False" WindowStartupLocation="CenterOwner" >
+             Width="500" Height="200" ResizeMode="NoResize" TitleCaps="False" ShowInTaskbar="False" WindowStyle="None" GlowBrush="{DynamicResource AccentColorBrush}" WindowStartupLocation="CenterOwner" >
     <mahapps:MetroWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -17,8 +16,9 @@
         </ResourceDictionary>
     </mahapps:MetroWindow.Resources>
     <Grid>
+        <Image Name="Icon" Source="/SPCode;component/Resources/Icon.ico" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,5,5" Width="40" Height="40"/>
         <mahapps:ProgressRing Name="Progress" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,5,5" Width="40" Height="40" IsActive="False" IsLarge="False" IsHitTestVisible="False" />
-        <TextBlock Name="MainLine" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="50,0,0,0" FontSize="16" Foreground="{StaticResource AccentColorBrush}" Text="An update is available. Do you want to update?" IsHitTestVisible="False" />
+        <TextBlock Name="MainLine" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="50,0,0,0" FontSize="16" Foreground="{StaticResource AccentColorBrush}" Text="Update now?" IsHitTestVisible="False" />
         <TextBlock Name="SubLine" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="50,25,0,0" FontSize="14" IsHitTestVisible="False" />
         <Button Name="ActionYesButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,25,0,0" Content="Yes" Width="50" Click="ActionYesButton_Click" />
         <Button Name="ActionNoButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110,25,0,0" Content="No" Width="50" Click="ActionNoButton_Click" />
