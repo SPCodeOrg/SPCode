@@ -242,7 +242,7 @@ namespace SPCode.UI.Components
             var lineComment = false;
             var blockComment = false;
 
-            if (offset < 0)
+            if (offset < 0 || offset + 1 > document.TextLength)
             {
                 return -1;
             }
