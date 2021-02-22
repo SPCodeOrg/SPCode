@@ -5,7 +5,10 @@ using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using Markdig;
 using Octokit;
+using SPCode.Utils;
 
 namespace SPCode.Interop.Updater
 {
@@ -26,9 +29,9 @@ namespace SPCode.Interop.Updater
         {
             updateInfo = info;
 
-            Title = $"Version {info.Release.TagName} is Available!";
-            DescriptionBox.Text = updateInfo.Release.Body;
-
+            Title = $"Version {info.Release.TagName} is available for download!";
+            DescriptionBox.AppendText(Markdown.ToPlainText(updateInfo.Release.Body));
+            
             if (info.SkipDialog)
             {
                 StartUpdate();
@@ -58,7 +61,7 @@ namespace SPCode.Interop.Updater
             Icon.Visibility = Visibility.Hidden;
             Progress.IsActive = true;
             MainLine.Text = "Updating to " + updateInfo.Release.TagName;
-            SubLine.Text = "Downloading Updater";
+            SubLine.Text = "Downloading updater...";
             var t = new Thread(UpdateDownloadWorker);
             t.Start();
         }
@@ -113,6 +116,11 @@ namespace SPCode.Interop.Updater
             }
 
             Close();
+        }
+
+        private void ActionGithubButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(Constants.GitHubLatestRelease));
         }
     }
 }
