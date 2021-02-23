@@ -47,7 +47,7 @@ namespace SPCode.Interop.Updater
                 info.ExceptionMessage = e.Message;
             }
 
-            lock (Program.UpdateStatus) //since multiple checks can occur, we'll wont override another ones...
+            lock (Program.UpdateStatus)
             {
                 if (Program.UpdateStatus.WriteAble)
                 {
@@ -56,13 +56,6 @@ namespace SPCode.Interop.Updater
             }
         }
 
-
-        /*
-         * 0 -> Major
-         * 1 -> Minor
-         * 2 -> Build
-         * 3 -> Revision
-         */
         private static bool IsUpToDate(Version currentVer, Version latestVer)
         {
             return currentVer.CompareTo(latestVer) >= 0;

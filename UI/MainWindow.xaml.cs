@@ -16,8 +16,6 @@ using SPCode.UI.Components;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 
-// using SPCode.Interop.Updater; //not delete! ?
-
 namespace SPCode.UI
 {
     /// <summary>
@@ -108,7 +106,6 @@ namespace SPCode.UI
             }
 
             sc.Close(TimeSpan.FromMilliseconds(500.0));
-            // StartBackgroundParserThread();
             FullyInitialized = true;
         }
 
