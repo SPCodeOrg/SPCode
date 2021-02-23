@@ -29,8 +29,13 @@ namespace SPCode.Interop.Updater
         {
             updateInfo = info;
 
-            Title = $"Version {info.Release.TagName} is available for download!";
+            Title = string.Format(Program.Translations.GetLanguage("VersionAvailable"), info.Release.TagName);
+            MainLine.Text = Program.Translations.GetLanguage("WantToUpdate");
+            ActionYesButton.Content = Program.Translations.GetLanguage("Yes");
+            ActionNoButton.Content = Program.Translations.GetLanguage("No");
+            ActionGithubButton.Content = Program.Translations.GetLanguage("ViewGithub");
             DescriptionBox.AppendText(Markdown.ToPlainText(updateInfo.Release.Body));
+            
             
             if (info.SkipDialog)
             {
@@ -58,10 +63,11 @@ namespace SPCode.Interop.Updater
 
             ActionYesButton.Visibility = Visibility.Hidden;
             ActionNoButton.Visibility = Visibility.Hidden;
+            ActionGithubButton.Visibility = Visibility.Hidden;
             Icon.Visibility = Visibility.Hidden;
             Progress.IsActive = true;
-            MainLine.Text = "Updating to " + updateInfo.Release.TagName;
-            SubLine.Text = "Downloading updater...";
+            MainLine.Text = string.Format(Program.Translations.GetLanguage("UpdatingTo"), updateInfo.Release.TagName);
+            SubLine.Text = Program.Translations.GetLanguage("DownloadingUpdater");
             var t = new Thread(UpdateDownloadWorker);
             t.Start();
         }
@@ -93,13 +99,13 @@ namespace SPCode.Interop.Updater
                 Dispatcher.Invoke(Close);
             }
 
-            Thread.Sleep(100); //safety reasons
+            Thread.Sleep(100);
             Dispatcher.Invoke(FinalizeUpdate);
         }
 
         private void FinalizeUpdate()
         {
-            SubLine.Text = "Starting Updater";
+            SubLine.Text = Program.Translations.GetLanguage("StartingUpdater");
             UpdateLayout();
             try
             {
@@ -117,7 +123,7 @@ namespace SPCode.Interop.Updater
 
             Close();
         }
-
+        
         private void ActionGithubButton_Click(object sender, RoutedEventArgs e)
         {
             Process.Start(new ProcessStartInfo(Constants.GitHubLatestRelease));

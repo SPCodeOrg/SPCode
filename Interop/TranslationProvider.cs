@@ -318,6 +318,15 @@ namespace SPCode.Interop
             language.Add("DuplicateConfigNames", "You cannot have 2 configs or more with the same name.");
             language.Add("EmptyConfigNames", "You cannot have configs with an empty name.");
             language.Add("DefaultValues", "Default values");
+            language.Add("WantToUpdate", "Do you want to update?");
+            language.Add("VersionAvailable", "Version {0} is available for download!");
+            language.Add("Yes", "Yes");
+            language.Add("No", "No");
+            language.Add("ViewGithub", "View on GitHub");
+            language.Add("UpdatingTo", "Updating to {0}");
+            language.Add("DownloadingUpdater", "Downloading updater...");
+            language.Add("StartingUpdater", "Starting updater...");
+
         }
     }
 }

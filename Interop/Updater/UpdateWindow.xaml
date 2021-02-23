@@ -17,11 +17,11 @@
     <Grid>
         <Image Name="Icon" Source="/SPCode;component/Resources/Icon.ico" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,5,5" Width="40" Height="40"/>
         <mahapps:ProgressRing Name="Progress" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,5,5" Width="40" Height="40" IsActive="False" IsLarge="False" IsHitTestVisible="False" />
-        <TextBlock Name="MainLine" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="50,0,0,0" FontSize="16" Foreground="{StaticResource AccentColorBrush}" Text="Update now?" IsHitTestVisible="False" />
+        <TextBlock Name="MainLine" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="50,0,0,0" FontSize="16" Foreground="{StaticResource AccentColorBrush}" IsHitTestVisible="False" />
         <TextBlock Name="SubLine" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="50,25,0,0" FontSize="14" IsHitTestVisible="False" />
-        <Button Name="ActionYesButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,25,0,0" Content="Yes" Width="50" Click="ActionYesButton_Click" />
-        <Button Name="ActionNoButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110,25,0,0" Content="No" Width="50" Click="ActionNoButton_Click" />
+        <Button Name="ActionYesButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,25,0,0" Width="50" Click="ActionYesButton_Click" />
+        <Button Name="ActionNoButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="110,25,0,0" Width="50" Click="ActionNoButton_Click" />
         <RichTextBox Name="DescriptionBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,55,0,0" VerticalScrollBarVisibility="Visible" IsReadOnly="True" />
-    <Button x:Name="ActionGithubButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="170,25,0,0" Content="View on Github" Width="110" Click="ActionGithubButton_Click" />
+    <Button x:Name="ActionGithubButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="170,25,0,0" Width="110" Click="ActionGithubButton_Click" />
   </Grid>
 </mahapps:MetroWindow>

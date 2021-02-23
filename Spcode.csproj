@@ -140,7 +140,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App\AssemblyInfo1.cs" />
+    <Compile Include="App\AssemblyInfo.cs" />
     <Compile Include="Interop\ConfigControl.cs" />
     <Compile Include="Interop\PipeInteropClient.cs" />
     <Compile Include="Interop\PipeInteropServer.cs" />
