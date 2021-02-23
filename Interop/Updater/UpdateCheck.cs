@@ -71,8 +71,8 @@ namespace SPCode.Interop.Updater
         private static async Task<Release> GetLatest()
         {
             var client = new GitHubClient(new ProductHeaderValue("spcode-client"));
-            var releases = await client.Repository.Release.GetAll("Hexer10", "SPCode");
-            return releases[0];
+            var latestRelease = await client.Repository.Release.GetLatest("Hexer10", "SPCode");
+            return latestRelease;
         }
     }
 }
