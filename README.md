@@ -1,33 +1,31 @@
 # SPCode
-#### _SPCode - A lightweight SourcePawn editor._
-[Thread in Alliedmodders](https://forums.alliedmods.net/showthread.php?p=2693577)
+### _SPCode - a lightweight SourcePawn editor._
 
-[Discord Server](https://discord.com/invite/Uf6hMqnkY4) **[NEW!]**
+[Visit the Thread in Alliedmodders](https://forums.alliedmods.net/showthread.php?p=2693577)  
+[Join our Discord Server!](https://discord.com/invite/Uf6hMqnkY4)
 
 _This is an updated/improved fork of AeonOne's [SPEdit](https://forums.alliedmods.net/showthread.php?t=259917)!_
 
-##### List of features:
+### List of features:
 * Compiling-config system (fully customizable)
-* Syntax highlighting (parsed from the include directories / fully customizable)
-* Autocomplete (parsed from the include directories)
-* IntelliSense (parsed from the include directories)
-* SourcePawn templates (customizable)
+* Syntax highlighting (fully customizable)
+* Deprecated 1.6 syntax highlighting
+* SourcePawn plugin templates (customizable)
 * Copying after/before compiling (& pre/post commandlines)
+* Dynamic autocomplete and IntelliSense-like functionalities from all opened include-files
 * FTP upload
 * Server start feature
 * Code folding
 * Editor docking
-* API reference (plus link to API websites)
-* Highlight deprecated 1.6 syntax
+* API references
 * Bracket highlighting
 * Auto-indentation (active and passive)
 * Errors/warnings list
 * Syntax reformatter (syntax tidy)
-* Auto-updating (by default disabled since it could be dangerous)
-* Lysis Decompiler (improved version)
-* SMX dissassembler (fixed)
+* Auto-updating
+* [Lysis Decompiler](https://github.com/peace-maker/lysis-java) (by [@peace-maker](https://github.com/peace-maker))
+* SMX dissassembler
 * RCON querying
-* Dynamic autocomplete/IntelliSense from all opened include-files **[NEW]**
 * Auto bracket-closing
 * Object browser
 * Translations in multiple languages
