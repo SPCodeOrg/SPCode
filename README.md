@@ -23,7 +23,7 @@ _This is an updated/improved fork of AeonOne's [SPEdit](https://forums.alliedmod
 * Errors/warnings list
 * Syntax reformatter (syntax tidy)
 * Auto-updating
-* Lysis Decompiler (by @peace-maker)
+* [Lysis Decompiler](https://github.com/peace-maker/lysis-java) (by [@peace-maker](https://github.com/peace-maker))
 * SMX dissassembler
 * RCON querying
 * Auto bracket-closing
