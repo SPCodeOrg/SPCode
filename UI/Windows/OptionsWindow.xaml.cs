@@ -594,9 +594,10 @@ namespace SPCode.UI.Windows
                 return;
             }
 
-            ResetButton.Content = Program.Translations.GetLanguage("ResetOptions");
+            HardwareSalts.Content = Program.Translations.GetLanguage("HardwareEncryption");
+            DiscordPresence.Content = Program.Translations.GetLanguage("EnableRPC");
             ProgramHeader.Header = $" {Program.Translations.GetLanguage("Program")}";
-
+            DefaultButton.Content = Program.Translations.GetLanguage("DefaultValues");
             HardwareAcc.Content = Program.Translations.GetLanguage("HardwareAcc");
             UIAnimation.Content = Program.Translations.GetLanguage("UIAnim");
             OpenIncludes.Content = Program.Translations.GetLanguage("OpenInc");

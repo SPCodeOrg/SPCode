@@ -469,7 +469,7 @@ namespace SPCode.UI.Components
         {
             if (int.TryParse(JumpNumber.Text, out var num))
             {
-                if (LineJump.IsChecked != null && LineJump.IsChecked.Value)
+                if (rbLineJump.IsChecked != null && rbLineJump.IsChecked.Value)
                 {
                     num = Math.Max(1, Math.Min(num, editor.LineCount));
                     var line = editor.Document.GetLineByNumber(num);
@@ -1177,15 +1177,10 @@ namespace SPCode.UI.Components
             }
 
             MenuC_Undo.Header = Program.Translations.GetLanguage("Undo");
-
             MenuC_Redo.Header = Program.Translations.GetLanguage("Redo");
-
             MenuC_Cut.Header = Program.Translations.GetLanguage("Cut");
-
             MenuC_Copy.Header = Program.Translations.GetLanguage("Copy");
-
             MenuC_Paste.Header = Program.Translations.GetLanguage("Paste");
-
             MenuC_SelectAll.Header = Program.Translations.GetLanguage("SelectAll");
             CompileBox.Content = Program.Translations.GetLanguage("Compile");
             if (!Initial)
@@ -1196,6 +1191,9 @@ namespace SPCode.UI.Components
                 StatusLine_FontSize.Text =
                     editor.FontSize.ToString("n0") + $" {Program.Translations.GetLanguage("PtAbb")}";
             }
+            rbLineJump.Content = Program.Translations.GetLanguage("GoToLine");
+            rbOffsetJump.Content = Program.Translations.GetLanguage("GoToOffset");
+            btJump.Content = Program.Translations.GetLanguage("Go");
         }
     }
 

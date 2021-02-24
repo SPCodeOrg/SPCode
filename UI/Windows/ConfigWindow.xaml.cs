@@ -569,6 +569,8 @@ namespace SPCode.UI.Windows
                 return;
             }
 
+            AddSMDirButton.Content = Program.Translations.GetLanguage("Add");
+            RemoveSMDirButton.Content = Program.Translations.GetLanguage("Remove");
             NewButton.Content = Program.Translations.GetLanguage("New");
             DeleteButton.Content = Program.Translations.GetLanguage("Delete");
             NameBlock.Text = Program.Translations.GetLanguage("Name");

@@ -128,7 +128,7 @@ namespace SPCode.Interop
             language.Add("Details", "Details");
             language.Add("Compiling", "Compiling");
             language.Add("Error", "Error");
-            language.Add("SPCompNotStarted", "The spcomp.exe compiler did not started correctly.");
+            language.Add("SPCompNotStarted", "The spcomp.exe compiler did not start correctly.");
             language.Add("SPCompNotFound", "The spcomp.exe compiler could not be found.");
             language.Add("Copied", "Copied");
             language.Add("Deleted", "Deleted");
@@ -173,7 +173,6 @@ namespace SPCode.Interop
             language.Add("Decompile", "Decompile");
             language.Add("ReportBugGit", "Report bug on GitHub");
             language.Add("CheckUpdates", "Check for updates");
-            language.Add("CheckingUpdates", "Checking for updates");
             language.Add("About", "About");
             language.Add("FileName", "File Name");
             language.Add("Line", "Line");
@@ -287,9 +286,8 @@ namespace SPCode.Interop
             language.Add("HighDeprecat", "Highlight deprecated (<1.7) syntax - NOT SUPPORTED");
             language.Add("Compile", "Compile");
             language.Add("AutoSaveMin", "Auto save (min)");
-            language.Add("OBTextFile", "File Dir.");
-            language.Add("OBTextConfig", "Config Dir.");
-            language.Add("OBTextItem", "Item Dir.");
+            language.Add("OBTextFile", "File Directory");
+            language.Add("OBTextConfig", "Config Directory");
             language.Add("CopyingFiles", "Copying files");
             language.Add("FTPUploading", "Uploading files");
             language.Add("RCONCommand", "Seconding RCON Commands");
@@ -326,6 +324,14 @@ namespace SPCode.Interop
             language.Add("UpdatingTo", "Updating to {0}");
             language.Add("DownloadingUpdater", "Downloading updater...");
             language.Add("StartingUpdater", "Starting updater...");
+            language.Add("Add", "Add");
+            language.Add("Remove", "Remove");
+            language.Add("HardwareEncryption", "Hardware encryption");
+            language.Add("EnableRPC", "Enable Discord Rich Presence");
+            language.Add("CheckingUpdates", "Checking for updates");
+            language.Add("GoToLine", "Go to line");
+            language.Add("GoToOffset", "Go to offset");
+            language.Add("Go", "Go");
 
         }
     }

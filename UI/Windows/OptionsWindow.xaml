@@ -103,7 +103,7 @@
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,255,0,5">
 
                             <CheckBox Name="HighlightDeprecateds" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Content="Highlight Deprecated (&lt;1.7) Syntax" Checked="HighlightDeprecateds_Changed" Unchecked="HighlightDeprecateds_Changed" />
-                            <Button x:Name="DefaultButton" Margin="528,10,30,852" Click="DefaultButton_Click" Content="Default values" FontWeight="Bold"/>
+                            <Button x:Name="DefaultButton" Margin="480,10,30,852" Click="DefaultButton_Click" Content="Default values" FontWeight="Bold"/>
                             <components:ColorChangeControl x:Name="SH_Comments" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,40,0,0" Height="105" Width="300" ColorChanged="Comments_Changed" />
                             <components:ColorChangeControl x:Name="SH_CommentMarkers" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="335,40,5,0" Height="105" Width="300" ColorChanged="CommentMarker_Changed" />
 

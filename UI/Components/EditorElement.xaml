@@ -105,9 +105,9 @@
         <Border Name="JumpGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Height="75" BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}" Background="{DynamicResource WhiteColorBrush}" IsHitTestVisible="False" Opacity="0">
             <Grid>
                 <TextBox Name="JumpNumber" HorizontalAlignment="Stretch" VerticalAlignment="Top" Text="1" KeyDown="JumpNumberKeyDown" Foreground="{DynamicResource BlackColorBrush}" />
-                <RadioButton Name="LineJump" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,30,0,0" Content="Jump To Line" IsChecked="True" Foreground="{DynamicResource BlackColorBrush}" />
-                <RadioButton HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,50,0,0" Content="Jump To Offset" IsChecked="False" Foreground="{DynamicResource BlackColorBrush}" />
-                <Button Name="JumpNumberButton" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,40,5,0" Content="Go" Click="JumpToNumber" />
+                <RadioButton Name="rbLineJump" HorizontalAlignment="Left" Content="Go to line" VerticalAlignment="Top" Margin="5,30,0,0" IsChecked="True" Foreground="{DynamicResource BlackColorBrush}" />
+                <RadioButton Name="rbOffsetJump" HorizontalAlignment="Left" Content="Go to offset" VerticalAlignment="Top" Margin="5,50,0,0" IsChecked="False" Foreground="{DynamicResource BlackColorBrush}" />
+                <Button Name="btJump" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,40,5,0" Content="Go" Click="JumpToNumber" />
             </Grid>
         </Border>
     </Grid>
