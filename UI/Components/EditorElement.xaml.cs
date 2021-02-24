@@ -24,6 +24,7 @@ using SourcepawnCondenser.SourcemodDefinition;
 using SPCode.Utils.SPSyntaxTidy;
 using Xceed.Wpf.AvalonDock.Layout;
 using Timer = System.Timers.Timer;
+using SPCode.Utils;
 
 namespace SPCode.UI.Components
 {
@@ -58,6 +59,8 @@ namespace SPCode.UI.Components
         public new LayoutDocument Parent;
         private bool SelectionIsHighlited;
         private bool WantFoldingUpdate;
+
+        public BracketHighlightHelpers bracketHelper = new BracketHighlightHelpers();
 
         public EditorElement()
         {
@@ -889,7 +892,7 @@ namespace SPCode.UI.Components
             });
         }
 
-        private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+        public void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
         {
             if (Program.OptionsObject.Editor_ReformatLineAfterSemicolon)
             {
@@ -935,14 +938,15 @@ namespace SPCode.UI.Components
                 case "{":
                     if (Program.OptionsObject.Editor_AutoCloseBrackets)
                     {
-                        var line = editor.Document.GetLineByOffset(editor.CaretOffset);
-                        var lineText = editor.Document.GetText(line);
-
-                        // Don't auto close brackets when the user is in a comment or in a string or a text is selected.
-                        if ((editor.SelectionLength == 0 &&
-                            lineText[0] == '/' && lineText[1] == '/') ||
-                            editor.Document.GetText(line.Offset, editor.CaretOffset - line.Offset).Count(c => c == '\"') % 2 == 1 ||
-                            (line.LineNumber != 1 && editor.Document.GetText(line.Offset - 3, 1) == "\\"))
+                        var document = editor.Document;
+                        var offset = editor.TextArea.Caret.Offset;
+                        var a = bracketHelper.CheckForCommentLine(document, offset);
+                        if (editor.SelectionLength == 0 &&
+                            (bracketHelper.CheckForCommentBlockForward(document, offset) ||
+                            bracketHelper.CheckForCommentBlockBackward(document, offset) ||
+                            bracketHelper.CheckForCommentLine(document, offset) ||
+                            bracketHelper.CheckForString(document, offset) ||
+                            bracketHelper.CheckForChar(document, offset)))
                         {
                             break;
                         }

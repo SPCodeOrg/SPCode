@@ -204,6 +204,7 @@
     <Compile Include="UI\Windows\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\BracketHighlightHelpers.cs" />
     <Compile Include="Utils\Constants.cs" />
     <Compile Include="Utils\JavaUtils.cs" />
     <Compile Include="Utils\Paths.cs" />
