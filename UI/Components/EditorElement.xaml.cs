@@ -940,7 +940,7 @@ namespace SPCode.UI.Components
                     {
                         var document = editor.Document;
                         var offset = editor.TextArea.Caret.Offset;
-                        if (editor.SelectionLength == 0 &&
+                        if (editor.SelectionLength == 0 && offset + 1 < document.TextLength &&
                             (bracketHelper.CheckForCommentBlockForward(document, offset) ||
                             bracketHelper.CheckForCommentBlockBackward(document, offset) ||
                             bracketHelper.CheckForCommentLine(document, offset) ||
