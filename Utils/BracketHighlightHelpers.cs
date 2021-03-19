@@ -119,7 +119,7 @@ namespace SPCode.Utils
                 // not possible that we've been in a comment block
                 // that's a nested comment compiling error
 
-                if (ch == '/' && document.GetCharAt(i + 1) == '*')
+                if (ch == '/' && i + 1 < document.TextLength && document.GetCharAt(i + 1) == '*')
                 {
                     return false;
                 }
@@ -139,7 +139,7 @@ namespace SPCode.Utils
                 // therefore, we've been inside a code block this whole time:
                 // this bracket should be ignored by the highlighter
 
-                if (ch == '*' && document.GetCharAt(i - 1) == '/')
+                if (ch == '*' && i > 0 && document.GetCharAt(i - 1) == '/')
                 {
                     return true;
                 }
@@ -166,7 +166,7 @@ namespace SPCode.Utils
                 // If we find two ' // ' together as we scan backwards
                 // we find we are in a comment line, and should ignore the bracket
 
-                if (i > 0 && ch == '/' && document.GetCharAt(i - 1) == '/')
+                if (ch == '/' && i > 0 && document.GetCharAt(i - 1) == '/')
                 {
                     return true;
                 }
@@ -224,7 +224,7 @@ namespace SPCode.Utils
                         return true;
                     }
 
-                    if (ch == '\\' && document.GetCharAt(i + 1) == '\r')
+                    if (ch == '\\' && i + 1 < document.TextLength && document.GetCharAt(i + 1) == '\r')
                     {
                         continue;
                     }
