@@ -22,7 +22,7 @@ namespace SPCode.UI.Windows
         private readonly SMBaseDefinition[] defArray;
         private readonly Brush errorSearchBoxBrush = new SolidColorBrush(Color.FromArgb(0x50, 0xA0, 0x30, 0));
         private readonly ListViewItem[] items;
-        private readonly Timer searchTimer = new Timer(1000.0);
+        private readonly Timer searchTimer = new(1000.0);
 
         public SPDefinitionWindow()
         {

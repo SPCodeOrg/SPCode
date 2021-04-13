@@ -30,7 +30,7 @@ namespace SPCode
         public static UpdateInfo UpdateStatus;
 
         public static bool RCCKMade;
-        public static DiscordRpcClient discordClient = new DiscordRpcClient(Constants.DiscordRPCAppID);
+        public static DiscordRpcClient discordClient = new(Constants.DiscordRPCAppID);
         public static Timestamps discordTime = Timestamps.Now;
 
         public static string Indentation => OptionsObject.Editor_ReplaceTabsToWhitespace

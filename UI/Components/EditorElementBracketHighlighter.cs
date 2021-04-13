@@ -96,7 +96,7 @@ namespace SPCode.UI.Components
         private bool isCommentLine;
         private bool isString;
         private bool isChar;
-        public BracketHighlightHelpers bracketHelper = new BracketHighlightHelpers();
+        public BracketHighlightHelpers bracketHelper = new();
 
         #endregion
 

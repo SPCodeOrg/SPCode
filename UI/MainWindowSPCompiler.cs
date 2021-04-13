@@ -14,9 +14,9 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
-        private readonly List<string> compiledFileNames = new List<string>();
-        private readonly List<string> compiledFiles = new List<string>();
-        private readonly List<string> nonUploadedFiles = new List<string>();
+        private readonly List<string> compiledFileNames = new();
+        private readonly List<string> compiledFiles = new();
+        private readonly List<string> nonUploadedFiles = new();
 
         private bool InCompiling;
         private Thread ServerCheckThread;

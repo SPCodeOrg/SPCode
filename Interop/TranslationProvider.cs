@@ -14,7 +14,7 @@ namespace SPCode.Interop
         public bool IsDefault = true;
 
 
-        private readonly Dictionary<string, string> language = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, string> language = new(StringComparer.OrdinalIgnoreCase);
 
         public string GetLanguage(string langID)
         {

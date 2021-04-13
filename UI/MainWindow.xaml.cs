@@ -25,24 +25,22 @@ namespace SPCode.UI
     {
         private readonly Storyboard BlendOverEffect;
         private readonly Storyboard DisableServerAnim;
-        public readonly List<EditorElement> EditorsReferences = new List<EditorElement>();
+        public readonly List<EditorElement> EditorsReferences = new();
         private readonly Storyboard EnableServerAnim;
         private readonly Storyboard FadeFindReplaceGridIn;
         private readonly Storyboard FadeFindReplaceGridOut;
 
         private readonly bool FullyInitialized;
 
-        private ObservableCollection<string> actionButtonDict = new ObservableCollection<string>
+        private ObservableCollection<string> actionButtonDict = new()
         {
             Program.Translations.GetLanguage("Copy"), Program.Translations.GetLanguage("FTPUp"),
             Program.Translations.GetLanguage("StartServer")
         };
 
-        private ObservableCollection<string> compileButtonDict = new ObservableCollection<string>
-            {Program.Translations.GetLanguage("CompileAll"), Program.Translations.GetLanguage("CompileCurr")};
+        private ObservableCollection<string> compileButtonDict = new() { Program.Translations.GetLanguage("CompileAll"), Program.Translations.GetLanguage("CompileCurr")};
 
-        private ObservableCollection<string> findReplaceButtonDict = new ObservableCollection<string>
-            {Program.Translations.GetLanguage("Replace"), Program.Translations.GetLanguage("ReplaceAll")};
+        private ObservableCollection<string> findReplaceButtonDict = new() { Program.Translations.GetLanguage("Replace"), Program.Translations.GetLanguage("ReplaceAll")};
 
         public MainWindow()
         {

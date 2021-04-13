@@ -32,7 +32,7 @@ namespace SPCode.UI.Components
         public bool ISAC_Open;
         private ISNode[] isEntrys;
 
-        private readonly Regex ISFindRegex = new Regex(
+        private readonly Regex ISFindRegex = new(
             @"\b((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+)\.(?<method>[a-zA-Z_]([a-zA-Z0-9_]?)+)\()|((?<name>[a-zA-Z_]([a-zA-Z0-9_]?)+)\()",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
@@ -41,7 +41,7 @@ namespace SPCode.UI.Components
         // TODO Add EnumStructs
         private SMMethodmap[] methodMaps;
 
-        private readonly Regex multilineCommentRegex = new Regex(@"/\*.*?\*/",
+        private readonly Regex multilineCommentRegex = new(@"/\*.*?\*/",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
 
         //private string[] methodNames;
