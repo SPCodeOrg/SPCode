@@ -60,7 +60,7 @@ namespace SPCode.UI.Components
         private bool SelectionIsHighlited;
         private bool WantFoldingUpdate;
 
-        public BracketHighlightHelpers bracketHelper = new BracketHighlightHelpers();
+        public BracketHighlightHelpers bracketHelper = new();
 
         public EditorElement()
         {
@@ -896,7 +896,7 @@ namespace SPCode.UI.Components
         {
             if (Program.OptionsObject.Editor_ReformatLineAfterSemicolon)
             {
-                if (e.Text == ";")
+                if (e.Text == ";" && !bracketHelper.CheckForString(editor.Document, editor.CaretOffset - 1))
                 {
                     if (editor.CaretOffset >= 0)
                     {
