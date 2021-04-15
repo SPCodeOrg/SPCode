@@ -80,7 +80,7 @@ WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "U
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "InstallLocation" "$INSTDIR"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayIcon" "$INSTDIR\SPCode.exe"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "Publisher" "Hexah"
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayVersion" "1.6.x.x"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayVersion" "1.7"
 WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "NoModify" 1
 WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "NoRepair" 1
 
