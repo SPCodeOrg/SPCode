@@ -45,6 +45,7 @@
 	<done>done</done>
 	<file>File</file>
 	<new>New</new>
+	<newfromtemplate>New From Template</newfromtemplate>
 	<open>Open</open>
 	<save>Save</save>
 	<saveall>Save all</saveall>

@@ -55,6 +55,7 @@
             <Menu>
                 <MenuItem Name="MenuI_File" Header="File" SubmenuOpened="FileMenu_Open">
                     <MenuItem Name="MenuI_New" Header="New" Click="Menu_New" InputGestureText="Ctrl+N" />
+                    <MenuItem Name="MenuI_NewFromTemplate" Header="New From Template" Click="Menu_NewFromTemplate" InputGestureText="Ctrl+Shift+N" />
                     <MenuItem Name="MenuI_Open" Header="Open" Click="Menu_Open" InputGestureText="Ctrl+O" />
                     <Separator />
                     <MenuItem Name="MenuI_Save" Header="Save" Click="Menu_Save" InputGestureText="Ctrl+S" />

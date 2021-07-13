@@ -140,6 +140,7 @@ namespace SPCode.Interop
             language.Add("Done", "Done");
             language.Add("FileStr", "File");
             language.Add("New", "New");
+            language.Add("NewFromTemplate", "New From Template");
             language.Add("Open", "Open");
             language.Add("Save", "Save");
             language.Add("SaveAll", "Save all");

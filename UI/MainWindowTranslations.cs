@@ -29,6 +29,7 @@ namespace SPCode.UI
             }
             MenuI_File.Header = Program.Translations.GetLanguage("FileStr");
             MenuI_New.Header = Program.Translations.GetLanguage("New");
+            MenuI_NewFromTemplate.Header = Program.Translations.GetLanguage("NewFromTemplate");
             MenuI_Open.Header = Program.Translations.GetLanguage("Open");
             MenuI_Save.Header = Program.Translations.GetLanguage("Save");
             MenuI_SaveAll.Header = Program.Translations.GetLanguage("SaveAll");

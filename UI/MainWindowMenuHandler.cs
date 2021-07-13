@@ -22,16 +22,21 @@ namespace SPCode.UI
             }
 
             var EditorIsSelected = GetCurrentEditorElement() != null;
-            ((MenuItem)((MenuItem)sender).Items[3]).IsEnabled = EditorIsSelected;
-            ((MenuItem)((MenuItem)sender).Items[5]).IsEnabled = EditorIsSelected;
-            ((MenuItem)((MenuItem)sender).Items[7]).IsEnabled = EditorIsSelected;
-            ((MenuItem)((MenuItem)sender).Items[4]).IsEnabled = EditorsAreOpen;
-            ((MenuItem)((MenuItem)sender).Items[8]).IsEnabled = EditorsAreOpen;
+            ((MenuItem)((MenuItem)sender).Items[4]).IsEnabled = EditorIsSelected;
+            ((MenuItem)((MenuItem)sender).Items[6]).IsEnabled = EditorIsSelected;
+            ((MenuItem)((MenuItem)sender).Items[8]).IsEnabled = EditorIsSelected;
+            ((MenuItem)((MenuItem)sender).Items[5]).IsEnabled = EditorsAreOpen;
+            ((MenuItem)((MenuItem)sender).Items[9]).IsEnabled = EditorsAreOpen;
         }
 
         private void Menu_New(object sender, RoutedEventArgs e)
         {
             Command_New();
+        }
+
+        private void Menu_NewFromTemplate(object sender, RoutedEventArgs e)
+        {
+            Command_NewFromTemplate();
         }
 
         private void Menu_Open(object sender, RoutedEventArgs e)

@@ -45,6 +45,20 @@ namespace SPCode.UI
 
         private void Command_New()
         {
+            string newFilePath;
+            int newFileNum = 0;
+            do
+            {
+                newFilePath = Path.Combine(Program.Configs[Program.SelectedConfig].SMDirectories[0], $"new {++newFileNum}.sp");
+            } while (File.Exists(newFilePath));
+            
+            File.Create(newFilePath).Close();
+
+            AddEditorElement(newFilePath, $"new {newFileNum}.sp", true);
+        }
+
+        private void Command_NewFromTemplate()
+        {
             var nfWindow = new NewFileWindow { Owner = this, ShowInTaskbar = false };
             nfWindow.ShowDialog();
         }

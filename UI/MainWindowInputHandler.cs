@@ -38,6 +38,12 @@ namespace SPCode.UI
                 {
                     switch (e.Key)
                     {
+                        case Key.N:
+                            {
+                                Command_NewFromTemplate();
+                                e.Handled = true;
+                                break;
+                            }
                         case Key.S:
                             {
                                 Command_SaveAll();
