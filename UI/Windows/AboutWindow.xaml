@@ -48,10 +48,11 @@
                     <TextBlock Name="PeopleInvolvedBlock" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="45,0,0,0" Text="People involved:" FontSize="30" FontWeight="Thin" />
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="325,15,0,15">
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Julien 'Aeon' Kluge (Original creator of SPEdit)" FontWeight="Bold" FontSize="15" />
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Bara (Tester, Proposer, Contributor, Update Server, Domain)" FontWeight="Bold" FontSize="13" />
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Hexah (Maintainer, Italian translation)" FontWeight="Bold" FontSize="13" />
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Natanel-Shitrit  (Contributor)" FontWeight="Bold" FontSize="13" />
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- mev (Proposer, Contributor, Color-Sheme-Designer)" FontWeight="Bold" />
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Bara (Tester, Proposer, Contributor, Update Server, Domain)" FontWeight="Bold" FontSize="14" />
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Hexah (Maintainer, Italian translation)" FontWeight="Bold" FontSize="14" />
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Natanel-Shitrit  (Maintainer)" FontWeight="Bold" FontSize="14" />
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- ampere (Maintainer, Spanish translation)"  FontWeight="Bold" FontSize="14"/>
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- mev (Proposer, Contributor, Color Scheme Designer)" FontWeight="Bold" />
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- BAILOPAN (Proposer, Help)" />
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- necavi (Tester, Proposer, Contributor)" />
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- psychonic (Contributor)" />
@@ -68,7 +69,6 @@
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- JOMENVEST (Swedish translation)" />
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Grey83 (Russian translation)" />
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Ghost Rideaux (Portuguese translation)" />
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- ratawar (Spanish translation)" />
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Trostal (Korean translation)" />
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Johnny2525 (Korean translation)" />
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Mithat Güner (Turkish translation)" />
