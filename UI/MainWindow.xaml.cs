@@ -228,6 +228,7 @@ namespace SPCode.UI
             // Solution: Set the active LayoutDocumentPane to the first LayoutDocumentPaneGroup avilable child.
             if (e.Change == ChildrenTreeChange.DirectChildrenChanged
                 && !DockingPaneGroup.Children.Contains(DockingPane)
+                && DockingPaneGroup.Children.Count > 0
                 && DockingPaneGroup.Children[0] is LayoutDocumentPane pane)
             {
                 DockingPane = pane;
