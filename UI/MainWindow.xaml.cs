@@ -204,10 +204,8 @@ namespace SPCode.UI
             layoutDocument.Content = editor;
             EditorsReferences.Add(editor);
             DockingPane.Children.Add(layoutDocument);
-            if (SelectMe)
-            {
-                layoutDocument.IsSelected = true;
-            }
+            layoutDocument.IsSelected = SelectMe;
+            editor.editor.TextArea.Caret.Show();
         }
 
         private void DockingManager_ActiveContentChanged(object sender, EventArgs e)

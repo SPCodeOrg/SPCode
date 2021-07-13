@@ -49,12 +49,12 @@ namespace SPCode.UI
             int newFileNum = 0;
             do
             {
-                newFilePath = Path.Combine(Program.Configs[Program.SelectedConfig].SMDirectories[0], $"new {++newFileNum}.sp");
+                newFilePath = Path.Combine(Program.Configs[Program.SelectedConfig].SMDirectories[0], $"New Plugin ({++newFileNum}).sp");
             } while (File.Exists(newFilePath));
-            
+
             File.Create(newFilePath).Close();
 
-            AddEditorElement(newFilePath, $"new {newFileNum}.sp", true);
+            AddEditorElement(newFilePath, $"New Plugin ({newFileNum}).sp", true);
         }
 
         private void Command_NewFromTemplate()
@@ -494,7 +494,7 @@ namespace SPCode.UI
                 Process.Start(OutFile);
                 await this.ShowMessageAsync(
                     Program.Translations.GetLanguage("JavaOpened"),
-                    Program.Translations.GetLanguage("JavaSuggestRestart"), 
+                    Program.Translations.GetLanguage("JavaSuggestRestart"),
                     MessageDialogStyle.Affirmative);
             }
             else
@@ -502,7 +502,7 @@ namespace SPCode.UI
                 // Otherwise, just offer a manual download
                 if (await this.ShowMessageAsync(
                     Program.Translations.GetLanguage("JavaDownErrorTitle"),
-                    Program.Translations.GetLanguage("JavaDownErrorMessage"), 
+                    Program.Translations.GetLanguage("JavaDownErrorMessage"),
                     MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions) == MessageDialogResult.Affirmative)
                 {
                     Process.Start(new ProcessStartInfo

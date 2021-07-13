@@ -13,7 +13,7 @@ using SPCode.Utils;
 namespace SPCode.UI.Windows
 {
     /// <summary>
-    ///     Interaction logic for AboutWindow.xaml
+    /// Interaction logic for NewFileWindow.xaml
     /// </summary>
     public partial class NewFileWindow
     {
@@ -182,6 +182,14 @@ namespace SPCode.UI.Windows
             }
         }
 
+        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
+        }
+
         private void GoToSelectedTemplate()
         {
             var destFile = new FileInfo(PathBox.Text);
@@ -190,6 +198,7 @@ namespace SPCode.UI.Windows
             Program.MainWindow.TryLoadSourceFile(destFile.FullName, true, true, true);
             Close();
         }
+
     }
 
     public class TemplateInfo
