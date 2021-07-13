@@ -34,13 +34,14 @@ namespace SPCode.UI
 
         private ObservableCollection<string> actionButtonDict = new()
         {
-            Program.Translations.GetLanguage("Copy"), Program.Translations.GetLanguage("FTPUp"),
+            Program.Translations.GetLanguage("Copy"),
+            Program.Translations.GetLanguage("FTPUp"),
             Program.Translations.GetLanguage("StartServer")
         };
 
-        private ObservableCollection<string> compileButtonDict = new() { Program.Translations.GetLanguage("CompileAll"), Program.Translations.GetLanguage("CompileCurr")};
+        private ObservableCollection<string> compileButtonDict = new() { Program.Translations.GetLanguage("CompileAll"), Program.Translations.GetLanguage("CompileCurr") };
 
-        private ObservableCollection<string> findReplaceButtonDict = new() { Program.Translations.GetLanguage("Replace"), Program.Translations.GetLanguage("ReplaceAll")};
+        private ObservableCollection<string> findReplaceButtonDict = new() { Program.Translations.GetLanguage("Replace"), Program.Translations.GetLanguage("ReplaceAll") };
 
         public MainWindow()
         {
@@ -204,8 +205,11 @@ namespace SPCode.UI
             layoutDocument.Content = editor;
             EditorsReferences.Add(editor);
             DockingPane.Children.Add(layoutDocument);
-            layoutDocument.IsSelected = SelectMe;
-            editor.editor.TextArea.Caret.Show();
+            if (SelectMe)
+            {
+                layoutDocument.IsSelected = true;
+                editor.editor.TextArea.Caret.Show();
+            }
         }
 
         private void DockingManager_ActiveContentChanged(object sender, EventArgs e)
