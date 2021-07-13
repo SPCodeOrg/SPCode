@@ -50,7 +50,7 @@ namespace SPCode.Utils.SPSyntaxTidy
                 {
                     LookForSingleIndentationSegment = false;
                     var lastToken = GetTokenSave(i - 1, token, length);
-                    if (lastToken.Kind != SPTokenKind.Newline && lastToken.Kind != SPTokenKind.Comma)
+                    if (lastToken.Kind != SPTokenKind.Newline && lastToken.Kind != SPTokenKind.Comma && lastToken.Kind != SPTokenKind.Operator)
                     {
                         outString.Append(" ");
                     }
