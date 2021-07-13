@@ -14,10 +14,6 @@ namespace SourcepawnCondenser.SourcemodDefinition
 
         public List<string> currentVariables = new List<string>();
 
-        //public string[] EnumStrings = new string[0]; NOT NEEDED
-        //public string[] StructStrings = new string[0]; NOT NEEDED
-        //public string[] DefinesStrings = new string[0]; NOT NEEDED
-
         public List<SMDefine> Defines = new List<SMDefine>();
         public List<SMEnum> Enums = new List<SMEnum>();
         public List<SMEnumStruct> EnumStructs = new List<SMEnumStruct>();
