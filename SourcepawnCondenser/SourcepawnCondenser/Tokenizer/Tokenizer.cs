@@ -260,8 +260,8 @@ namespace SourcepawnCondenser.Tokenizer
                     }
 
                     if (c != '_' || (c == '_' && ((nextChar >= 'a' && nextChar <= 'z') ||
-                                                 (nextChar >= 'A' && nextChar <= 'Z') ||
-                                                 (nextChar >= '0' && nextChar <= '9') || nextChar == '_')))
+                                                  (nextChar >= 'A' && nextChar <= 'Z') ||
+                                                  (nextChar >= '0' && nextChar <= '9') || nextChar == '_')))
                     {
                         var identString = Source.Substring(startIndex, endIndex - startIndex);
                         switch (identString)
@@ -450,7 +450,7 @@ namespace SourcepawnCondenser.Tokenizer
 
                             if (directiveString == "#define" && sArray[endIndex] == ' ')
                             {
-                                while (sArray[endIndex + 1] == ' ')
+                                while (sArray[endIndex - 1] == ' ')
                                 {
                                     endIndex++;
                                 }
@@ -466,11 +466,15 @@ namespace SourcepawnCondenser.Tokenizer
 
                                     if (sArray[j] == ' ')
                                     {
-                                        token.Add(
-                                            new Token(name.ToString(), TokenKind.Identifier, endIndex + 1));
                                         break;
                                     }
                                     name.Append(sArray[j]);
+                                }
+
+                                if (name.ToString().Trim() != "")
+                                {
+                                    token.Add(
+                                        new Token(name.ToString(), TokenKind.Identifier, endIndex + 1));
                                 }
                             }
 
