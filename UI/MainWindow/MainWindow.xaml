@@ -121,7 +121,7 @@
         </controls:WindowCommands>
     </controls:MetroWindow.LeftWindowCommands>
     <controls:MetroWindow.Icon>
-        <BitmapImage UriSource="/SPCode;component/Resources/Icon.ico" />
+        <BitmapImage UriSource="/SPCode;component/Resources/Icons/icon.ico" />
     </controls:MetroWindow.Icon>
     <Grid>
         <Grid.RowDefinitions>
@@ -236,13 +236,13 @@
                     <ListViewItem Selected="ListViewOBItem_SelectFile">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Name="OBItemText_File" Text="File Directory" />
-                            <Image Source="/SPCode;component/Resources/iconmonstr-code-fork-1-20.png" Width="20" Height="20" />
+                            <Image Source="/SPCode;component/Resources/Icons/iconmonstr-code-fork-1-20.png" Width="20" Height="20" />
                         </StackPanel>
                     </ListViewItem>
                     <ListViewItem Selected="ListViewOBItem_SelectConfig">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Name="OBItemText_Config" Text="Config Directory" />
-                            <Image Source="/SPCode;component/Resources/iconmonstr-code-fork-2-20.png" Width="20" Height="20" />
+                            <Image Source="/SPCode;component/Resources/Icons/iconmonstr-code-fork-2-20.png" Width="20" Height="20" />
                         </StackPanel>
                     </ListViewItem>
                 </ListView>

@@ -58,7 +58,7 @@ namespace SPCode
                     {
 #endif
 
-                    var splashScreen = new SplashScreen("Resources/Icon256x.png");
+                    var splashScreen = new SplashScreen("Resources/Icons/icon256x.png");
                     splashScreen.Show(false, true);
                     Environment.CurrentDirectory =
                         Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??

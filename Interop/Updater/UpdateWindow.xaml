@@ -15,7 +15,7 @@
         </ResourceDictionary>
     </mahapps:MetroWindow.Resources>
     <Grid>
-        <Image Name="Icon" Source="/SPCode;component/Resources/Icon.ico" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,5,5" Width="40" Height="40"/>
+        <Image Name="Icon" Source="/SPCode;component/Resources/Icons/icon.ico" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,5,5" Width="40" Height="40"/>
         <mahapps:ProgressRing Name="Progress" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,5,5" Width="40" Height="40" IsActive="False" IsLarge="False" IsHitTestVisible="False" />
         <TextBlock Name="MainLine" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="50,0,0,0" FontSize="16" Foreground="{StaticResource AccentColorBrush}" IsHitTestVisible="False" />
         <TextBlock Name="SubLine" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="50,25,0,0" FontSize="14" IsHitTestVisible="False" />
