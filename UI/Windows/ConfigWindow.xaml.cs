@@ -208,7 +208,7 @@ namespace SPCode.UI.Windows
 
         private void AddSMDirButton_Click(object sender, RoutedEventArgs e)
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog
+            var dialog = new CommonOpenFileDialog
             {
                 IsFolderPicker = true
             };

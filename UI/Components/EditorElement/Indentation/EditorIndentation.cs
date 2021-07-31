@@ -45,21 +45,6 @@ namespace SPCode.UI.Components
                             indentation = Program.Indentation + "\n";
                         }
                     }
-                    /*if (lastLineTextTrimmed == "{" && currentLineTextTrimmed != "}")
-                    {
-                        indentation += "\t";
-                    }
-                    else if (currentLineTextTrimmed == "}")
-                    {
-                        if (indentation.Length > 0)
-                        {
-                            indentation = indentation.Substring(0, indentation.Length - 1);
-                        }
-                        else
-                        {
-                            indentation = string.Empty;
-                        }
-                    }*/
                 }
                 indentationSegment = TextUtilities.GetWhitespaceAfter(document, line.Offset);
                 document.Replace(indentationSegment, indentation);

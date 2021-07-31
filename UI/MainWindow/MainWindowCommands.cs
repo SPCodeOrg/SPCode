@@ -46,7 +46,7 @@ namespace SPCode.UI
         private void Command_New()
         {
             string newFilePath;
-            int newFileNum = 0;
+            var newFileNum = 0;
             do
             {
                 newFilePath = Path.Combine(Program.Configs[Program.SelectedConfig].SMDirectories[0], $"New Plugin ({++newFileNum}).sp");
@@ -360,7 +360,7 @@ namespace SPCode.UI
                     "", false, MetroDialogOptions);
                 ProcessUITasks();
             }
-            JavaUtils ju = new JavaUtils();
+            var ju = new JavaUtils();
             switch (ju.GetJavaStatus())
             {
                 case JavaResults.Absent:
@@ -467,7 +467,7 @@ namespace SPCode.UI
             ProcessUITasks();
 
             // Setting up event callbacks to change download percentage, amount downloaded and amount left
-            using WebClient wc = new WebClient();
+            using var wc = new WebClient();
             wc.DownloadProgressChanged += DownloadProgressed;
             wc.DownloadFileCompleted += DownloadCompleted;
             wc.DownloadFileAsync(new Uri(JavaLink), OutFile);

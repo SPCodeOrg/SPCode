@@ -7,7 +7,6 @@ using System.Windows.Media;
 using DiscordRPC;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
-using SPCode.UI.Components;
 
 namespace SPCode.UI.Windows
 {

@@ -30,10 +30,10 @@ namespace SPCode.UI.Components
         public IEnumerable<NewFolding> CreateNewFoldings(ITextSource document)
         {
             var newFoldings = new List<NewFolding>();
-            Stack<int> startOffsets = new Stack<int>();
-            int lastNewLineOffset = 0;
-            int CommentMode = 0; // 0 = None, 1 = Single, 2 = Multi, 3 = String
-            for (int i = 0; i < document.TextLength; ++i)
+            var startOffsets = new Stack<int>();
+            var lastNewLineOffset = 0;
+            var CommentMode = 0; // 0 = None, 1 = Single, 2 = Multi, 3 = String
+            for (var i = 0; i < document.TextLength; ++i)
             {
                 var c = document.GetCharAt(i);
                 if (c == '\n' || c == '\r')
@@ -56,7 +56,7 @@ namespace SPCode.UI.Components
                                         {
                                             if ((i + 1) < document.TextLength)
                                             {
-                                                char oneCharAfter = document.GetCharAt(i + 1);
+                                                var oneCharAfter = document.GetCharAt(i + 1);
                                                 if (oneCharAfter == '*')
                                                 {
                                                     CommentMode = 2;
@@ -78,7 +78,7 @@ namespace SPCode.UI.Components
                                         {
                                             if (startOffsets.Count > 0)
                                             {
-                                                int startOffset = startOffsets.Pop();
+                                                var startOffset = startOffsets.Pop();
                                                 if (startOffset < lastNewLineOffset)
                                                 {
                                                     newFoldings.Add(new NewFolding(startOffset, i + 1));
@@ -102,7 +102,7 @@ namespace SPCode.UI.Components
                                     {
                                         if (document.GetCharAt(i - 1) == '*')
                                         {
-                                            int startOffset = startOffsets.Pop();
+                                            var startOffset = startOffsets.Pop();
                                             CommentMode = 0;
                                             if (startOffset < lastNewLineOffset)
                                             {
@@ -124,32 +124,6 @@ namespace SPCode.UI.Components
                     }
                 }
             }
-
-            /*Stack<int> startOffsets = new Stack<int>();
-            int lastNewLineOffset = 0;
-            char openingBrace = this.OpeningBrace;
-            char closingBrace = this.ClosingBrace;
-            for (int i = 0; i < document.TextLength; i++)
-            {
-                char c = document.GetCharAt(i);
-                if (c == openingBrace)
-                {
-                    startOffsets.Push(i);
-                }
-                else if (c == closingBrace && startOffsets.Count > 0)
-                {
-                    int startOffset = startOffsets.Pop();
-                    // don't fold if opening and closing brace are on the same line
-                    if (startOffset < lastNewLineOffset)
-                    {
-                        newFoldings.Add(new NewFolding(startOffset, i + 1));
-                    }
-                }
-                else if (c == '\n' || c == '\r')
-                {
-                    lastNewLineOffset = i + 1;
-                }
-            }*/
 
             newFoldings.Sort((a, b) => a.StartOffset.CompareTo(b.StartOffset));
             return newFoldings;

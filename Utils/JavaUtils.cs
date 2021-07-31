@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Win32;
 
 namespace SPCode.Utils
 {
@@ -41,14 +36,7 @@ namespace SPCode.Utils
                 return JavaResults.Absent;
             }
 
-            if (int.Parse(output.Split(' ')[1].Split('.')[0]) < JavaVersionForLysis)
-            {
-                return JavaResults.Outdated;
-            }
-            else
-            {
-                return JavaResults.Correct;
-            }
+            return int.Parse(output.Split(' ')[1].Split('.')[0]) < JavaVersionForLysis ? JavaResults.Outdated : JavaResults.Correct;
         }
     }
 }

@@ -2,10 +2,8 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Reflection;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using Markdig;
 using Octokit;
 using SPCode.Utils;

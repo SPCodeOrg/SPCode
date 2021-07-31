@@ -5,7 +5,6 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using SPCode.UI.Components;
 
 namespace SPCode.UI
 {
