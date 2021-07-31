@@ -548,7 +548,7 @@
       C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Templates\*.*" ".\sourcepawn\templates\*.*" /e /y /q
       C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Configurations" ".\sourcepawn\configs" /e /y /q /d
       C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Lysis\*.*" ".\lysis" /e /y /q
-      copy ".\..\..\Resources\lang_0_spcode.xml" ".\lang_0_spcode.xml" /y
+      copy ".\..\..\Resources\Translations\lang_0_spcode.xml" ".\lang_0_spcode.xml" /y
       copy ".\..\..\Deploy\SPCode.nsi" ".\SPCode.nsi" /y
       copy ".\..\..\Deploy\Compress.ps1" ".\Compress.ps1" /y
       copy ".\..\..\Deploy\DotNetChecker.nsh" ".\DotNetChecker.nsh" /y
