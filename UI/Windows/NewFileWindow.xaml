@@ -5,24 +5,28 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              Width="800" Height="500" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" GlowBrush="{DynamicResource AccentColorBrush}"
                       Title="New" ShowTitleBar="False" KeyDown="MetroWindow_KeyDown">
-    <controls:MetroWindow.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </controls:MetroWindow.Resources>
-    <Grid>
-        <ListBox Name="TemplateListBox" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="250" Margin="0,0,0,50" SelectionChanged="TemplateListBox_SelectionChanged" MouseDoubleClick="TemplateListBox_MouseDoubleClick" KeyDown="TemplateListBox_KeyDown" />
-        <TextBlock Name="PreviewBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="260,10,0,0" Text="Preview:" IsHitTestVisible="False" />
-        <TextBox Name="PrevieBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="260,30,5,50" IsReadOnly="True" />
-        <TextBox Name="PathBox" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="5,0,120,5" 
+  <controls:MetroWindow.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </controls:MetroWindow.Resources>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="17*"/>
+      <ColumnDefinition Width="183*"/>
+    </Grid.ColumnDefinitions>
+    <ListBox Name="TemplateListBox" HorizontalAlignment="Left" Width="250" Margin="0,0,0,50" SelectionChanged="TemplateListBox_SelectionChanged" MouseDoubleClick="TemplateListBox_MouseDoubleClick" KeyDown="TemplateListBox_KeyDown" Grid.ColumnSpan="2" />
+    <TextBlock Name="PreviewBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="192,10,0,0" Text="Preview:" IsHitTestVisible="False" Grid.Column="1" />
+    <TextBox Name="PrevieBox" Margin="192,30,5,50" IsReadOnly="True" Grid.Column="1" />
+    <TextBox Name="PathBox" VerticalAlignment="Bottom" Margin="5,0,120,5" 
                  Style="{StaticResource SearchMetroTextBox}"
-                 controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFileCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
-        <Button Name="SaveButton" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5" Content="Save" Width="100" Click="Button_Click" />
-    </Grid>
+                 controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFileCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Grid.ColumnSpan="2" />
+    <Button Name="SaveButton" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5" Content="Save" Width="100" Click="Button_Click" Grid.Column="1" />
+  </Grid>
 </controls:MetroWindow>

@@ -132,6 +132,12 @@ namespace SPCode.UI
             }
         }
 
+        private void Command_FindReplace()
+        {
+            var find = new FindReplaceWindow();
+            find.Show();
+        }
+
         private void Command_SaveAll()
         {
             var editors = GetAllEditorElements();

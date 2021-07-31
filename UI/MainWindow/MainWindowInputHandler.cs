@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using SPCode.UI.Windows;
 
 namespace SPCode.UI
 {
@@ -94,7 +95,7 @@ namespace SPCode.UI
                             }
                         case Key.F:
                             {
-                                ToggleSearchField();
+                                Command_FindReplace();
                                 e.Handled = true;
                                 break;
                             }
@@ -131,7 +132,7 @@ namespace SPCode.UI
                 {
                     case Key.F3:
                         {
-                            Search();
+                            //Search();
                             e.Handled = true;
                             break;
                         }

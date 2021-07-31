@@ -68,8 +68,8 @@ namespace SPCode.UI
             CompileButton.SelectedIndex = 0;
             CActionButton.ItemsSource = actionButtonDict;
             CActionButton.SelectedIndex = 0;
-            ReplaceButton.ItemsSource = findReplaceButtonDict;
-            ReplaceButton.SelectedIndex = 0;
+            //ReplaceButton.ItemsSource = findReplaceButtonDict;
+            //ReplaceButton.SelectedIndex = 0;
             if (Program.OptionsObject.UI_ShowToolBar)
             {
                 Win_ToolBar.Height = double.NaN;
