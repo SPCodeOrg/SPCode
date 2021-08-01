@@ -8,5 +8,7 @@
         public const string JavaDownloadSite64 = "https://api.adoptopenjdk.net/v3/installer/latest/15/ga/windows/x64/jdk/hotspot/normal/adoptopenjdk?project=jdk";
         public const string JavaDownloadSite32 = "https://api.adoptopenjdk.net/v3/installer/latest/15/ga/windows/x32/jdk/hotspot/normal/adoptopenjdk?project=jdk";
         public const string JavaDownloadFile = @"%userprofile%\Downloads\adoptopenjdk-java-15-spcode.msi";
+        public const string FileOpenFilters = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|Sourcemod Plugins (*.smx)|*.smx|All Files (*.*)|*.*";
+        public const string FileSaveFilters = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|All Files (*.*)|*.*";
     }
 }
