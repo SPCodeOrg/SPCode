@@ -21,10 +21,10 @@ namespace SPCode.Utils
         private readonly MainWindow _win;
         private readonly MetroDialogSettings _metroDialogOptions;
 
-        public JavaInstallation(MainWindow win, MetroDialogSettings metroDialogOptions)
+        public JavaInstallation()
         {
-            _win = win;
-            _metroDialogOptions = metroDialogOptions;
+            _win = Program.MainWindow;
+            _metroDialogOptions = _win.MetroDialogOptions;
         }
         public enum JavaResults
         {

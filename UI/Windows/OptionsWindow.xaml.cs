@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using DiscordRPC;
 using MahApps.Metro;
@@ -36,6 +37,20 @@ namespace SPCode.UI.Windows
 
             LoadSettings();
             AllowChanging = true;
+        }
+
+        private void DefaultButton_Click(object sender, RoutedEventArgs e)
+        {
+            Program.OptionsObject.NormalizeSHColors();
+            LoadSH();
+        }
+
+        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
         }
 
         private async void RestoreButton_Clicked(object sender, RoutedEventArgs e)
@@ -623,12 +638,6 @@ namespace SPCode.UI.Windows
             HighlightDeprecateds.Content = Program.Translations.GetLanguage("HighDeprecat");
             AutoSaveBlock.Text = Program.Translations.GetLanguage("AutoSaveMin");
             DefaultButton.Content = Program.Translations.GetLanguage("DefaultValues");
-        }
-
-        private void DefaultButton_Click(object sender, RoutedEventArgs e)
-        {
-            Program.OptionsObject.NormalizeSHColors();
-            LoadSH();
         }
     }
 

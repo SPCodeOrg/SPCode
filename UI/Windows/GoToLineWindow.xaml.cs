@@ -17,7 +17,7 @@ namespace SPCode.UI.Windows
         #endregion
 
         #region Constructor
-        public GoToLineWindow(EditorElement editor)
+        public GoToLineWindow()
         {
             InitializeComponent();
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
@@ -25,7 +25,7 @@ namespace SPCode.UI.Windows
                 ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
-            _editor = editor.editor; 
+            _editor = Program.MainWindow.GetCurrentEditorElement().editor; 
             _lineNumber = _editor.LineCount;
             _offsetNumber = _editor.Document.TextLength;
 
@@ -72,12 +72,12 @@ namespace SPCode.UI.Windows
             }
         }
 
-        private void rbLineJump_Checked(object sender, RoutedEventArgs e)
+        private void RbLineJump_Checked(object sender, RoutedEventArgs e)
         {
             CheckInput(out _);
         }
 
-        private void rbOffsetJump_Checked(object sender, RoutedEventArgs e)
+        private void RbOffsetJump_Checked(object sender, RoutedEventArgs e)
         {
             CheckInput(out _);
         }

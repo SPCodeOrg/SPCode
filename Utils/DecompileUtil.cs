@@ -17,16 +17,16 @@ namespace SPCode.Utils
         private readonly MainWindow _win;
         private readonly MetroDialogSettings _metroDialogOptions;
 
-        public DecompileUtil(MainWindow win, MetroDialogSettings metroDialogOptions)
+        public DecompileUtil()
         {
-            _win = win;
-            _metroDialogOptions = metroDialogOptions;
+            _win = Program.MainWindow;
+            _metroDialogOptions = _win.MetroDialogOptions;
         }
 
         public async Task DecompilePlugin()
         {
 
-            var java = new JavaInstallation(_win, _metroDialogOptions);
+            var java = new JavaInstallation();
 
             // First we check the java version of the user, and act accordingly
 

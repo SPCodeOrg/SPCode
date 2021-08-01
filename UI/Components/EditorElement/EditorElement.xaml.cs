@@ -34,8 +34,6 @@ namespace SPCode.UI.Components
         private readonly BracketHighlightRenderer bracketHighlightRenderer;
         private readonly SPBracketSearcher bracketSearcher;
         private readonly ColorizeSelection colorizeSelection;
-        private readonly Storyboard FadeJumpGridIn;
-        private readonly Storyboard FadeJumpGridOut;
         private readonly SPFoldingStrategy foldingStrategy;
         private readonly Timer regularyTimer;
         private string _FullFilePath = "";
@@ -104,9 +102,6 @@ namespace SPCode.UI.Components
             bracketSearcher = new SPBracketSearcher();
             bracketHighlightRenderer = new BracketHighlightRenderer(editor.TextArea.TextView);
             editor.TextArea.IndentationStrategy = new EditorIndentationStrategy();
-
-            FadeJumpGridIn = (Storyboard)Resources["FadeJumpGridIn"];
-            FadeJumpGridOut = (Storyboard)Resources["FadeJumpGridOut"];
 
             editor.CaptureMouse();
 
