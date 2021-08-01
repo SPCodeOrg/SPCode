@@ -134,7 +134,7 @@ namespace SPCode.UI
 
         private void Menu_JumpTo(object sender, RoutedEventArgs e)
         {
-            Command_JumpTo();
+            Command_GoToLine();
         }
 
         private void Menu_ToggleCommentLine(object sender, RoutedEventArgs e)

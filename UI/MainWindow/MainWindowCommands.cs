@@ -132,6 +132,12 @@ namespace SPCode.UI
             }
         }
 
+        private void Command_GoToLine()
+        {
+            var goToLineWindow = new GoToLineWindow();
+            goToLineWindow.Show();
+        }
+
         private void Command_FindReplace()
         {
             var find = new FindReplaceWindow();
@@ -270,12 +276,6 @@ namespace SPCode.UI
                     folding.IsFolded = state;
                 }
             }
-        }
-
-        private void Command_JumpTo()
-        {
-            var ee = GetCurrentEditorElement();
-            ee?.ToggleJumpGrid();
         }
 
         private void Command_SelectAll()

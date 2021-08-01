@@ -93,6 +93,12 @@ namespace SPCode.UI
                                 e.Handled = true;
                                 break;
                             }
+                        case Key.G:
+                            {
+                                Command_GoToLine();
+                                e.Handled = true;
+                                break;
+                            }
                         case Key.F:
                             {
                                 Command_FindReplace();

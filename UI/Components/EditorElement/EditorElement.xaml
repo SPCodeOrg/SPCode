@@ -72,7 +72,6 @@
             </editor:TextEditor.ContextMenu>
         </editor:TextEditor>
         <CheckBox x:Name="CompileBox" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="2,0,0,0" Content="Compile" Foreground="{DynamicResource BlackColorBrush}" />
-        <!-- <TextBlock Name="StatusLine_Work" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="100,0,0,0" Text="HERE" Foreground="{DynamicResource BlackColorBrush}" IsHitTestVisible="False" /> -->
         <TextBlock Name="StatusLine_FontSize" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2" Text="14 pt" Foreground="{DynamicResource BlackColorBrush}" IsHitTestVisible="False" />
     <TextBlock Name="StatusLine_Column" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2,2,100,2" Text="Col 0" Foreground="{DynamicResource BlackColorBrush}" IsHitTestVisible="False" />
     <TextBlock Name="StatusLine_Offset" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,151,2" Foreground="{DynamicResource BlackColorBrush}" IsHitTestVisible="False" />
@@ -102,13 +101,5 @@
                 </Grid>
             </Border>
         </Grid>
-        <Border Name="JumpGrid" HorizontalAlignment="Center" VerticalAlignment="Center" Width="250" Height="75" BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}" Background="{DynamicResource WhiteColorBrush}" IsHitTestVisible="False" Opacity="0">
-            <Grid>
-                <TextBox Name="JumpNumber" HorizontalAlignment="Stretch" VerticalAlignment="Top" Text="1" KeyDown="JumpNumberKeyDown" Foreground="{DynamicResource BlackColorBrush}" />
-                <RadioButton Name="rbLineJump" HorizontalAlignment="Left" Content="Go to line" VerticalAlignment="Top" Margin="5,30,0,0" IsChecked="True" Foreground="{DynamicResource BlackColorBrush}" />
-                <RadioButton Name="rbOffsetJump" HorizontalAlignment="Left" Content="Go to offset" VerticalAlignment="Top" Margin="5,50,0,0" IsChecked="False" Foreground="{DynamicResource BlackColorBrush}" />
-                <Button Name="btJump" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,40,5,0" Content="Go" Click="JumpToNumber" />
-            </Grid>
-        </Border>
     </Grid>
 </UserControl>

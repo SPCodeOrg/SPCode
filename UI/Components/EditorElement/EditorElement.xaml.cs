@@ -111,7 +111,7 @@ namespace SPCode.UI.Components
 
             editor.CaptureMouse();
 
-            KeyDown += EditorElement_KeyDown;
+            //KeyDown += EditorElement_KeyDown;
 
             editor.TextArea.Caret.PositionChanged += Caret_PositionChanged;
             editor.TextArea.SelectionChanged += TextArea_SelectionChanged;
@@ -225,18 +225,6 @@ namespace SPCode.UI.Components
             if (NeedsSave)
             {
                 Dispatcher.Invoke(() => { Save(); });
-            }
-        }
-
-        private void EditorElement_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.G)
-            {
-                if (Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightAlt))
-                {
-                    ToggleJumpGrid();
-                    e.Handled = true;
-                }
             }
         }
 
@@ -946,9 +934,9 @@ namespace SPCode.UI.Components
                 StatusLine_FontSize.Text =
                     editor.FontSize.ToString("n0") + $" {Program.Translations.GetLanguage("PtAbb")}";
             }
-            rbLineJump.Content = Program.Translations.GetLanguage("GoToLine");
-            rbOffsetJump.Content = Program.Translations.GetLanguage("GoToOffset");
-            btJump.Content = Program.Translations.GetLanguage("Go");
+            //rbLineJump.Content = Program.Translations.GetLanguage("GoToLine");
+            //rbOffsetJump.Content = Program.Translations.GetLanguage("GoToOffset");
+            //btJump.Content = Program.Translations.GetLanguage("Go");
         }
         #endregion
     }
