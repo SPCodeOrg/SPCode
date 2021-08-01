@@ -1,11 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
-using ByteSizeLib;
+using System.Windows;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using SPCode.UI.Components;
@@ -56,8 +54,9 @@ namespace SPCode.UI
         private void Command_NewFromTemplate()
         {
             var nfWindow = new NewFileWindow
-            { 
-                Owner = this, ShowInTaskbar = false 
+            {
+                Owner = this,
+                ShowInTaskbar = false
             };
             nfWindow.ShowDialog();
         }
@@ -136,11 +135,8 @@ namespace SPCode.UI
             {
                 return;
             }
-            var goToLineWindow = new GoToLineWindow(GetCurrentEditorElement())
-            { 
-                Owner = this, ShowInTaskbar = false 
-            };
-            goToLineWindow.Show();
+            var goToLineWindow = new GoToLineWindow();
+            goToLineWindow.ShowDialog();
         }
 
         private void Command_FindReplace()
@@ -149,11 +145,23 @@ namespace SPCode.UI
             {
                 return;
             }
-            var findWindow = new FindReplaceWindow(GetCurrentEditorElement(), GetAllEditorElements(), DockingPane)
-            { 
-                Owner = this, ShowInTaskbar = false 
-            };
+            if (Program.IsSearchOpen)
+            {
+                foreach (Window win in Application.Current.Windows)
+                {
+                    var type = win.GetType();
+                    if (type.ToString() == "SPCode.UI.Windows.FindReplaceWindow")
+                    {
+                        win.Activate();
+                        (win as FindReplaceWindow).FindBox.Focus();
+                        return;
+                    }
+                }
+            }
+            var findWindow = new FindReplaceWindow();
+            Program.IsSearchOpen = true;
             findWindow.Show();
+            findWindow.FindBox.Focus();
         }
 
         private void Command_SaveAll()
@@ -349,15 +357,16 @@ namespace SPCode.UI
 
         private async void Command_Decompile(MainWindow win)
         {
-            var decomp = new DecompileUtil(win, MetroDialogOptions);
+            var decomp = new DecompileUtil();
             await decomp.DecompilePlugin();
         }
 
         private void Command_OpenSPDef()
         {
             var spDefinitionWindow = new SPDefinitionWindow
-            { 
-                Owner = this, ShowInTaskbar = false 
+            {
+                Owner = this,
+                ShowInTaskbar = false
             };
             spDefinitionWindow.ShowDialog();
         }

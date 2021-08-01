@@ -13,15 +13,19 @@ namespace SPCode.UI.Windows
 {
     public partial class FindReplaceWindow
     {
-        private readonly EditorElement _editor;
-        private readonly EditorElement[] _allEditors;
-        private readonly LayoutDocumentPane _dockingPane;
+        #region Variables
+        private EditorElement _editor;
+        private EditorElement[] _allEditors;
+        private LayoutDocumentPane _dockingPane;
+        private bool IsSearchFieldOpen;
         private readonly ObservableCollection<string> findReplaceButtonDict = new()
         { 
             Program.Translations.GetLanguage("Replace"), Program.Translations.GetLanguage("ReplaceAll") 
         };
+        #endregion
 
-        public FindReplaceWindow(EditorElement editor, EditorElement[] allEditors, LayoutDocumentPane dockingPane)
+        #region Constructor
+        public FindReplaceWindow()
         {
             InitializeComponent();
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
@@ -33,17 +37,16 @@ namespace SPCode.UI.Windows
             ReplaceButton.ItemsSource = findReplaceButtonDict;
             ReplaceButton.SelectedIndex = 0;
 
-            _editor = editor;
-            _allEditors = allEditors;
-            _dockingPane = dockingPane;
+            LoadEditorsInfo();
 
             Language_Translate();
-        }
 
-        private bool IsSearchFieldOpen;
+        }
+        #endregion
 
         private void ToggleSearchField()
         {
+            LoadEditorsInfo();
             if (IsSearchFieldOpen)
             {
                 if (_editor != null)
@@ -61,13 +64,6 @@ namespace SPCode.UI.Windows
                 }
                 IsSearchFieldOpen = false;
                 FindReplaceGrid.IsHitTestVisible = false;
-                if (Program.OptionsObject.UI_Animations)
-                {
-                }
-                else
-                {
-                    FindReplaceGrid.Opacity = 0.0;
-                }
                 if (_editor == null)
                 {
                     return;
@@ -86,15 +82,8 @@ namespace SPCode.UI.Windows
                 {
                     FindBox.Text = _editor.editor.SelectedText;
                 }
-                FindBox.SelectAll();
-                if (Program.OptionsObject.UI_Animations)
-                {
-                }
-                else
-                {
-                    FindReplaceGrid.Opacity = 1.0;
-                }
                 FindBox.Focus();
+                FindBox.SelectAll();
             }
         }
 
@@ -149,6 +138,7 @@ namespace SPCode.UI.Windows
 
         private void Search()
         {
+            LoadEditorsInfo();
             var editors = GetEditorElementsForFraction(out var editorIndex);
             var regex = GetSearchRegex();
             if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
@@ -206,6 +196,7 @@ namespace SPCode.UI.Windows
 
         private void Replace()
         {
+            LoadEditorsInfo();
             var editors = GetEditorElementsForFraction(out var editorIndex);
             var regex = GetSearchRegex();
             if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
@@ -264,7 +255,8 @@ namespace SPCode.UI.Windows
 
         private void ReplaceAll()
         {
-            var editors = GetEditorElementsForFraction(out var editorIndex);
+            LoadEditorsInfo();
+            var editors = GetEditorElementsForFraction(out _);
             var regex = GetSearchRegex();
             if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
             {
@@ -298,6 +290,7 @@ namespace SPCode.UI.Windows
 
         private void Count()
         {
+            LoadEditorsInfo();
             var editors = GetEditorElementsForFraction(out _);
             if (editors == null) { return; }
             if (editors.Length < 1) { return; }
@@ -376,6 +369,7 @@ namespace SPCode.UI.Windows
 
         private EditorElement[] GetEditorElementsForFraction(out int editorIndex)
         {
+            LoadEditorsInfo();
             var editorStartIndex = 0;
             EditorElement[] editors;
             if (FindDestinies.SelectedIndex == 0)
@@ -414,6 +408,17 @@ namespace SPCode.UI.Windows
             {
                 Close();
             }
+        }
+        private void MetroWindow_Closed(object sender, EventArgs e)
+        {
+            Program.IsSearchOpen = false;
+        }
+
+        private void LoadEditorsInfo()
+        {
+            _editor = Program.MainWindow.GetCurrentEditorElement();
+            _allEditors = Program.MainWindow.GetAllEditorElements();
+            _dockingPane = Program.MainWindow.DockingPane;
         }
 
         public void Language_Translate()

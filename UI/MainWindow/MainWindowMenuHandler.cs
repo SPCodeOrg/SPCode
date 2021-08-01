@@ -150,7 +150,7 @@ namespace SPCode.UI
 
         private void Menu_FindAndReplace(object sender, RoutedEventArgs e)
         {
-            //ToggleSearchField();
+            Command_FindReplace();
         }
 
         private void Menu_CompileAll(object sender, RoutedEventArgs e)
