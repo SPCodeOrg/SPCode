@@ -299,7 +299,7 @@ namespace SPCode.UI
             }
         }
 
-        private static void ProcessUITasks()
+        public static void ProcessUITasks()
         {
             var frame = new DispatcherFrame();
             Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new DispatcherOperationCallback(

@@ -212,7 +212,8 @@
     </Compile>
     <Compile Include="Utils\BracketHighlightHelpers.cs" />
     <Compile Include="Utils\Constants.cs" />
-    <Compile Include="Utils\JavaUtils.cs" />
+    <Compile Include="Utils\DecompileUtil.cs" />
+    <Compile Include="Utils\JavaInstallation.cs" />
     <Compile Include="Utils\Paths.cs" />
     <Compile Include="Utils\FTP.cs" />
     <Compile Include="Utils\ManagedAES.cs" />
