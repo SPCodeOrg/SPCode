@@ -5,7 +5,7 @@ namespace SPCode.Utils
 {
     public class JavaUtils
     {
-        private static readonly int JavaVersionForLysis = 11;
+        private const int JavaVersionForLysis = 11;
 
         public enum JavaResults
         {
