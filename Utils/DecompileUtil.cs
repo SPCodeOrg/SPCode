@@ -26,7 +26,7 @@ namespace SPCode.Utils
         public async Task DecompilePlugin()
         {
 
-            var java = new JavaInstallation();
+            var java = new JavaInstallation(_win, _metroDialogOptions);
 
             // First we check the java version of the user, and act accordingly
 
