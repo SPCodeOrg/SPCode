@@ -20,7 +20,7 @@ namespace SPCode.UI
     {
 
         private ProgressDialogController dwJavaInCourse;
-        private readonly string OutFile = Environment.ExpandEnvironmentVariables(@"%userprofile%\Downloads\adoptopenjdk-java-15-spcode.msi");
+        private readonly string OutFile = Environment.ExpandEnvironmentVariables(Constants.JavaDownloadFile);
         private readonly string JavaLink = Environment.Is64BitOperatingSystem ? Constants.JavaDownloadSite64 : Constants.JavaDownloadSite32;
 
         public EditorElement GetCurrentEditorElement()
@@ -134,14 +134,15 @@ namespace SPCode.UI
 
         private void Command_GoToLine()
         {
-            var goToLineWindow = new GoToLineWindow();
-            goToLineWindow.Show();
+            var goToLineWindow = new GoToLineWindow(GetCurrentEditorElement()) { Owner = this, ShowInTaskbar = false };
+            goToLineWindow.ShowDialog();
+            GetCurrentEditorElement();
         }
 
         private void Command_FindReplace()
         {
-            var find = new FindReplaceWindow();
-            find.Show();
+            var findWindow = new FindReplaceWindow();
+            findWindow.ShowDialog();
         }
 
         private void Command_SaveAll()

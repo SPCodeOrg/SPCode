@@ -1,13 +1,23 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ICSharpCode.AvalonEdit;
 using MahApps.Metro;
+using SPCode.UI.Components;
 
 namespace SPCode.UI.Windows
 {
     public partial class GoToLineWindow
     {
-        public GoToLineWindow()
+        #region Variables
+        private readonly TextEditor _editor;
+        private readonly int _lineNumber;
+        private readonly double _offsetNumber;
+        #endregion
+
+        #region Constructor
+        public GoToLineWindow(EditorElement editor)
         {
             InitializeComponent();
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
@@ -15,15 +25,41 @@ namespace SPCode.UI.Windows
                 ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
+            _editor = editor.editor;
+            _lineNumber = _editor.LineCount;
+            _offsetNumber = _editor.Document.TextLength;
+
+            rbLineJump.Content += $" (1-{_lineNumber})";
+            rbOffsetJump.Content += $" (0-{_offsetNumber})";
+
+            JumpNumber.Focus();
+            JumpNumber.SelectAll();
         }
+        #endregion
+
+        #region Events
         private void JumpNumberKeyDown(object sender, KeyEventArgs e)
         {
-
+            if (e.Key == Key.Enter)
+            {
+                CheckInput(out var validInput);
+                if (!validInput)
+                {
+                    return;
+                }
+                JumpToNumber(null, null);
+                e.Handled = true;
+                Close();
+            }
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
         }
 
-        private void JumpToNumber(object sender, RoutedEventArgs e)
+        private void JumpNumber_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            CheckInput(out _);            
         }
 
         private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
@@ -33,5 +69,82 @@ namespace SPCode.UI.Windows
                 Close();
             }
         }
+
+        private void rbLineJump_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckInput(out _);
+        }
+
+        private void rbOffsetJump_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckInput(out _);
+        }
+        #endregion
+
+        #region Methods
+        private void JumpToNumber(object sender, RoutedEventArgs e)
+        {
+            if (int.TryParse(JumpNumber.Text, out var num))
+            {
+                if (rbLineJump.IsChecked != null && rbLineJump.IsChecked.Value)
+                {
+                    num = Math.Max(1, Math.Min(num, _editor.LineCount));
+                    var line = _editor.Document.GetLineByNumber(num);
+                    if (line != null)
+                    {
+                        _editor.ScrollToLine(num);
+                        _editor.Select(line.Offset, line.Length);
+                        _editor.CaretOffset = line.Offset;
+                    }
+                }
+                else
+                {
+                    num = Math.Max(0, Math.Min(num, _editor.Text.Length));
+                    var line = _editor.Document.GetLineByOffset(num);
+                    if (line != null)
+                    {
+                        _editor.ScrollTo(line.LineNumber, 0);
+                        _editor.CaretOffset = num;
+                    }
+                }
+            }
+
+            _editor.Focus();
+            Close();
+        }
+
+        private void CheckInput(out bool valid)
+        {
+            if (rbLineJump == null || rbOffsetJump == null)
+            {
+                valid = false;
+                return;
+            }
+
+            var textStr = JumpNumber.Text;
+
+            if (!int.TryParse(textStr, out var text) || string.IsNullOrEmpty(textStr)) 
+            {
+                btJump.IsEnabled = false;
+                lblError.Content = "Invalid input!";
+                valid = false;
+                return;
+            }
+            else if (((bool)rbLineJump.IsChecked && text > _lineNumber) ||
+                ((bool)rbOffsetJump.IsChecked && text > _offsetNumber))
+            {
+                btJump.IsEnabled = false;
+                valid = false;
+                lblError.Content = "Out of bounds!";
+                return;
+            }
+            else
+            {
+                valid = true;
+                btJump.IsEnabled = true;
+                lblError.Content = string.Empty;
+            }
+        }
+        #endregion
     }
 }

@@ -52,9 +52,10 @@
     </ResourceDictionary>
   </controls:MetroWindow.Resources>
   <Grid>
-    <TextBox Name="JumpNumber" VerticalAlignment="Top" Text="1" KeyDown="JumpNumberKeyDown" Foreground="{DynamicResource BlackColorBrush}" Margin="5,5,5,0" />
-    <RadioButton Name="rbLineJump" HorizontalAlignment="Left" Content="Go to line" VerticalAlignment="Center" Margin="5,0,0,0" IsChecked="True" Foreground="{DynamicResource BlackColorBrush}" />
-    <RadioButton Name="rbOffsetJump" HorizontalAlignment="Left" Content="Go to offset" VerticalAlignment="Top" Margin="5,55,0,0" IsChecked="False" Foreground="{DynamicResource BlackColorBrush}" />
-    <Button Name="btJump" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,45,5,0" Content="Go" Click="JumpToNumber" />
+    <TextBox Name="JumpNumber" VerticalAlignment="Top" Text="1" KeyDown="JumpNumberKeyDown" Foreground="{DynamicResource BlackColorBrush}" Margin="5,5,5,0" TextChanged="JumpNumber_TextChanged" />
+    <RadioButton Name="rbLineJump" HorizontalAlignment="Left" Content="Go to line" VerticalAlignment="Center" Margin="5,0,0,0" IsChecked="True" Foreground="{DynamicResource BlackColorBrush}" Checked="rbLineJump_Checked" />
+    <RadioButton Name="rbOffsetJump" HorizontalAlignment="Left" Content="Go to offset" VerticalAlignment="Top" Margin="5,55,0,0" IsChecked="False" Foreground="{DynamicResource BlackColorBrush}" Checked="rbOffsetJump_Checked" />
+    <Button Name="btJump" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,45,5,0" Content="Go" Click="JumpToNumber"/>
+    <Label Name="lblError" Content="" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" Foreground="Red" FontWeight="Bold"/>
   </Grid>
 </controls:MetroWindow>

@@ -34,23 +34,6 @@
                         <DoubleAnimation Duration="00:00:00.1" To="0" Storyboard.TargetName="AutoCompleteBox" Storyboard.TargetProperty="Opacity" />
                         <DoubleAnimation Duration="00:00:00.1" To="1" Storyboard.TargetName="MethodAutoCompleteBox" Storyboard.TargetProperty="Opacity" />
                     </Storyboard>
-
-                    <Storyboard x:Key="FadeJumpGridIn">
-                        <DoubleAnimation Duration="00:00:00.1" To="1" Storyboard.TargetName="JumpGrid" Storyboard.TargetProperty="Opacity" />
-                        <BooleanAnimationUsingKeyFrames Duration="00:00:00.1" Storyboard.TargetName="JumpGrid" Storyboard.TargetProperty="IsHitTestVisible">
-                            <BooleanKeyFrameCollection>
-                                <DiscreteBooleanKeyFrame KeyTime="00:00:00" Value="True" />
-                            </BooleanKeyFrameCollection>
-                        </BooleanAnimationUsingKeyFrames>
-                    </Storyboard>
-                    <Storyboard x:Key="FadeJumpGridOut">
-                        <DoubleAnimation Duration="00:00:00.1" To="0" Storyboard.TargetName="JumpGrid" Storyboard.TargetProperty="Opacity" />
-                        <BooleanAnimationUsingKeyFrames Duration="00:00:00.1" Storyboard.TargetName="JumpGrid" Storyboard.TargetProperty="IsHitTestVisible">
-                            <BooleanKeyFrameCollection>
-                                <DiscreteBooleanKeyFrame KeyTime="00:00:00" Value="False" />
-                            </BooleanKeyFrameCollection>
-                        </BooleanAnimationUsingKeyFrames>
-                    </Storyboard>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
