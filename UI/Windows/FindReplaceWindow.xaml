@@ -75,6 +75,6 @@
     <controls:SplitButton Name="ReplaceButton" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,151,3,0" Width="150" Click="ReplaceButtonClicked" Grid.Column="1" Height="26"/>
     <CheckBox x:Name="CCBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,148,0,0" Content="Case Sensitive" Foreground="{DynamicResource BlackBrush}" Grid.Column="1" Height="18" Width="99" />
     <CheckBox x:Name="MLRBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,169,0,0" Content="Multiline Regex" Foreground="{DynamicResource BlackBrush}" Grid.Column="1" Grid.RowSpan="2" Height="18" Width="105" />
-    <TextBlock x:Name="FindResultBlock" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,10" Text="" Width="312" FontSize="14" Foreground="{DynamicResource AccentColorBrush}" IsHitTestVisible="False" Grid.ColumnSpan="2" Height="33" Grid.Row="1" />
+    <TextBlock x:Name="FindResultBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,31,0,0" Text="" Width="312" FontSize="14" Foreground="{DynamicResource AccentColorBrush}" IsHitTestVisible="False" Grid.ColumnSpan="2" Height="21" Grid.Row="1" />
   </Grid>
 </controls:MetroWindow>

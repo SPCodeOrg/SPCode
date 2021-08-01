@@ -132,6 +132,10 @@ namespace SPCode.UI
 
         private void Command_GoToLine()
         {
+            if (GetAllEditorElements() == null)
+            {
+                return;
+            }
             var goToLineWindow = new GoToLineWindow(GetCurrentEditorElement())
             { 
                 Owner = this, ShowInTaskbar = false 
@@ -141,6 +145,10 @@ namespace SPCode.UI
 
         private void Command_FindReplace()
         {
+            if (GetAllEditorElements() == null)
+            {
+                return;
+            }
             var findWindow = new FindReplaceWindow(GetCurrentEditorElement(), GetAllEditorElements(), DockingPane)
             { 
                 Owner = this, ShowInTaskbar = false 

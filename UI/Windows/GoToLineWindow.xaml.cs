@@ -25,17 +25,17 @@ namespace SPCode.UI.Windows
                 ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
-            _editor = editor.editor;
+            _editor = editor.editor; 
             _lineNumber = _editor.LineCount;
             _offsetNumber = _editor.Document.TextLength;
+
+            Language_Translate();
 
             rbLineJump.Content += $" (1-{_lineNumber})";
             rbOffsetJump.Content += $" (0-{_offsetNumber})";
 
             JumpNumber.Focus();
             JumpNumber.SelectAll();
-
-            Language_Translate();
         }
         #endregion
 
