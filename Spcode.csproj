@@ -170,7 +170,6 @@
     <Compile Include="UI\Components\DASMElement\DASMElementHighlighter.cs" />
     <Compile Include="UI\Components\EditorElement\EditorElementGoToDefinition.cs" />
     <Compile Include="UI\Components\EditorElement\EditorElementHighlighter.cs" />
-    <Compile Include="UI\Components\EditorElement\EditorElementJumpToLine.cs" />
     <Compile Include="UI\Components\EditorElement\Foldings\EditorFoldingStrategy.cs" />
     <Compile Include="UI\Components\EditorElement\Indentation\EditorIndentation.cs" />
     <Compile Include="UI\Components\EditorElement\EditorElementIntellisenseController.cs" />
@@ -183,7 +182,6 @@
     <Compile Include="UI\MainWindow\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\MainWindow\MainWindowFindReplaceHandler.cs" />
     <Compile Include="UI\MainWindow\MainWindowInputHandler.cs" />
     <Compile Include="UI\MainWindow\MainWindowMenuHandler.cs" />
     <Compile Include="UI\MainWindow\MainWindowConfigHandler.cs" />

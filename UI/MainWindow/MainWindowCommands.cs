@@ -59,7 +59,10 @@ namespace SPCode.UI
 
         private void Command_NewFromTemplate()
         {
-            var nfWindow = new NewFileWindow { Owner = this, ShowInTaskbar = false };
+            var nfWindow = new NewFileWindow
+            { 
+                Owner = this, ShowInTaskbar = false 
+            };
             nfWindow.ShowDialog();
         }
 
@@ -70,8 +73,7 @@ namespace SPCode.UI
                 AddExtension = true,
                 CheckFileExists = true,
                 CheckPathExists = true,
-                Filter =
-                    @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|Sourcemod Plugins (*.smx)|*.smx|All Files (*.*)|*.*",
+                Filter = Constants.FileOpenFilters,
                 Multiselect = true,
                 Title = Program.Translations.GetLanguage("OpenNewFile")
             };
@@ -117,7 +119,7 @@ namespace SPCode.UI
                 var sfd = new SaveFileDialog
                 {
                     AddExtension = true,
-                    Filter = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|All Files (*.*)|*.*",
+                    Filter = Constants.FileSaveFilters,
                     OverwritePrompt = true,
                     Title = Program.Translations.GetLanguage("SaveFileAs"),
                     FileName = ee.Parent.Title.Trim('*')
@@ -134,15 +136,20 @@ namespace SPCode.UI
 
         private void Command_GoToLine()
         {
-            var goToLineWindow = new GoToLineWindow(GetCurrentEditorElement()) { Owner = this, ShowInTaskbar = false };
-            goToLineWindow.ShowDialog();
-            GetCurrentEditorElement();
+            var goToLineWindow = new GoToLineWindow(GetCurrentEditorElement())
+            { 
+                Owner = this, ShowInTaskbar = false 
+            };
+            goToLineWindow.Show();
         }
 
         private void Command_FindReplace()
         {
-            var findWindow = new FindReplaceWindow();
-            findWindow.ShowDialog();
+            var findWindow = new FindReplaceWindow(GetCurrentEditorElement(), GetAllEditorElements(), DockingPane)
+            { 
+                Owner = this, ShowInTaskbar = false 
+            };
+            findWindow.Show();
         }
 
         private void Command_SaveAll()
@@ -529,7 +536,10 @@ namespace SPCode.UI
 
         private void Command_OpenSPDef()
         {
-            var spDefinitionWindow = new SPDefinitionWindow { Owner = this, ShowInTaskbar = false };
+            var spDefinitionWindow = new SPDefinitionWindow
+            { 
+                Owner = this, ShowInTaskbar = false 
+            };
             spDefinitionWindow.ShowDialog();
         }
     }

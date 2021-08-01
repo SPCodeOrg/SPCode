@@ -15,7 +15,6 @@ namespace SPCode.UI
             {
                 compileButtonDict = new ObservableCollection<string>() { Program.Translations.GetLanguage("CompileAll"), Program.Translations.GetLanguage("CompileCurr") };
                 actionButtonDict = new ObservableCollection<string>() { Program.Translations.GetLanguage("Copy"), Program.Translations.GetLanguage("FTPUp"), Program.Translations.GetLanguage("StartServer") };
-                findReplaceButtonDict = new ObservableCollection<string>() { Program.Translations.GetLanguage("Replace"), Program.Translations.GetLanguage("ReplaceAll") };
                 ((MenuItem)ConfigMenu.Items[ConfigMenu.Items.Count - 1]).Header = Program.Translations.GetLanguage("EditConfig");
                 var ee = GetAllEditorElements();
                 if (ee != null)

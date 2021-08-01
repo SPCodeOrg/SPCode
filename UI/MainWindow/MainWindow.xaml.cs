@@ -27,8 +27,6 @@ namespace SPCode.UI
         private readonly Storyboard DisableServerAnim;
         public readonly List<EditorElement> EditorsReferences = new();
         private readonly Storyboard EnableServerAnim;
-        private readonly Storyboard FadeFindReplaceGridIn;
-        private readonly Storyboard FadeFindReplaceGridOut;
 
         private readonly bool FullyInitialized;
 
@@ -40,8 +38,6 @@ namespace SPCode.UI
         };
 
         private ObservableCollection<string> compileButtonDict = new() { Program.Translations.GetLanguage("CompileAll"), Program.Translations.GetLanguage("CompileCurr") };
-
-        private ObservableCollection<string> findReplaceButtonDict = new() { Program.Translations.GetLanguage("Replace"), Program.Translations.GetLanguage("ReplaceAll") };
 
         public MainWindow()
         {
@@ -68,8 +64,7 @@ namespace SPCode.UI
             CompileButton.SelectedIndex = 0;
             CActionButton.ItemsSource = actionButtonDict;
             CActionButton.SelectedIndex = 0;
-            //ReplaceButton.ItemsSource = findReplaceButtonDict;
-            //ReplaceButton.SelectedIndex = 0;
+            
             if (Program.OptionsObject.UI_ShowToolBar)
             {
                 Win_ToolBar.Height = double.NaN;
@@ -80,8 +75,6 @@ namespace SPCode.UI
 
             MetroDialogOptions.AnimateHide = MetroDialogOptions.AnimateShow = false;
             BlendOverEffect = (Storyboard)Resources["BlendOverEffect"];
-            FadeFindReplaceGridIn = (Storyboard)Resources["FadeFindReplaceGridIn"];
-            FadeFindReplaceGridOut = (Storyboard)Resources["FadeFindReplaceGridOut"];
             EnableServerAnim = (Storyboard)Resources["EnableServerAnim"];
             DisableServerAnim = (Storyboard)Resources["DisableServerAnim"];
             ChangeObjectBrowserToDirectory(Program.OptionsObject.Program_ObjectBrowserDirectory);
