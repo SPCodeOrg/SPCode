@@ -404,9 +404,18 @@ namespace SPCode.UI.Windows
 
         private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape)
+            switch (e.Key)
             {
-                Close();
+                case Key.Escape:
+                    {
+                        Close();
+                        break;
+                    }
+                case Key.F3:
+                    {
+                        Search();
+                        break;
+                    }
             }
         }
         private void MetroWindow_Closed(object sender, EventArgs e)

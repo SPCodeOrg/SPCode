@@ -136,12 +136,6 @@ namespace SPCode.UI
             {
                 switch (e.Key)
                 {
-                    case Key.F3:
-                        {
-                            //Search();
-                            e.Handled = true;
-                            break;
-                        }
                     case Key.F5:
                         {
                             Compile_SPScripts();
