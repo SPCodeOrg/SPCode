@@ -45,7 +45,6 @@ namespace SPCode.UI.Components
         private FileSystemWatcher fileWatcher;
         public FoldingManager foldingManager;
         private bool isBlock;
-        private bool JumpGridIsOpen;
         private double LineHeight;
         public new LayoutDocument Parent;
         private bool SelectionIsHighlited;
@@ -766,8 +765,6 @@ namespace SPCode.UI.Components
             }
 
             Program.MainWindow.EditorsReferences.Remove(this);
-            // var childs = Program.MainWindow.DockingPaneGroup.Children;
-            //  foreach (var c in childs) (c as LayoutDocumentPane)?.Children.Remove(Parent);
 
             Parent = null; //to prevent a ring depency which disables the GC from work
             Program.MainWindow.UpdateWindowTitle();
@@ -934,9 +931,6 @@ namespace SPCode.UI.Components
                 StatusLine_FontSize.Text =
                     editor.FontSize.ToString("n0") + $" {Program.Translations.GetLanguage("PtAbb")}";
             }
-            //rbLineJump.Content = Program.Translations.GetLanguage("GoToLine");
-            //rbOffsetJump.Content = Program.Translations.GetLanguage("GoToOffset");
-            //btJump.Content = Program.Translations.GetLanguage("Go");
         }
         #endregion
     }

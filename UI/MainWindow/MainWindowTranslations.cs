@@ -78,18 +78,6 @@ namespace SPCode.UI
             MenuC_Type.Header = Program.Translations.GetLanguage("TypeStr");
             MenuC_Details.Header = Program.Translations.GetLanguage("Details");
 
-            //NSearch_RButton.Content = Program.Translations.GetLanguage("NormalSearch");
-            //WSearch_RButton.Content = Program.Translations.GetLanguage("MatchWholeWords");
-            //ASearch_RButton.Content = $"{Program.Translations.GetLanguage("AdvancSearch")} (\\r, \\n, \\t, ...)";
-            //RSearch_RButton.Content = Program.Translations.GetLanguage("RegexSearch");
-            //MenuFR_CurrDoc.Content = Program.Translations.GetLanguage("CurrDoc");
-            //MenuFR_AllDoc.Content = Program.Translations.GetLanguage("AllDoc");
-
-            //Find_Button.Content = $"{Program.Translations.GetLanguage("Find")} (F3)";
-            //Count_Button.Content = Program.Translations.GetLanguage("Count");
-            //CCBox.Content = Program.Translations.GetLanguage("CaseSen");
-            //MLRBox.Content = Program.Translations.GetLanguage("MultilineRegex");
-
             OBItemText_File.Text = Program.Translations.GetLanguage("OBTextFile");
             OBItemText_Config.Text = Program.Translations.GetLanguage("OBTextConfig");
         }

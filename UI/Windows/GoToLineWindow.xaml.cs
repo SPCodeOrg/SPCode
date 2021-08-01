@@ -34,6 +34,8 @@ namespace SPCode.UI.Windows
 
             JumpNumber.Focus();
             JumpNumber.SelectAll();
+
+            Language_Translate();
         }
         #endregion
 
@@ -144,6 +146,13 @@ namespace SPCode.UI.Windows
                 btJump.IsEnabled = true;
                 lblError.Content = string.Empty;
             }
+        }
+
+        public void Language_Translate()
+        {
+            rbLineJump.Content = Program.Translations.GetLanguage("GoToLine");
+            rbOffsetJump.Content = Program.Translations.GetLanguage("GoToOffset");
+            btJump.Content = Program.Translations.GetLanguage("Go");
         }
         #endregion
     }
