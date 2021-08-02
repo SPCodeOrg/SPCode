@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using SPCode.UI.Windows;
 
 namespace SPCode.UI
 {

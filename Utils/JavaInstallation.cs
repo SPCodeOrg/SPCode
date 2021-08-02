@@ -3,11 +3,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using ByteSizeLib;
 using MahApps.Metro.Controls.Dialogs;
-using Microsoft.Win32;
 using SPCode.UI;
 
 namespace SPCode.Utils

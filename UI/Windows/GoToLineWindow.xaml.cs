@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using ICSharpCode.AvalonEdit;
 using MahApps.Metro;
-using SPCode.UI.Components;
 
 namespace SPCode.UI.Windows
 {

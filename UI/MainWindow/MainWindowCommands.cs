@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -10,7 +8,6 @@ using SPCode.UI.Components;
 using SPCode.UI.Windows;
 using SPCode.Utils;
 using SPCode.Utils.SPSyntaxTidy;
-using static SPCode.Utils.JavaInstallation;
 
 namespace SPCode.UI
 {
@@ -149,8 +146,7 @@ namespace SPCode.UI
             {
                 foreach (Window win in Application.Current.Windows)
                 {
-                    var type = win.GetType();
-                    if (type.ToString() == "SPCode.UI.Windows.FindReplaceWindow")
+                    if (win is FindReplaceWindow)
                     {
                         win.Activate();
                         (win as FindReplaceWindow).FindBox.Focus();
@@ -355,7 +351,7 @@ namespace SPCode.UI
             }
         }
 
-        private async void Command_Decompile(MainWindow win)
+        private async void Command_Decompile()
         {
             var decomp = new DecompileUtil();
             await decomp.DecompilePlugin();

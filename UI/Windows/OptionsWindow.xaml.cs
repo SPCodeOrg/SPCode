@@ -5,15 +5,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using DiscordRPC;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace SPCode.UI.Windows
 {
-    /// <summary>
-    /// Interaction logic for AboutWindow.xaml
-    /// </summary>
     public partial class OptionsWindow
     {
         private readonly string[] AvailableAccents =
@@ -29,6 +27,7 @@ namespace SPCode.UI.Windows
         {
             InitializeComponent();
             Language_Translate();
+
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
             {
                 ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
@@ -36,9 +35,16 @@ namespace SPCode.UI.Windows
             }
 
             LoadSettings();
+            LoadSH();
+            LoadHotkeys();
+
             AllowChanging = true;
+
+            SaveHotkeyTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            SaveHotkeyTimer.Tick += OnTimerTick;
         }
 
+        #region Events
         private void DefaultButton_Click(object sender, RoutedEventArgs e)
         {
             Program.OptionsObject.NormalizeSHColors();
@@ -498,7 +504,9 @@ namespace SPCode.UI.Windows
                 }
             }
         }
+        #endregion
 
+        #region Methods
         private void LoadSettings()
         {
             foreach (var accent in AvailableAccents)
@@ -584,7 +592,6 @@ namespace SPCode.UI.Windows
             IndentationSize.Value = Program.OptionsObject.Editor_IndentationSize;
             HardwareSalts.IsChecked = Program.OptionsObject.Program_UseHardwareSalts;
             DiscordPresence.IsChecked = Program.OptionsObject.Program_DiscordPresence;
-            LoadSH();
         }
 
         private void ToggleRestartText(bool FullEffect = false)
@@ -639,6 +646,7 @@ namespace SPCode.UI.Windows
             AutoSaveBlock.Text = Program.Translations.GetLanguage("AutoSaveMin");
             DefaultButton.Content = Program.Translations.GetLanguage("DefaultValues");
         }
+        #endregion
     }
 
     public class ComboboxItem

@@ -71,6 +71,11 @@ namespace SPCode
                     _IsLocalInstallation = Paths.IsLocalInstallation();
                     UpdateStatus = new UpdateInfo();
                     OptionsObject = OptionsControlIOObject.Load(out var ProgramIsNew);
+                    
+                    if (!File.Exists("Hotkeys.xml"))
+                    {
+                        HotkeyControl.CreateDefaultHotkeys();
+                    }
 
                     if (OptionsObject.Program_DiscordPresence)
                     {

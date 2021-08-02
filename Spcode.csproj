@@ -142,6 +142,7 @@
   <ItemGroup>
     <Compile Include="App\AssemblyInfo.cs" />
     <Compile Include="Interop\ConfigControl.cs" />
+    <Compile Include="Interop\HotkeyControl.cs" />
     <Compile Include="Interop\PipeInteropClient.cs" />
     <Compile Include="Interop\PipeInteropServer.cs" />
     <Compile Include="Interop\OptionsControl.cs" />
@@ -173,8 +174,8 @@
     <Compile Include="UI\Components\EditorElement\Foldings\EditorFoldingStrategy.cs" />
     <Compile Include="UI\Components\EditorElement\Indentation\EditorIndentation.cs" />
     <Compile Include="UI\Components\EditorElement\EditorElementIntellisenseController.cs" />
-    <Compile Include="UI\Components\HotkeyControl\HotkeyControl.xaml.cs">
-      <DependentUpon>HotkeyControl.xaml</DependentUpon>
+    <Compile Include="UI\Components\HotkeyControl\HotkeyEditorControl.xaml.cs">
+      <DependentUpon>HotkeyEditorControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Interop\LanguageChooserWindow.xaml.cs">
       <DependentUpon>LanguageChooserWindow.xaml</DependentUpon>
@@ -206,7 +207,8 @@
     <Compile Include="UI\Windows\OptionsWindow.xaml.cs">
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Windows\OptionsWindowHighlighting.cs" />
+    <Compile Include="UI\Windows\OptionsWindow\OptionsWindowHotkeys.cs" />
+    <Compile Include="UI\Windows\OptionsWindow\OptionsWindowHighlighting.cs" />
     <Compile Include="UI\Windows\SPDefinitionWindow.xaml.cs">
       <DependentUpon>SPDefinitionWindow.xaml</DependentUpon>
     </Compile>
@@ -241,7 +243,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\Components\HotkeyControl\HotkeyControl.xaml">
+    <Page Include="UI\Components\HotkeyControl\HotkeyEditorControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -133,7 +133,7 @@
       </controls:MetroTabItem>
       <controls:MetroTabItem Name="HotkeysHeader" Header=" Hotkeys ">
         <ScrollViewer>
-          <Grid>
+          <Grid Name="HotkeysGrid">
             <Grid.ColumnDefinitions>
               <ColumnDefinition/>
               <ColumnDefinition/>
@@ -142,48 +142,70 @@
             <TextBlock Name="TxtHotkey" Text="HotKey" HorizontalAlignment="Left" Margin="86,9,0,0" VerticalAlignment="Top" Width="141" FontSize="20" Grid.Column="1" TextAlignment="Center"/>
             <Separator Margin="30,21,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
             <TextBlock Name="TxtNew" HorizontalAlignment="Left" Margin="161,54,0,0" TextWrapping="Wrap" Text="New" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkNew" Grid.Column="1" HorizontalAlignment="Left" Margin="97,48,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,61,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtNewTemplate" HorizontalAlignment="Left" Margin="161,94,0,0" TextWrapping="Wrap" Text="New from Template" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkNewTemplate" Grid.Column="1" HorizontalAlignment="Left" Margin="97,88,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,101,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtOpen" HorizontalAlignment="Left" Margin="161,134,0,0" TextWrapping="Wrap" Text="Open" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkOpen" Grid.Column="1" HorizontalAlignment="Left" Margin="97,128,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,141,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtSave" HorizontalAlignment="Left" Margin="161,174,0,0" TextWrapping="Wrap" Text="Save" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkSave" Grid.Column="1" HorizontalAlignment="Left" Margin="97,168,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,181,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtSaveAll" HorizontalAlignment="Left" Margin="161,214,0,0" TextWrapping="Wrap" Text="Save All" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkSaveAll" Grid.Column="1" HorizontalAlignment="Left" Margin="97,208,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,221,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtSaveAs" HorizontalAlignment="Left" Margin="161,254,0,0" TextWrapping="Wrap" Text="Save As" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkSaveAs" Grid.Column="1" HorizontalAlignment="Left" Margin="97,248,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,261,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtClose" HorizontalAlignment="Left" Margin="161,294,0,0" TextWrapping="Wrap" Text="Close" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkClose" Grid.Column="1" HorizontalAlignment="Left" Margin="97,288,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,301,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtCloseAll" HorizontalAlignment="Left" Margin="161,334,0,0" TextWrapping="Wrap" Text="Close All" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkCloseAll" Grid.Column="1" HorizontalAlignment="Left" Margin="97,328,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,341,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtFoldingsExpand" HorizontalAlignment="Left" Margin="161,374,0,0" TextWrapping="Wrap" Text="Expand Foldings" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkFoldingsExpand" Grid.Column="1" HorizontalAlignment="Left" Margin="97,368,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,381,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtFoldingsCollapse" HorizontalAlignment="Left" Margin="161,414,0,0" TextWrapping="Wrap" Text="Collapse Foldings" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkFoldingsCollapse" Grid.Column="1" HorizontalAlignment="Left" Margin="97,408,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,421,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtReformatCurrent" HorizontalAlignment="Left" Margin="161,454,0,0" TextWrapping="Wrap" Text="Reformat Current" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkReformatCurrent" Grid.Column="1" HorizontalAlignment="Left" Margin="97,448,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,461,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtReformatAll" HorizontalAlignment="Left" Margin="161,494,0,0" TextWrapping="Wrap" Text="Reformat All" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkReformatAll" Grid.Column="1" HorizontalAlignment="Left" Margin="97,488,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,501,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtGoToLine" HorizontalAlignment="Left" Margin="161,534,0,0" TextWrapping="Wrap" Text="Go To Line" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkGoToLine" Grid.Column="1" HorizontalAlignment="Left" Margin="97,528,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,541,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtCommentLine" HorizontalAlignment="Left" Margin="161,574,0,0" TextWrapping="Wrap" Text="Comment Line" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkCommentLine" Grid.Column="1" HorizontalAlignment="Left" Margin="97,568,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,581,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtSearchReplace" HorizontalAlignment="Left" Margin="161,614,0,0" TextWrapping="Wrap" Text="Search" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkSearchReplace" Grid.Column="1" HorizontalAlignment="Left" Margin="97,608,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,621,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtSearchDefinition" HorizontalAlignment="Left" Margin="161,654,0,0" TextWrapping="Wrap" Text="Search Definition" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkSearchDefinition" Grid.Column="1" HorizontalAlignment="Left" Margin="97,648,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,661,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtCompileCurrent" HorizontalAlignment="Left" Margin="161,734,0,0" TextWrapping="Wrap" Text="Compile Current" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkCompileCurrent" Grid.Column="1" HorizontalAlignment="Left" Margin="97,688,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,701,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtCompileAll" HorizontalAlignment="Left" Margin="161,694,0,0" TextWrapping="Wrap" Text="Compile All" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkCompileAll" Grid.Column="1" HorizontalAlignment="Left" Margin="97,728,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,741,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtCopyPlugins" HorizontalAlignment="Left" Margin="161,774,0,0" TextWrapping="Wrap" Text="Copy Plugins" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkCopyPlugins" Grid.Column="1" HorizontalAlignment="Left" Margin="97,768,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,781,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtUploadFTP" HorizontalAlignment="Left" Margin="161,814,0,0" TextWrapping="Wrap" Text="Upload Plugins FTP" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkUploadFTP" Grid.Column="1" HorizontalAlignment="Left" Margin="97,808,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,821,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtStartServer" HorizontalAlignment="Left" Margin="161,854,0,0" TextWrapping="Wrap" Text="Start Server" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkStartServer" Grid.Column="1" HorizontalAlignment="Left" Margin="97,848,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <Separator Margin="30,861,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2" Background="#408B8B8B"/>
             <TextBlock Name="TxtSendRCON" HorizontalAlignment="Left" Margin="161,894,0,0" TextWrapping="Wrap" Text="Send RCON Commands" VerticalAlignment="Top"/>
+            <components:HotkeyEditorControl x:Name="HkSendRCON" Grid.Column="1" HorizontalAlignment="Left" Margin="97,888,0,0" VerticalAlignment="Top" Height="28" Width="124" PreviewKeyDown="Hotkey_PreviewKeyDown"/>
             <TextBlock HorizontalAlignment="Left" Margin="161,914,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
           </Grid>
         </ScrollViewer>

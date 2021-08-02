@@ -219,7 +219,7 @@ namespace SPCode.UI
 
         private void Menu_DecompileLysis(object sender, RoutedEventArgs e)
         {
-            Command_Decompile(this);
+            Command_Decompile();
         }
 
         private void ReportBug_Click(object sender, RoutedEventArgs e)
