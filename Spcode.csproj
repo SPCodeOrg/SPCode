@@ -173,6 +173,9 @@
     <Compile Include="UI\Components\EditorElement\Foldings\EditorFoldingStrategy.cs" />
     <Compile Include="UI\Components\EditorElement\Indentation\EditorIndentation.cs" />
     <Compile Include="UI\Components\EditorElement\EditorElementIntellisenseController.cs" />
+    <Compile Include="UI\Components\HotkeyControl\HotkeyControl.xaml.cs">
+      <DependentUpon>HotkeyControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Interop\LanguageChooserWindow.xaml.cs">
       <DependentUpon>LanguageChooserWindow.xaml</DependentUpon>
     </Compile>
@@ -213,6 +216,7 @@
     <Compile Include="Utils\BracketHighlightHelpers.cs" />
     <Compile Include="Utils\Constants.cs" />
     <Compile Include="Utils\DecompileUtil.cs" />
+    <Compile Include="Utils\Hotkey.cs" />
     <Compile Include="Utils\JavaInstallation.cs" />
     <Compile Include="Utils\Paths.cs" />
     <Compile Include="Utils\FTP.cs" />
@@ -236,6 +240,10 @@
     <Page Include="UI\Components\EditorElement\EditorElement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Components\HotkeyControl\HotkeyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Interop\LanguageChooserWindow.xaml">
       <SubType>Designer</SubType>

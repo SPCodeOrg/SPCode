@@ -364,7 +364,7 @@
         <openincrec>Ouvrire les includes récursivement</openincrec>
         <autoupdate>Rechercher automatiquement les mises à jour</autoupdate>
         <showtoolbar>Afficher la toolbar</showtoolbar>
-        <dynamicisac>Autocompletition/Intellisense dynamique</dynamicisac>
+        <dynamicisac>Autocomplete/Intellisense dynamique</dynamicisac>
         <darktheme>Theme sombre</darktheme>
         <themecolor>Couleur de thème</themecolor>
         <languagestr>Langue</languagestr>
