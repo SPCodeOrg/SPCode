@@ -7,6 +7,8 @@ using SPCode.Utils;
 using System.Windows.Threading;
 using System.Windows.Input;
 using System.Linq;
+using System.Windows;
+using System.Windows.Media;
 
 namespace SPCode.UI.Windows
 {
@@ -14,10 +16,12 @@ namespace SPCode.UI.Windows
     {
         private readonly DispatcherTimer SaveHotkeyTimer;
         private HotkeyEditorControl _ctrl;
+        private Hotkey _currentControlHotkey;
 
         private void Hotkey_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             _ctrl = sender as HotkeyEditorControl;
+            _currentControlHotkey = _ctrl.Hotkey;
 
             SaveHotkeyTimer.Stop();
             SaveHotkeyTimer.Start();
@@ -64,6 +68,27 @@ namespace SPCode.UI.Windows
             if (!File.Exists(Constants.HotkeysFile))
             {
                 HotkeyControl.CreateDefaultHotkeys();
+            }
+
+
+            // Check if the received hotkey is not already assigned
+            foreach (var hkInfo in Program.HotkeysList)
+            {
+                if (hkInfo.Hotkey.ToString() == _ctrl.Hotkey.ToString() && hkInfo.Command != _ctrl.Name.Substring(2))
+                {
+                    _ctrl.Hotkey = _currentControlHotkey;
+
+                    LblDisallowed.Visibility = Visibility.Visible;
+                    LblDisallowed.Margin = new Thickness(_ctrl.Margin.Left + 140.0, _ctrl.Margin.Top, _ctrl.Margin.Right, _ctrl.Margin.Bottom);
+                    LblDisallowed.Content = "In use!";
+                    LblDisallowed.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                    LblDisallowed.FontWeight = FontWeights.Bold;
+                    return;
+                }
+                else
+                {
+                    LblDisallowed.Visibility = Visibility.Collapsed;
+                }
             }
 
             // Modify the XML document to update hotkey
