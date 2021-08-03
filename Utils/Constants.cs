@@ -10,5 +10,6 @@
         public const string JavaDownloadFile = @"%userprofile%\Downloads\adoptopenjdk-java-15-spcode.msi";
         public const string FileOpenFilters = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|Sourcemod Plugins (*.smx)|*.smx|All Files (*.*)|*.*";
         public const string FileSaveFilters = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|All Files (*.*)|*.*";
+        public const string HotkeysFile = "Hotkeys.xml";
     }
 }

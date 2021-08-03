@@ -1,186 +1,132 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 using System.Windows.Input;
+using System.Xml;
+using SPCode.Utils;
 
 namespace SPCode.UI
 {
     public partial class MainWindow
     {
         //some key bindings are handled in EditorElement.xaml.cs because the editor will fetch some keys before they can be handled here.
+
         private void MainWindowEvent_KeyDown(object sender, KeyEventArgs e)
         {
+            e.Handled = true;
+
             if (!e.IsDown)
             {
                 return;
             }
 
-            if (e.SystemKey == Key.F10)
+            var key = e.Key;
+            var modifiers = Keyboard.Modifiers;
+
+            if (key == Key.System)
             {
-                Server_Query();
-                e.Handled = true;
+                key = e.SystemKey;
+            }
+
+            if (key == Key.LeftCtrl ||
+                key == Key.RightCtrl ||
+                key == Key.LeftAlt ||
+                key == Key.RightAlt ||
+                key == Key.LeftShift ||
+                key == Key.RightShift ||
+                key == Key.LWin ||
+                key == Key.RWin ||
+                key == Key.Clear ||
+                key == Key.OemClear ||
+                key == Key.Apps)
+            {
                 return;
             }
 
-            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl))
-            {
-                if (e.KeyboardDevice.IsKeyDown(Key.LeftAlt))
-                {
-                    switch (e.Key)
-                    {
-                        case Key.S:
-                            {
-                                Command_SaveAs();
-                                e.Handled = true;
-                                break;
-                            }
-                    }
-                }
-                else if (e.KeyboardDevice.IsKeyDown(Key.LeftShift))
-                {
-                    switch (e.Key)
-                    {
-                        case Key.N:
-                            {
-                                Command_NewFromTemplate();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.S:
-                            {
-                                Command_SaveAll();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.W:
-                            {
-                                Command_CloseAll();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.P:
-                            {
-                                Command_FlushFoldingState(true);
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.F:
-                            {
-                                Command_OpenSPDef();
-                                e.Handled = true;
-                                break;
-                            }
-                    }
-                }
-                else if (!e.KeyboardDevice.IsKeyDown(Key.RightAlt))
-                {
-                    switch (e.Key)
-                    {
-                        case Key.N:
-                            {
-                                Command_New();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.O:
-                            {
-                                Command_Open();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.S:
-                            {
-                                Command_Save();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.G:
-                            {
-                                Command_GoToLine();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.F:
-                            {
-                                Command_FindReplace();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.W:
-                            {
-                                Command_Close();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.R:
-                            {
-                                Command_TidyCode(false);
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.P:
-                            {
-                                Command_FlushFoldingState(false);
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.D7: //i hate key mapping...
-                        case Key.OemQuestion:
-                            {
-                                Command_ToggleCommentLine();
-                                break;
-                            }
-                    }
-                }
-            }
-            else
-            {
-                switch (e.Key)
-                {
-                    case Key.F5:
-                        {
-                            Compile_SPScripts();
-                            e.Handled = true;
-                            break;
-                        }
-                    case Key.F6:
-                        {
-                            Compile_SPScripts(false);
-                            e.Handled = true;
-                            break;
-                        }
-                    case Key.F7:
-                        {
-                            Copy_Plugins();
-                            e.Handled = true;
-                            break;
-                        } //copy
-                    case Key.F8:
-                        {
-                            FTPUpload_Plugins();
-                            e.Handled = true;
-                            break;
-                        } //ftp upload
-                    case Key.F9:
-                        {
-                            Server_Start();
-                            e.Handled = true;
-                            break;
-                        }
-                    case Key.Escape:
-                        {
-                            if (InCompiling)
-                            {
-                                InCompiling = false;
-                                e.Handled = true;
-                            }
-                            else if (CompileOutputRow.Height.Value > 8.0)
-                            {
-                                CompileOutputRow.Height = new GridLength(8.0);
-                                e.Handled = true;
-                            }
+            ProcessHotkey(new Hotkey(key, modifiers));
 
-                            break;
-                        }
-                }
+        }
+
+        private void ProcessHotkey(Hotkey hk)
+        {
+            var hotkeyInfo = Program.HotkeysList.FirstOrDefault(x => x.Hotkey.ToString() == hk.ToString());
+            if (hotkeyInfo != null)
+            {
+                ExecuteCommand(hotkeyInfo.Command);
+            }
+        }
+
+        private void ExecuteCommand(string command)
+        {
+            switch (command)
+            {
+                case "New": 
+                    Command_New();
+                    break;
+                case "NewTemplate":
+                    Command_NewFromTemplate();
+                    break;
+                case "Open":
+                    Command_Open();
+                    break;
+                case "Save":
+                    Command_Save();
+                    break;
+                case "SaveAll":
+                    Command_SaveAll();
+                    break;
+                case "SaveAs":
+                    Command_SaveAs();
+                    break;
+                case "Close":
+                    Command_Close();
+                    break;
+                case "CloseAll":
+                    Command_CloseAll();
+                    break;
+                case "FoldingsExpand":
+                    Command_FlushFoldingState(true);
+                    break;
+                case "FoldingsCollapse":
+                    Command_FlushFoldingState(false);
+                    break;
+                case "ReformatCurrent":
+                    Command_TidyCode(false);
+                    break;
+                case "ReformatAll":
+                    Command_TidyCode(true);
+                    break;
+                case "GoToLine":
+                    Command_GoToLine();
+                    break;
+                case "CommentLine":
+                    Command_ToggleCommentLine();
+                    break;
+                case "SearchReplace":
+                    Command_FindReplace();
+                    break;
+                case "SearchDefinition":
+                    Command_OpenSPDef();
+                    break;
+                case "CompileCurrent":
+                    Compile_SPScripts(false);
+                    break;
+                case "CompileAll":
+                    Compile_SPScripts();
+                    break;
+                case "CopyPlugins":
+                    Copy_Plugins();
+                    break;
+                case "UploadFTP":
+                    FTPUpload_Plugins();
+                    break;
+                case "StartServer":
+                    Server_Start();
+                    break;
+                case "SendRCON":
+                    Server_Query();
+                    break;
             }
         }
     }

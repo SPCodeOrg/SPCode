@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -24,6 +25,7 @@ namespace SPCode
         public static MainWindow MainWindow;
         public static OptionsControl OptionsObject;
         public static TranslationProvider Translations;
+        public static List<HotkeyInfo> HotkeysList;
         public static Config[] Configs;
         public static int SelectedConfig;
 
@@ -71,11 +73,16 @@ namespace SPCode
                     _IsLocalInstallation = Paths.IsLocalInstallation();
                     UpdateStatus = new UpdateInfo();
                     OptionsObject = OptionsControlIOObject.Load(out var ProgramIsNew);
-                    
-                    if (!File.Exists("Hotkeys.xml"))
+
+                    if (!File.Exists(Constants.HotkeysFile))
                     {
                         HotkeyControl.CreateDefaultHotkeys();
                     }
+                    else
+                    {
+                        HotkeyControl.BufferHotkeys();
+                    }
+
 
                     if (OptionsObject.Program_DiscordPresence)
                     {

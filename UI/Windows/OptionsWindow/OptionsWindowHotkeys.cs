@@ -6,6 +6,7 @@ using System;
 using SPCode.Utils;
 using System.Windows.Threading;
 using System.Windows.Input;
+using System.Linq;
 
 namespace SPCode.UI.Windows
 {
@@ -28,15 +29,15 @@ namespace SPCode.UI.Windows
             SaveHotkey();
         }
 
-        private void LoadHotkeys()
+        private void LoadHotkeysToSettings()
         {
-            if (!File.Exists("Hotkeys.xml"))
+            if (!File.Exists(Constants.HotkeysFile))
             {
                 HotkeyControl.CreateDefaultHotkeys();
             }
 
             var document = new XmlDocument();
-            document.Load("Hotkeys.xml");
+            document.Load(Constants.HotkeysFile);
 
             // Loop through all the command entries in the XML
             foreach (XmlNode entry in document.ChildNodes[0].ChildNodes)
@@ -60,13 +61,14 @@ namespace SPCode.UI.Windows
 
         private void SaveHotkey()
         {
-            if (!File.Exists("Hotkeys.xml"))
+            if (!File.Exists(Constants.HotkeysFile))
             {
                 HotkeyControl.CreateDefaultHotkeys();
             }
 
+            // Modify the XML document to update hotkey
             var document = new XmlDocument();
-            document.Load("Hotkeys.xml");
+            document.Load(Constants.HotkeysFile);
 
             foreach (XmlNode entry in document.ChildNodes[0].ChildNodes)
             {
@@ -76,7 +78,18 @@ namespace SPCode.UI.Windows
                 }
             }
 
-            document.Save("Hotkeys.xml");
+            document.Save(Constants.HotkeysFile);
+
+            // Buffer new hotkey in global HotkeyInfo list
+            foreach (var hkInfo in Program.HotkeysList)
+            {
+                if (hkInfo.Command == _ctrl.Name.Substring(2))
+                {
+                    hkInfo.Hotkey = _ctrl.Hotkey;
+                    return;
+                }
+            }
+
         }
     }
 }

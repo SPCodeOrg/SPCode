@@ -36,11 +36,11 @@ namespace SPCode.UI.Windows
 
             LoadSettings();
             LoadSH();
-            LoadHotkeys();
+            LoadHotkeysToSettings();
 
             AllowChanging = true;
 
-            SaveHotkeyTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+            SaveHotkeyTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
             SaveHotkeyTimer.Tick += OnTimerTick;
         }
 
