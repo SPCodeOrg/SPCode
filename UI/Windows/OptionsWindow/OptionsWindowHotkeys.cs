@@ -81,7 +81,7 @@ namespace SPCode.UI.Windows
                     LblDisallowed.Visibility = Visibility.Visible;
                     LblDisallowed.Margin = new Thickness(_ctrl.Margin.Left + 140.0, _ctrl.Margin.Top, _ctrl.Margin.Right, _ctrl.Margin.Bottom);
                     LblDisallowed.Content = "In use!";
-                    LblDisallowed.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                    LblDisallowed.Foreground = new SolidColorBrush(Colors.Red);
                     LblDisallowed.FontWeight = FontWeights.Bold;
                     return;
                 }
