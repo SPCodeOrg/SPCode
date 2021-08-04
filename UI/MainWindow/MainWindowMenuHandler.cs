@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using SPCode.Interop;
 using SPCode.Interop.Updater;
 using SPCode.UI.Windows;
 using SPCode.Utils;
@@ -273,49 +275,60 @@ namespace SPCode.UI
 
         private void MenuButton_Compile(object sender, RoutedEventArgs e)
         {
-            var selected = CompileButton.SelectedIndex;
-            if (selected == 1)
-            {
-                Compile_SPScripts(false);
-            }
-            else
-            {
-                Compile_SPScripts();
-            }
+            Compile_SPScripts(CompileButton.SelectedIndex != 1);
         }
 
         private void MenuButton_Action(object sender, RoutedEventArgs e)
         {
-            var selected = CActionButton.SelectedIndex;
-            if (selected == 0)
+            switch (CActionButton.SelectedIndex)
             {
-                Copy_Plugins();
-            }
-            else if (selected == 1)
-            {
-                FTPUpload_Plugins();
-            }
-            else if (selected == 2)
-            {
-                Server_Start();
+                case 0: Copy_Plugins(); break;
+                case 1: FTPUpload_Plugins(); break;
+                case 2: Server_Start(); break;
             }
         }
 
-        private void LoadMenuItemHotkeys()
+        private void LoadInputGestureTexts()
         {
+            // These are the 5 first menus (File, Edit, Build, Configuration, Tools)
             foreach (MenuItem control in MenuCommands.Items)
             {
-                if (control.Items.Count > 1)
+                // There are their menu items
+                foreach (var item in control.Items)
                 {
-                    foreach (var item in control.Items)
+                    // Ask for type, to prevent working with 'Separators'
+                    if (item is MenuItem)
                     {
-                        if (item is MenuItem)
+                        var castedItem = item as MenuItem;
+                        foreach (var hkItem in Program.HotkeysList)
                         {
-                            (item as MenuItem).InputGestureText = "hotkey here";
+                            // Assign InputGestureText to all items
+                            if (castedItem.Name == $"MenuI_{hkItem.Command}")
+                            {
+                                castedItem.InputGestureText = hkItem.Hotkey.ToString();
+                            }
+                            // Also assign InputGestureText to the stock restricted commands
+                            else
+                            {
+                                foreach (var hk in HotkeyControl.RestrictedHotkeys)
+                                {
+                                    if (castedItem.Name == $"MenuI_{hk.Key}")
+                                    {
+                                        castedItem.InputGestureText = hk.Value;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
+
+            // Those unreached by the loop
+            MenuI_FoldingsCollapse.InputGestureText = Program.HotkeysList.FirstOrDefault(x => MenuI_FoldingsCollapse.Name == $"MenuI_{x.Command}").Hotkey.ToString();
+            MenuI_FoldingsExpand.InputGestureText = Program.HotkeysList.FirstOrDefault(x => MenuI_FoldingsExpand.Name == $"MenuI_{x.Command}").Hotkey.ToString();
+            MenuI_ReformatCurrent.InputGestureText = Program.HotkeysList.FirstOrDefault(x => MenuI_ReformatCurrent.Name == $"MenuI_{x.Command}").Hotkey.ToString();
+            MenuI_ReformatAll.InputGestureText = Program.HotkeysList.FirstOrDefault(x => MenuI_ReformatAll.Name == $"MenuI_{x.Command}").Hotkey.ToString();
+            MenuI_SearchDefinition.InputGestureText = Program.HotkeysList.FirstOrDefault(x => MenuI_SearchDefinition.Name == $"MenuI_{x.Command}").Hotkey.ToString();
         }
     }
 }

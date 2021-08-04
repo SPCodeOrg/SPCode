@@ -27,7 +27,7 @@ namespace SPCode.UI
             }
             MenuI_File.Header = Program.Translations.GetLanguage("FileStr");
             MenuI_New.Header = Program.Translations.GetLanguage("New");
-            MenuI_NewFromTemplate.Header = Program.Translations.GetLanguage("NewFromTemplate");
+            MenuI_NewTemplate.Header = Program.Translations.GetLanguage("NewFromTemplate");
             MenuI_Open.Header = Program.Translations.GetLanguage("Open");
             MenuI_Save.Header = Program.Translations.GetLanguage("Save");
             MenuI_SaveAll.Header = Program.Translations.GetLanguage("SaveAll");
@@ -43,31 +43,31 @@ namespace SPCode.UI
             MenuI_Copy.Header = Program.Translations.GetLanguage("Copy");
             MenuI_Paste.Header = Program.Translations.GetLanguage("Paste");
             MenuI_Folding.Header = Program.Translations.GetLanguage("Folding");
-            MenuI_ExpandAll.Header = Program.Translations.GetLanguage("ExpandAll");
-            MenuI_CollapseAll.Header = Program.Translations.GetLanguage("CollapseAll");
-            MenuI_JumpTo.Header = Program.Translations.GetLanguage("JumpTo");
-            MenuI_ToggleComment.Header = Program.Translations.GetLanguage("TogglComment");
+            MenuI_FoldingsExpand.Header = Program.Translations.GetLanguage("ExpandAll");
+            MenuI_FoldingsCollapse.Header = Program.Translations.GetLanguage("CollapseAll");
+            MenuI_GoToLine.Header = Program.Translations.GetLanguage("JumpTo");
+            MenuI_CommentLine.Header = Program.Translations.GetLanguage("TogglComment");
             MenuI_SelectAll.Header = Program.Translations.GetLanguage("SelectAll");
-            MenuI_FindReplace.Header = Program.Translations.GetLanguage("FindReplace");
+            MenuI_SearchReplace.Header = Program.Translations.GetLanguage("FindReplace");
 
             MenuI_Build.Header = Program.Translations.GetLanguage("Build");
             MenuI_CompileAll.Header = Program.Translations.GetLanguage("CompileAll");
-            MenuI_Compile.Header = Program.Translations.GetLanguage("CompileCurr");
-            MenuI_CopyPlugin.Header = Program.Translations.GetLanguage("CopyPlugin");
-            MenuI_FTPUpload.Header = Program.Translations.GetLanguage("FTPUp");
+            MenuI_CompileCurrent.Header = Program.Translations.GetLanguage("CompileCurr");
+            MenuI_CopyPlugins.Header = Program.Translations.GetLanguage("CopyPlugin");
+            MenuI_UploadFTP.Header = Program.Translations.GetLanguage("FTPUp");
             MenuI_StartServer.Header = Program.Translations.GetLanguage("StartServer");
-            MenuI_SendRCon.Header = Program.Translations.GetLanguage("SendRCon");
+            MenuI_SendRCON.Header = Program.Translations.GetLanguage("SendRCon");
 
             ConfigMenu.Header = Program.Translations.GetLanguage("Config");
 
             MenuI_Tools.Header = Program.Translations.GetLanguage("Tools");
             OptionMenuEntry.Header = Program.Translations.GetLanguage("Options");
-            MenuI_ParsedIncDir.Header = Program.Translations.GetLanguage("ParsedIncDir");
+            MenuI_SearchDefinition.Header = Program.Translations.GetLanguage("ParsedIncDir");
             MenuI_NewApiWeb.Header = Program.Translations.GetLanguage("NewAPIWeb");
             MenuI_BetaApiWeb.Header = Program.Translations.GetLanguage("BetaAPIWeb");
             MenuI_Reformatter.Header = Program.Translations.GetLanguage("Reformatter");
-            MenuI_ReformattCurr.Header = Program.Translations.GetLanguage("ReformatCurr");
-            MenuI_ReformattAll.Header = Program.Translations.GetLanguage("ReformatAll");
+            MenuI_ReformatCurrent.Header = Program.Translations.GetLanguage("ReformatCurr");
+            MenuI_ReformatAll.Header = Program.Translations.GetLanguage("ReformatAll");
             MenuI_Decompile.Header = $"{Program.Translations.GetLanguage("Decompile")} .smx (Lysis)";
             MenuI_ReportBugGit.Header = Program.Translations.GetLanguage("ReportBugGit");
             UpdateCheckItem.Header = Program.Translations.GetLanguage("CheckUpdates");

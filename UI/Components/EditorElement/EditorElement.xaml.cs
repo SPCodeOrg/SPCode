@@ -549,8 +549,10 @@ namespace SPCode.UI.Components
         private void TextArea_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = ISAC_EvaluateKeyDownEvent(e.Key);
-            if (!e.Handled
-            ) //one could ask why some key-bindings are handled here. Its because spedit sends handled flags for ups&downs and they are therefore not able to processed by the central code.
+            //one could ask why some key-bindings are handled here.
+            //Its because spedit sends handled flags for ups&downs
+            //and they are therefore not able to processed by the central code.
+            if (!e.Handled)
             {
                 if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl))
                 {

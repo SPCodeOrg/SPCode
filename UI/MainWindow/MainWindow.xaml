@@ -56,7 +56,7 @@
         <Menu x:Name="MenuCommands">
           <MenuItem Name="MenuI_File" Header="File" SubmenuOpened="FileMenu_Open">
             <MenuItem Name="MenuI_New" Header="New" Click="Menu_New"/>
-            <MenuItem Name="MenuI_NewFromTemplate" Header="New From Template" Click="Menu_NewFromTemplate"/>
+            <MenuItem Name="MenuI_NewTemplate" Header="New From Template" Click="Menu_NewFromTemplate"/>
             <MenuItem Name="MenuI_Open" Header="Open" Click="Menu_Open"/>
             <Separator />
             <MenuItem Name="MenuI_Save" Header="Save" Click="Menu_Save"/>
@@ -76,25 +76,25 @@
             <MenuItem Name="MenuI_Paste" Header="Paste" Click="Menu_Paste"/>
             <Separator />
             <MenuItem Name="MenuI_Folding" Header="Foldings">
-              <MenuItem Name="MenuI_ExpandAll" Header="Expand All"  Click="Menu_ExpandAll" />
-              <MenuItem Name="MenuI_CollapseAll" Header="Collapse All" Click="Menu_CollapseAll" />
+              <MenuItem Name="MenuI_FoldingsExpand" Header="Expand All"  Click="Menu_ExpandAll" />
+              <MenuItem Name="MenuI_FoldingsCollapse" Header="Collapse All" Click="Menu_CollapseAll" />
             </MenuItem>
-            <MenuItem Name="MenuI_JumpTo" Header="Jump To" Click="Menu_JumpTo"/>
-            <MenuItem Name="MenuI_ToggleComment" Header="Toggle comment (//)" Click="Menu_ToggleCommentLine"/>
+            <MenuItem Name="MenuI_GoToLine" Header="Jump To" Click="Menu_JumpTo"/>
+            <MenuItem Name="MenuI_CommentLine" Header="Toggle comment (//)" Click="Menu_ToggleCommentLine"/>
             <MenuItem Name="MenuI_SelectAll" Header="Select All" Click="Menu_SelectAll"/>
             <Separator />
-            <MenuItem Name="MenuI_FindReplace" Header="Find &amp; Replace" Click="Menu_FindAndReplace"/>
+            <MenuItem Name="MenuI_SearchReplace" Header="Find &amp; Replace" Click="Menu_FindAndReplace"/>
           </MenuItem>
 
           <MenuItem Name="MenuI_Build" Header="Build">
             <MenuItem Name="MenuI_CompileAll" Header="Compile All" Click="Menu_CompileAll"/>
-            <MenuItem Name="MenuI_Compile" Header="Compile Current" Click="Menu_Compile"/>
+            <MenuItem Name="MenuI_CompileCurrent" Header="Compile Current" Click="Menu_Compile"/>
             <Separator/>
-            <MenuItem Name="MenuI_CopyPlugin" Header="Copy Plugins" Click="Menu_CopyPlugin"/>
-            <MenuItem Name="MenuI_FTPUpload" Header="FTP Upload Plugins" Click="Menu_FTPUpload"/>
+            <MenuItem Name="MenuI_CopyPlugins" Header="Copy Plugins" Click="Menu_CopyPlugin"/>
+            <MenuItem Name="MenuI_UploadFTP" Header="FTP Upload Plugins" Click="Menu_FTPUpload"/>
             <Separator/>
             <MenuItem Name="MenuI_StartServer" Header="Start Server" Click="Menu_StartServer"/>
-            <MenuItem Name="MenuI_SendRCon" Header="Send RCon Commands" Click="Menu_SendRCon" />
+            <MenuItem Name="MenuI_SendRCON" Header="Send RCon Commands" Click="Menu_SendRCon" />
           </MenuItem>
 
           <MenuItem Name="ConfigMenu" Header="Configuration">
@@ -104,13 +104,13 @@
             <MenuItem Name="OptionMenuEntry" Header="Options" Click="Menu_OpenOptions" />
             <Separator />
             <MenuItem Header="SourcePawn API">
-              <MenuItem Name="MenuI_ParsedIncDir" Header="Parsed from Include Directory" Click="Menu_OpenSPDef" />
+              <MenuItem Name="MenuI_SearchDefinition" Header="Parsed from Include Directory" Click="Menu_OpenSPDef" />
               <MenuItem Name="MenuI_NewApiWeb" Header="API Reference" Click="Menu_OpenWebsiteFromTag" Tag="https://sm.alliedmods.net/new-api/" />
               <MenuItem Name="MenuI_BetaApiWeb" Header="(BETA) API Reference" Click="Menu_OpenWebsiteFromTag" Tag="https://sourcemod.dev/" />
             </MenuItem>
             <MenuItem Name="MenuI_Reformatter" Header="Syntax Reformatter">
-              <MenuItem Name="MenuI_ReformattCurr" Header="Reformat Current"  Click="Menu_ReFormatCurrent" />
-              <MenuItem Name="MenuI_ReformattAll" Header="Reformat All" Click="Menu_ReFormatAll" />
+              <MenuItem Name="MenuI_ReformatCurrent" Header="Reformat Current"  Click="Menu_ReFormatCurrent" />
+              <MenuItem Name="MenuI_ReformatAll" Header="Reformat All" Click="Menu_ReFormatAll" />
             </MenuItem>
             <MenuItem Name="MenuI_Decompile" Header="Decompile .smx (Lysis)" Click="Menu_DecompileLysis" />
             <Separator />
