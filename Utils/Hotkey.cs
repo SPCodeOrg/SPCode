@@ -23,7 +23,8 @@ namespace SPCode.Utils
                 {
                     Key = parsedKey;
                 }
-                if (Enum.TryParse(key, out ModifierKeys parsedModifiers))
+                var newKey = key == "Ctrl" ? "Control" : key;
+                if (Enum.TryParse(newKey, out ModifierKeys parsedModifiers))
                 {
                     Modifiers |= parsedModifiers;
                 }
@@ -36,7 +37,7 @@ namespace SPCode.Utils
 
             if (Modifiers.HasFlag(ModifierKeys.Control))
             {
-                str.Append("Control+");
+                str.Append("Ctrl+");
             }
 
             if (Modifiers.HasFlag(ModifierKeys.Shift))

@@ -8,22 +8,22 @@ namespace SPCode.Interop
     {
         public static Dictionary<string, string> DefaultHotkeys = new()
         {
-            { "New", "Control+N" },
-            { "NewTemplate", "Control+Shift+N" },
-            { "Open", "Control+O" },
-            { "Save", "Control+S" },
-            { "SaveAll", "Control+Shift+S" },
-            { "SaveAs", "Control+Alt+S" },
-            { "Close", "Control+W" },
-            { "CloseAll", "Control+Shift+W" },
-            { "FoldingsExpand", "Control+P" },
-            { "FoldingsCollapse", "Control+Shift+P" },
-            { "ReformatCurrent", "Control+R" },
-            { "ReformatAll", "Control+Shift+R" },
-            { "GoToLine", "Control+G" },
-            { "CommentLine", "Control+K" },
-            { "SearchReplace", "Control+F" },
-            { "SearchDefinition", "Control+Shift+F" },
+            { "New", "Ctrl+N" },
+            { "NewTemplate", "Ctrl+Shift+N" },
+            { "Open", "Ctrl+O" },
+            { "Save", "Ctrl+S" },
+            { "SaveAll", "Ctrl+Shift+S" },
+            { "SaveAs", "Ctrl+Alt+S" },
+            { "Close", "Ctrl+W" },
+            { "CloseAll", "Ctrl+Shift+W" },
+            { "FoldingsExpand", "Ctrl+P" },
+            { "FoldingsCollapse", "Ctrl+Shift+P" },
+            { "ReformatCurrent", "Ctrl+R" },
+            { "ReformatAll", "Ctrl+Shift+R" },
+            { "GoToLine", "Ctrl+G" },
+            { "CommentLine", "Ctrl+K" },
+            { "SearchReplace", "Ctrl+F" },
+            { "SearchDefinition", "Ctrl+Shift+F" },
             { "CompileCurrent", "F6" },
             { "CompileAll", "F5" },
             { "CopyPlugins", "F7" },
@@ -32,10 +32,14 @@ namespace SPCode.Interop
             { "SendRCON", "F10" },
         };
 
-        public static string[] RestrictedHotkeys = new string[]
+        public static Dictionary<string, string> RestrictedHotkeys = new()
         {
-            "Control+V", "Control+C", "Control+X",
-            "Control+Z", "Control+Y", "Control+A"
+            { "Paste", "Ctrl+V" },
+            { "Copy", "Ctrl+C" },
+            { "Cut", "Ctrl+X" },
+            { "Undo", "Ctrl+Z" },
+            { "Redo", "Ctrl+Y" },
+            { "SelectAll", "Ctrl+A" }
         };
 
         public static void BufferHotkeys()
