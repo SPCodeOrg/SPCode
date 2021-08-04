@@ -12,10 +12,39 @@ namespace SPCode.UI
     {
         //some key bindings are handled in EditorElement.xaml.cs because the editor will fetch some keys before they can be handled here.
 
+        public Dictionary<string, Action> Commands;
+
+        private void LoadCommandsDictionary()
+        {
+            Commands = new()
+            {
+                { "New", Command_New },
+                { "NewTemplate", Command_NewFromTemplate },
+                { "Open", Command_Open },
+                { "Save", Command_Save },
+                { "SaveAll", Command_SaveAll },
+                { "SaveAs", Command_SaveAs },
+                { "Close", Command_Close },
+                { "CloseAll", Command_CloseAll },
+                { "FoldingsExpand", () => Command_FlushFoldingState(true) },
+                { "FoldingsCollapse", () => Command_FlushFoldingState(false) },
+                { "ReformatCurrent", () => Command_TidyCode(false) },
+                { "ReformatAll", () => Command_TidyCode(true) },
+                { "GoToLine", Command_GoToLine },
+                { "CommentLine", Command_ToggleCommentLine },
+                { "SearchReplace", Command_FindReplace },
+                { "SearchDefinition", Command_OpenSPDef },
+                { "CompileCurrent", () => Compile_SPScripts(false) },
+                { "CompileAll", () => Compile_SPScripts() },
+                { "CopyPlugins", () => Copy_Plugins() },
+                { "UploadFTP", FTPUpload_Plugins },
+                { "StartServer", Server_Start },
+                { "SendRCON", Server_Query }
+            };
+        }
+
         private void MainWindowEvent_KeyDown(object sender, KeyEventArgs e)
         {
-            e.Handled = true;
-
             if (!e.IsDown)
             {
                 return;
@@ -45,7 +74,6 @@ namespace SPCode.UI
             }
 
             ProcessHotkey(new Hotkey(key, modifiers));
-
         }
 
         private void ProcessHotkey(Hotkey hk)
@@ -53,81 +81,9 @@ namespace SPCode.UI
             var hotkeyInfo = Program.HotkeysList.FirstOrDefault(x => x.Hotkey.ToString() == hk.ToString());
             if (hotkeyInfo != null)
             {
-                ExecuteCommand(hotkeyInfo.Command);
+                Commands[hotkeyInfo.Command]();
             }
         }
 
-        private void ExecuteCommand(string command)
-        {
-            switch (command)
-            {
-                case "New": 
-                    Command_New();
-                    break;
-                case "NewTemplate":
-                    Command_NewFromTemplate();
-                    break;
-                case "Open":
-                    Command_Open();
-                    break;
-                case "Save":
-                    Command_Save();
-                    break;
-                case "SaveAll":
-                    Command_SaveAll();
-                    break;
-                case "SaveAs":
-                    Command_SaveAs();
-                    break;
-                case "Close":
-                    Command_Close();
-                    break;
-                case "CloseAll":
-                    Command_CloseAll();
-                    break;
-                case "FoldingsExpand":
-                    Command_FlushFoldingState(true);
-                    break;
-                case "FoldingsCollapse":
-                    Command_FlushFoldingState(false);
-                    break;
-                case "ReformatCurrent":
-                    Command_TidyCode(false);
-                    break;
-                case "ReformatAll":
-                    Command_TidyCode(true);
-                    break;
-                case "GoToLine":
-                    Command_GoToLine();
-                    break;
-                case "CommentLine":
-                    Command_ToggleCommentLine();
-                    break;
-                case "SearchReplace":
-                    Command_FindReplace();
-                    break;
-                case "SearchDefinition":
-                    Command_OpenSPDef();
-                    break;
-                case "CompileCurrent":
-                    Compile_SPScripts(false);
-                    break;
-                case "CompileAll":
-                    Compile_SPScripts();
-                    break;
-                case "CopyPlugins":
-                    Copy_Plugins();
-                    break;
-                case "UploadFTP":
-                    FTPUpload_Plugins();
-                    break;
-                case "StartServer":
-                    Server_Start();
-                    break;
-                case "SendRCON":
-                    Server_Query();
-                    break;
-            }
-        }
     }
 }

@@ -19,9 +19,6 @@ using Xceed.Wpf.AvalonDock.Layout;
 
 namespace SPCode.UI
 {
-    /// <summary>
-    ///     Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow
     {
         private readonly Storyboard BlendOverEffect;
@@ -101,7 +98,8 @@ namespace SPCode.UI
             sc.Close(TimeSpan.FromMilliseconds(500.0));
             FullyInitialized = true;
 
-            LoadMenuItemHotkeys();
+            LoadInputGestureTexts();
+            LoadCommandsDictionary();
 
         }
 
