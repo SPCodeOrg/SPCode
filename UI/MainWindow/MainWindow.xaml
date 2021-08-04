@@ -7,272 +7,274 @@
              SaveWindowPosition="True"
              Title="SPCode" GlowBrush="{DynamicResource AccentColorBrush}" MinHeight="100" MinWidth="200" KeyDown="MainWindowEvent_KeyDown" Closing="MetroWindow_Closing"
                       AllowDrop="True" Drop="MetroWindow_Drop" ShowIconOnTitleBar="False" TitleCaps="False">
-    <controls:MetroWindow.Resources>
+  <controls:MetroWindow.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
-                <ResourceDictionary>
-                    <Storyboard x:Key="BlendOverEffect" Duration="00:00:00.5" Storyboard.TargetName="BlendEffectPlane" Storyboard.TargetProperty="Opacity">
-                        <DoubleAnimationUsingKeyFrames>
-                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.00" />
-                            <SplineDoubleKeyFrame Value="0.5" KeyTime="00:00:00.25" />
-                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.50" />
-                        </DoubleAnimationUsingKeyFrames>
-                    </Storyboard>
-                    <Storyboard x:Key="FadeFindReplaceGridIn" Duration="00:00:00.2" Storyboard.TargetName="FindReplaceGrid">
-                        <DoubleAnimation To="1" Duration="00:00:00.2" Storyboard.TargetProperty="Opacity" />
-                    </Storyboard>
-                    <Storyboard x:Key="FadeFindReplaceGridOut" Duration="00:00:00.2" Storyboard.TargetName="FindReplaceGrid">
-                        <DoubleAnimation To="0" Duration="00:00:00.2" Storyboard.TargetProperty="Opacity" />
-                    </Storyboard>
-                    <Storyboard x:Key="EnableServerAnim">
-                        <DoubleAnimation Duration="00:00:00.5" To="5" Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="Height" />
-                        <BooleanAnimationUsingKeyFrames Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="IsIndeterminate">
-                            <BooleanKeyFrameCollection>
-                                <DiscreteBooleanKeyFrame KeyTime="00:00:00.25" Value="True" />
-                            </BooleanKeyFrameCollection>
-                        </BooleanAnimationUsingKeyFrames>
-                    </Storyboard>
-                    <Storyboard x:Key="DisableServerAnim">
-                        <DoubleAnimation Duration="00:00:00.5" To="0" Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="Height" />
-                        <BooleanAnimationUsingKeyFrames Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="IsIndeterminate">
-                            <BooleanKeyFrameCollection>
-                                <DiscreteBooleanKeyFrame KeyTime="00:00:00.25" Value="False" />
-                            </BooleanKeyFrameCollection>
-                        </BooleanAnimationUsingKeyFrames>
-                    </Storyboard>
-                </ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
+          <Storyboard x:Key="BlendOverEffect" Duration="00:00:00.5" Storyboard.TargetName="BlendEffectPlane" Storyboard.TargetProperty="Opacity">
+            <DoubleAnimationUsingKeyFrames>
+              <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.00" />
+              <SplineDoubleKeyFrame Value="0.5" KeyTime="00:00:00.25" />
+              <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.50" />
+            </DoubleAnimationUsingKeyFrames>
+          </Storyboard>
+          <Storyboard x:Key="FadeFindReplaceGridIn" Duration="00:00:00.2" Storyboard.TargetName="FindReplaceGrid">
+            <DoubleAnimation To="1" Duration="00:00:00.2" Storyboard.TargetProperty="Opacity" />
+          </Storyboard>
+          <Storyboard x:Key="FadeFindReplaceGridOut" Duration="00:00:00.2" Storyboard.TargetName="FindReplaceGrid">
+            <DoubleAnimation To="0" Duration="00:00:00.2" Storyboard.TargetProperty="Opacity" />
+          </Storyboard>
+          <Storyboard x:Key="EnableServerAnim">
+            <DoubleAnimation Duration="00:00:00.5" To="5" Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="Height" />
+            <BooleanAnimationUsingKeyFrames Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="IsIndeterminate">
+              <BooleanKeyFrameCollection>
+                <DiscreteBooleanKeyFrame KeyTime="00:00:00.25" Value="True" />
+              </BooleanKeyFrameCollection>
+            </BooleanAnimationUsingKeyFrames>
+          </Storyboard>
+          <Storyboard x:Key="DisableServerAnim">
+            <DoubleAnimation Duration="00:00:00.5" To="0" Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="Height" />
+            <BooleanAnimationUsingKeyFrames Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="IsIndeterminate">
+              <BooleanKeyFrameCollection>
+                <DiscreteBooleanKeyFrame KeyTime="00:00:00.25" Value="False" />
+              </BooleanKeyFrameCollection>
+            </BooleanAnimationUsingKeyFrames>
+          </Storyboard>
         </ResourceDictionary>
-    </controls:MetroWindow.Resources>
-    <controls:MetroWindow.LeftWindowCommands>
-        <controls:WindowCommands>
-            <Menu>
-                <MenuItem Name="MenuI_File" Header="File" SubmenuOpened="FileMenu_Open">
-                    <MenuItem Name="MenuI_New" Header="New" Click="Menu_New" InputGestureText="Ctrl+N" />
-                    <MenuItem Name="MenuI_NewFromTemplate" Header="New From Template" Click="Menu_NewFromTemplate" InputGestureText="Ctrl+Shift+N" />
-                    <MenuItem Name="MenuI_Open" Header="Open" Click="Menu_Open" InputGestureText="Ctrl+O" />
-                    <Separator />
-                    <MenuItem Name="MenuI_Save" Header="Save" Click="Menu_Save" InputGestureText="Ctrl+S" />
-                    <MenuItem Name="MenuI_SaveAll" Header="Save All" Click="Menu_SaveAll" InputGestureText="Ctrl+Shift+S" />
-                    <MenuItem Name="MenuI_SaveAs" Header="Save As" Click="Menu_SaveAs" InputGestureText="Ctrl+Alt+S" />
-                    <Separator />
-                    <MenuItem Name="MenuI_Close" Header="Close" Click="Menu_Close" InputGestureText="Ctrl+W" />
-                    <MenuItem Name="MenuI_CloseAll" Header="Close All" Click="Menu_CloseAll" InputGestureText="Ctrl+Shift+W" />
-                </MenuItem>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </controls:MetroWindow.Resources>
+  <controls:MetroWindow.LeftWindowCommands>
+    <controls:WindowCommands>
+      <Grid x:Name="MainWindowCommands">
+        <Menu x:Name="MenuCommands">
+          <MenuItem Name="MenuI_File" Header="File" SubmenuOpened="FileMenu_Open">
+            <MenuItem Name="MenuI_New" Header="New" Click="Menu_New"/>
+            <MenuItem Name="MenuI_NewFromTemplate" Header="New From Template" Click="Menu_NewFromTemplate"/>
+            <MenuItem Name="MenuI_Open" Header="Open" Click="Menu_Open"/>
+            <Separator />
+            <MenuItem Name="MenuI_Save" Header="Save" Click="Menu_Save"/>
+            <MenuItem Name="MenuI_SaveAll" Header="Save All" Click="Menu_SaveAll"/>
+            <MenuItem Name="MenuI_SaveAs" Header="Save As" Click="Menu_SaveAs"/>
+            <Separator />
+            <MenuItem Name="MenuI_Close" Header="Close" Click="Menu_Close"/>
+            <MenuItem Name="MenuI_CloseAll" Header="Close All" Click="Menu_CloseAll"/>
+          </MenuItem>
 
-                <MenuItem Name="MenuI_Edit" Header="Edit" SubmenuOpened="EditMenu_Open">
-                    <MenuItem Name="MenuI_Undo" Header="Undo" Click="Menu_Undo" InputGestureText="Ctrl+Z" />
-                    <MenuItem Name="MenuI_Redo" Header="Redo" Click="Menu_Redo" InputGestureText="Ctrl+Y" />
-                    <Separator />
-                    <MenuItem Name="MenuI_Cut" Header="Cut" Click="Menu_Cut" InputGestureText="Ctrl+X" />
-                    <MenuItem Name="MenuI_Copy" Header="Copy" Click="Menu_Copy" InputGestureText="Ctrl+C" />
-                    <MenuItem Name="MenuI_Paste" Header="Paste" Click="Menu_Paste" InputGestureText="Ctrl+V" />
-                    <Separator />
-                    <MenuItem Name="MenuI_Folding" Header="Foldings">
-                        <MenuItem Name="MenuI_ExpandAll" Header="Expand All" InputGestureText="Ctrl+P" Click="Menu_ExpandAll" />
-                        <MenuItem Name="MenuI_CollapseAll" Header="Collapse All" InputGestureText="Ctrl+Shift+P" Click="Menu_CollapseAll" />
-                    </MenuItem>
-                    <MenuItem Name="MenuI_JumpTo" Header="Jump To" Click="Menu_JumpTo" InputGestureText="Ctrl+G" />
-                    <MenuItem Name="MenuI_ToggleComment" Header="Toggle comment (//)" Click="Menu_ToggleCommentLine" InputGestureText="Ctrl+/" />
-                    <MenuItem Name="MenuI_SelectAll" Header="Select All" Click="Menu_SelectAll" InputGestureText="Ctrl+A" />
-                    <Separator />
-                    <MenuItem Name="MenuI_FindReplace" Header="Find &amp; Replace" Click="Menu_FindAndReplace" InputGestureText="Ctrl+F" />
-                </MenuItem>
+          <MenuItem Name="MenuI_Edit" Header="Edit" SubmenuOpened="EditMenu_Open">
+            <MenuItem Name="MenuI_Undo" Header="Undo" Click="Menu_Undo"/>
+            <MenuItem Name="MenuI_Redo" Header="Redo" Click="Menu_Redo"/>
+            <Separator />
+            <MenuItem Name="MenuI_Cut" Header="Cut" Click="Menu_Cut"/>
+            <MenuItem Name="MenuI_Copy" Header="Copy" Click="Menu_Copy"/>
+            <MenuItem Name="MenuI_Paste" Header="Paste" Click="Menu_Paste"/>
+            <Separator />
+            <MenuItem Name="MenuI_Folding" Header="Foldings">
+              <MenuItem Name="MenuI_ExpandAll" Header="Expand All"  Click="Menu_ExpandAll" />
+              <MenuItem Name="MenuI_CollapseAll" Header="Collapse All" Click="Menu_CollapseAll" />
+            </MenuItem>
+            <MenuItem Name="MenuI_JumpTo" Header="Jump To" Click="Menu_JumpTo"/>
+            <MenuItem Name="MenuI_ToggleComment" Header="Toggle comment (//)" Click="Menu_ToggleCommentLine"/>
+            <MenuItem Name="MenuI_SelectAll" Header="Select All" Click="Menu_SelectAll"/>
+            <Separator />
+            <MenuItem Name="MenuI_FindReplace" Header="Find &amp; Replace" Click="Menu_FindAndReplace"/>
+          </MenuItem>
 
-                <MenuItem Name="MenuI_Build" Header="Build">
-                    <MenuItem Name="MenuI_CompileAll" Header="Compile All" Click="Menu_CompileAll" InputGestureText="F5" />
-                    <MenuItem Name="MenuI_Compile" Header="Compile Current" Click="Menu_Compile" InputGestureText="F6" />
-                    <Separator/>
-                    <MenuItem Name="MenuI_CopyPlugin" Header="Copy Plugins" Click="Menu_CopyPlugin" InputGestureText="F7" />
-                    <MenuItem Name="MenuI_FTPUpload" Header="FTP Upload Plugins" Click="Menu_FTPUpload" InputGestureText="F8" />
-                    <Separator/>
-                    <MenuItem Name="MenuI_StartServer" Header="Start Server" Click="Menu_StartServer" InputGestureText="F9" />
-                    <MenuItem Name="MenuI_SendRCon" Header="Send RCon Commands" Click="Menu_SendRCon" InputGestureText="F10" />
-                </MenuItem>
+          <MenuItem Name="MenuI_Build" Header="Build">
+            <MenuItem Name="MenuI_CompileAll" Header="Compile All" Click="Menu_CompileAll"/>
+            <MenuItem Name="MenuI_Compile" Header="Compile Current" Click="Menu_Compile"/>
+            <Separator/>
+            <MenuItem Name="MenuI_CopyPlugin" Header="Copy Plugins" Click="Menu_CopyPlugin"/>
+            <MenuItem Name="MenuI_FTPUpload" Header="FTP Upload Plugins" Click="Menu_FTPUpload"/>
+            <Separator/>
+            <MenuItem Name="MenuI_StartServer" Header="Start Server" Click="Menu_StartServer"/>
+            <MenuItem Name="MenuI_SendRCon" Header="Send RCon Commands" Click="Menu_SendRCon" />
+          </MenuItem>
 
-                <MenuItem Name="ConfigMenu" Header="Configuration">
-                </MenuItem>
+          <MenuItem Name="ConfigMenu" Header="Configuration">
+          </MenuItem>
 
-                <MenuItem Name="MenuI_Tools" Header="Tools">
-                    <MenuItem Name="OptionMenuEntry" Header="Options" Click="Menu_OpenOptions" />
-                    <Separator />
-                    <MenuItem Header="SourcePawn API">
-                        <MenuItem Name="MenuI_ParsedIncDir" Header="Parsed from Include Directory" InputGestureText="Ctrl+Shift+F" Click="Menu_OpenSPDef" />
-                        <MenuItem Name="MenuI_NewApiWeb" Header="API Reference" Click="Menu_OpenWebsiteFromTag" Tag="https://sm.alliedmods.net/new-api/" />
-                        <MenuItem Name="MenuI_BetaApiWeb" Header="(BETA) API Reference" Click="Menu_OpenWebsiteFromTag" Tag="https://sourcemod.dev/" />
-                    </MenuItem>
-                    <MenuItem Name="MenuI_Reformatter" Header="Syntax Reformatter">
-                        <MenuItem Name="MenuI_ReformattCurr" Header="Reformat Current" InputGestureText="Ctrl+R" Click="Menu_ReFormatCurrent" />
-                        <MenuItem Name="MenuI_ReformattAll" Header="Reformat All" Click="Menu_ReFormatAll" />
-                    </MenuItem>
-                    <MenuItem Name="MenuI_Decompile" Header="Decompile .smx (Lysis)" Click="Menu_DecompileLysis" />
-                    <Separator />
-                    <MenuItem Name="MenuI_ReportBugGit" Header="Report a Bug on GitHub" Click="ReportBug_Click" />
-                    <MenuItem Name="UpdateCheckItem" Header="Check for Updates" Click="UpdateCheck_Click" />
-                    <MenuItem Name="MenuI_About" Header="About" Click="Menu_About" />
-                </MenuItem>
-            </Menu>
-        </controls:WindowCommands>
-    </controls:MetroWindow.LeftWindowCommands>
-    <controls:MetroWindow.Icon>
-        <BitmapImage UriSource="/SPCode;component/Resources/Icons/icon.ico" />
-    </controls:MetroWindow.Icon>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="1*" />
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <ToolBarTray Name="Win_ToolBar" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="0">
-                <ToolBar>
-                    <Button ToolTip="New" Height="26" Width="26" Click="Menu_New">
-                        <Canvas Width="14" Height="16" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                            <Path Width="14" Height="16" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 43,30L 50.75,30L 43,22.25L 43,30 Z M 52,34L 39,34L 39,21L 24,21L 24,45L 20,45L 20,17L 43.25,17L 56,29.75L 56,59L 34,59L 34,55L 52,55L 52,34 Z M 28,38L 33,38L 33,46L 41,46L 41,51L 33,51L 33,59L 28,59L 28,51L 20,51L 20,46L 28,46L 28,38 Z M 20,59L 20,52L 24,52L 24,55L 27,55L 27,59L 20,59 Z "/>
-                        </Canvas>
-                    </Button>
-                    <Button ToolTip="Open" Height="26" Width="26" Click="Menu_Open">
-                        <Canvas Width="14" Height="16" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                            <Path Width="14" Height="16" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 20,17L 44,17L 56,29L 56,59L 20,59L 20,17 Z M 24,21L 24,55L 52,55L 52,34L 39,34L 39,21L 24,21 Z M 43,21L 43,30L 52,30L 43,21 Z "/>
-                        </Canvas>
-                    </Button>
-                    <Button ToolTip="Save" Height="26" Width="26" Click="Menu_Save">
-                        <Canvas Width="14" Height="16" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                            <Path Width="14" Height="16" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 20,20L 50.25,20L 56,25.75L 56,56L 20,56L 20,20 Z M 52,27.25L 48.75,24L 48,24L 48,37L 28,37L 28,24L 24,24L 24,52L 52,52L 52,27.25 Z M 39,24L 39,34L 44,34L 44,24L 39,24 Z "/>
-                        </Canvas>
-                    </Button>
-                    <Button ToolTip="Save All" Height="26" Width="26" Click="Menu_SaveAll">
-                        <Canvas Width="14" Height="16" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                            <Path Width="14" Height="16" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 48,39L 56,39L 56,49L 63.25,49L 52,60.25L 40.75,49L 48,49L 48,39 Z M 20,20L 50.25,20L 56,25.75L 56,38L 52,38L 52,27.25L 48.75,24L 48,24L 48,37L 28,37L 28,24L 24,24L 24,52L 42.25,52L 46.25,56L 20,56L 20,20 Z M 39,24L 39,34L 44,34L 44,24L 39,24 Z "/>
-                        </Canvas>
-                    </Button>
-                    <Separator />
-                    <Button ToolTip="Close" Height="26" Width="26" Click="Menu_Close">
-                        <Canvas Width="14" Height="14" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                            <Path Width="14" Height="14" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z "/>
-                        </Canvas>
-                    </Button>
-                    <Button ToolTip="Close All" Height="26" Width="26" Click="Menu_CloseAll">
-                        <Canvas Width="14" Height="14" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                            <Path Width="14" Height="14" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 31.6667,19L 44.3333,19L 57,31.6667L 57,44.3333L 44.3333,57L 31.6667,57L 19,44.3333L 19,31.6667L 31.6667,19 Z M 26.4762,45.0454L 30.9546,49.5238L 38,42.4783L 45.0454,49.5238L 49.5237,45.0454L 42.4783,38L 49.5238,30.9546L 45.0454,26.4763L 38,33.5217L 30.9546,26.4762L 26.4762,30.9546L 33.5217,38L 26.4762,45.0454 Z "/>
-                        </Canvas>
-                    </Button>
-                </ToolBar>
-                <ToolBar>
-                    <Button ToolTip="Undo" Height="26" Width="26" Click="Menu_Undo">
-                        <Canvas Width="14" Height="14" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                            <Path Width="14" Height="14" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 35.8724,37.6042L 39.0391,40.7708L 50.5182,51.8542L 40.2266,51.8542L 25.1849,37.6041L 40.2266,23.3542L 50.5182,23.3542L 39.0391,34.4375L 35.8724,37.6042 Z "/>
-                        </Canvas>
-                    </Button>
-                    <Button ToolTip="Redo" Height="26" Width="26" Click="Menu_Redo">
-                        <Canvas Width="14" Height="14" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                            <Path Width="14" Height="14" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 39.8307,37.6042L 36.6641,34.4375L 25.1849,23.3542L 35.4766,23.3542L 50.5182,37.6042L 35.4766,51.8542L 25.1849,51.8542L 36.6641,40.7708L 39.8307,37.6042 Z "/>
-                        </Canvas>
-                    </Button>
-                    <Separator />
-                    <Button ToolTip="Cut" Height="26" Width="26" Click="Menu_Cut">
-                        <Canvas Width="14" Height="14" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                            <Path Width="14" Height="14" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 19,19L 27,19L 27,24L 19,24L 19,19 Z M 30,19L 38,19L 38,24L 30,24L 30,19 Z M 41,19L 49,19L 49,24L 41,24L 41,19 Z M 52,19L 57,19L 57,27L 52,27L 52,19 Z M 52,30L 57,30L 57,38L 52,38L 52,30 Z M 52,41L 57,41L 57,49L 52,49L 52,41 Z M 27,52L 35,52L 35,57L 27,57L 27,52 Z M 38,52L 46,52L 46,57L 38,57L 38,52 Z M 49,52L 57,52L 57,57L 49,57L 49,52 Z M 19,27L 24,27L 24,35L 19,35L 19,27 Z M 19,38L 24,38L 24,46L 19,46L 19,38 Z M 19,49L 24,49L 24,57L 19,57L 19,49 Z "/>
-                        </Canvas>
-                    </Button>
-                    <Button ToolTip="Copy" Height="26" Width="26" Click="Menu_Copy">
-                        <Canvas Width="14" Height="14" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                            <Path Width="14" Height="14" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 19,51L 19,19L 51,19L 51,29L 29,29L 29,51L 19,51 Z M 30,30L 59,30L 59,59L 30,59L 30,30 Z M 33,33L 33,56L 56,56L 56,33L 33,33 Z "/>
-                        </Canvas>
-                    </Button>
-                    <Button ToolTip="Paste" Height="26" Width="26" Click="Menu_Paste">
-                        <Canvas Width="14" Height="14" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                            <Path Width="14" Height="14" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 19,50.6667L 19,19L 50.6667,19L 50.6668,28.5003L 28.5,28.5002L 28.5,50.6667L 19,50.6667 Z M 58.5835,58.5836L 53.0415,58.5833L 58.5833,53.0416L 58.5835,58.5836 Z M 58.5833,45.1249L 58.5833,51.4585L 51.4584,58.5833L 45.1249,58.5833L 58.5833,45.1249 Z M 58.5833,35.6251L 35.6251,58.5834L 30.0833,58.5834L 30.0833,57.7918L 57.7918,30.0834L 58.5835,30.0836L 58.5833,35.6251 Z M 58.5833,43.5418L 43.5418,58.5833L 37.2082,58.5833L 58.5833,37.2082L 58.5833,43.5418 Z M 56.2084,30.0833L 30.0833,56.2085L 30.0833,49.8749L 49.8749,30.0834L 56.2084,30.0833 Z M 48.2918,30.0834L 30.0833,48.2918L 30.0833,41.9582L 41.9582,30.0834L 48.2918,30.0834 Z M 40.3751,30.0833L 30.0833,40.3751L 30.0833,34.0416L 34.0415,30.0833L 40.3751,30.0833 Z "/>
-                        </Canvas>
-                    </Button>
-                </ToolBar>
-                <ToolBar>
-                    <controls:SplitButton Name="CompileButton" Width="125" Margin="0,0,5,0" Click="MenuButton_Compile" />
-                    <controls:SplitButton Name="CActionButton" Width="100" Click="MenuButton_Action" />
-                </ToolBar>
-            </ToolBarTray>
-        </Grid>
-        <Grid Grid.Row="1" Background="{DynamicResource AccentColorBrush}">
-            <controls:MetroProgressBar Name="ServerProgressBar" HorizontalAlignment="Stretch" IsIndeterminate="False" Height="0" MinHeight="0" Foreground="White" />
-        </Grid>
-        <Grid Grid.Row="2">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition Name="CompileOutputRow" MinHeight="8" Height="8" />
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Name="EditorObjectBrowserGrid">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Name="ObjectBrowserColumn" Width="300" MinWidth="3" MaxWidth="{Binding ActualHeight, ElementName=metroWindow, Mode=OneWay}"/>
-                </Grid.ColumnDefinitions>
-                <dock:DockingManager Grid.Column="0" x:Name="DockingManager" Margin="0,0,5,0" AllowMixedOrientation="True" Background="{DynamicResource WhiteColorBrush}" Foreground="{DynamicResource BlackColorBrush}"
-                                 ActiveContentChanged="DockingManager_ActiveContentChanged" DocumentClosed="DockingManager_DocumentClosed" >
-                    <dock:DockingManager.Theme>
-                        <stheme:SMetroTheme />
-                    </dock:DockingManager.Theme>
-                    <dock:LayoutRoot>
-                        <dock:LayoutPanel>
-                            <dock:LayoutDocumentPaneGroup x:Name="DockingPaneGroup" ChildrenTreeChanged="DockingPaneGroup_ChildrenTreeChanged">
-                                <dock:LayoutDocumentPane x:Name="DockingPane" />
-                            </dock:LayoutDocumentPaneGroup>
-                        </dock:LayoutPanel>
-                    </dock:LayoutRoot>
-                </dock:DockingManager>
-                <GridSplitter Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="5" Background="{DynamicResource GrayBrush5}" />
-                <TreeView Grid.Column="1" Name="ObjectBrowser" TreeViewItem.Expanded="TreeViewOBItem_Expanded" Margin="0,28,0,26" />
-                <ComboBox Grid.Column="1" x:Name="ObjectBrowserDirList" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0" Height="5" BorderThickness="0" SelectionChanged="ObjectBrowserDirList_SelectionChanged"/>
-                <ListView Grid.Column="1" Name="ObjectBrowserButtonHolder" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0" Height="28" ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderThickness="0" SelectionMode="Single">
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="0"></StackPanel>
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-                    <ListViewItem Selected="ListViewOBItem_SelectFile">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Name="OBItemText_File" Text="File Directory" />
-                            <Image Source="/SPCode;component/Resources/Icons/iconmonstr-code-fork-1-20.png" Width="20" Height="20" />
-                        </StackPanel>
-                    </ListViewItem>
-                    <ListViewItem Selected="ListViewOBItem_SelectConfig">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Name="OBItemText_Config" Text="Config Directory" />
-                            <Image Source="/SPCode;component/Resources/Icons/iconmonstr-code-fork-2-20.png" Width="20" Height="20" />
-                        </StackPanel>
-                    </ListViewItem>
-                </ListView>
-            </Grid>
-            <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="5" Background="{DynamicResource GrayBrush5}" />
-            <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="30" Margin="0,5,0,0" Style="{DynamicResource MetroFlatButton}" Click="CloseErrorResultGrid">
-                <Canvas Width="10" Height="10" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-                    <Path Width="10" Height="10" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z "/>
-                </Canvas>
-            </Button>
-            <Grid Grid.Row="1" Margin="0,5,30,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="5*" />
-                    <ColumnDefinition Width="2*" />
-                </Grid.ColumnDefinitions>
-                <TextBox Name="CompileOutput" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" TextWrapping="Wrap"
-                         Margin="5,0,0,0" IsReadOnly="True" AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Visible" />
-                <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="5" Background="LightGray" />
-                <DataGrid Name="ErrorResultGrid" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsReadOnly="True"
-                          SelectionMode="Single" AutoGenerateColumns="False" SelectionChanged="ErrorResultGrid_SelectionChanged">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn x:Name="MenuC_FileName" Header="File Name" Width="7*" Binding="{Binding File}" />
-                        <DataGridTextColumn x:Name="MenuC_Line" Header="Line" Width="1*" Binding="{Binding Line}" />
-                        <DataGridTextColumn x:Name="MenuC_Type" Header="Type" Width="2*" Binding="{Binding Type}" />
-                        <DataGridTextColumn x:Name="MenuC_Details" Header="Details" Width="9*" Binding="{Binding Details}" />
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
-        </Grid>
-        
-        <Rectangle Grid.Row="2" x:Name="BlendEffectPlane" IsHitTestVisible="False" Opacity="0" Fill="{DynamicResource AccentColorBrush4}" />
+          <MenuItem Name="MenuI_Tools" Header="Tools">
+            <MenuItem Name="OptionMenuEntry" Header="Options" Click="Menu_OpenOptions" />
+            <Separator />
+            <MenuItem Header="SourcePawn API">
+              <MenuItem Name="MenuI_ParsedIncDir" Header="Parsed from Include Directory" Click="Menu_OpenSPDef" />
+              <MenuItem Name="MenuI_NewApiWeb" Header="API Reference" Click="Menu_OpenWebsiteFromTag" Tag="https://sm.alliedmods.net/new-api/" />
+              <MenuItem Name="MenuI_BetaApiWeb" Header="(BETA) API Reference" Click="Menu_OpenWebsiteFromTag" Tag="https://sourcemod.dev/" />
+            </MenuItem>
+            <MenuItem Name="MenuI_Reformatter" Header="Syntax Reformatter">
+              <MenuItem Name="MenuI_ReformattCurr" Header="Reformat Current"  Click="Menu_ReFormatCurrent" />
+              <MenuItem Name="MenuI_ReformattAll" Header="Reformat All" Click="Menu_ReFormatAll" />
+            </MenuItem>
+            <MenuItem Name="MenuI_Decompile" Header="Decompile .smx (Lysis)" Click="Menu_DecompileLysis" />
+            <Separator />
+            <MenuItem Name="MenuI_ReportBugGit" Header="Report a Bug on GitHub" Click="ReportBug_Click" />
+            <MenuItem Name="UpdateCheckItem" Header="Check for Updates" Click="UpdateCheck_Click" />
+            <MenuItem Name="MenuI_About" Header="About" Click="Menu_About" />
+          </MenuItem>
+        </Menu>
+      </Grid>
+    </controls:WindowCommands>
+  </controls:MetroWindow.LeftWindowCommands>
+  <controls:MetroWindow.Icon>
+    <BitmapImage UriSource="/SPCode;component/Resources/Icons/icon.ico" />
+  </controls:MetroWindow.Icon>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="1*" />
+    </Grid.RowDefinitions>
+    <Grid Grid.Row="0">
+      <ToolBarTray Name="Win_ToolBar" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="0">
+        <ToolBar>
+          <Button ToolTip="New" Height="26" Width="26" Click="Menu_New">
+            <Canvas Width="14" Height="16" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+              <Path Width="14" Height="16" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 43,30L 50.75,30L 43,22.25L 43,30 Z M 52,34L 39,34L 39,21L 24,21L 24,45L 20,45L 20,17L 43.25,17L 56,29.75L 56,59L 34,59L 34,55L 52,55L 52,34 Z M 28,38L 33,38L 33,46L 41,46L 41,51L 33,51L 33,59L 28,59L 28,51L 20,51L 20,46L 28,46L 28,38 Z M 20,59L 20,52L 24,52L 24,55L 27,55L 27,59L 20,59 Z "/>
+            </Canvas>
+          </Button>
+          <Button ToolTip="Open" Height="26" Width="26" Click="Menu_Open">
+            <Canvas Width="14" Height="16" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+              <Path Width="14" Height="16" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 20,17L 44,17L 56,29L 56,59L 20,59L 20,17 Z M 24,21L 24,55L 52,55L 52,34L 39,34L 39,21L 24,21 Z M 43,21L 43,30L 52,30L 43,21 Z "/>
+            </Canvas>
+          </Button>
+          <Button ToolTip="Save" Height="26" Width="26" Click="Menu_Save">
+            <Canvas Width="14" Height="16" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+              <Path Width="14" Height="16" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 20,20L 50.25,20L 56,25.75L 56,56L 20,56L 20,20 Z M 52,27.25L 48.75,24L 48,24L 48,37L 28,37L 28,24L 24,24L 24,52L 52,52L 52,27.25 Z M 39,24L 39,34L 44,34L 44,24L 39,24 Z "/>
+            </Canvas>
+          </Button>
+          <Button ToolTip="Save All" Height="26" Width="26" Click="Menu_SaveAll">
+            <Canvas Width="14" Height="16" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+              <Path Width="14" Height="16" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 48,39L 56,39L 56,49L 63.25,49L 52,60.25L 40.75,49L 48,49L 48,39 Z M 20,20L 50.25,20L 56,25.75L 56,38L 52,38L 52,27.25L 48.75,24L 48,24L 48,37L 28,37L 28,24L 24,24L 24,52L 42.25,52L 46.25,56L 20,56L 20,20 Z M 39,24L 39,34L 44,34L 44,24L 39,24 Z "/>
+            </Canvas>
+          </Button>
+          <Separator />
+          <Button ToolTip="Close" Height="26" Width="26" Click="Menu_Close">
+            <Canvas Width="14" Height="14" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+              <Path Width="14" Height="14" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z "/>
+            </Canvas>
+          </Button>
+          <Button ToolTip="Close All" Height="26" Width="26" Click="Menu_CloseAll">
+            <Canvas Width="14" Height="14" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+              <Path Width="14" Height="14" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 31.6667,19L 44.3333,19L 57,31.6667L 57,44.3333L 44.3333,57L 31.6667,57L 19,44.3333L 19,31.6667L 31.6667,19 Z M 26.4762,45.0454L 30.9546,49.5238L 38,42.4783L 45.0454,49.5238L 49.5237,45.0454L 42.4783,38L 49.5238,30.9546L 45.0454,26.4763L 38,33.5217L 30.9546,26.4762L 26.4762,30.9546L 33.5217,38L 26.4762,45.0454 Z "/>
+            </Canvas>
+          </Button>
+        </ToolBar>
+        <ToolBar>
+          <Button ToolTip="Undo" Height="26" Width="26" Click="Menu_Undo">
+            <Canvas Width="14" Height="14" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+              <Path Width="14" Height="14" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 35.8724,37.6042L 39.0391,40.7708L 50.5182,51.8542L 40.2266,51.8542L 25.1849,37.6041L 40.2266,23.3542L 50.5182,23.3542L 39.0391,34.4375L 35.8724,37.6042 Z "/>
+            </Canvas>
+          </Button>
+          <Button ToolTip="Redo" Height="26" Width="26" Click="Menu_Redo">
+            <Canvas Width="14" Height="14" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+              <Path Width="14" Height="14" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 39.8307,37.6042L 36.6641,34.4375L 25.1849,23.3542L 35.4766,23.3542L 50.5182,37.6042L 35.4766,51.8542L 25.1849,51.8542L 36.6641,40.7708L 39.8307,37.6042 Z "/>
+            </Canvas>
+          </Button>
+          <Separator />
+          <Button ToolTip="Cut" Height="26" Width="26" Click="Menu_Cut">
+            <Canvas Width="14" Height="14" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+              <Path Width="14" Height="14" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 19,19L 27,19L 27,24L 19,24L 19,19 Z M 30,19L 38,19L 38,24L 30,24L 30,19 Z M 41,19L 49,19L 49,24L 41,24L 41,19 Z M 52,19L 57,19L 57,27L 52,27L 52,19 Z M 52,30L 57,30L 57,38L 52,38L 52,30 Z M 52,41L 57,41L 57,49L 52,49L 52,41 Z M 27,52L 35,52L 35,57L 27,57L 27,52 Z M 38,52L 46,52L 46,57L 38,57L 38,52 Z M 49,52L 57,52L 57,57L 49,57L 49,52 Z M 19,27L 24,27L 24,35L 19,35L 19,27 Z M 19,38L 24,38L 24,46L 19,46L 19,38 Z M 19,49L 24,49L 24,57L 19,57L 19,49 Z "/>
+            </Canvas>
+          </Button>
+          <Button ToolTip="Copy" Height="26" Width="26" Click="Menu_Copy">
+            <Canvas Width="14" Height="14" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+              <Path Width="14" Height="14" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 19,51L 19,19L 51,19L 51,29L 29,29L 29,51L 19,51 Z M 30,30L 59,30L 59,59L 30,59L 30,30 Z M 33,33L 33,56L 56,56L 56,33L 33,33 Z "/>
+            </Canvas>
+          </Button>
+          <Button ToolTip="Paste" Height="26" Width="26" Click="Menu_Paste">
+            <Canvas Width="14" Height="14" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+              <Path Width="14" Height="14" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 19,50.6667L 19,19L 50.6667,19L 50.6668,28.5003L 28.5,28.5002L 28.5,50.6667L 19,50.6667 Z M 58.5835,58.5836L 53.0415,58.5833L 58.5833,53.0416L 58.5835,58.5836 Z M 58.5833,45.1249L 58.5833,51.4585L 51.4584,58.5833L 45.1249,58.5833L 58.5833,45.1249 Z M 58.5833,35.6251L 35.6251,58.5834L 30.0833,58.5834L 30.0833,57.7918L 57.7918,30.0834L 58.5835,30.0836L 58.5833,35.6251 Z M 58.5833,43.5418L 43.5418,58.5833L 37.2082,58.5833L 58.5833,37.2082L 58.5833,43.5418 Z M 56.2084,30.0833L 30.0833,56.2085L 30.0833,49.8749L 49.8749,30.0834L 56.2084,30.0833 Z M 48.2918,30.0834L 30.0833,48.2918L 30.0833,41.9582L 41.9582,30.0834L 48.2918,30.0834 Z M 40.3751,30.0833L 30.0833,40.3751L 30.0833,34.0416L 34.0415,30.0833L 40.3751,30.0833 Z "/>
+            </Canvas>
+          </Button>
+        </ToolBar>
+        <ToolBar>
+          <controls:SplitButton Name="CompileButton" Width="125" Margin="0,0,5,0" Click="MenuButton_Compile" />
+          <controls:SplitButton Name="CActionButton" Width="100" Click="MenuButton_Action" />
+        </ToolBar>
+      </ToolBarTray>
     </Grid>
+    <Grid Grid.Row="1" Background="{DynamicResource AccentColorBrush}">
+      <controls:MetroProgressBar Name="ServerProgressBar" HorizontalAlignment="Stretch" IsIndeterminate="False" Height="0" MinHeight="0" Foreground="White" />
+    </Grid>
+    <Grid Grid.Row="2">
+      <Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition Name="CompileOutputRow" MinHeight="8" Height="8" />
+      </Grid.RowDefinitions>
+      <Grid Grid.Row="0" Name="EditorObjectBrowserGrid">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="1*" />
+          <ColumnDefinition Name="ObjectBrowserColumn" Width="300" MinWidth="3" MaxWidth="{Binding ActualHeight, ElementName=metroWindow, Mode=OneWay}"/>
+        </Grid.ColumnDefinitions>
+        <dock:DockingManager Grid.Column="0" x:Name="DockingManager" Margin="0,0,5,0" AllowMixedOrientation="True" Background="{DynamicResource WhiteColorBrush}" Foreground="{DynamicResource BlackColorBrush}"
+                                 ActiveContentChanged="DockingManager_ActiveContentChanged" DocumentClosed="DockingManager_DocumentClosed" >
+          <dock:DockingManager.Theme>
+            <stheme:SMetroTheme />
+          </dock:DockingManager.Theme>
+          <dock:LayoutRoot>
+            <dock:LayoutPanel>
+              <dock:LayoutDocumentPaneGroup x:Name="DockingPaneGroup" ChildrenTreeChanged="DockingPaneGroup_ChildrenTreeChanged">
+                <dock:LayoutDocumentPane x:Name="DockingPane" />
+              </dock:LayoutDocumentPaneGroup>
+            </dock:LayoutPanel>
+          </dock:LayoutRoot>
+        </dock:DockingManager>
+        <GridSplitter Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="5" Background="{DynamicResource GrayBrush5}" />
+        <TreeView Grid.Column="1" Name="ObjectBrowser" TreeViewItem.Expanded="TreeViewOBItem_Expanded" Margin="0,28,0,26" />
+        <ComboBox Grid.Column="1" x:Name="ObjectBrowserDirList" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0" Height="5" BorderThickness="0" SelectionChanged="ObjectBrowserDirList_SelectionChanged"/>
+        <ListView Grid.Column="1" Name="ObjectBrowserButtonHolder" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0" Height="28" ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderThickness="0" SelectionMode="Single">
+          <ListView.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel Orientation="Horizontal" Margin="0"></StackPanel>
+            </ItemsPanelTemplate>
+          </ListView.ItemsPanel>
+          <ListViewItem Selected="ListViewOBItem_SelectFile">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Name="OBItemText_File" Text="File Directory" />
+              <Image Source="/SPCode;component/Resources/Icons/iconmonstr-code-fork-1-20.png" Width="20" Height="20" />
+            </StackPanel>
+          </ListViewItem>
+          <ListViewItem Selected="ListViewOBItem_SelectConfig">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Name="OBItemText_Config" Text="Config Directory" />
+              <Image Source="/SPCode;component/Resources/Icons/iconmonstr-code-fork-2-20.png" Width="20" Height="20" />
+            </StackPanel>
+          </ListViewItem>
+        </ListView>
+      </Grid>
+      <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="5" Background="{DynamicResource GrayBrush5}" />
+      <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="30" Margin="0,5,0,0" Style="{DynamicResource MetroFlatButton}" Click="CloseErrorResultGrid">
+        <Canvas Width="10" Height="10" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+          <Path Width="10" Height="10" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z "/>
+        </Canvas>
+      </Button>
+      <Grid Grid.Row="1" Margin="0,5,30,0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="5*" />
+          <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+        <TextBox Name="CompileOutput" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" TextWrapping="Wrap"
+                         Margin="5,0,0,0" IsReadOnly="True" AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Visible" />
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="5" Background="LightGray" />
+        <DataGrid Name="ErrorResultGrid" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsReadOnly="True"
+                          SelectionMode="Single" AutoGenerateColumns="False" SelectionChanged="ErrorResultGrid_SelectionChanged">
+          <DataGrid.Columns>
+            <DataGridTextColumn x:Name="MenuC_FileName" Header="File Name" Width="7*" Binding="{Binding File}" />
+            <DataGridTextColumn x:Name="MenuC_Line" Header="Line" Width="1*" Binding="{Binding Line}" />
+            <DataGridTextColumn x:Name="MenuC_Type" Header="Type" Width="2*" Binding="{Binding Type}" />
+            <DataGridTextColumn x:Name="MenuC_Details" Header="Details" Width="9*" Binding="{Binding Details}" />
+          </DataGrid.Columns>
+        </DataGrid>
+      </Grid>
+    </Grid>
+
+    <Rectangle Grid.Row="2" x:Name="BlendEffectPlane" IsHitTestVisible="False" Opacity="0" Fill="{DynamicResource AccentColorBrush4}" />
+  </Grid>
 </controls:MetroWindow>

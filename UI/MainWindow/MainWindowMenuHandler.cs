@@ -300,5 +300,22 @@ namespace SPCode.UI
                 Server_Start();
             }
         }
+
+        private void LoadMenuItemHotkeys()
+        {
+            foreach (MenuItem control in MenuCommands.Items)
+            {
+                if (control.Items.Count > 1)
+                {
+                    foreach (var item in control.Items)
+                    {
+                        if (item is MenuItem)
+                        {
+                            (item as MenuItem).InputGestureText = "hotkey here";
+                        }
+                    }
+                }
+            }
+        }
     }
 }

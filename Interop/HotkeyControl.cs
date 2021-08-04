@@ -32,6 +32,12 @@ namespace SPCode.Interop
             { "SendRCON", "F10" },
         };
 
+        public static string[] RestrictedHotkeys = new string[]
+        {
+            "Control+V", "Control+C", "Control+X",
+            "Control+Z", "Control+Y", "Control+A"
+        };
+
         public static void BufferHotkeys()
         {
             // Buffer hotkeys in global HotkeyInfo list

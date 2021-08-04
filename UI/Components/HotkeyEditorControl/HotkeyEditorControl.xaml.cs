@@ -14,7 +14,7 @@ namespace SPCode.UI.Components
 
         public Hotkey Hotkey
         {
-            get => (Hotkey) GetValue(HotkeyProperty);
+            get => (Hotkey)GetValue(HotkeyProperty);
             set => SetValue(HotkeyProperty, value);
         }
 
@@ -30,8 +30,8 @@ namespace SPCode.UI.Components
             e.Handled = true;
 
             // Get modifiers and key data
-            var modifiers = Keyboard.Modifiers;
             var key = e.Key;
+            var modifiers = Keyboard.Modifiers;
 
             // When Alt is pressed, SystemKey is used instead
             if (key == Key.System)
@@ -63,8 +63,11 @@ namespace SPCode.UI.Components
                 return;
             }
 
-            // Update the value
-            Hotkey = new Hotkey(key, modifiers);
+            // Update the value if it's not spamming the key
+            if (!e.IsRepeat)
+            {
+                Hotkey = new Hotkey(key, modifiers);
+            }
         }
     }
 }
