@@ -20,10 +20,10 @@ namespace SPCode.UI.Windows
 
         private void Hotkey_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (!e.IsDown)
-            {
-                return;
-            }
+            //if (!e.IsDown)
+            //{
+            //    return;
+            //}
 
             var key = e.Key;
 
@@ -77,7 +77,7 @@ namespace SPCode.UI.Windows
                 }
 
                 // Check if the attempted hotkey is not restricted
-                else if (HotkeyControl.RestrictedHotkeys.Where(x => x.Equals(_ctrl.Hotkey.ToString())).Count() > 0)
+                else if (HotkeyControl.RestrictedHotkeys.Where(x => x.Value.Equals(_ctrl.Hotkey.ToString())).Count() > 0)
                 {
                     _ctrl.Hotkey = _currentControlHotkey;
                     ShowLabel("Reserved!");
@@ -104,6 +104,7 @@ namespace SPCode.UI.Windows
 
             document.Save(Constants.HotkeysFile);
 
+            // Buffer new hotkey
             foreach (var hkInfo in Program.HotkeysList)
             {
                 if (hkInfo.Command == _ctrl.Name.Substring(2))
