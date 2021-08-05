@@ -111,7 +111,7 @@ namespace SPCode.UI.Windows
                     {
                         entry.InnerText = "None";
                         document.Save(Constants.HotkeysFile);
-                        return;
+                        break;
                     }
                     else
                     {
@@ -139,7 +139,8 @@ namespace SPCode.UI.Windows
                 {
                     if (item is MenuItem && (item as MenuItem).Name == $"MenuI_{_ctrl.Name.Substring(2)}")
                     {
-                        (item as MenuItem).InputGestureText = _ctrl.Hotkey.ToString();
+                        (item as MenuItem).InputGestureText = _ctrl.Hotkey == null ? "" : _ctrl.Hotkey.ToString();
+                        return;
                     }
                 }
             }
