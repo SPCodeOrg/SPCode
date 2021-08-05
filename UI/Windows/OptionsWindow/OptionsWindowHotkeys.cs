@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Controls;
 
 namespace SPCode.UI.Windows
 {
@@ -131,6 +132,17 @@ namespace SPCode.UI.Windows
                 }
             }
 
+            // Update InputGestureText of MenuItem
+            foreach (var control in Program.MainWindow.MenuItems)
+            {
+                foreach (var item in control.Items)
+                {
+                    if (item is MenuItem && (item as MenuItem).Name == $"MenuI_{_ctrl.Name.Substring(2)}")
+                    {
+                        (item as MenuItem).InputGestureText = _ctrl.Hotkey.ToString();
+                    }
+                }
+            }
         }
 
         private void LoadHotkeysToSettings()
