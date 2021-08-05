@@ -53,7 +53,7 @@
   <controls:MetroWindow.LeftWindowCommands>
     <controls:WindowCommands>
       <Grid x:Name="MainWindowCommands">
-        <Menu x:Name="MenuCommands">
+        <Menu>
           <MenuItem Name="MenuI_File" Header="File" SubmenuOpened="FileMenu_Open">
             <MenuItem Name="MenuI_New" Header="New" Click="Menu_New"/>
             <MenuItem Name="MenuI_NewTemplate" Header="New From Template" Click="Menu_NewFromTemplate"/>
@@ -103,7 +103,7 @@
           <MenuItem Name="MenuI_Tools" Header="Tools">
             <MenuItem Name="OptionMenuEntry" Header="Options" Click="Menu_OpenOptions" />
             <Separator />
-            <MenuItem Header="SourcePawn API">
+            <MenuItem Name="MenuI_SPAPI" Header="SourcePawn API">
               <MenuItem Name="MenuI_SearchDefinition" Header="Parsed from Include Directory" Click="Menu_OpenSPDef" />
               <MenuItem Name="MenuI_NewApiWeb" Header="API Reference" Click="Menu_OpenWebsiteFromTag" Tag="https://sm.alliedmods.net/new-api/" />
               <MenuItem Name="MenuI_BetaApiWeb" Header="(BETA) API Reference" Click="Menu_OpenWebsiteFromTag" Tag="https://sourcemod.dev/" />

@@ -290,31 +290,31 @@ namespace SPCode.UI
 
         private void LoadInputGestureTexts()
         {
-            // These are the 5 first menus (File, Edit, Build, Configuration, Tools)
-            foreach (MenuItem control in MenuCommands.Items)
+            // Welcome to foreach hell
+            foreach (var parentItem in MenuItems)
             {
-                // There are their menu items
-                foreach (var item in control.Items)
+                foreach (var child in parentItem.Items)
                 {
-                    // Ask for type, to prevent working with 'Separators'
-                    if (item is MenuItem)
+                    if (child is MenuItem)
                     {
-                        var castedItem = item as MenuItem;
+                        var castedChild = child as MenuItem;
                         foreach (var hkItem in Program.HotkeysList)
                         {
                             // Assign InputGestureText to all items
-                            if (castedItem.Name == $"MenuI_{hkItem.Command}")
+                            if (castedChild.Name == $"MenuI_{hkItem.Command}")
                             {
-                                castedItem.InputGestureText = hkItem.Hotkey.ToString();
+                                castedChild.InputGestureText = hkItem.Hotkey.ToString();
+                                break;
                             }
                             // Also assign InputGestureText to the stock restricted commands
                             else
                             {
                                 foreach (var hk in HotkeyControl.RestrictedHotkeys)
                                 {
-                                    if (castedItem.Name == $"MenuI_{hk.Key}")
+                                    if (castedChild.Name == $"MenuI_{hk.Key}")
                                     {
-                                        castedItem.InputGestureText = hk.Value;
+                                        castedChild.InputGestureText = hk.Value;
+                                        break;
                                     }
                                 }
                             }
@@ -322,13 +322,6 @@ namespace SPCode.UI
                     }
                 }
             }
-
-            // Those unreached by the loop
-            MenuI_FoldingsCollapse.InputGestureText = Program.HotkeysList.FirstOrDefault(x => MenuI_FoldingsCollapse.Name == $"MenuI_{x.Command}").Hotkey.ToString();
-            MenuI_FoldingsExpand.InputGestureText = Program.HotkeysList.FirstOrDefault(x => MenuI_FoldingsExpand.Name == $"MenuI_{x.Command}").Hotkey.ToString();
-            MenuI_ReformatCurrent.InputGestureText = Program.HotkeysList.FirstOrDefault(x => MenuI_ReformatCurrent.Name == $"MenuI_{x.Command}").Hotkey.ToString();
-            MenuI_ReformatAll.InputGestureText = Program.HotkeysList.FirstOrDefault(x => MenuI_ReformatAll.Name == $"MenuI_{x.Command}").Hotkey.ToString();
-            MenuI_SearchDefinition.InputGestureText = Program.HotkeysList.FirstOrDefault(x => MenuI_SearchDefinition.Name == $"MenuI_{x.Command}").Hotkey.ToString();
         }
     }
 }

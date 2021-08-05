@@ -11,9 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using DiscordRPC;
 using MahApps.Metro;
-using SPCode.Interop.Updater;
 using SPCode.UI.Components;
-using SPCode.Utils;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 
@@ -25,6 +23,7 @@ namespace SPCode.UI
         private readonly Storyboard DisableServerAnim;
         public readonly List<EditorElement> EditorsReferences = new();
         private readonly Storyboard EnableServerAnim;
+        public readonly List<MenuItem> MenuItems;
 
         private readonly bool FullyInitialized;
 
@@ -97,6 +96,17 @@ namespace SPCode.UI
 
             sc.Close(TimeSpan.FromMilliseconds(500.0));
             FullyInitialized = true;
+
+            MenuItems = new()
+            {
+                MenuI_File,
+                MenuI_Edit,
+                MenuI_Build,
+                MenuI_Tools,
+                MenuI_Folding,
+                MenuI_SPAPI,
+                MenuI_Reformatter
+            };
 
             LoadInputGestureTexts();
             LoadCommandsDictionary();
