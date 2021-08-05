@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using DiscordRPC;
+using ICSharpCode.AvalonEdit;
 using MahApps.Metro;
 using SPCode.Interop;
 using SPCode.Interop.Updater;
@@ -82,8 +83,7 @@ namespace SPCode
                     {
                         HotkeyControl.BufferHotkeys();
                     }
-
-
+                    
                     if (OptionsObject.Program_DiscordPresence)
                     {
                         // Init Discord RPC

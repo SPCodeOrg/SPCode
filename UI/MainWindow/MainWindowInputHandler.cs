@@ -10,8 +10,6 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
-        //some key bindings are handled in EditorElement.xaml.cs because the editor will fetch some keys before they can be handled here.
-
         public Dictionary<string, Action> Commands;
 
         private void LoadCommandsDictionary()
@@ -32,6 +30,10 @@ namespace SPCode.UI
                 { "ReformatAll", () => Command_TidyCode(true) },
                 { "GoToLine", Command_GoToLine },
                 { "CommentLine", Command_ToggleCommentLine },
+                { "MoveLineDown", () => GetCurrentEditorElement().MoveLine(true) },
+                { "MoveLineUp", () => GetCurrentEditorElement().MoveLine(false) },
+                { "DupeLineDown", () => GetCurrentEditorElement().DuplicateLine(true) },
+                { "DupeLineUp", () => GetCurrentEditorElement().DuplicateLine(false) },
                 { "SearchReplace", Command_FindReplace },
                 { "SearchDefinition", Command_OpenSPDef },
                 { "CompileCurrent", () => Compile_SPScripts(false) },
@@ -39,7 +41,7 @@ namespace SPCode.UI
                 { "CopyPlugins", () => Copy_Plugins() },
                 { "UploadFTP", FTPUpload_Plugins },
                 { "StartServer", Server_Start },
-                { "SendRCON", Server_Query }
+                { "SendRCON", Server_Query },
             };
         }
 
@@ -76,12 +78,16 @@ namespace SPCode.UI
             ProcessHotkey(new Hotkey(key, modifiers));
         }
 
-        private void ProcessHotkey(Hotkey hk)
+        public void ProcessHotkey(Hotkey hk, KeyEventArgs e = null)
         {
             var hotkeyInfo = Program.HotkeysList.FirstOrDefault(x => x.Hotkey != null && x.Hotkey.ToString() == hk.ToString());
             if (hotkeyInfo != null)
             {
                 Commands[hotkeyInfo.Command]();
+                if (e != null)
+                {
+                    e.Handled = true;
+                }
             }
         }
     }

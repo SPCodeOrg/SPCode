@@ -209,7 +209,7 @@ namespace SPCode.UI.Components
             {
                 return;
             }
-
+            
             await GoToDefinition(e);
         }
 
@@ -549,41 +549,35 @@ namespace SPCode.UI.Components
         private void TextArea_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = ISAC_EvaluateKeyDownEvent(e.Key);
-            //one could ask why some key-bindings are handled here.
-            //Its because spedit sends handled flags for ups&downs
-            //and they are therefore not able to processed by the central code.
-            if (!e.Handled)
+            if (!e.IsDown || e.Handled)
             {
-                if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl))
-                {
-                    if (e.KeyboardDevice.IsKeyDown(Key.LeftAlt))
-                    {
-                        if (e.Key == Key.Down)
-                        {
-                            DuplicateLine(true);
-                            e.Handled = true;
-                        }
-                        else if (e.Key == Key.Up)
-                        {
-                            DuplicateLine(false);
-                            e.Handled = true;
-                        }
-                    }
-                    else
-                    {
-                        if (e.Key == Key.Down)
-                        {
-                            MoveLine(true);
-                            e.Handled = true;
-                        }
-                        else if (e.Key == Key.Up)
-                        {
-                            MoveLine(false);
-                            e.Handled = true;
-                        }
-                    }
-                }
+                return;
             }
+
+            var key = e.Key;
+            var modifiers = Keyboard.Modifiers;
+
+            if (key == Key.System)
+            {
+                key = e.SystemKey;
+            }
+
+            if (key == Key.LeftCtrl ||
+                key == Key.RightCtrl ||
+                key == Key.LeftAlt ||
+                key == Key.RightAlt ||
+                key == Key.LeftShift ||
+                key == Key.RightShift ||
+                key == Key.LWin ||
+                key == Key.RWin ||
+                key == Key.Clear ||
+                key == Key.OemClear ||
+                key == Key.Apps)
+            {
+                return;
+            }
+
+            Program.MainWindow.ProcessHotkey(new Hotkey(key, modifiers), e);
         }
 
         private void HandleContextMenuCommand(object sender, RoutedEventArgs e)
@@ -706,7 +700,7 @@ namespace SPCode.UI.Components
                         }
                     }
 
-
+                    
                     el.InterruptLoadAutoCompletes(smFunctions, acNodes,
                         isNodes, smDef.Methodmaps.ToArray());
                 }
@@ -725,6 +719,7 @@ namespace SPCode.UI.Components
             {
                 LineHeight = editor.TextArea.TextView.DefaultLineHeight;
             }
+            
         }
 
         public async void Close(bool ForcedToSave = false, bool CheckSavings = true)
@@ -765,6 +760,7 @@ namespace SPCode.UI.Components
             Parent = null; //to prevent a ring depency which disables the GC from work
             Program.MainWindow.UpdateWindowTitle();
         }
+
         public void ToggleCommentOnLine()
         {
             var line = editor.Document.GetLineByOffset(editor.CaretOffset);
@@ -800,7 +796,7 @@ namespace SPCode.UI.Components
             }
         }
 
-        private void DuplicateLine(bool down)
+        public void DuplicateLine(bool down)
         {
             var line = editor.Document.GetLineByOffset(editor.CaretOffset);
             var lineText = editor.Document.GetText(line);
@@ -811,7 +807,7 @@ namespace SPCode.UI.Components
             }
         }
 
-        private void MoveLine(bool down)
+        public void MoveLine(bool down)
         {
             var line = editor.Document.GetLineByOffset(editor.CaretOffset);
             if (down)
