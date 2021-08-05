@@ -338,6 +338,8 @@ namespace SPCode.Interop
             language.Add("MoveLineUp", "Move line up");
             language.Add("DupeLineDown", "Duplicate line down");
             language.Add("DupeLineUp", "Duplicate line up");
+            language.Add("InUse", "In use!");
+            language.Add("Reserved", "Reserved!");
         }
     }
 }

@@ -81,7 +81,7 @@ namespace SPCode.UI.Windows
                 {
                     _ctrl.Hotkey = _currentControlHotkey;
                     _ctrl.FontStyle = _currentFontStyle;
-                    ShowLabel("In use!");
+                    ShowLabel(Program.Translations.GetLanguage("InUse"));
                     return;
                 }
 
@@ -90,7 +90,7 @@ namespace SPCode.UI.Windows
                 {
                     _ctrl.Hotkey = _currentControlHotkey;
                     _ctrl.FontStyle = _currentFontStyle;
-                    ShowLabel("Reserved!");
+                    ShowLabel(Program.Translations.GetLanguage("Reserved"));
                     return;
                 }
                 else
