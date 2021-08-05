@@ -65,19 +65,21 @@ namespace SPCode.UI.Windows
                 HotkeyControl.CreateDefaultHotkeys();
             }
 
+            var ctrlName = _ctrl.Name.Substring(2);
+
             foreach (var hkInfo in Program.HotkeysList)
             {
 
                 // Check if the user has cleared the hotkey field
                 if (_ctrl.Hotkey == null)
                 {
-                    Program.HotkeysList.FirstOrDefault(x => x.Command == _ctrl.Name.Substring(2)).Hotkey = null;
+                    Program.HotkeysList.FirstOrDefault(x => x.Command == ctrlName).Hotkey = null;
                     _ctrl.FontStyle = FontStyles.Italic;
                     break;
                 }
 
                 // Check if the received hotkey is not already assigned
-                else if (_ctrl.Hotkey != null && hkInfo.Hotkey != null && hkInfo.Hotkey.ToString() == _ctrl.Hotkey.ToString() && hkInfo.Command != _ctrl.Name.Substring(2))
+                else if (_ctrl.Hotkey != null && hkInfo.Hotkey != null && hkInfo.Hotkey.ToString() == _ctrl.Hotkey.ToString() && hkInfo.Command != ctrlName)
                 {
                     _ctrl.Hotkey = _currentControlHotkey;
                     _ctrl.FontStyle = _currentFontStyle;
@@ -106,39 +108,23 @@ namespace SPCode.UI.Windows
 
             foreach (XmlNode entry in document.ChildNodes[0].ChildNodes)
             {
-                if (entry.Name == _ctrl.Name.Substring(2))
+                if (entry.Name == ctrlName)
                 {
-                    if (_ctrl.Hotkey == null)
-                    {
-                        entry.InnerText = "None";
-                        document.Save(Constants.HotkeysFile);
-                        break;
-                    }
-                    else
-                    {
-                        entry.InnerText = _ctrl.Hotkey.ToString();
-                        document.Save(Constants.HotkeysFile);
-                        break;
-                    }
+                    entry.InnerText = _ctrl.Hotkey == null ? "None" : _ctrl.Hotkey.ToString();
+                    document.Save(Constants.HotkeysFile);
+                    break;
                 }
             }
 
             // Buffer new hotkey
-            foreach (var hkInfo in Program.HotkeysList)
-            {
-                if (hkInfo.Command == _ctrl.Name.Substring(2))
-                {
-                    hkInfo.Hotkey = _ctrl.Hotkey;
-                    break;
-                }
-            }
+            Program.HotkeysList.FirstOrDefault(x => x.Command == ctrlName).Hotkey = _ctrl.Hotkey;
 
             // Update InputGestureText of MenuItem
             foreach (var control in Program.MainWindow.MenuItems)
             {
                 foreach (var item in control.Items)
                 {
-                    if (item is MenuItem && (item as MenuItem).Name == $"MenuI_{_ctrl.Name.Substring(2)}")
+                    if (item is MenuItem && (item as MenuItem).Name == $"MenuI_{ctrlName}")
                     {
                         (item as MenuItem).InputGestureText = _ctrl.Hotkey == null ? "" : _ctrl.Hotkey.ToString();
                         return;

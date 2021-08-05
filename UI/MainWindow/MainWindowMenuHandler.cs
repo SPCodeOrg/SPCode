@@ -303,7 +303,7 @@ namespace SPCode.UI
                             // Assign InputGestureText to all items
                             if (castedChild.Name == $"MenuI_{hkItem.Command}")
                             {
-                                castedChild.InputGestureText = hkItem.Hotkey.ToString();
+                                castedChild.InputGestureText = hkItem.Hotkey.ToString() == "None" ? string.Empty : hkItem.Hotkey.ToString();
                                 break;
                             }
                             // Also assign InputGestureText to the stock restricted commands
