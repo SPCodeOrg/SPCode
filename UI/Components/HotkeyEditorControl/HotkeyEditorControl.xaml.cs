@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using SPCode.Utils;
 
@@ -12,6 +13,8 @@ namespace SPCode.UI.Components
                 new FrameworkPropertyMetadata(default(Hotkey),
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+        private bool InputEnabled = true;
+
         public Hotkey Hotkey
         {
             get => (Hotkey)GetValue(HotkeyProperty);
@@ -23,7 +26,7 @@ namespace SPCode.UI.Components
             InitializeComponent();
         }
 
-        private void HotkeyTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        private async void HotkeyTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             // Don't let the event pass further
             // because we don't want standard textbox shortcuts working
@@ -63,11 +66,20 @@ namespace SPCode.UI.Components
                 return;
             }
 
+            if (!InputEnabled)
+            {
+                return;
+            }
+
+            InputEnabled = false;
+
             // Update the value if it's not spamming the key
             if (!e.IsRepeat)
             {
                 Hotkey = new Hotkey(key, modifiers);
             }
+            await Task.Delay(500);
+            InputEnabled = true;
         }
     }
 }
