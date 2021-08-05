@@ -10,6 +10,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
+using System.Diagnostics;
 
 namespace SPCode.UI.Windows
 {
@@ -148,31 +149,19 @@ namespace SPCode.UI.Windows
 
         private void LoadHotkeysToSettings()
         {
-            if (!File.Exists(Constants.HotkeysFile))
+            foreach (var hkInfo in Program.HotkeysList)
             {
-                HotkeyControl.CreateDefaultHotkeys();
-            }
-
-            var document = new XmlDocument();
-            document.Load(Constants.HotkeysFile);
-
-            // Loop through all the command entries in the XML
-            foreach (XmlNode entry in document.ChildNodes[0].ChildNodes)
-            {
-                // Loop through all HotkeyControls
                 foreach (var control in HotkeysGrid.Children)
                 {
                     if (control is HotkeyEditorControl)
                     {
-                        // Assign to every HotkeyControl a new Hotkey object
-                        // whose contents are based on the command entry from the XML
-                        var castedControl = control as HotkeyEditorControl;
-                        if (castedControl.Name.Substring(2) == entry.Name)
+                        var castCtrl = control as HotkeyEditorControl;
+                        if (castCtrl.Name.Substring(2) == hkInfo.Command)
                         {
-                            castedControl.Hotkey = new Hotkey(entry.InnerText);
-                            if (castedControl.Hotkey.ToString() == "None")
+                            castCtrl.Hotkey = hkInfo.Hotkey;
+                            if (castCtrl.Hotkey == null || castCtrl.Hotkey.ToString() == "None")
                             {
-                                castedControl.FontStyle = FontStyles.Italic;
+                                castCtrl.FontStyle = FontStyles.Italic;
                             }
                         }
                     }
