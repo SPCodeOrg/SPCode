@@ -23,7 +23,7 @@
              IsReadOnlyCaretVisible="False"
              IsUndoEnabled="False"
              PreviewKeyDown="HotkeyTextBox_PreviewKeyDown"
-             Text="{Binding Hotkey, ElementName=UserControl, Mode=OneWay, TargetNullValue=&lt; not set &gt;}" BorderBrush="#FF444444">
+             Text="{Binding Hotkey, ElementName=UserControl, Mode=OneWay, TargetNullValue=None}" BorderBrush="#FF444444">
     <TextBox.ContextMenu>
       <ContextMenu Visibility="Collapsed" />
     </TextBox.ContextMenu>

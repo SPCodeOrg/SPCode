@@ -78,12 +78,11 @@ namespace SPCode.UI
 
         private void ProcessHotkey(Hotkey hk)
         {
-            var hotkeyInfo = Program.HotkeysList.FirstOrDefault(x => x.Hotkey.ToString() == hk.ToString());
+            var hotkeyInfo = Program.HotkeysList.FirstOrDefault(x => x.Hotkey != null && x.Hotkey.ToString() == hk.ToString());
             if (hotkeyInfo != null)
             {
                 Commands[hotkeyInfo.Command]();
             }
         }
-
     }
 }

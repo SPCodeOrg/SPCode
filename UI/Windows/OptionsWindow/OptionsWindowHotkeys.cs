@@ -17,14 +17,10 @@ namespace SPCode.UI.Windows
         private readonly DispatcherTimer SaveHotkeyTimer;
         private HotkeyEditorControl _ctrl;
         private Hotkey _currentControlHotkey;
+        private FontStyle _currentFontStyle;
 
         private void Hotkey_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            //if (!e.IsDown)
-            //{
-            //    return;
-            //}
-
             var key = e.Key;
 
             if (key == Key.System)
@@ -48,6 +44,7 @@ namespace SPCode.UI.Windows
             }
             _ctrl = sender as HotkeyEditorControl;
             _currentControlHotkey = _ctrl.Hotkey;
+            _currentFontStyle = _ctrl.FontStyle;
 
             SaveHotkeyTimer.Stop();
             SaveHotkeyTimer.Start();
@@ -68,23 +65,35 @@ namespace SPCode.UI.Windows
 
             foreach (var hkInfo in Program.HotkeysList)
             {
+
+                // Check if the user has cleared the hotkey field
+                if (_ctrl.Hotkey == null)
+                {
+                    Program.HotkeysList.FirstOrDefault(x => x.Command == _ctrl.Name.Substring(2)).Hotkey = null;
+                    _ctrl.FontStyle = FontStyles.Italic;
+                    break;
+                }
+
                 // Check if the received hotkey is not already assigned
-                if (hkInfo.Hotkey.ToString() == _ctrl.Hotkey.ToString() && hkInfo.Command != _ctrl.Name.Substring(2))
+                else if (_ctrl.Hotkey != null && hkInfo.Hotkey != null && hkInfo.Hotkey.ToString() == _ctrl.Hotkey.ToString() && hkInfo.Command != _ctrl.Name.Substring(2))
                 {
                     _ctrl.Hotkey = _currentControlHotkey;
+                    _ctrl.FontStyle = _currentFontStyle;
                     ShowLabel("In use!");
                     return;
                 }
 
                 // Check if the attempted hotkey is not restricted
-                else if (HotkeyControl.RestrictedHotkeys.Where(x => x.Value.Equals(_ctrl.Hotkey.ToString())).Count() > 0)
+                else if (HotkeyControl.RestrictedHotkeys.Where(x => _ctrl.Hotkey != null && x.Value.Equals(_ctrl.Hotkey.ToString())).Count() > 0)
                 {
                     _ctrl.Hotkey = _currentControlHotkey;
+                    _ctrl.FontStyle = _currentFontStyle;
                     ShowLabel("Reserved!");
                     return;
                 }
                 else
                 {
+                    _ctrl.FontStyle = FontStyles.Normal;
                     HideLabel();
                 }
             }
@@ -97,12 +106,20 @@ namespace SPCode.UI.Windows
             {
                 if (entry.Name == _ctrl.Name.Substring(2))
                 {
-                    entry.InnerText = _ctrl.Hotkey.ToString();
-                    break;
+                    if (_ctrl.Hotkey == null)
+                    {
+                        entry.InnerText = "None";
+                        document.Save(Constants.HotkeysFile);
+                        return;
+                    }
+                    else
+                    {
+                        entry.InnerText = _ctrl.Hotkey.ToString();
+                        document.Save(Constants.HotkeysFile);
+                        break;
+                    }
                 }
             }
-
-            document.Save(Constants.HotkeysFile);
 
             // Buffer new hotkey
             foreach (var hkInfo in Program.HotkeysList)
@@ -140,6 +157,10 @@ namespace SPCode.UI.Windows
                         if (castedControl.Name.Substring(2) == entry.Name)
                         {
                             castedControl.Hotkey = new Hotkey(entry.InnerText);
+                            if (castedControl.Hotkey.ToString() == "None")
+                            {
+                                castedControl.FontStyle = FontStyles.Italic;
+                            }
                         }
                     }
                 }
