@@ -4,9 +4,6 @@ using MahApps.Metro.Controls;
 
 namespace SPCode.UI.Interop
 {
-    /// <summary>
-    /// Interaction logic for LanguageChooserWindow.xaml
-    /// </summary>
     public partial class LanguageChooserWindow : MetroWindow
     {
         public string SelectedID = string.Empty;

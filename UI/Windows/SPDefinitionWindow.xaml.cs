@@ -14,9 +14,6 @@ using SourcepawnCondenser.SourcemodDefinition;
 
 namespace SPCode.UI.Windows
 {
-    /// <summary>
-    ///     Interaction logic for AboutWindow.xaml
-    /// </summary>
     public partial class SPDefinitionWindow
     {
         private readonly SMBaseDefinition[] defArray;

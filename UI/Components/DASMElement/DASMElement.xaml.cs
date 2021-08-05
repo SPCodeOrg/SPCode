@@ -9,9 +9,6 @@ using smxdasm;
 
 namespace SPCode.UI.Components
 {
-    /// <summary>
-    /// Interaction logic for DASMElement.xaml
-    /// </summary>
     public partial class DASMElement : UserControl
     {
         private double LineHeight = 0.0;

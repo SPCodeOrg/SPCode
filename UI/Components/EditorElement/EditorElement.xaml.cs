@@ -24,9 +24,6 @@ using SPCode.Utils;
 
 namespace SPCode.UI.Components
 {
-    /// <summary>
-    ///     Interaction logic for EditorElement.xaml
-    /// </summary>
     public partial class EditorElement : UserControl
     {
         #region Variables and Properties

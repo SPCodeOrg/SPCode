@@ -18,9 +18,6 @@ using SPCode.Utils;
 
 namespace SPCode.UI.Windows
 {
-    /// <summary>
-    ///     Interaction logic for AboutWindow.xaml
-    /// </summary>
     public partial class ConfigWindow
     {
         private bool AllowChange;
