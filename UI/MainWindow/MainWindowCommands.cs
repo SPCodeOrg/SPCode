@@ -136,6 +136,15 @@ namespace SPCode.UI
             goToLineWindow.ShowDialog();
         }
 
+        private void Command_DeleteLine()
+        {
+            var ee = GetCurrentEditorElement();
+            if (ee != null)
+            {
+                ee.DeleteLine();
+            }
+        }
+
         private void Command_FindReplace()
         {
             if (GetAllEditorElements() == null)

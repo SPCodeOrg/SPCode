@@ -841,6 +841,12 @@ namespace SPCode.UI.Components
             }
         }
 
+        public void DeleteLine()
+        {
+            var line = editor.Document.GetLineByOffset(editor.CaretOffset);
+            editor.Document.Remove(line.Offset, line.TotalLength);
+        }
+
         private bool IsValidSearchSelectionString(string s)
         {
             var length = s.Length;

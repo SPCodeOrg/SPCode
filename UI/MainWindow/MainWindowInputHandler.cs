@@ -30,6 +30,7 @@ namespace SPCode.UI
                 { "ReformatAll", () => Command_TidyCode(true) },
                 { "GoToLine", Command_GoToLine },
                 { "CommentLine", Command_ToggleCommentLine },
+                { "DeleteLine", Command_DeleteLine },
                 { "MoveLineDown", () => GetCurrentEditorElement().MoveLine(true) },
                 { "MoveLineUp", () => GetCurrentEditorElement().MoveLine(false) },
                 { "DupeLineDown", () => GetCurrentEditorElement().DuplicateLine(true) },

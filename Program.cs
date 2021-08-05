@@ -83,7 +83,10 @@ namespace SPCode
                     {
                         HotkeyControl.BufferHotkeys();
                     }
-                    
+
+                    // Delete the default Ctrl+D hotkey to assign manually
+                    AvalonEditCommands.DeleteLine.InputGestures.Clear();
+
                     if (OptionsObject.Program_DiscordPresence)
                     {
                         // Init Discord RPC
