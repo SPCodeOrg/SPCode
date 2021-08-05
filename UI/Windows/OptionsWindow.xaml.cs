@@ -645,6 +645,18 @@ namespace SPCode.UI.Windows
             HighlightDeprecateds.Content = Program.Translations.GetLanguage("HighDeprecat");
             AutoSaveBlock.Text = Program.Translations.GetLanguage("AutoSaveMin");
             DefaultButton.Content = Program.Translations.GetLanguage("DefaultValues");
+
+            foreach (var item in HotkeysGrid.Children)
+            {
+                if (item is TextBlock)
+                {
+                    var cItem = item as TextBlock;
+                    if (!string.IsNullOrEmpty(cItem.Name))
+                    {
+                        cItem.Text = Program.Translations.GetLanguage(cItem.Name.Substring(3));
+                    }
+                }
+            }
         }
         #endregion
     }

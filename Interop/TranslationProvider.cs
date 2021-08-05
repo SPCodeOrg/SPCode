@@ -100,9 +100,9 @@ namespace SPCode.Interop
             language.Add("Saving", "Saving");
             language.Add("SavingUFiles", "Save all unsaved files?");
             language.Add("CompileAll", "Compile all");
-            language.Add("CompileCurr", "Compile current");
+            language.Add("CompileCurrent", "Compile current");
             language.Add("Copy", "Copy");
-            language.Add("FTPUp", "FTP Upload");
+            language.Add("UploadFTP", "FTP Upload");
             language.Add("StartServer", "Start server");
             language.Add("Replace", "Replace");
             language.Add("ReplaceAll", "Replace all");
@@ -140,7 +140,7 @@ namespace SPCode.Interop
             language.Add("Done", "Done");
             language.Add("FileStr", "File");
             language.Add("New", "New");
-            language.Add("NewFromTemplate", "New From Template");
+            language.Add("NewTemplate", "New from Template");
             language.Add("Open", "Open");
             language.Add("Save", "Save");
             language.Add("SaveAll", "Save all");
@@ -148,8 +148,8 @@ namespace SPCode.Interop
             language.Add("Close", "Close");
             language.Add("CloseAll", "Close all");
             language.Add("Build", "Build");
-            language.Add("CopyPlugin", "Copy Plugins");
-            language.Add("SendRCon", "Send RCon commands");
+            language.Add("CopyPlugins", "Copy Plugins");
+            language.Add("SendRCON", "Send RCON Commands");
             language.Add("Config", "Configuration");
             language.Add("Edit", "Edit");
             language.Add("Undo", "Undo");
@@ -157,19 +157,18 @@ namespace SPCode.Interop
             language.Add("Cut", "Cut");
             language.Add("Paste", "Paste");
             language.Add("Folding", "Foldings");
-            language.Add("ExpandAll", "Expand all");
-            language.Add("CollapseAll", "Collapse all");
-            language.Add("JumpTo", "Jump to");
-            language.Add("TogglComment", "Toggle comment");
+            language.Add("FoldingsExpand", "Expand all");
+            language.Add("FoldingsCollapse", "Collapse all");
+            language.Add("CommentLine", "Toggle comment");
             language.Add("SelectAll", "Select all");
-            language.Add("FindReplace", "Find & Replace");
+            language.Add("SearchReplace", "Find & Replace");
             language.Add("Tools", "Tools");
             language.Add("Options", "Options");
-            language.Add("ParsedIncDir", "Parsed from include directory");
+            language.Add("SearchDefinition", "Parsed from include directory");
             language.Add("NewAPIWeb", "API Reference");
             language.Add("BetaAPIWeb", "(BETA) API Reference");
             language.Add("Reformatter", "Syntax reformatter");
-            language.Add("ReformatCurr", "Reformat current");
+            language.Add("ReformatCurrent", "Reformat current");
             language.Add("ReformatAll", "Reformat all");
             language.Add("Decompile", "Decompile");
             language.Add("ReportBugGit", "Report bug on GitHub");
@@ -205,7 +204,6 @@ namespace SPCode.Interop
             language.Add("License", "License");
             language.Add("PeopleInv", "People involved");
             language.Add("Preview", "Preview");
-            language.Add("NewFile", "New file");
             language.Add("ConfigWrongPars", "The config was not able to parse a sourcepawn definition.");
             language.Add("NoName", "no name");
             language.Add("PosLen", "(pos: {0} - len: {1})");
@@ -333,7 +331,13 @@ namespace SPCode.Interop
             language.Add("GoToLine", "Go to line");
             language.Add("GoToOffset", "Go to offset");
             language.Add("Go", "Go");
-
+            language.Add("Hotkey", "Hotkey");
+            language.Add("Command", "Command");
+            language.Add("DeleteLine", "Delete line");
+            language.Add("MoveLineDown", "Move line down");
+            language.Add("MoveLineUp", "Move line up");
+            language.Add("DupeLineDown", "Duplicate line down");
+            language.Add("DupeLineUp", "Duplicate line up");
         }
     }
 }

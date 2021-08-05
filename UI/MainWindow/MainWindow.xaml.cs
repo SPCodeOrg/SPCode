@@ -31,11 +31,11 @@ namespace SPCode.UI
         private ObservableCollection<string> actionButtonDict = new()
         {
             Program.Translations.GetLanguage("Copy"),
-            Program.Translations.GetLanguage("FTPUp"),
+            Program.Translations.GetLanguage("UploadFTP"),
             Program.Translations.GetLanguage("StartServer")
         };
 
-        private ObservableCollection<string> compileButtonDict = new() { Program.Translations.GetLanguage("CompileAll"), Program.Translations.GetLanguage("CompileCurr") };
+        private ObservableCollection<string> compileButtonDict = new() { Program.Translations.GetLanguage("CompileAll"), Program.Translations.GetLanguage("CompileCurrent") };
 
         public MainWindow()
         {
