@@ -220,6 +220,7 @@
     <Compile Include="Utils\DecompileUtil.cs" />
     <Compile Include="Utils\Hotkey.cs" />
     <Compile Include="Utils\HotkeyInfo.cs" />
+    <Compile Include="Utils\HotkeyUtils.cs" />
     <Compile Include="Utils\JavaInstallation.cs" />
     <Compile Include="Utils\Paths.cs" />
     <Compile Include="Utils\FTP.cs" />

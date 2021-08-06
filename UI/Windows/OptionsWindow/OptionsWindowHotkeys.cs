@@ -30,26 +30,15 @@ namespace SPCode.UI.Windows
                 key = e.SystemKey;
             }
 
-            if (key == Key.LeftCtrl ||
-                key == Key.RightCtrl ||
-                key == Key.LeftAlt ||
-                key == Key.RightAlt ||
-                key == Key.LeftShift ||
-                key == Key.RightShift ||
-                key == Key.LWin ||
-                key == Key.RWin ||
-                key == Key.Clear ||
-                key == Key.OemClear ||
-                key == Key.Apps)
+            if (!HotkeyUtils.IsKeyModifier(key))
             {
-                return;
-            }
-            _ctrl = sender as HotkeyEditorControl;
-            _currentControlHotkey = _ctrl.Hotkey;
-            _currentFontStyle = _ctrl.FontStyle;
+                _ctrl = sender as HotkeyEditorControl;
+                _currentControlHotkey = _ctrl.Hotkey;
+                _currentFontStyle = _ctrl.FontStyle;
 
-            SaveHotkeyTimer.Stop();
-            SaveHotkeyTimer.Start();
+                SaveHotkeyTimer.Stop();
+                SaveHotkeyTimer.Start();
+            }
         }
 
         private void OnTimerTick(object sender, EventArgs e)

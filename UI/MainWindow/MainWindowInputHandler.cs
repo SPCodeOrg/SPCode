@@ -61,22 +61,11 @@ namespace SPCode.UI
                 key = e.SystemKey;
             }
 
-            if (key == Key.LeftCtrl ||
-                key == Key.RightCtrl ||
-                key == Key.LeftAlt ||
-                key == Key.RightAlt ||
-                key == Key.LeftShift ||
-                key == Key.RightShift ||
-                key == Key.LWin ||
-                key == Key.RWin ||
-                key == Key.Clear ||
-                key == Key.OemClear ||
-                key == Key.Apps)
+            if (!HotkeyUtils.IsKeyModifier(key))
             {
-                return;
+                ProcessHotkey(new Hotkey(key, modifiers));
             }
 
-            ProcessHotkey(new Hotkey(key, modifiers));
         }
 
         public void ProcessHotkey(Hotkey hk, KeyEventArgs e = null)

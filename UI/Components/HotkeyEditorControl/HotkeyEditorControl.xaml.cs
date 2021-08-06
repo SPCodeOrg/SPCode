@@ -50,23 +50,7 @@ namespace SPCode.UI.Components
                 return;
             }
 
-            // If no actual key was pressed - return
-            if (key == Key.LeftCtrl ||
-                key == Key.RightCtrl ||
-                key == Key.LeftAlt ||
-                key == Key.RightAlt ||
-                key == Key.LeftShift ||
-                key == Key.RightShift ||
-                key == Key.LWin ||
-                key == Key.RWin ||
-                key == Key.Clear ||
-                key == Key.OemClear ||
-                key == Key.Apps)
-            {
-                return;
-            }
-
-            if (!InputEnabled)
+            if (HotkeyUtils.IsKeyModifier(key) || !InputEnabled)
             {
                 return;
             }
