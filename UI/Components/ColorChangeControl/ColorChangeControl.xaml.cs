@@ -4,9 +4,6 @@ using System.Windows.Media;
 
 namespace SPCode.UI.Components
 {
-    /// <summary>
-    /// Interaction logic for ColorChangeControl.xaml
-    /// </summary>
     public partial class ColorChangeControl : UserControl
     {
         public static readonly RoutedEvent ColorChangedEvent = EventManager.RegisterRoutedEvent(

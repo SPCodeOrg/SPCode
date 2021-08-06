@@ -2,10 +2,14 @@
 {
     public class Constants
     {
-        public static string GitHubNewIssueLink = "https://github.com/Hexer10/SPCode/issues/new";
-        public static string GitHubLatestRelease = "https://github.com/Hexer10/SPCode/releases/latest";
-        public static string DiscordRPCAppID = "692110664948514836";
-        public static string JavaDownloadSite64 = "https://api.adoptopenjdk.net/v3/installer/latest/15/ga/windows/x64/jdk/hotspot/normal/adoptopenjdk?project=jdk";
-        public static string JavaDownloadSite32 = "https://api.adoptopenjdk.net/v3/installer/latest/15/ga/windows/x32/jdk/hotspot/normal/adoptopenjdk?project=jdk";
+        public const string GitHubNewIssueLink = "https://github.com/Hexer10/SPCode/issues/new";
+        public const string GitHubLatestRelease = "https://github.com/Hexer10/SPCode/releases/latest";
+        public const string DiscordRPCAppID = "692110664948514836";
+        public const string JavaDownloadSite64 = "https://api.adoptopenjdk.net/v3/installer/latest/15/ga/windows/x64/jdk/hotspot/normal/adoptopenjdk?project=jdk";
+        public const string JavaDownloadSite32 = "https://api.adoptopenjdk.net/v3/installer/latest/15/ga/windows/x32/jdk/hotspot/normal/adoptopenjdk?project=jdk";
+        public const string JavaDownloadFile = @"%userprofile%\Downloads\adoptopenjdk-java-15-spcode.msi";
+        public const string FileOpenFilters = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|Sourcemod Plugins (*.smx)|*.smx|All Files (*.*)|*.*";
+        public const string FileSaveFilters = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|All Files (*.*)|*.*";
+        public const string HotkeysFile = "Hotkeys.xml";
     }
 }

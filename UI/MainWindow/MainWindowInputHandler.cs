@@ -1,11 +1,51 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 using System.Windows.Input;
+using System.Xml;
+using SPCode.Utils;
 
 namespace SPCode.UI
 {
     public partial class MainWindow
     {
-        //some key bindings are handled in EditorElement.xaml.cs because the editor will fetch some keys before they can be handled here.
+        public Dictionary<string, Action> Commands;
+
+        private void LoadCommandsDictionary()
+        {
+            Commands = new()
+            {
+                { "New", Command_New },
+                { "NewTemplate", Command_NewFromTemplate },
+                { "Open", Command_Open },
+                { "Save", Command_Save },
+                { "SaveAll", Command_SaveAll },
+                { "SaveAs", Command_SaveAs },
+                { "Close", Command_Close },
+                { "CloseAll", Command_CloseAll },
+                { "FoldingsExpand", () => Command_FlushFoldingState(true) },
+                { "FoldingsCollapse", () => Command_FlushFoldingState(false) },
+                { "ReformatCurrent", () => Command_TidyCode(false) },
+                { "ReformatAll", () => Command_TidyCode(true) },
+                { "GoToLine", Command_GoToLine },
+                { "CommentLine", Command_ToggleCommentLine },
+                { "DeleteLine", Command_DeleteLine },
+                { "MoveLineDown", () => GetCurrentEditorElement().MoveLine(true) },
+                { "MoveLineUp", () => GetCurrentEditorElement().MoveLine(false) },
+                { "DupeLineDown", () => GetCurrentEditorElement().DuplicateLine(true) },
+                { "DupeLineUp", () => GetCurrentEditorElement().DuplicateLine(false) },
+                { "SearchReplace", Command_FindReplace },
+                { "SearchDefinition", Command_OpenSPDef },
+                { "CompileCurrent", () => Compile_SPScripts(false) },
+                { "CompileAll", () => Compile_SPScripts() },
+                { "CopyPlugins", () => Copy_Plugins() },
+                { "UploadFTP", FTPUpload_Plugins },
+                { "StartServer", Server_Start },
+                { "SendRCON", Server_Query },
+            };
+        }
+
         private void MainWindowEvent_KeyDown(object sender, KeyEventArgs e)
         {
             if (!e.IsDown)
@@ -13,173 +53,30 @@ namespace SPCode.UI
                 return;
             }
 
-            if (e.SystemKey == Key.F10)
+            var key = e.Key;
+            var modifiers = Keyboard.Modifiers;
+
+            if (key == Key.System)
             {
-                Server_Query();
-                e.Handled = true;
-                return;
+                key = e.SystemKey;
             }
 
-            if (e.KeyboardDevice.IsKeyDown(Key.LeftCtrl))
+            if (!HotkeyUtils.IsKeyModifier(key))
             {
-                if (e.KeyboardDevice.IsKeyDown(Key.LeftAlt))
-                {
-                    switch (e.Key)
-                    {
-                        case Key.S:
-                            {
-                                Command_SaveAs();
-                                e.Handled = true;
-                                break;
-                            }
-                    }
-                }
-                else if (e.KeyboardDevice.IsKeyDown(Key.LeftShift))
-                {
-                    switch (e.Key)
-                    {
-                        case Key.N:
-                            {
-                                Command_NewFromTemplate();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.S:
-                            {
-                                Command_SaveAll();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.W:
-                            {
-                                Command_CloseAll();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.P:
-                            {
-                                Command_FlushFoldingState(true);
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.F:
-                            {
-                                Command_OpenSPDef();
-                                e.Handled = true;
-                                break;
-                            }
-                    }
-                }
-                else if (!e.KeyboardDevice.IsKeyDown(Key.RightAlt))
-                {
-                    switch (e.Key)
-                    {
-                        case Key.N:
-                            {
-                                Command_New();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.O:
-                            {
-                                Command_Open();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.S:
-                            {
-                                Command_Save();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.F:
-                            {
-                                ToggleSearchField();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.W:
-                            {
-                                Command_Close();
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.R:
-                            {
-                                Command_TidyCode(false);
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.P:
-                            {
-                                Command_FlushFoldingState(false);
-                                e.Handled = true;
-                                break;
-                            }
-                        case Key.D7: //i hate key mapping...
-                        case Key.OemQuestion:
-                            {
-                                Command_ToggleCommentLine();
-                                break;
-                            }
-                    }
-                }
+                ProcessHotkey(new Hotkey(key, modifiers));
             }
-            else
-            {
-                switch (e.Key)
-                {
-                    case Key.F3:
-                        {
-                            Search();
-                            e.Handled = true;
-                            break;
-                        }
-                    case Key.F5:
-                        {
-                            Compile_SPScripts();
-                            e.Handled = true;
-                            break;
-                        }
-                    case Key.F6:
-                        {
-                            Compile_SPScripts(false);
-                            e.Handled = true;
-                            break;
-                        }
-                    case Key.F7:
-                        {
-                            Copy_Plugins();
-                            e.Handled = true;
-                            break;
-                        } //copy
-                    case Key.F8:
-                        {
-                            FTPUpload_Plugins();
-                            e.Handled = true;
-                            break;
-                        } //ftp upload
-                    case Key.F9:
-                        {
-                            Server_Start();
-                            e.Handled = true;
-                            break;
-                        }
-                    case Key.Escape:
-                        {
-                            if (InCompiling)
-                            {
-                                InCompiling = false;
-                                e.Handled = true;
-                            }
-                            else if (CompileOutputRow.Height.Value > 8.0)
-                            {
-                                CompileOutputRow.Height = new GridLength(8.0);
-                                e.Handled = true;
-                            }
 
-                            break;
-                        }
+        }
+
+        public void ProcessHotkey(Hotkey hk, KeyEventArgs e = null)
+        {
+            var hotkeyInfo = Program.HotkeysList.FirstOrDefault(x => x.Hotkey != null && x.Hotkey.ToString() == hk.ToString());
+            if (hotkeyInfo != null)
+            {
+                Commands[hotkeyInfo.Command]();
+                if (e != null)
+                {
+                    e.Handled = true;
                 }
             }
         }

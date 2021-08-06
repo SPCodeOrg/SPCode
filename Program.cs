@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -10,6 +11,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using DiscordRPC;
+using ICSharpCode.AvalonEdit;
 using MahApps.Metro;
 using SPCode.Interop;
 using SPCode.Interop.Updater;
@@ -24,6 +26,7 @@ namespace SPCode
         public static MainWindow MainWindow;
         public static OptionsControl OptionsObject;
         public static TranslationProvider Translations;
+        public static List<HotkeyInfo> HotkeysList;
         public static Config[] Configs;
         public static int SelectedConfig;
 
@@ -39,6 +42,7 @@ namespace SPCode
 
         public static bool _IsLocalInstallation;
 
+        public static bool IsSearchOpen = false;
 
         [STAThread]
         public static void Main(string[] args)
@@ -70,6 +74,18 @@ namespace SPCode
                     _IsLocalInstallation = Paths.IsLocalInstallation();
                     UpdateStatus = new UpdateInfo();
                     OptionsObject = OptionsControlIOObject.Load(out var ProgramIsNew);
+
+                    if (!File.Exists(Constants.HotkeysFile))
+                    {
+                        HotkeyControl.CreateDefaultHotkeys();
+                    }
+                    else
+                    {
+                        HotkeyControl.BufferHotkeys();
+                    }
+
+                    // Delete the default Ctrl+D hotkey to assign manually
+                    AvalonEditCommands.DeleteLine.InputGestures.Clear();
 
                     if (OptionsObject.Program_DiscordPresence)
                     {

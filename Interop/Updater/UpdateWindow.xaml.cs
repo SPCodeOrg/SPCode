@@ -10,9 +10,6 @@ using SPCode.Utils;
 
 namespace SPCode.Interop.Updater
 {
-    /// <summary>
-    ///     Interaction logic for UpdateWindow.xaml
-    /// </summary>
     public partial class UpdateWindow
     {
         private readonly UpdateInfo updateInfo;

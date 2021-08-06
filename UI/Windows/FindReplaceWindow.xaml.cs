@@ -1,29 +1,61 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
+using MahApps.Metro;
 using SPCode.UI.Components;
+using Xceed.Wpf.AvalonDock.Layout;
 
-namespace SPCode.UI
+namespace SPCode.UI.Windows
 {
-    public partial class MainWindow
+    public partial class FindReplaceWindow
     {
+        #region Variables
+        private EditorElement _editor;
+        private EditorElement[] _allEditors;
+        private LayoutDocumentPane _dockingPane;
         private bool IsSearchFieldOpen;
+        private readonly ObservableCollection<string> findReplaceButtonDict = new()
+        { 
+            Program.Translations.GetLanguage("Replace"), Program.Translations.GetLanguage("ReplaceAll") 
+        };
+        #endregion
+
+        #region Constructor
+        public FindReplaceWindow()
+        {
+            InitializeComponent();
+            if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
+            {
+                ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
+                    ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
+            }
+
+            ReplaceButton.ItemsSource = findReplaceButtonDict;
+            ReplaceButton.SelectedIndex = 0;
+
+            LoadEditorsInfo();
+
+            Language_Translate();
+
+        }
+        #endregion
 
         private void ToggleSearchField()
         {
-            var ee = GetCurrentEditorElement();
+            LoadEditorsInfo();
             if (IsSearchFieldOpen)
             {
-                if (ee != null)
+                if (_editor != null)
                 {
-                    if (ee.IsKeyboardFocusWithin)
+                    if (_editor.IsKeyboardFocusWithin)
                     {
-                        if (ee.editor.SelectionLength > 0)
+                        if (_editor.editor.SelectionLength > 0)
                         {
-                            FindBox.Text = ee.editor.SelectedText;
+                            FindBox.Text = _editor.editor.SelectedText;
                         }
                         FindBox.SelectAll();
                         FindBox.Focus();
@@ -32,42 +64,26 @@ namespace SPCode.UI
                 }
                 IsSearchFieldOpen = false;
                 FindReplaceGrid.IsHitTestVisible = false;
-                if (Program.OptionsObject.UI_Animations)
-                {
-                    FadeFindReplaceGridOut.Begin();
-                }
-                else
-                {
-                    FindReplaceGrid.Opacity = 0.0;
-                }
-                if (ee == null)
+                if (_editor == null)
                 {
                     return;
                 }
-                ee.editor.Focus();
+                _editor.editor.Focus();
             }
             else
             {
                 IsSearchFieldOpen = true;
                 FindReplaceGrid.IsHitTestVisible = true;
-                if (ee == null)
+                if (_editor == null)
                 {
                     return;
                 }
-                if (ee.editor.SelectionLength > 0)
+                if (_editor.editor.SelectionLength > 0)
                 {
-                    FindBox.Text = ee.editor.SelectedText;
-                }
-                FindBox.SelectAll();
-                if (Program.OptionsObject.UI_Animations)
-                {
-                    FadeFindReplaceGridIn.Begin();
-                }
-                else
-                {
-                    FindReplaceGrid.Opacity = 1.0;
+                    FindBox.Text = _editor.editor.SelectedText;
                 }
                 FindBox.Focus();
+                FindBox.SelectAll();
             }
         }
 
@@ -122,14 +138,17 @@ namespace SPCode.UI
 
         private void Search()
         {
-            var editors = GetEditorElementsForFRAction(out var editorIndex);
-            if (editors == null) { return; }
-            if (editors.Length < 1) { return; }
-            if (editors[0] == null) { return; }
+            LoadEditorsInfo();
+            var editors = GetEditorElementsForFraction(out var editorIndex);
             var regex = GetSearchRegex();
-            if (regex == null) { return; }
+            if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
+            {
+                return;
+            }
+
             var startFileCaretOffset = 0;
             var foundOccurence = false;
+
             for (var i = editorIndex; i < (editors.Length + editorIndex + 1); ++i)
             {
                 var index = ValueUnderMap(i, editors.Length);
@@ -155,7 +174,7 @@ namespace SPCode.UI
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     var m = regex.Match(searchText);
-                    if (m.Success) //can this happen?
+                    if (m.Success) // can this happen ?
                     {
                         foundOccurence = true;
                         editors[index].Parent.IsSelected = true;
@@ -163,7 +182,7 @@ namespace SPCode.UI
                         editors[index].editor.Select(m.Index + addToOffset, m.Length);
                         var location = editors[index].editor.Document.GetLocation(m.Index + addToOffset);
                         editors[index].editor.ScrollTo(location.Line, location.Column);
-                        //FindResultBlock.Text = "Found in offset " + (m.Index + addToOffset).ToString() + " with length " + m.Length.ToString();
+                        FindResultBlock.Text = "Found in offset " + (m.Index + addToOffset).ToString() + " with length " + m.Length.ToString();
                         FindResultBlock.Text = string.Format(Program.Translations.GetLanguage("FoundInOff"), m.Index + addToOffset, m.Length);
                         break;
                     }
@@ -177,12 +196,14 @@ namespace SPCode.UI
 
         private void Replace()
         {
-            var editors = GetEditorElementsForFRAction(out var editorIndex);
-            if (editors == null) { return; }
-            if (editors.Length < 1) { return; }
-            if (editors[0] == null) { return; }
+            LoadEditorsInfo();
+            var editors = GetEditorElementsForFraction(out var editorIndex);
             var regex = GetSearchRegex();
-            if (regex == null) { return; }
+            if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
+            {
+                return;
+            }
+
             var replaceString = ReplaceBox.Text;
             var startFileCaretOffset = 0;
             var foundOccurence = false;
@@ -234,12 +255,13 @@ namespace SPCode.UI
 
         private void ReplaceAll()
         {
-            var editors = GetEditorElementsForFRAction(out _);
-            if (editors == null) { return; }
-            if (editors.Length < 1) { return; }
-            if (editors[0] == null) { return; }
+            LoadEditorsInfo();
+            var editors = GetEditorElementsForFraction(out _);
             var regex = GetSearchRegex();
-            if (regex == null) { return; }
+            if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
+            {
+                return;
+            }
 
             var count = 0;
             var fileCount = 0;
@@ -262,13 +284,14 @@ namespace SPCode.UI
                     editor.NeedsSave = true;
                 }
             }
-            // FindResultBlock.Text = "Replaced " + count.ToString() + " occurences in " + fileCount.ToString() + " documents";
+            FindResultBlock.Text = "Replaced " + count.ToString() + " occurences in " + fileCount.ToString() + " documents";
             FindResultBlock.Text = string.Format(Program.Translations.GetLanguage("ReplacedOcc"), count, fileCount);
         }
 
         private void Count()
         {
-            var editors = GetEditorElementsForFRAction(out _);
+            LoadEditorsInfo();
+            var editors = GetEditorElementsForFraction(out _);
             if (editors == null) { return; }
             if (editors.Length < 1) { return; }
             if (editors[0] == null) { return; }
@@ -291,7 +314,7 @@ namespace SPCode.UI
                 FindResultBlock.Text = Program.Translations.GetLanguage("EmptyPatt");
                 return null;
             }
-            Regex regex;
+            Regex regex = new(string.Empty);
             var regexOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant;
             Debug.Assert(CCBox.IsChecked != null, "CCBox.IsChecked != null");
             Debug.Assert(NSearch_RButton.IsChecked != null, "NSearch_RButton.IsChecked != null");
@@ -322,17 +345,21 @@ namespace SPCode.UI
                             match => ((char)int.Parse(match.Value.Substring(2), NumberStyles.HexNumber)).ToString());
                         regex = new Regex(Regex.Escape(findString), regexOptions);
                     }
-                    else //if (RSearch_RButton.IsChecked.Value)
+                    else if (RSearch_RButton.IsChecked.Value)
                     {
                         regexOptions |= RegexOptions.Multiline;
                         Debug.Assert(MLRBox.IsChecked != null, "MLRBox.IsChecked != null");
                         if (MLRBox.IsChecked.Value)
-                        { regexOptions |= RegexOptions.Singleline; } //paradox, isn't it? ^^
+                        { regexOptions |= RegexOptions.Singleline; }
+                        // paradox, isn't it? ^^
                         try
                         {
                             regex = new Regex(findString, regexOptions);
                         }
-                        catch (Exception) { FindResultBlock.Text = Program.Translations.GetLanguage("NoValidRegex"); return null; }
+                        catch (Exception)
+                        {
+                            FindResultBlock.Text = Program.Translations.GetLanguage("NoValidRegex"); return null;
+                        }
                     }
                 }
             }
@@ -340,16 +367,17 @@ namespace SPCode.UI
             return regex;
         }
 
-        private EditorElement[] GetEditorElementsForFRAction(out int editorIndex)
+        private EditorElement[] GetEditorElementsForFraction(out int editorIndex)
         {
+            LoadEditorsInfo();
             var editorStartIndex = 0;
             EditorElement[] editors;
             if (FindDestinies.SelectedIndex == 0)
-            { editors = new[] { GetCurrentEditorElement() }; }
+            { editors = new[] { _editor }; }
             else
             {
-                editors = GetAllEditorElements();
-                var checkElement = DockingPane.SelectedContent?.Content;
+                editors = _allEditors;
+                var checkElement = _dockingPane.SelectedContent?.Content;
                 if (checkElement is EditorElement)
                 {
                     for (var i = 0; i < editors.Length; ++i)
@@ -372,6 +400,49 @@ namespace SPCode.UI
                 value -= map;
             }
             return value;
+        }
+
+        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Escape:
+                    {
+                        Close();
+                        break;
+                    }
+                case Key.F3:
+                    {
+                        Search();
+                        break;
+                    }
+            }
+        }
+        private void MetroWindow_Closed(object sender, EventArgs e)
+        {
+            Program.IsSearchOpen = false;
+        }
+
+        private void LoadEditorsInfo()
+        {
+            _editor = Program.MainWindow.GetCurrentEditorElement();
+            _allEditors = Program.MainWindow.GetAllEditorElements();
+            _dockingPane = Program.MainWindow.DockingPane;
+        }
+
+        public void Language_Translate()
+        {
+            NSearch_RButton.Content = Program.Translations.GetLanguage("NormalSearch");
+            WSearch_RButton.Content = Program.Translations.GetLanguage("MatchWholeWords");
+            ASearch_RButton.Content = $"{Program.Translations.GetLanguage("AdvancSearch")} (\\r, \\n, \\t, ...)";
+            RSearch_RButton.Content = Program.Translations.GetLanguage("RegexSearch");
+            MenuFR_CurrDoc.Content = Program.Translations.GetLanguage("CurrDoc");
+            MenuFR_AllDoc.Content = Program.Translations.GetLanguage("AllDoc");
+
+            Find_Button.Content = $"{Program.Translations.GetLanguage("Find")} (F3)";
+            Count_Button.Content = Program.Translations.GetLanguage("Count");
+            CCBox.Content = Program.Translations.GetLanguage("CaseSen");
+            MLRBox.Content = Program.Translations.GetLanguage("MultilineRegex");
         }
     }
 }

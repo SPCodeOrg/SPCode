@@ -12,9 +12,6 @@ using SPCode.Utils;
 
 namespace SPCode.UI.Windows
 {
-    /// <summary>
-    /// Interaction logic for NewFileWindow.xaml
-    /// </summary>
     public partial class NewFileWindow
     {
         // From https://github.com/CrucialCoding/Spedit/commit/d2edde54385bb76eccdf13934ce33a8a7e3cc31e
@@ -56,7 +53,7 @@ namespace SPCode.UI.Windows
                                     AddExtension = true,
                                     Filter = "Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|All Files (*.*)|*.*",
                                     OverwritePrompt = true,
-                                    Title = Program.Translations.GetLanguage("NewFile")
+                                    Title = Program.Translations.GetLanguage("New")
                                 };
                                 var result = dialog.ShowDialog();
 

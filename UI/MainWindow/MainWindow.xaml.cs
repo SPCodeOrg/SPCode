@@ -18,30 +18,24 @@ using Xceed.Wpf.AvalonDock.Layout;
 
 namespace SPCode.UI
 {
-    /// <summary>
-    ///     Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow
     {
         private readonly Storyboard BlendOverEffect;
         private readonly Storyboard DisableServerAnim;
         public readonly List<EditorElement> EditorsReferences = new();
         private readonly Storyboard EnableServerAnim;
-        private readonly Storyboard FadeFindReplaceGridIn;
-        private readonly Storyboard FadeFindReplaceGridOut;
+        public readonly List<MenuItem> MenuItems;
 
         private readonly bool FullyInitialized;
 
         private ObservableCollection<string> actionButtonDict = new()
         {
             Program.Translations.GetLanguage("Copy"),
-            Program.Translations.GetLanguage("FTPUp"),
+            Program.Translations.GetLanguage("UploadFTP"),
             Program.Translations.GetLanguage("StartServer")
         };
 
-        private ObservableCollection<string> compileButtonDict = new() { Program.Translations.GetLanguage("CompileAll"), Program.Translations.GetLanguage("CompileCurr") };
-
-        private ObservableCollection<string> findReplaceButtonDict = new() { Program.Translations.GetLanguage("Replace"), Program.Translations.GetLanguage("ReplaceAll") };
+        private ObservableCollection<string> compileButtonDict = new() { Program.Translations.GetLanguage("CompileAll"), Program.Translations.GetLanguage("CompileCurrent") };
 
         public MainWindow()
         {
@@ -68,8 +62,7 @@ namespace SPCode.UI
             CompileButton.SelectedIndex = 0;
             CActionButton.ItemsSource = actionButtonDict;
             CActionButton.SelectedIndex = 0;
-            ReplaceButton.ItemsSource = findReplaceButtonDict;
-            ReplaceButton.SelectedIndex = 0;
+            
             if (Program.OptionsObject.UI_ShowToolBar)
             {
                 Win_ToolBar.Height = double.NaN;
@@ -80,8 +73,6 @@ namespace SPCode.UI
 
             MetroDialogOptions.AnimateHide = MetroDialogOptions.AnimateShow = false;
             BlendOverEffect = (Storyboard)Resources["BlendOverEffect"];
-            FadeFindReplaceGridIn = (Storyboard)Resources["FadeFindReplaceGridIn"];
-            FadeFindReplaceGridOut = (Storyboard)Resources["FadeFindReplaceGridOut"];
             EnableServerAnim = (Storyboard)Resources["EnableServerAnim"];
             DisableServerAnim = (Storyboard)Resources["DisableServerAnim"];
             ChangeObjectBrowserToDirectory(Program.OptionsObject.Program_ObjectBrowserDirectory);
@@ -106,6 +97,21 @@ namespace SPCode.UI
 
             sc.Close(TimeSpan.FromMilliseconds(500.0));
             FullyInitialized = true;
+
+            MenuItems = new()
+            {
+                MenuI_File,
+                MenuI_Edit,
+                MenuI_Build,
+                MenuI_Tools,
+                MenuI_Folding,
+                MenuI_SPAPI,
+                MenuI_Reformatter
+            };
+
+            LoadInputGestureTexts();
+            LoadCommandsDictionary();
+
         }
 
         public bool TryLoadSourceFile(string filePath, bool UseBlendoverEffect = true, bool TryOpenIncludes = true,
@@ -306,7 +312,7 @@ namespace SPCode.UI
             }
         }
 
-        private static void ProcessUITasks()
+        public static void ProcessUITasks()
         {
             var frame = new DispatcherFrame();
             Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new DispatcherOperationCallback(

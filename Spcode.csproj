@@ -142,6 +142,7 @@
   <ItemGroup>
     <Compile Include="App\AssemblyInfo.cs" />
     <Compile Include="Interop\ConfigControl.cs" />
+    <Compile Include="Interop\HotkeyControl.cs" />
     <Compile Include="Interop\PipeInteropClient.cs" />
     <Compile Include="Interop\PipeInteropServer.cs" />
     <Compile Include="Interop\OptionsControl.cs" />
@@ -170,10 +171,12 @@
     <Compile Include="UI\Components\DASMElement\DASMElementHighlighter.cs" />
     <Compile Include="UI\Components\EditorElement\EditorElementGoToDefinition.cs" />
     <Compile Include="UI\Components\EditorElement\EditorElementHighlighter.cs" />
-    <Compile Include="UI\Components\EditorElement\EditorElementJumpToLine.cs" />
     <Compile Include="UI\Components\EditorElement\Foldings\EditorFoldingStrategy.cs" />
     <Compile Include="UI\Components\EditorElement\Indentation\EditorIndentation.cs" />
     <Compile Include="UI\Components\EditorElement\EditorElementIntellisenseController.cs" />
+    <Compile Include="UI\Components\HotkeyEditorControl\HotkeyEditorControl.xaml.cs">
+      <DependentUpon>HotkeyEditorControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Interop\LanguageChooserWindow.xaml.cs">
       <DependentUpon>LanguageChooserWindow.xaml</DependentUpon>
     </Compile>
@@ -183,7 +186,6 @@
     <Compile Include="UI\MainWindow\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\MainWindow\MainWindowFindReplaceHandler.cs" />
     <Compile Include="UI\MainWindow\MainWindowInputHandler.cs" />
     <Compile Include="UI\MainWindow\MainWindowMenuHandler.cs" />
     <Compile Include="UI\MainWindow\MainWindowConfigHandler.cs" />
@@ -193,13 +195,20 @@
     <Compile Include="UI\Windows\ConfigWindow.xaml.cs">
       <DependentUpon>ConfigWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Windows\GoToLineWindow.xaml.cs">
+      <DependentUpon>GoToLineWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Windows\FindReplaceWindow.xaml.cs">
+      <DependentUpon>FindReplaceWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Windows\NewFileWindow.xaml.cs">
       <DependentUpon>NewFileWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Windows\OptionsWindow.xaml.cs">
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Windows\OptionsWindowHighlighting.cs" />
+    <Compile Include="UI\Windows\OptionsWindow\OptionsWindowHotkeys.cs" />
+    <Compile Include="UI\Windows\OptionsWindow\OptionsWindowHighlighting.cs" />
     <Compile Include="UI\Windows\SPDefinitionWindow.xaml.cs">
       <DependentUpon>SPDefinitionWindow.xaml</DependentUpon>
     </Compile>
@@ -208,7 +217,11 @@
     </Compile>
     <Compile Include="Utils\BracketHighlightHelpers.cs" />
     <Compile Include="Utils\Constants.cs" />
-    <Compile Include="Utils\JavaUtils.cs" />
+    <Compile Include="Utils\DecompileUtil.cs" />
+    <Compile Include="Utils\Hotkey.cs" />
+    <Compile Include="Utils\HotkeyInfo.cs" />
+    <Compile Include="Utils\HotkeyUtils.cs" />
+    <Compile Include="Utils\JavaInstallation.cs" />
     <Compile Include="Utils\Paths.cs" />
     <Compile Include="Utils\FTP.cs" />
     <Compile Include="Utils\ManagedAES.cs" />
@@ -232,6 +245,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\Components\HotkeyEditorControl\HotkeyEditorControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\Interop\LanguageChooserWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -251,6 +268,14 @@
     <Page Include="UI\Windows\ConfigWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Windows\GoToLineWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Windows\FindReplaceWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Windows\NewFileWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

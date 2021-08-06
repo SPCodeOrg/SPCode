@@ -3,16 +3,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using DiscordRPC;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
 
 namespace SPCode.UI.Windows
 {
-    /// <summary>
-    /// Interaction logic for AboutWindow.xaml
-    /// </summary>
     public partial class OptionsWindow
     {
         private readonly string[] AvailableAccents =
@@ -28,6 +27,7 @@ namespace SPCode.UI.Windows
         {
             InitializeComponent();
             Language_Translate();
+
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
             {
                 ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
@@ -35,7 +35,28 @@ namespace SPCode.UI.Windows
             }
 
             LoadSettings();
+            LoadSH();
+            LoadHotkeysToSettings();
+
             AllowChanging = true;
+
+            SaveHotkeyTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
+            SaveHotkeyTimer.Tick += OnTimerTick;
+        }
+
+        #region Events
+        private void DefaultButton_Click(object sender, RoutedEventArgs e)
+        {
+            Program.OptionsObject.NormalizeSHColors();
+            LoadSH();
+        }
+
+        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
         }
 
         private async void RestoreButton_Clicked(object sender, RoutedEventArgs e)
@@ -483,7 +504,9 @@ namespace SPCode.UI.Windows
                 }
             }
         }
+        #endregion
 
+        #region Methods
         private void LoadSettings()
         {
             foreach (var accent in AvailableAccents)
@@ -569,7 +592,6 @@ namespace SPCode.UI.Windows
             IndentationSize.Value = Program.OptionsObject.Editor_IndentationSize;
             HardwareSalts.IsChecked = Program.OptionsObject.Program_UseHardwareSalts;
             DiscordPresence.IsChecked = Program.OptionsObject.Program_DiscordPresence;
-            LoadSH();
         }
 
         private void ToggleRestartText(bool FullEffect = false)
@@ -623,13 +645,20 @@ namespace SPCode.UI.Windows
             HighlightDeprecateds.Content = Program.Translations.GetLanguage("HighDeprecat");
             AutoSaveBlock.Text = Program.Translations.GetLanguage("AutoSaveMin");
             DefaultButton.Content = Program.Translations.GetLanguage("DefaultValues");
-        }
 
-        private void DefaultButton_Click(object sender, RoutedEventArgs e)
-        {
-            Program.OptionsObject.NormalizeSHColors();
-            LoadSH();
+            foreach (var item in HotkeysGrid.Children)
+            {
+                if (item is TextBlock)
+                {
+                    var cItem = item as TextBlock;
+                    if (!string.IsNullOrEmpty(cItem.Name))
+                    {
+                        cItem.Text = Program.Translations.GetLanguage(cItem.Name.Substring(3));
+                    }
+                }
+            }
         }
+        #endregion
     }
 
     public class ComboboxItem

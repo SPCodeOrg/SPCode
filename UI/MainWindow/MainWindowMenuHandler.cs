@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using SPCode.Interop;
 using SPCode.Interop.Updater;
 using SPCode.UI.Windows;
 using SPCode.Utils;
@@ -134,7 +136,7 @@ namespace SPCode.UI
 
         private void Menu_JumpTo(object sender, RoutedEventArgs e)
         {
-            Command_JumpTo();
+            Command_GoToLine();
         }
 
         private void Menu_ToggleCommentLine(object sender, RoutedEventArgs e)
@@ -150,7 +152,7 @@ namespace SPCode.UI
 
         private void Menu_FindAndReplace(object sender, RoutedEventArgs e)
         {
-            ToggleSearchField();
+            Command_FindReplace();
         }
 
         private void Menu_CompileAll(object sender, RoutedEventArgs e)
@@ -219,7 +221,7 @@ namespace SPCode.UI
 
         private void Menu_DecompileLysis(object sender, RoutedEventArgs e)
         {
-            Command_Decompile(this);
+            Command_Decompile();
         }
 
         private void ReportBug_Click(object sender, RoutedEventArgs e)
@@ -273,31 +275,52 @@ namespace SPCode.UI
 
         private void MenuButton_Compile(object sender, RoutedEventArgs e)
         {
-            var selected = CompileButton.SelectedIndex;
-            if (selected == 1)
-            {
-                Compile_SPScripts(false);
-            }
-            else
-            {
-                Compile_SPScripts();
-            }
+            Compile_SPScripts(CompileButton.SelectedIndex != 1);
         }
 
         private void MenuButton_Action(object sender, RoutedEventArgs e)
         {
-            var selected = CActionButton.SelectedIndex;
-            if (selected == 0)
+            switch (CActionButton.SelectedIndex)
             {
-                Copy_Plugins();
+                case 0: Copy_Plugins(); break;
+                case 1: FTPUpload_Plugins(); break;
+                case 2: Server_Start(); break;
             }
-            else if (selected == 1)
+        }
+
+        private void LoadInputGestureTexts()
+        {
+            // Welcome to foreach hell
+            foreach (var parentItem in MenuItems)
             {
-                FTPUpload_Plugins();
-            }
-            else if (selected == 2)
-            {
-                Server_Start();
+                foreach (var child in parentItem.Items)
+                {
+                    if (child is MenuItem)
+                    {
+                        var castedChild = child as MenuItem;
+                        foreach (var hkItem in Program.HotkeysList)
+                        {
+                            // Assign InputGestureText to all items
+                            if (castedChild.Name == $"MenuI_{hkItem.Command}")
+                            {
+                                castedChild.InputGestureText = hkItem.Hotkey.ToString() == "None" ? string.Empty : hkItem.Hotkey.ToString();
+                                break;
+                            }
+                            // Also assign InputGestureText to the stock restricted commands
+                            else
+                            {
+                                foreach (var hk in HotkeyControl.RestrictedHotkeys)
+                                {
+                                    if (castedChild.Name == $"MenuI_{hk.Key}")
+                                    {
+                                        castedChild.InputGestureText = hk.Value;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
