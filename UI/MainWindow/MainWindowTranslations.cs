@@ -66,7 +66,7 @@ namespace SPCode.UI
             MenuI_NewApiWeb.Header = Program.Translations.GetLanguage("NewAPIWeb");
             MenuI_BetaApiWeb.Header = Program.Translations.GetLanguage("BetaAPIWeb");
             MenuI_Reformatter.Header = Program.Translations.GetLanguage("Reformatter");
-            MenuI_ReformatCurrent.Header = Program.Translations.GetLanguage("ReformatCurr");
+            MenuI_ReformatCurrent.Header = Program.Translations.GetLanguage("ReformatCurrent");
             MenuI_ReformatAll.Header = Program.Translations.GetLanguage("ReformatAll");
             MenuI_Decompile.Header = $"{Program.Translations.GetLanguage("Decompile")} .smx (Lysis)";
             MenuI_ReportBugGit.Header = Program.Translations.GetLanguage("ReportBugGit");
