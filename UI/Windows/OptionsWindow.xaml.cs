@@ -634,6 +634,7 @@ namespace SPCode.UI.Windows
                     Width = 140,
                     Margin = new Thickness(85, hkMargin, 0, 0),
                     Hotkey = hkInfo.Hotkey,
+                    FontStyle = hkInfo.Hotkey.ToString() == "None" ? FontStyles.Italic : FontStyles.Normal
                 };
                 hotkeyEditor.PreviewKeyDown += Hotkey_PreviewKeyDown;
                 Grid.SetColumn(hotkeyEditor, 1);
