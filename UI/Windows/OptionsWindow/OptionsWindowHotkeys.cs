@@ -122,28 +122,6 @@ namespace SPCode.UI.Windows
             }
         }
 
-        private void LoadHotkeysToSettings()
-        {
-            foreach (var hkInfo in Program.HotkeysList)
-            {
-                foreach (var control in HotkeysGrid.Children)
-                {
-                    if (control is HotkeyEditorControl)
-                    {
-                        var castCtrl = control as HotkeyEditorControl;
-                        if (castCtrl.Name.Substring(2) == hkInfo.Command)
-                        {
-                            castCtrl.Hotkey = hkInfo.Hotkey;
-                            if (castCtrl.Hotkey == null || castCtrl.Hotkey.ToString() == "None")
-                            {
-                                castCtrl.FontStyle = FontStyles.Italic;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         private void ShowLabel(string message)
         {
             LblDisallowed.Visibility = Visibility.Visible;
