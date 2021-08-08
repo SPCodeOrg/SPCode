@@ -340,6 +340,8 @@ namespace SPCode.Interop
             language.Add("DupeLineUp", "Duplicate line up");
             language.Add("InUse", "In use!");
             language.Add("Reserved", "Reserved!");
+            language.Add("TransformUppercase", "Transform to uppercase");
+            language.Add("TransformLowercase", "Transform to lowercase");
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using DiscordRPC;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
+using SPCode.UI.Components;
 
 namespace SPCode.UI.Windows
 {
@@ -26,7 +27,6 @@ namespace SPCode.UI.Windows
         public OptionsWindow()
         {
             InitializeComponent();
-            Language_Translate();
 
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
             {
@@ -36,7 +36,8 @@ namespace SPCode.UI.Windows
 
             LoadSettings();
             LoadSH();
-            LoadHotkeysToSettings();
+            LoadHotkeysSection();
+            Language_Translate();
 
             AllowChanging = true;
 
@@ -605,6 +606,53 @@ namespace SPCode.UI.Windows
                         : Program.Translations.GetLanguage("RestartEdiEff");
                     RestartTextIsShown = true;
                 }
+            }
+        }
+
+        private void LoadHotkeysSection()
+        {
+            var txtMargin = 54;
+            var hkMargin = 48;
+            var sepMargin = 61;
+            foreach (var hkInfo in Program.HotkeysList)
+            {
+                var textBlock = new TextBlock()
+                {
+                    Name = $"Txt{hkInfo.Command}",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Margin = new Thickness(161, txtMargin, 0, 0),
+                    TextWrapping = TextWrapping.Wrap,
+                    Text = Program.Translations.GetLanguage(hkInfo.Command)
+                };
+                var hotkeyEditor = new HotkeyEditorControl()
+                {
+                    Name = $"Hk{hkInfo.Command}",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Height = 28,
+                    Width = 140,
+                    Margin = new Thickness(85, hkMargin, 0, 0),
+                    Hotkey = hkInfo.Hotkey,
+                };
+                hotkeyEditor.PreviewKeyDown += Hotkey_PreviewKeyDown;
+                Grid.SetColumn(hotkeyEditor, 1);
+                var separator = new Separator()
+                {
+                    Margin = new Thickness(30, sepMargin, 0, 0),
+                    Height = 41,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#408B8B8B")
+                };
+                Grid.SetColumnSpan(separator, 2);
+
+                HotkeysGrid.Children.Add(textBlock);
+                HotkeysGrid.Children.Add(hotkeyEditor);
+                HotkeysGrid.Children.Add(separator);
+
+                txtMargin += 40;
+                hkMargin += 40;
+                sepMargin += 40;
             }
         }
 
