@@ -21,6 +21,8 @@ using SPCode.Utils.SPSyntaxTidy;
 using Xceed.Wpf.AvalonDock.Layout;
 using Timer = System.Timers.Timer;
 using SPCode.Utils;
+using ControlzEx.Standard;
+using ICSharpCode.AvalonEdit.Editing;
 
 namespace SPCode.UI.Components
 {
@@ -779,6 +781,20 @@ namespace SPCode.UI.Components
             else
             {
                 editor.Document.Insert(line.Offset + leadingWhiteSpaces, "//");
+            }
+        }
+
+        public void ChangeCase(bool toUpper = true)
+        {
+            var selection = editor.TextArea.Selection;
+            if (!selection.IsEmpty)
+            {
+                var newText = toUpper ? selection.GetText().ToUpperInvariant() : selection.GetText().ToLowerInvariant();
+                selection.ReplaceSelectionWithText(newText);
+                var startOffset = editor.TextArea.Document.GetOffset(selection.StartPosition.Line, selection.StartPosition.Column);
+                var endOffset = editor.TextArea.Document.GetOffset(selection.EndPosition.Line, selection.EndPosition.Column);
+                editor.TextArea.Selection = Selection.Create(editor.TextArea, startOffset, endOffset);
+
             }
         }
 

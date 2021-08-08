@@ -315,6 +315,11 @@ namespace SPCode.UI
             ee?.ToggleCommentOnLine();
         }
 
+        public void Command_ChangeCase(bool toUpper)
+        {
+            GetCurrentEditorElement()?.ChangeCase(toUpper);
+        }
+
         private void Command_TidyCode(bool All)
         {
             var editors = All ? GetAllEditorElements() : new[] { GetCurrentEditorElement() };
