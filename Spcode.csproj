@@ -195,6 +195,9 @@
     <Compile Include="UI\Windows\ConfigWindow.xaml.cs">
       <DependentUpon>ConfigWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Windows\RenameWindow.xaml.cs">
+      <DependentUpon>RenameWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Windows\GoToLineWindow.xaml.cs">
       <DependentUpon>GoToLineWindow.xaml</DependentUpon>
     </Compile>
@@ -266,6 +269,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\Windows\ConfigWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Windows\RenameWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

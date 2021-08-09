@@ -5,7 +5,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Width="680" Height="400" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" GlowBrush="{DynamicResource AccentColorBrush}" 
                       Background="{DynamicResource WhiteBrush}"
-                      Title="Options" ShowTitleBar="False" KeyDown="MetroWindow_KeyDown" Topmost="True">
+                      Title="Options" ShowTitleBar="False" KeyDown="MetroWindow_KeyDown">
   <controls:MetroWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

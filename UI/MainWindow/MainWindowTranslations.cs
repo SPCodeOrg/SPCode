@@ -80,6 +80,11 @@ namespace SPCode.UI
 
             OBItemText_File.Text = Program.Translations.GetLanguage("OBTextFile");
             OBItemText_Config.Text = Program.Translations.GetLanguage("OBTextConfig");
+
+            foreach (MenuItem item in (ObjectBrowser.Resources["TVIContextMenu"] as ContextMenu).Items)
+            {
+                item.Header = Program.Translations.GetLanguage(item.Name);
+            };
         }
     }
 }

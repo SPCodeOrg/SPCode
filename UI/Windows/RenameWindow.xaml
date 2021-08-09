@@ -1,0 +1,27 @@
+﻿<controls:MetroWindow
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="SPCode.UI.Windows.RenameWindow"
+             WindowStartupLocation="CenterScreen" 
+             GlowBrush="{DynamicResource AccentColorBrush}" 
+             Background="{DynamicResource WhiteBrush}" ResizeMode="NoResize" ShowInTaskbar="True" Title="SPCode Rename" Height="96" Width="256" HorizontalAlignment="Center" VerticalAlignment="Top" UseNoneWindowStyle="False" Topmost="True" TitlebarHeight="0" KeyDown="MetroWindow_KeyDown">
+  <controls:MetroWindow.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </controls:MetroWindow.Resources>
+  <Grid>
+    <TextBox Name="TxtName" VerticalAlignment="Top" Foreground="{DynamicResource BlackColorBrush}" Margin="5,8,5,0"/>
+    <Button Name="BtAccept" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,48,10,0" Content="Accept" Click="BtAccept_Click"/>
+    <Button Name="BtCancel" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,48,145,0" Content="Cancel" Click="BtCancel_Click"/>
+    <Label Name="lblError" HorizontalAlignment="Right" Margin="0,8,10,0" VerticalAlignment="Top" Foreground="Red" FontWeight="Bold"/>
+  </Grid>
+</controls:MetroWindow>

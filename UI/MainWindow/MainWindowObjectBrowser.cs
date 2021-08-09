@@ -4,14 +4,17 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using SPCode.UI.Windows;
 
 namespace SPCode.UI
 {
     public partial class MainWindow
     {
         private string CurrentObjectBrowserDirectory = string.Empty;
-        
+
         private void TreeViewOBItem_Expanded(object sender, RoutedEventArgs e)
         {
             var source = e.Source;
@@ -53,9 +56,9 @@ namespace SPCode.UI
             ChangeObjectBrowserToDrives();
         }
 
-        private void TreeViewOBItemFile_DoubleClicked(object sender, RoutedEventArgs e)
+        private void TreeViewOBItemFile_DoubleClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is not TreeViewItem item)
+            if (e.ChangedButton != MouseButton.Left || sender is not TreeViewItem item)
             {
                 return;
             }
@@ -64,6 +67,43 @@ namespace SPCode.UI
             {
                 TryLoadSourceFile(itemInfo.Value, true, false, true);
             }
+        }
+
+        private void TreeViewOBItemFile_RightClicked(object sender, MouseButtonEventArgs e)
+        {
+            TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
+
+            if (treeViewItem != null)
+            {
+                treeViewItem.Focus();
+                e.Handled = true;
+            }
+            ObjectBrowser.ContextMenu = ObjectBrowser.Resources["TVIContextMenu"] as ContextMenu;
+        }
+
+        private void OBItemOpenFileLocation_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItemFile = ((ObjectBrowser.SelectedItem as TreeViewItem).Tag as ObjectBrowserTag).Value;
+            Process.Start("explorer.exe", $"/select, \"{selectedItemFile}\"");
+        }
+
+        private void OBItemRename_Click(object sender, RoutedEventArgs e)
+        {
+            var file = ((ObjectBrowser.SelectedItem as TreeViewItem).Tag as ObjectBrowserTag).Value;
+            var renameWindow = new RenameWindow(file);
+            renameWindow.ShowDialog();
+            if (!string.IsNullOrEmpty(renameWindow.NewName))
+            {
+                File.Move(file, Path.GetDirectoryName(file) + $@"\{renameWindow.NewName}");
+                ObjectBrowserDirList_SelectionChanged(null, null);
+            }
+        }
+
+        private void OBItemDelete_Click(object sender, RoutedEventArgs e)
+        {
+            var file = ((ObjectBrowser.SelectedItem as TreeViewItem).Tag as ObjectBrowserTag).Value;
+            File.Delete(file);
+            ObjectBrowserDirList_SelectionChanged(null, null);
         }
 
         private void ListViewOBItem_SelectFile(object sender, RoutedEventArgs e)
@@ -81,6 +121,7 @@ namespace SPCode.UI
             item.IsSelected = true;
             ObjectBrowserButtonHolder.SelectedIndex = -1;
         }
+
         private void ListViewOBItem_SelectConfig(object sender, RoutedEventArgs e)
         {
             if (sender is not ListViewItem item)
@@ -217,6 +258,7 @@ namespace SPCode.UI
                     Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.File, Value = fInfo.FullName }
                 };
                 tvi.MouseDoubleClick += TreeViewOBItemFile_DoubleClicked;
+                tvi.MouseDown += TreeViewOBItemFile_RightClicked;
                 itemList.Add(tvi);
             }
             foreach (var f in incFiles)
@@ -232,6 +274,7 @@ namespace SPCode.UI
                     Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.File, Value = fInfo.FullName }
                 };
                 tvi.MouseDoubleClick += TreeViewOBItemFile_DoubleClicked;
+                tvi.MouseRightButtonDown += TreeViewOBItemFile_RightClicked;
                 itemList.Add(tvi);
             }
             return itemList;
@@ -249,6 +292,16 @@ namespace SPCode.UI
             stack.Children.Add(image);
             stack.Children.Add(lbl);
             return stack;
+        }
+
+        private static TreeViewItem VisualUpwardSearch(DependencyObject source)
+        {
+            // Snippet that allows me to select items while right-clicking them to enable Context Menu capabilities
+            while (source != null && !(source is TreeViewItem))
+            {
+                source = VisualTreeHelper.GetParent(source);
+            }
+            return source as TreeViewItem;
         }
 
         private class ObjectBrowserTag

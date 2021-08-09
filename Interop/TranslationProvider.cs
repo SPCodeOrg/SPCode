@@ -342,6 +342,12 @@ namespace SPCode.Interop
             language.Add("Reserved", "Reserved!");
             language.Add("TransformUppercase", "Transform to uppercase");
             language.Add("TransformLowercase", "Transform to lowercase");
+            language.Add("OpenFileLocation", "Open file location");
+            language.Add("Rename", "Rename");
+            language.Add("Accept", "Accept");
+            language.Add("Cancel", "Cancel");
+            language.Add("EmptyName", "Empty name!");
+            language.Add("NameAlreadyExists", "File name taken!");
         }
     }
 }

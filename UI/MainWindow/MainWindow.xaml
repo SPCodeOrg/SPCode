@@ -227,7 +227,15 @@
           </dock:LayoutRoot>
         </dock:DockingManager>
         <GridSplitter Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="5" Background="{DynamicResource GrayBrush5}" />
-        <TreeView Grid.Column="1" Name="ObjectBrowser" TreeViewItem.Expanded="TreeViewOBItem_Expanded" Margin="0,28,0,26" />
+        <TreeView Grid.Column="1" Name="ObjectBrowser" TreeViewItem.Expanded="TreeViewOBItem_Expanded" Margin="0,28,0,26">
+          <TreeView.Resources>
+            <ContextMenu Name="TVIContextMenu" x:Key="TVIContextMenu" StaysOpen="true">
+              <MenuItem Name="OpenFileLocation" Header="Open file location" Click="OBItemOpenFileLocation_Click"/>
+              <MenuItem Name="Rename" Header="Rename" Click="OBItemRename_Click"/>
+              <MenuItem Name="Delete" Header="Delete" Click="OBItemDelete_Click"/>
+            </ContextMenu>
+          </TreeView.Resources>
+        </TreeView>
         <ComboBox Grid.Column="1" x:Name="ObjectBrowserDirList" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0" Height="5" BorderThickness="0" SelectionChanged="ObjectBrowserDirList_SelectionChanged"/>
         <ListView Grid.Column="1" Name="ObjectBrowserButtonHolder" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0" Height="28" ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderThickness="0" SelectionMode="Single">
           <ListView.ItemsPanel>

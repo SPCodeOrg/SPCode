@@ -35,7 +35,10 @@ namespace SPCode.UI
             Program.Translations.GetLanguage("StartServer")
         };
 
-        private ObservableCollection<string> compileButtonDict = new() { Program.Translations.GetLanguage("CompileAll"), Program.Translations.GetLanguage("CompileCurrent") };
+        private ObservableCollection<string> compileButtonDict = new() { 
+            Program.Translations.GetLanguage("CompileAll"), 
+            Program.Translations.GetLanguage("CompileCurrent") 
+        };
 
         public MainWindow()
         {
@@ -111,7 +114,6 @@ namespace SPCode.UI
 
             LoadInputGestureTexts();
             LoadCommandsDictionary();
-
         }
 
         public bool TryLoadSourceFile(string filePath, bool UseBlendoverEffect = true, bool TryOpenIncludes = true,
