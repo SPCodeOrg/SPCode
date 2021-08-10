@@ -88,7 +88,7 @@ namespace SPCode.UI.Windows
 
             foreach (var file in Directory.GetFiles(filePath))
             {
-                if (Path.GetFileName(file).Equals(inputText))
+                if (Path.GetFileName(file).ToLower().Equals(inputText.ToLower()))
                 {
                     return true;
                 }
