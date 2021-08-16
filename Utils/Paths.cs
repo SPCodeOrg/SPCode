@@ -28,8 +28,8 @@ namespace SPCode.Utils
 
         public static string GetConfigsDirectory()
         {
-            var appDataPath = SPCodeAppDataPath + @"\sourcepawn\configs\sm_1_10_0_6478";
-            var localPath = @".\sourcepawn\configs\sm_1_10_0_6478";
+            var appDataPath = SPCodeAppDataPath + @"\sourcepawn\configs\sm_1_10_0_6509";
+            var localPath = @".\sourcepawn\configs\sm_1_10_0_6509";
             return LocalInstallation ? localPath : appDataPath;
         }
 
