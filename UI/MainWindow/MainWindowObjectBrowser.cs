@@ -15,6 +15,7 @@ namespace SPCode.UI
     {
         private string CurrentObjectBrowserDirectory = string.Empty;
 
+        #region Events
         private void TreeViewOBItem_Expanded(object sender, RoutedEventArgs e)
         {
             var source = e.Source;
@@ -41,8 +42,43 @@ namespace SPCode.UI
             }
         }
 
-        private void TreeViewOBItemParentDir_DoubleClicked(object sender, RoutedEventArgs e)
+        private void TreeViewOBItem_RightClicked(object sender, MouseButtonEventArgs e)
         {
+            var treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
+            var itemTag = treeViewItem.Tag as ObjectBrowserTag;
+           
+            if (treeViewItem != null)
+            {
+                switch (itemTag.Kind)
+                {
+                    case ObjectBrowserItemKind.Directory:
+                        {
+                            treeViewItem.Focus();
+                            ObjectBrowser.ContextMenu = ObjectBrowser.Resources["TVIContextMenuDir"] as ContextMenu;
+                            break;
+                        }
+                    case ObjectBrowserItemKind.File:
+                        {
+                            treeViewItem.Focus();
+                            ObjectBrowser.ContextMenu = ObjectBrowser.Resources["TVIContextMenu"] as ContextMenu;
+                            break;
+                        }
+                    case ObjectBrowserItemKind.ParentDirectory:
+                        {
+                            ObjectBrowser.ContextMenu = null;
+                            break;
+                        }
+                }
+            }
+            e.Handled = true;
+        }
+
+        private void TreeViewOBItemParentDir_DoubleClicked(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left)
+            {
+                return;
+            }
             var currentInfo = new DirectoryInfo(CurrentObjectBrowserDirectory);
             var parentInfo = currentInfo.Parent;
             if (parentInfo != null)
@@ -67,18 +103,6 @@ namespace SPCode.UI
             {
                 TryLoadSourceFile(itemInfo.Value, true, false, true);
             }
-        }
-
-        private void TreeViewOBItemFile_RightClicked(object sender, MouseButtonEventArgs e)
-        {
-            TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
-
-            if (treeViewItem != null)
-            {
-                treeViewItem.Focus();
-                e.Handled = true;
-            }
-            ObjectBrowser.ContextMenu = ObjectBrowser.Resources["TVIContextMenu"] as ContextMenu;
         }
 
         private void OBItemOpenFileLocation_Click(object sender, RoutedEventArgs e)
@@ -131,12 +155,20 @@ namespace SPCode.UI
             var cc = Program.Configs[Program.SelectedConfig];
             if (cc.SMDirectories.Count > 0)
             {
-                ChangeObjectBrowserToDirectory(cc.SMDirectories[0]);
+                ChangeObjectBrowserToDirectory((string)ObjectBrowserDirList.SelectedItem);
             }
             item.IsSelected = true;
             ObjectBrowserButtonHolder.SelectedIndex = -1;
         }
 
+        private void ObjectBrowserDirList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ChangeObjectBrowserToDirectory((string)ObjectBrowserDirList.SelectedItem);
+            ObjectBrowserButtonHolder.SelectedIndex = 1;
+        }
+        #endregion
+
+        #region Methods
         private void ChangeObjectBrowserToDirectory(string dir)
         {
             if (string.IsNullOrWhiteSpace(dir))
@@ -177,6 +209,7 @@ namespace SPCode.UI
                     Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.ParentDirectory }
                 };
                 parentDirItem.MouseDoubleClick += TreeViewOBItemParentDir_DoubleClicked;
+                parentDirItem.PreviewMouseRightButtonDown += TreeViewOBItem_RightClicked;
                 ObjectBrowser.Items.Add(parentDirItem);
                 var newItems = BuildDirectoryItems(dir);
                 foreach (var item in newItems)
@@ -208,12 +241,6 @@ namespace SPCode.UI
                     }
                 }
             }
-        }
-
-        private void ObjectBrowserDirList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ChangeObjectBrowserToDirectory((string)ObjectBrowserDirList.SelectedItem);
-            ObjectBrowserButtonHolder.SelectedIndex = 1;
         }
 
         private List<TreeViewItem> BuildDirectoryItems(string dir)
@@ -258,7 +285,7 @@ namespace SPCode.UI
                     Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.File, Value = fInfo.FullName }
                 };
                 tvi.MouseDoubleClick += TreeViewOBItemFile_DoubleClicked;
-                tvi.MouseDown += TreeViewOBItemFile_RightClicked;
+                tvi.MouseDown += TreeViewOBItem_RightClicked;
                 itemList.Add(tvi);
             }
             foreach (var f in incFiles)
@@ -274,7 +301,7 @@ namespace SPCode.UI
                     Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.File, Value = fInfo.FullName }
                 };
                 tvi.MouseDoubleClick += TreeViewOBItemFile_DoubleClicked;
-                tvi.MouseRightButtonDown += TreeViewOBItemFile_RightClicked;
+                tvi.MouseRightButtonDown += TreeViewOBItem_RightClicked;
                 itemList.Add(tvi);
             }
             return itemList;
@@ -303,6 +330,21 @@ namespace SPCode.UI
             }
             return source as TreeViewItem;
         }
+
+        public void UpdateOBFileButton()
+        {
+            if (GetAllEditorElements() == null)
+            {
+                OBTabFile.IsEnabled = false;
+                OBTabFile.IsSelected = false;
+                OBTabConfig.IsSelected = true;
+            }
+            else
+            {
+                OBTabFile.IsEnabled = true;
+            }
+        }
+        #endregion
 
         private class ObjectBrowserTag
         {

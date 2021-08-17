@@ -227,12 +227,15 @@
           </dock:LayoutRoot>
         </dock:DockingManager>
         <GridSplitter Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="5" Background="{DynamicResource GrayBrush5}" />
-        <TreeView Grid.Column="1" Name="ObjectBrowser" TreeViewItem.Expanded="TreeViewOBItem_Expanded" Margin="0,28,0,26">
+        <TreeView Grid.Column="1" Name="ObjectBrowser" TreeViewItem.Expanded="TreeViewOBItem_Expanded" PreviewMouseRightButtonDown="TreeViewOBItem_RightClicked" Margin="0,28,0,26">
           <TreeView.Resources>
             <ContextMenu Name="TVIContextMenu" x:Key="TVIContextMenu" StaysOpen="true">
               <MenuItem Name="OpenFileLocation" Header="Open file location" Click="OBItemOpenFileLocation_Click"/>
               <MenuItem Name="Rename" Header="Rename" Click="OBItemRename_Click"/>
               <MenuItem Name="Delete" Header="Delete" Click="OBItemDelete_Click"/>
+            </ContextMenu>
+            <ContextMenu Name="TVIContextMenuDir" x:Key="TVIContextMenuDir" StaysOpen="true">
+              <MenuItem Name="OpenDirLocation" Header="Open directory location" Click="OBItemOpenFileLocation_Click"/>
             </ContextMenu>
           </TreeView.Resources>
         </TreeView>
@@ -243,13 +246,13 @@
               <StackPanel Orientation="Horizontal" Margin="0"></StackPanel>
             </ItemsPanelTemplate>
           </ListView.ItemsPanel>
-          <ListViewItem Selected="ListViewOBItem_SelectFile">
+          <ListViewItem x:Name="OBTabFile" Selected="ListViewOBItem_SelectFile">
             <StackPanel Orientation="Horizontal">
               <TextBlock Name="OBItemText_File" Text="File Directory" />
               <Image Source="/SPCode;component/Resources/Icons/iconmonstr-code-fork-1-20.png" Width="20" Height="20" />
             </StackPanel>
           </ListViewItem>
-          <ListViewItem Selected="ListViewOBItem_SelectConfig">
+          <ListViewItem x:Name="OBTabConfig" Selected="ListViewOBItem_SelectConfig">
             <StackPanel Orientation="Horizontal">
               <TextBlock Name="OBItemText_Config" Text="Config Directory" />
               <Image Source="/SPCode;component/Resources/Icons/iconmonstr-code-fork-2-20.png" Width="20" Height="20" />

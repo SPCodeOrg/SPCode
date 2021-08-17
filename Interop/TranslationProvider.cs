@@ -343,6 +343,7 @@ namespace SPCode.Interop
             language.Add("TransformUppercase", "Transform to uppercase");
             language.Add("TransformLowercase", "Transform to lowercase");
             language.Add("OpenFileLocation", "Open file location");
+            language.Add("OpenDirLocation", "Open directory location");
             language.Add("Rename", "Rename");
             language.Add("Accept", "Accept");
             language.Add("Cancel", "Cancel");

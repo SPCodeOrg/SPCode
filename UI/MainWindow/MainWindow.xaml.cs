@@ -114,6 +114,9 @@ namespace SPCode.UI
 
             LoadInputGestureTexts();
             LoadCommandsDictionary();
+
+            UpdateOBFileButton();
+
         }
 
         public bool TryLoadSourceFile(string filePath, bool UseBlendoverEffect = true, bool TryOpenIncludes = true,
@@ -223,12 +226,14 @@ namespace SPCode.UI
         private void DockingManager_ActiveContentChanged(object sender, EventArgs e)
         {
             UpdateWindowTitle();
+            UpdateOBFileButton();
         }
 
         private void DockingManager_DocumentClosed(object sender, DocumentClosedEventArgs e)
         {
             (e.Document.Content as EditorElement)?.Close();
             UpdateWindowTitle();
+            UpdateOBFileButton();
         }
 
         // Code taken from VisualPawn Editer (Not published yet)

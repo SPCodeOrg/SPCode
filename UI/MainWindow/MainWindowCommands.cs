@@ -198,6 +198,7 @@ namespace SPCode.UI
 
             DockingPane.RemoveChild(ee.Parent);
             ee.Close();
+            UpdateOBFileButton();
         }
 
         private async void Command_CloseAll()
@@ -246,6 +247,7 @@ namespace SPCode.UI
                     editor.Close(ForceSave, ForceSave);
                 }
             }
+            UpdateOBFileButton();
         }
 
         private void Command_Undo()
