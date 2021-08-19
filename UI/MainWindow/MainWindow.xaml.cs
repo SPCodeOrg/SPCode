@@ -117,6 +117,9 @@ namespace SPCode.UI
 
             UpdateOBFileButton();
 
+            SearchCooldownTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
+            SearchCooldownTimer.Tick += OnSearchCooldownTimerTick;
+
         }
 
         public bool TryLoadSourceFile(string filePath, bool UseBlendoverEffect = true, bool TryOpenIncludes = true,

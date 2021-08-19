@@ -248,7 +248,8 @@
             </ContextMenu>
           </TreeView.Resources>
         </TreeView>
-        <TextBox x:Name="OBSearch" VerticalAlignment="Top" Margin="0,28,0,0" Height="5" BorderThickness=".4" Grid.Column="1" BorderBrush="{DynamicResource AccentColorBrush3}" />
+        <TextBox x:Name="OBSearch" VerticalAlignment="Top" Margin="0,28,-1,0" Height="5" BorderThickness=".4" Grid.Column="1" BorderBrush="{DynamicResource AccentColorBrush3}"
+                 TextChanged="OBSearch_TextChanged"/>
         <TextBlock IsHitTestVisible="False" Text="Search files..." VerticalAlignment="Top" Margin="8,32,0,0" Foreground="DarkGray" FontStyle="Italic" Grid.Column="1">
           <TextBlock.Style>
             <Style TargetType="{x:Type TextBlock}">

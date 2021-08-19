@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using SPCode.UI.Windows;
 
 namespace SPCode.UI
@@ -14,6 +16,7 @@ namespace SPCode.UI
     public partial class MainWindow
     {
         private string CurrentObjectBrowserDirectory = string.Empty;
+        private readonly DispatcherTimer SearchCooldownTimer;
 
         #region Events
         private void TreeViewOBItem_Expanded(object sender, RoutedEventArgs e)
@@ -46,7 +49,7 @@ namespace SPCode.UI
         {
             var treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
             var itemTag = treeViewItem.Tag as ObjectBrowserTag;
-           
+
             if (treeViewItem != null)
             {
                 switch (itemTag.Kind)
@@ -166,10 +169,56 @@ namespace SPCode.UI
             ChangeObjectBrowserToDirectory((string)ObjectBrowserDirList.SelectedItem);
             ObjectBrowserButtonHolder.SelectedIndex = 1;
         }
+
+        private void OBSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            SearchCooldownTimer.Stop();
+            SearchCooldownTimer.Start();
+        }
+
+        private void OnSearchCooldownTimerTick(object sender, EventArgs e)
+        {
+            SearchCooldownTimer.Stop();
+
+            //var allDirectories = new List<DirectoryInfo>(new DirectoryInfo(CurrentObjectBrowserDirectory).GetDirectories("*.*", SearchOption.AllDirectories));
+            //allDirectories.Insert(0, new DirectoryInfo(CurrentObjectBrowserDirectory));
+
+            //foreach (var dir in allDirectories)
+            //{
+            //    foreach (var file in Directory.GetFiles(dir.FullName))
+            //    {
+            //        if (new FileInfo(file).Name.IndexOf(OBSearch.Text, StringComparison.OrdinalIgnoreCase) >= 0)
+            //        {
+            //            foreach (TreeViewItem item in ObjectBrowser.Items)
+            //            {
+
+            //            }
+            //        }
+            //        else
+            //        {
+            //            continue;
+            //        }
+            //    }
+            //}
+
+
+            // frenar carpetas duplicadas
+            // que vuelva todo el tree a la normalidad si el filtro está vacío
+            // checkear recursividad (testing caja negra/blanca)
+
+            foreach (TreeViewItem tvi in ObjectBrowser.Items)
+            {
+                if ((tvi.Tag as ObjectBrowserTag).Kind != ObjectBrowserItemKind.ParentDirectory)
+                {
+                    TraverseTree(OBSearch.Text, tvi);
+                }
+            }
+        }
+
         #endregion
 
         #region Methods
-        private void ChangeObjectBrowserToDirectory(string dir)
+        private void ChangeObjectBrowserToDirectory(string dir, string filter = "")
         {
             if (string.IsNullOrWhiteSpace(dir))
             {
@@ -211,7 +260,7 @@ namespace SPCode.UI
                 parentDirItem.MouseDoubleClick += TreeViewOBItemParentDir_DoubleClicked;
                 parentDirItem.PreviewMouseRightButtonDown += TreeViewOBItem_RightClicked;
                 ObjectBrowser.Items.Add(parentDirItem);
-                var newItems = BuildDirectoryItems(dir);
+                var newItems = BuildDirectoryItems(dir, filter);
                 foreach (var item in newItems)
                 {
                     ObjectBrowser.Items.Add(item);
@@ -243,7 +292,7 @@ namespace SPCode.UI
             }
         }
 
-        private List<TreeViewItem> BuildDirectoryItems(string dir)
+        private List<TreeViewItem> BuildDirectoryItems(string dir, string filter = "")
         {
             var itemList = new List<TreeViewItem>();
             var spFiles = Directory.GetFiles(dir, "*.sp", SearchOption.TopDirectoryOnly);
@@ -275,7 +324,7 @@ namespace SPCode.UI
             foreach (var f in spFiles)
             {
                 var fInfo = new FileInfo(f);
-                if (!fInfo.Exists)
+                if (!fInfo.Exists || (!string.IsNullOrWhiteSpace(filter) && !(fInfo.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)))
                 {
                     continue;
                 }
@@ -291,7 +340,7 @@ namespace SPCode.UI
             foreach (var f in incFiles)
             {
                 var fInfo = new FileInfo(f);
-                if (!fInfo.Exists)
+                if (!fInfo.Exists || (!string.IsNullOrWhiteSpace(filter) && !(fInfo.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)))
                 {
                     continue;
                 }
@@ -344,6 +393,51 @@ namespace SPCode.UI
                 OBTabFile.IsEnabled = true;
             }
         }
+
+        public void FilterDirectory(TreeViewItem tvi, string filter)
+        {
+            tvi.IsExpanded = true;
+            //tvi.Items.Clear();
+
+            foreach (TreeViewItem item in tvi.Items)
+            {
+                if ((item.Tag as ObjectBrowserTag).Kind != ObjectBrowserItemKind.Directory)
+                {
+                    item.Visibility = Visibility.Collapsed;
+                }
+            }
+
+            var newItems = BuildDirectoryItems((tvi.Tag as ObjectBrowserTag).Value, filter);
+            foreach (var item in newItems)
+            {
+                tvi.Items.Add(item);
+            }
+        }
+
+        public void TraverseTree(string filter, TreeViewItem tvi)
+        {
+            if (string.IsNullOrEmpty(filter))
+            {
+                return;
+            }
+
+            tvi.ExpandSubtree();
+            foreach (TreeViewItem item in tvi.Items)
+            {
+                if (item.Items.Count > 0)
+                {
+                    //PeneVenoso(filter, item);
+                    FilterDirectory(item, filter);
+
+                }
+                else if ((item.Tag as ObjectBrowserTag).Kind == ObjectBrowserItemKind.File && 
+                    new FileInfo((item.Tag as ObjectBrowserTag).Value).Name.IndexOf(OBSearch.Text, StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    item.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
         #endregion
 
         private class ObjectBrowserTag
