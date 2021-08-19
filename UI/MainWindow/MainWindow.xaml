@@ -262,8 +262,8 @@
             </Style>
           </TextBlock.Style>
         </TextBlock>
-        <ComboBox Grid.Column="1" x:Name="ObjectBrowserDirList" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0" Height="5" BorderThickness="0" SelectionChanged="ObjectBrowserDirList_SelectionChanged"/>
-        <ListView Grid.Column="1" x:Name="ObjectBrowserButtonHolder" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0" Height="28" ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderThickness="0" SelectionMode="Single" BorderBrush="{DynamicResource TextBoxBorderBrush}">
+        <ComboBox Grid.Column="1" x:Name="OBDirList" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0" Height="5" BorderThickness="0" SelectionChanged="OBDirList_SelectionChanged"/>
+        <ListView Grid.Column="1" x:Name="OBButtonHolder" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0" Height="28" ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderThickness="0" SelectionMode="Single" BorderBrush="{DynamicResource TextBoxBorderBrush}">
           <ListView.ItemsPanel>
             <ItemsPanelTemplate>
               <StackPanel Orientation="Horizontal" Margin="0"/>

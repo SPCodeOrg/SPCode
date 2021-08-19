@@ -71,8 +71,8 @@ namespace SPCode.UI
                 Win_ToolBar.Height = double.NaN;
             }
 
-            ObjectBrowserDirList.ItemsSource = Program.Configs[Program.SelectedConfig].SMDirectories;
-            ObjectBrowserDirList.SelectedIndex = 0;
+            OBDirList.ItemsSource = Program.Configs[Program.SelectedConfig].SMDirectories;
+            OBDirList.SelectedIndex = 0;
 
             MetroDialogOptions.AnimateHide = MetroDialogOptions.AnimateShow = false;
             BlendOverEffect = (Storyboard)Resources["BlendOverEffect"];

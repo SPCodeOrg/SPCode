@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -122,7 +123,7 @@ namespace SPCode.UI
             if (!string.IsNullOrEmpty(renameWindow.NewName))
             {
                 File.Move(file, Path.GetDirectoryName(file) + $@"\{renameWindow.NewName}");
-                ObjectBrowserDirList_SelectionChanged(null, null);
+                OBDirList_SelectionChanged(null, null);
             }
         }
 
@@ -130,7 +131,7 @@ namespace SPCode.UI
         {
             var file = ((ObjectBrowser.SelectedItem as TreeViewItem).Tag as ObjectBrowserTag).Value;
             File.Delete(file);
-            ObjectBrowserDirList_SelectionChanged(null, null);
+            OBDirList_SelectionChanged(null, null);
         }
 
         private void ListViewOBItem_SelectFile(object sender, RoutedEventArgs e)
@@ -146,7 +147,7 @@ namespace SPCode.UI
                 ChangeObjectBrowserToDirectory(fInfo.DirectoryName);
             }
             item.IsSelected = true;
-            ObjectBrowserButtonHolder.SelectedIndex = -1;
+            OBButtonHolder.SelectedIndex = -1;
         }
 
         private void ListViewOBItem_SelectConfig(object sender, RoutedEventArgs e)
@@ -158,16 +159,16 @@ namespace SPCode.UI
             var cc = Program.Configs[Program.SelectedConfig];
             if (cc.SMDirectories.Count > 0)
             {
-                ChangeObjectBrowserToDirectory((string)ObjectBrowserDirList.SelectedItem);
+                ChangeObjectBrowserToDirectory((string)OBDirList.SelectedItem);
             }
             item.IsSelected = true;
-            ObjectBrowserButtonHolder.SelectedIndex = -1;
+            OBButtonHolder.SelectedIndex = -1;
         }
 
-        private void ObjectBrowserDirList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OBDirList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ChangeObjectBrowserToDirectory((string)ObjectBrowserDirList.SelectedItem);
-            ObjectBrowserButtonHolder.SelectedIndex = 1;
+            ChangeObjectBrowserToDirectory((string)OBDirList.SelectedItem);
+            OBButtonHolder.SelectedIndex = 1;
         }
 
         private void OBSearch_TextChanged(object sender, TextChangedEventArgs e)
@@ -179,28 +180,6 @@ namespace SPCode.UI
         private void OnSearchCooldownTimerTick(object sender, EventArgs e)
         {
             SearchCooldownTimer.Stop();
-
-            //var allDirectories = new List<DirectoryInfo>(new DirectoryInfo(CurrentObjectBrowserDirectory).GetDirectories("*.*", SearchOption.AllDirectories));
-            //allDirectories.Insert(0, new DirectoryInfo(CurrentObjectBrowserDirectory));
-
-            //foreach (var dir in allDirectories)
-            //{
-            //    foreach (var file in Directory.GetFiles(dir.FullName))
-            //    {
-            //        if (new FileInfo(file).Name.IndexOf(OBSearch.Text, StringComparison.OrdinalIgnoreCase) >= 0)
-            //        {
-            //            foreach (TreeViewItem item in ObjectBrowser.Items)
-            //            {
-
-            //            }
-            //        }
-            //        else
-            //        {
-            //            continue;
-            //        }
-            //    }
-            //}
-
 
             // frenar carpetas duplicadas
             // que vuelva todo el tree a la normalidad si el filtro está vacío
@@ -396,18 +375,25 @@ namespace SPCode.UI
 
         public void FilterDirectory(TreeViewItem tvi, string filter)
         {
+            var omittedDirs = new List<TreeViewItem>();
             tvi.IsExpanded = true;
-            //tvi.Items.Clear();
-
             foreach (TreeViewItem item in tvi.Items)
             {
                 if ((item.Tag as ObjectBrowserTag).Kind != ObjectBrowserItemKind.Directory)
                 {
                     item.Visibility = Visibility.Collapsed;
                 }
+                else
+                {
+                    omittedDirs.Add(item);
+                }
             }
 
             var newItems = BuildDirectoryItems((tvi.Tag as ObjectBrowserTag).Value, filter);
+            foreach (var item in omittedDirs)
+            {
+                newItems.Remove(newItems.FirstOrDefault(x => (x.Tag as ObjectBrowserTag).Value == (item.Tag as ObjectBrowserTag).Value));
+            }
             foreach (var item in newItems)
             {
                 tvi.Items.Add(item);
@@ -424,14 +410,13 @@ namespace SPCode.UI
             tvi.ExpandSubtree();
             foreach (TreeViewItem item in tvi.Items)
             {
-                if (item.Items.Count > 0)
+                var tag = item.Tag as ObjectBrowserTag;
+                if (tag.Kind == ObjectBrowserItemKind.Directory)
                 {
-                    //PeneVenoso(filter, item);
                     FilterDirectory(item, filter);
-
                 }
-                else if ((item.Tag as ObjectBrowserTag).Kind == ObjectBrowserItemKind.File && 
-                    new FileInfo((item.Tag as ObjectBrowserTag).Value).Name.IndexOf(OBSearch.Text, StringComparison.OrdinalIgnoreCase) < 0)
+                else if (tag.Kind == ObjectBrowserItemKind.File && 
+                    new FileInfo(tag.Value).Name.IndexOf(OBSearch.Text, StringComparison.OrdinalIgnoreCase) < 0)
                 {
                     item.Visibility = Visibility.Collapsed;
                 }
