@@ -360,7 +360,7 @@ namespace SPCode.UI
         {
             var stack = new StackPanel { Orientation = Orientation.Horizontal };
             var image = new Image();
-            var uriPath = $"/SPCode;component/Resources/{iconFile}";
+            var uriPath = $"/SPCode;component/Resources/Icons/{iconFile}";
             image.Source = new BitmapImage(new Uri(uriPath, UriKind.Relative));
             image.Width = 16;
             image.Height = 16;
