@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -68,6 +69,7 @@ namespace SPCode.UI
                             break;
                         }
                     case ObjectBrowserItemKind.ParentDirectory:
+                    case ObjectBrowserItemKind.Empty:
                         {
                             ObjectBrowser.ContextMenu = null;
                             break;
@@ -181,22 +183,19 @@ namespace SPCode.UI
         {
             SearchCooldownTimer.Stop();
 
-            // frenar carpetas duplicadas
-            // que vuelva todo el tree a la normalidad si el filtro está vacío
-            // checkear recursividad (testing caja negra/blanca)
+            ApplyFilter(OBSearch.Text);
 
-            foreach (TreeViewItem tvi in ObjectBrowser.Items)
-            {
-                if ((tvi.Tag as ObjectBrowserTag).Kind != ObjectBrowserItemKind.ParentDirectory)
-                {
-                    TraverseTree(OBSearch.Text, tvi);
-                }
-            }
         }
 
         #endregion
 
         #region Methods
+
+        private void ApplyFilter(string filter)
+        {
+
+        }
+
         private void ChangeObjectBrowserToDirectory(string dir, string filter = "")
         {
             if (string.IsNullOrWhiteSpace(dir))
@@ -277,6 +276,21 @@ namespace SPCode.UI
             var spFiles = Directory.GetFiles(dir, "*.sp", SearchOption.TopDirectoryOnly);
             var incFiles = Directory.GetFiles(dir, "*.inc", SearchOption.TopDirectoryOnly);
             var directories = Directory.GetDirectories(dir, "*", SearchOption.TopDirectoryOnly);
+
+            // If we have to build contents of an empty folder...
+            if (spFiles.Length + incFiles.Length + directories.Length == 0)
+            {
+                var tvi = new TreeViewItem()
+                {
+                    Header = BuildTreeViewItemContent($"({Program.Translations.GetLanguage("Empty").ToLower()})", "empty-box.png"),
+                    FontStyle = FontStyles.Italic,
+                    Foreground = new SolidColorBrush(Colors.Gray),
+                    Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.Empty }
+                };
+                itemList.Add(tvi);
+                return itemList;
+            }
+
             foreach (var d in directories)
             {
                 var dInfo = new DirectoryInfo(d);
@@ -297,7 +311,8 @@ namespace SPCode.UI
                     Header = BuildTreeViewItemContent(dInfo.Name, "iconmonstr-folder-13-16.png"),
                     Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.Directory, Value = dInfo.FullName }
                 };
-                tvi.Items.Add("...");
+                // This is to trigger the "expandability" of the TreeViewItem, if it's a directory
+                tvi.Items.Add("");
                 itemList.Add(tvi);
             }
             foreach (var f in spFiles)
@@ -373,69 +388,22 @@ namespace SPCode.UI
             }
         }
 
-        public void FilterDirectory(TreeViewItem tvi, string filter)
-        {
-            var omittedDirs = new List<TreeViewItem>();
-            tvi.IsExpanded = true;
-            foreach (TreeViewItem item in tvi.Items)
-            {
-                if ((item.Tag as ObjectBrowserTag).Kind != ObjectBrowserItemKind.Directory)
-                {
-                    item.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    omittedDirs.Add(item);
-                }
-            }
-
-            var newItems = BuildDirectoryItems((tvi.Tag as ObjectBrowserTag).Value, filter);
-            foreach (var item in omittedDirs)
-            {
-                newItems.Remove(newItems.FirstOrDefault(x => (x.Tag as ObjectBrowserTag).Value == (item.Tag as ObjectBrowserTag).Value));
-            }
-            foreach (var item in newItems)
-            {
-                tvi.Items.Add(item);
-            }
-        }
-
-        public void TraverseTree(string filter, TreeViewItem tvi)
-        {
-            if (string.IsNullOrEmpty(filter))
-            {
-                return;
-            }
-
-            tvi.ExpandSubtree();
-            foreach (TreeViewItem item in tvi.Items)
-            {
-                var tag = item.Tag as ObjectBrowserTag;
-                if (tag.Kind == ObjectBrowserItemKind.Directory)
-                {
-                    FilterDirectory(item, filter);
-                }
-                else if (tag.Kind == ObjectBrowserItemKind.File && 
-                    new FileInfo(tag.Value).Name.IndexOf(OBSearch.Text, StringComparison.OrdinalIgnoreCase) < 0)
-                {
-                    item.Visibility = Visibility.Collapsed;
-                }
-            }
-        }
-
         #endregion
 
         private class ObjectBrowserTag
         {
             public ObjectBrowserItemKind Kind;
-            public string Value;
+            public string? Value;
+#nullable enable 
+#nullable disable
         }
 
         private enum ObjectBrowserItemKind
         {
             ParentDirectory,
             Directory,
-            File
+            File,
+            Empty
         }
     }
 }

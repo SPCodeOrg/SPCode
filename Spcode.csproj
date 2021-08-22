@@ -486,6 +486,7 @@
     <ClInclude Include="Resources\Misc\Templates\Template_Generic.sp" />
     <ClInclude Include="Resources\Misc\Templates\Template_TF2.sp" />
     <Content Include="Deploy\nsis-plugins\DotNetChecker.dll" />
+    <Resource Include="Resources\Icons\empty-box.png" />
     <Resource Include="Resources\AboutImages\AdoptOpenJDK.jpg" />
     <Resource Include="Resources\AboutImages\peace-maker.jpg" />
   </ItemGroup>

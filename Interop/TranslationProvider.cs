@@ -349,6 +349,7 @@ namespace SPCode.Interop
             language.Add("Cancel", "Cancel");
             language.Add("EmptyName", "Empty name!");
             language.Add("NameAlreadyExists", "File name taken!");
+            language.Add("Empty", "Empty");
         }
     }
 }
