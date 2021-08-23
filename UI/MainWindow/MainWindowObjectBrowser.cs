@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -21,6 +22,13 @@ namespace SPCode.UI
         private string CurrentObjectBrowserDirectory = string.Empty;
         private readonly DispatcherTimer SearchCooldownTimer;
         private bool VisualsShown = false;
+
+        private Dictionary<string, string> FileIcons = new()
+        {
+            { ".sp", Constants.PluginIcon },
+            { ".inc", Constants.IncludeIcon },
+            { ".txt", Constants.TxtIcon },
+        };
 
         #region Events
         private void TreeViewOBItem_Expanded(object sender, RoutedEventArgs e)
@@ -52,7 +60,7 @@ namespace SPCode.UI
         private void TreeViewOBItem_RightClicked(object sender, MouseButtonEventArgs e)
         {
             var treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
-            var itemTag = treeViewItem.Tag as ObjectBrowserTag;
+            var itemTag = treeViewItem?.Tag as ObjectBrowserTag;
 
             if (treeViewItem != null)
             {
@@ -77,6 +85,10 @@ namespace SPCode.UI
                             break;
                         }
                 }
+            }
+            else
+            {
+                ObjectBrowser.ContextMenu = null;
             }
             e.Handled = true;
         }
@@ -181,6 +193,11 @@ namespace SPCode.UI
 
         private void OBDirList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            OBSearch.Clear();
+            if (VisualsShown)
+            {
+                HideSearchVisuals();
+            }
             ChangeObjectBrowserToDirectory((string)OBDirList.SelectedItem);
             OBButtonHolder.SelectedIndex = 1;
         }
@@ -191,6 +208,7 @@ namespace SPCode.UI
             {
                 case Key.Escape:
                     OBSearch.Clear();
+                    HideSearchVisuals();
                     ChangeObjectBrowserToDirectory(CurrentObjectBrowserDirectory);
                     break;
                 case Key.Enter:
@@ -243,6 +261,19 @@ namespace SPCode.UI
             {
                 ObjectBrowser.Items.Add(item);
             }
+            if (ObjectBrowser.Items.Count == 0)
+            {
+                ObjectBrowser.Items.Add(new TreeViewItem()
+                {
+                    Header = BuildTreeViewItemContent($"{Program.Translations.GetLanguage("NoResultsThisDir")}", Constants.EmptyIcon),
+                    FontStyle = FontStyles.Italic,
+                    Foreground = new SolidColorBrush(Colors.Gray),
+                    Tag = new ObjectBrowserTag()
+                    {
+                        Kind = ObjectBrowserItemKind.Empty
+                    }
+                });
+            }
         }
 
         private List<TreeViewItem> SearchFiles(List<string> dirs, string filter)
@@ -251,13 +282,16 @@ namespace SPCode.UI
 
             foreach (var dir in dirs)
             {
-                var files = Directory.GetFiles(dir).Where(x => x.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                var files = Directory.GetFiles(dir)
+                    .Where(x => x.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(x => new FileInfo(x).Extension == ".inc" || new FileInfo(x).Extension == ".sp" || new FileInfo(x).Extension == ".txt")
+                    .ToList();
                 foreach (var file in files)
                 {
                     var fInfo = new FileInfo(file);
                     var tvi = new TreeViewItem()
                     {
-                        Header = BuildTreeViewItemContent(fInfo.Name, fInfo.Extension == ".inc" ? Constants.IncludeIcon : Constants.PluginIcon),
+                        Header = BuildTreeViewItemContent(fInfo.Name, FileIcons[fInfo.Extension] , fInfo.FullName),
                         ToolTip = fInfo.FullName,
                         Tag = new ObjectBrowserTag()
                         {
@@ -274,6 +308,10 @@ namespace SPCode.UI
 
         private void ShowSearchVisuals()
         {
+            if (VisualsShown)
+            {
+                return;
+            }
             var objMargin = ObjectBrowser.Margin;
             objMargin.Top += 30;
             ObjectBrowser.Margin = objMargin;
@@ -283,6 +321,10 @@ namespace SPCode.UI
 
         private void HideSearchVisuals()
         {
+            if (!VisualsShown)
+            {
+                return;
+            }
             var objMargin = ObjectBrowser.Margin;
             objMargin.Top -= 30;
             ObjectBrowser.Margin = objMargin;
@@ -290,7 +332,7 @@ namespace SPCode.UI
             VisualsShown = false;
         }
 
-        private void ChangeObjectBrowserToDirectory(string dir, string filter = "")
+        private void ChangeObjectBrowserToDirectory(string dir)
         {
             if (string.IsNullOrWhiteSpace(dir))
             {
@@ -332,7 +374,7 @@ namespace SPCode.UI
                 parentDirItem.MouseDoubleClick += TreeViewOBItemParentDir_DoubleClicked;
                 parentDirItem.PreviewMouseRightButtonDown += TreeViewOBItem_RightClicked;
                 ObjectBrowser.Items.Add(parentDirItem);
-                var newItems = BuildDirectoryItems(dir, filter);
+                var newItems = BuildDirectoryItems(dir);
                 foreach (var item in newItems)
                 {
                     ObjectBrowser.Items.Add(item);
@@ -364,7 +406,7 @@ namespace SPCode.UI
             }
         }
 
-        private List<TreeViewItem> BuildDirectoryItems(string dir, string filter = "")
+        private List<TreeViewItem> BuildDirectoryItems(string dir)
         {
             var itemList = new List<TreeViewItem>();
             var spFiles = Directory.GetFiles(dir, "*.sp", SearchOption.TopDirectoryOnly);
@@ -419,7 +461,7 @@ namespace SPCode.UI
             foreach (var f in spFiles)
             {
                 var fInfo = new FileInfo(f);
-                if (!fInfo.Exists || (!string.IsNullOrWhiteSpace(filter) && !(fInfo.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)))
+                if (!fInfo.Exists)
                 {
                     continue;
                 }
@@ -439,7 +481,7 @@ namespace SPCode.UI
             foreach (var f in incFiles)
             {
                 var fInfo = new FileInfo(f);
-                if (!fInfo.Exists || (!string.IsNullOrWhiteSpace(filter) && !(fInfo.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)))
+                if (!fInfo.Exists)
                 {
                     continue;
                 }
@@ -459,7 +501,7 @@ namespace SPCode.UI
             return itemList;
         }
 
-        private StackPanel BuildTreeViewItemContent(string headerString, string iconFile)
+        private StackPanel BuildTreeViewItemContent(string headerString, string iconFile, string path = "")
         {
             var stack = new StackPanel { Orientation = Orientation.Horizontal };
             var image = new Image();
@@ -467,7 +509,25 @@ namespace SPCode.UI
             image.Source = new BitmapImage(new Uri(uriPath, UriKind.Relative));
             image.Width = 16;
             image.Height = 16;
-            var lbl = new TextBlock { Text = headerString, Margin = new Thickness(2.0, 0.0, 0.0, 0.0) };
+            var lbl = new TextBlock
+            {
+                Margin = new Thickness(2.0, 0.0, 0.0, 0.0)
+            };
+
+            if (string.IsNullOrEmpty(path))
+            {
+                lbl.Text = headerString;
+            }
+            else
+            {
+                lbl.Inlines.Add($"{headerString}  ");
+                lbl.Inlines.Add(new Run(path)
+                {
+                    Foreground = new SolidColorBrush(Colors.DarkGray),
+                    FontStyle = FontStyles.Italic,
+                    FontSize = FontSize - 2,
+                });
+            }
             stack.Children.Add(image);
             stack.Children.Add(lbl);
             return stack;
@@ -476,7 +536,7 @@ namespace SPCode.UI
         private static TreeViewItem VisualUpwardSearch(DependencyObject source)
         {
             // Snippet that allows me to select items while right-clicking them to enable Context Menu capabilities
-            while (source != null && !(source is TreeViewItem))
+            while (source != null && !(source is TreeViewItem) && !(source is Run))
             {
                 source = VisualTreeHelper.GetParent(source);
             }

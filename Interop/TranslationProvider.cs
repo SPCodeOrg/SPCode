@@ -352,6 +352,7 @@ namespace SPCode.Interop
             language.Add("Empty", "Empty");
             language.Add("SearchFiles", "Search files");
             language.Add("SearchResults", "Search results");
+            language.Add("NoResultsThisDir", "No results on this directory!");
         }
     }
 }
