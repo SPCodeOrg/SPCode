@@ -210,7 +210,7 @@ namespace SPCode.Interop
             language.Add("InheritedFrom", "inherited from");
             language.Add("MethodFrom", "Method from");
             language.Add("PropertyFrom", "Property from");
-            language.Add("Search", "search");
+            language.Add("Search", "Search");
             language.Add("Delete", "Delete");
             language.Add("Name", "Name");
             language.Add("ScriptDir", "Scripting directories");
@@ -350,6 +350,8 @@ namespace SPCode.Interop
             language.Add("EmptyName", "Empty name!");
             language.Add("NameAlreadyExists", "File name taken!");
             language.Add("Empty", "Empty");
+            language.Add("SearchFiles", "Search files");
+            language.Add("SearchResults", "Search results");
         }
     }
 }

@@ -81,6 +81,9 @@ namespace SPCode.UI
             OBItemText_File.Text = Program.Translations.GetLanguage("OBTextFile");
             OBItemText_Config.Text = Program.Translations.GetLanguage("OBTextConfig");
 
+            TxtSearchFiles.Text = Program.Translations.GetLanguage("SearchFiles") + "...";
+            TxtSearchResults.Text = Program.Translations.GetLanguage("SearchResults");
+
             foreach (MenuItem item in (ObjectBrowser.Resources["TVIContextMenu"] as ContextMenu).Items)
             {
                 item.Header = Program.Translations.GetLanguage(item.Name);

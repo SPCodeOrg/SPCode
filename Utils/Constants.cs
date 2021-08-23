@@ -11,5 +11,9 @@
         public const string FileOpenFilters = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|Sourcemod Plugins (*.smx)|*.smx|All Files (*.*)|*.*";
         public const string FileSaveFilters = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|All Files (*.*)|*.*";
         public const string HotkeysFile = "Hotkeys.xml";
+        public const string FolderIcon = "iconmonstr-folder-13-16.png";
+        public const string IncludeIcon = "iconmonstr-file-8-16.png";
+        public const string PluginIcon = "iconmonstr-file-5-16.png";
+        public const string EmptyIcon = "empty-box.png";
     }
 }

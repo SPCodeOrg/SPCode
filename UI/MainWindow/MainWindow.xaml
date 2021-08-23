@@ -249,8 +249,8 @@
           </TreeView.Resources>
         </TreeView>
         <TextBox x:Name="OBSearch" VerticalAlignment="Top" Margin="0,28,-1,0" Height="5" BorderThickness=".4" Grid.Column="1" BorderBrush="{DynamicResource AccentColorBrush3}"
-                 TextChanged="OBSearch_TextChanged"/>
-        <TextBlock IsHitTestVisible="False" Text="Search files..." VerticalAlignment="Top" Margin="8,32,0,0" Foreground="DarkGray" FontStyle="Italic" Grid.Column="1">
+                 TextChanged="OBSearch_TextChanged" PreviewKeyDown="OBSearch_PreviewKeyDown"/>
+        <TextBlock x:Name="TxtSearchFiles" IsHitTestVisible="False" Text="Search files..." VerticalAlignment="Top" Margin="8,32,0,0" Foreground="DarkGray" FontStyle="Italic" Grid.Column="1">
           <TextBlock.Style>
             <Style TargetType="{x:Type TextBlock}">
               <Setter Property="Visibility" Value="Collapsed"/>
@@ -262,6 +262,10 @@
             </Style>
           </TextBlock.Style>
         </TextBlock>
+        <TextBlock x:Name="TxtSearchResults" Grid.Column="1" VerticalAlignment="Top" TextAlignment="Center" Margin="0,54,-1,0" 
+                   Foreground="{DynamicResource BlackColorBrush}" Background="{DynamicResource WhiteColorBrush}" 
+                   Text="Search results" Height="30" Padding="4" IsEnabled="False" Visibility="Hidden"
+                   FontWeight="Bold" FontSize="15"/>
         <ComboBox Grid.Column="1" x:Name="OBDirList" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0" Height="5" BorderThickness="0" SelectionChanged="OBDirList_SelectionChanged"/>
         <ListView Grid.Column="1" x:Name="OBButtonHolder" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0" Height="28" ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderThickness="0" SelectionMode="Single" BorderBrush="{DynamicResource TextBoxBorderBrush}">
           <ListView.ItemsPanel>

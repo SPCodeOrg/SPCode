@@ -224,6 +224,7 @@
     <Compile Include="Utils\HotkeyInfo.cs" />
     <Compile Include="Utils\HotkeyUtils.cs" />
     <Compile Include="Utils\JavaInstallation.cs" />
+    <Compile Include="Utils\ObjectBrowserUtils.cs" />
     <Compile Include="Utils\Paths.cs" />
     <Compile Include="Utils\FTP.cs" />
     <Compile Include="Utils\ManagedAES.cs" />

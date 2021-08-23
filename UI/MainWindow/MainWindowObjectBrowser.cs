@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using SPCode.UI.Windows;
+using SPCode.Utils;
 
 namespace SPCode.UI
 {
@@ -19,6 +20,7 @@ namespace SPCode.UI
     {
         private string CurrentObjectBrowserDirectory = string.Empty;
         private readonly DispatcherTimer SearchCooldownTimer;
+        private bool VisualsDone;
 
         #region Events
         private void TreeViewOBItem_Expanded(object sender, RoutedEventArgs e)
@@ -142,6 +144,10 @@ namespace SPCode.UI
             {
                 return;
             }
+            if (VisualsDone)
+            {
+                SearchVisuals(false);
+            }
             var ee = GetCurrentEditorElement();
             if (ee != null)
             {
@@ -158,6 +164,10 @@ namespace SPCode.UI
             {
                 return;
             }
+            if (VisualsDone)
+            {
+                SearchVisuals(false);
+            }
             var cc = Program.Configs[Program.SelectedConfig];
             if (cc.SMDirectories.Count > 0)
             {
@@ -173,6 +183,14 @@ namespace SPCode.UI
             OBButtonHolder.SelectedIndex = 1;
         }
 
+        private void OBSearch_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Search(OBSearch.Text);
+            }
+        }
+
         private void OBSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
             SearchCooldownTimer.Stop();
@@ -182,18 +200,86 @@ namespace SPCode.UI
         private void OnSearchCooldownTimerTick(object sender, EventArgs e)
         {
             SearchCooldownTimer.Stop();
-
-            ApplyFilter(OBSearch.Text);
-
+            Search(OBSearch.Text);
         }
 
         #endregion
 
         #region Methods
 
-        private void ApplyFilter(string filter)
+        private void Search(string filter)
         {
+            // Set up visuals
+            if (string.IsNullOrWhiteSpace(filter))
+            {
+                SearchVisuals(false);
+                ObjectBrowser.Items.Clear();
+                ChangeObjectBrowserToDirectory(CurrentObjectBrowserDirectory);
+                return;
+            }
 
+            SearchVisuals(true);
+
+            // Create list with all dirs, including the one we're standing on
+            var dirs = new List<string>(Directory.GetDirectories(CurrentObjectBrowserDirectory, "*.*", SearchOption.AllDirectories));
+            dirs.Insert(0, CurrentObjectBrowserDirectory);
+
+            // Clear all items
+            ObjectBrowser.Items.Clear();
+
+            // Create List<TreeViewItem> with filter and add all items to TreeView
+            foreach (var item in SearchFiles(dirs, filter))
+            {
+                ObjectBrowser.Items.Add(item);
+            }
+        }
+
+        private List<TreeViewItem> SearchFiles(List<string> dirs, string filter)
+        {
+            var list = new List<TreeViewItem>();
+
+            foreach (var dir in dirs)
+            {
+                var files = Directory.GetFiles(dir).Where(x => x.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                foreach (var file in files)
+                {
+                    var fInfo = new FileInfo(file);
+                    var tvi = new TreeViewItem()
+                    {
+                        Header = BuildTreeViewItemContent(fInfo.Name, fInfo.Extension == ".inc" ? Constants.IncludeIcon : Constants.PluginIcon),
+                        ToolTip = fInfo.FullName,
+                        Tag = new ObjectBrowserTag()
+                        {
+                            Kind = ObjectBrowserItemKind.File,
+                            Value = fInfo.FullName
+                        }
+                    };
+                    tvi.MouseDoubleClick += TreeViewOBItemFile_DoubleClicked;
+                    list.Add(tvi);
+                }
+            }
+            return list;
+        }
+
+        private void SearchVisuals(bool show)
+        {
+            // Shrunk the treeview and make space for the 'Search results' label, or the opposite
+            if (show && !VisualsDone)
+            {
+                var objMargin = ObjectBrowser.Margin;
+                objMargin.Top += 30;
+                ObjectBrowser.Margin = objMargin;
+                TxtSearchResults.Visibility = Visibility.Visible;
+                VisualsDone = true;
+            }
+            else if (!show)
+            {
+                var objMargin = ObjectBrowser.Margin;
+                objMargin.Top -= 30;
+                ObjectBrowser.Margin = objMargin;
+                TxtSearchResults.Visibility = Visibility.Hidden;
+                VisualsDone = false;
+            }
         }
 
         private void ChangeObjectBrowserToDirectory(string dir, string filter = "")
@@ -282,10 +368,13 @@ namespace SPCode.UI
             {
                 var tvi = new TreeViewItem()
                 {
-                    Header = BuildTreeViewItemContent($"({Program.Translations.GetLanguage("Empty").ToLower()})", "empty-box.png"),
+                    Header = BuildTreeViewItemContent($"({Program.Translations.GetLanguage("Empty").ToLower()})", Constants.EmptyIcon),
                     FontStyle = FontStyles.Italic,
                     Foreground = new SolidColorBrush(Colors.Gray),
-                    Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.Empty }
+                    Tag = new ObjectBrowserTag()
+                    {
+                        Kind = ObjectBrowserItemKind.Empty
+                    }
                 };
                 itemList.Add(tvi);
                 return itemList;
@@ -308,8 +397,12 @@ namespace SPCode.UI
                 }
                 var tvi = new TreeViewItem()
                 {
-                    Header = BuildTreeViewItemContent(dInfo.Name, "iconmonstr-folder-13-16.png"),
-                    Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.Directory, Value = dInfo.FullName }
+                    Header = BuildTreeViewItemContent(dInfo.Name, Constants.FolderIcon),
+                    Tag = new ObjectBrowserTag()
+                    {
+                        Kind = ObjectBrowserItemKind.Directory,
+                        Value = dInfo.FullName
+                    }
                 };
                 // This is to trigger the "expandability" of the TreeViewItem, if it's a directory
                 tvi.Items.Add("");
@@ -324,8 +417,12 @@ namespace SPCode.UI
                 }
                 var tvi = new TreeViewItem()
                 {
-                    Header = BuildTreeViewItemContent(fInfo.Name, "iconmonstr-file-5-16.png"),
-                    Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.File, Value = fInfo.FullName }
+                    Header = BuildTreeViewItemContent(fInfo.Name, Constants.PluginIcon),
+                    Tag = new ObjectBrowserTag()
+                    {
+                        Kind = ObjectBrowserItemKind.File,
+                        Value = fInfo.FullName
+                    }
                 };
                 tvi.MouseDoubleClick += TreeViewOBItemFile_DoubleClicked;
                 tvi.MouseDown += TreeViewOBItem_RightClicked;
@@ -340,8 +437,12 @@ namespace SPCode.UI
                 }
                 var tvi = new TreeViewItem()
                 {
-                    Header = BuildTreeViewItemContent(fInfo.Name, "iconmonstr-file-8-16.png"),
-                    Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.File, Value = fInfo.FullName }
+                    Header = BuildTreeViewItemContent(fInfo.Name, Constants.IncludeIcon),
+                    Tag = new ObjectBrowserTag()
+                    {
+                        Kind = ObjectBrowserItemKind.File,
+                        Value = fInfo.FullName
+                    }
                 };
                 tvi.MouseDoubleClick += TreeViewOBItemFile_DoubleClicked;
                 tvi.MouseRightButtonDown += TreeViewOBItem_RightClicked;
@@ -350,7 +451,7 @@ namespace SPCode.UI
             return itemList;
         }
 
-        private object BuildTreeViewItemContent(string headerString, string iconFile)
+        private StackPanel BuildTreeViewItemContent(string headerString, string iconFile)
         {
             var stack = new StackPanel { Orientation = Orientation.Horizontal };
             var image = new Image();
@@ -389,21 +490,5 @@ namespace SPCode.UI
         }
 
         #endregion
-
-        private class ObjectBrowserTag
-        {
-            public ObjectBrowserItemKind Kind;
-            public string? Value;
-#nullable enable 
-#nullable disable
-        }
-
-        private enum ObjectBrowserItemKind
-        {
-            ParentDirectory,
-            Directory,
-            File,
-            Empty
-        }
     }
 }
