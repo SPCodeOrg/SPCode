@@ -20,7 +20,7 @@ namespace SPCode.UI
     {
         private string CurrentObjectBrowserDirectory = string.Empty;
         private readonly DispatcherTimer SearchCooldownTimer;
-        private bool VisualsDone;
+        private bool VisualsShown = false;
 
         #region Events
         private void TreeViewOBItem_Expanded(object sender, RoutedEventArgs e)
@@ -144,9 +144,10 @@ namespace SPCode.UI
             {
                 return;
             }
-            if (VisualsDone)
+            if (VisualsShown)
             {
-                SearchVisuals(false);
+                OBSearch.Clear();
+                HideSearchVisuals();
             }
             var ee = GetCurrentEditorElement();
             if (ee != null)
@@ -164,9 +165,10 @@ namespace SPCode.UI
             {
                 return;
             }
-            if (VisualsDone)
+            if (VisualsShown)
             {
-                SearchVisuals(false);
+                OBSearch.Clear();
+                HideSearchVisuals();
             }
             var cc = Program.Configs[Program.SelectedConfig];
             if (cc.SMDirectories.Count > 0)
@@ -185,9 +187,18 @@ namespace SPCode.UI
 
         private void OBSearch_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            switch (e.Key)
             {
-                Search(OBSearch.Text);
+                case Key.Escape:
+                    OBSearch.Clear();
+                    ChangeObjectBrowserToDirectory(CurrentObjectBrowserDirectory);
+                    break;
+                case Key.Enter:
+                    if (VisualsShown)
+                    {
+                        Search(OBSearch.Text);
+                    }
+                    break;
             }
         }
 
@@ -212,13 +223,13 @@ namespace SPCode.UI
             // Set up visuals
             if (string.IsNullOrWhiteSpace(filter))
             {
-                SearchVisuals(false);
+                HideSearchVisuals();
                 ObjectBrowser.Items.Clear();
                 ChangeObjectBrowserToDirectory(CurrentObjectBrowserDirectory);
                 return;
             }
 
-            SearchVisuals(true);
+            ShowSearchVisuals();
 
             // Create list with all dirs, including the one we're standing on
             var dirs = new List<string>(Directory.GetDirectories(CurrentObjectBrowserDirectory, "*.*", SearchOption.AllDirectories));
@@ -261,25 +272,22 @@ namespace SPCode.UI
             return list;
         }
 
-        private void SearchVisuals(bool show)
+        private void ShowSearchVisuals()
         {
-            // Shrunk the treeview and make space for the 'Search results' label, or the opposite
-            if (show && !VisualsDone)
-            {
-                var objMargin = ObjectBrowser.Margin;
-                objMargin.Top += 30;
-                ObjectBrowser.Margin = objMargin;
-                TxtSearchResults.Visibility = Visibility.Visible;
-                VisualsDone = true;
-            }
-            else if (!show)
-            {
-                var objMargin = ObjectBrowser.Margin;
-                objMargin.Top -= 30;
-                ObjectBrowser.Margin = objMargin;
-                TxtSearchResults.Visibility = Visibility.Hidden;
-                VisualsDone = false;
-            }
+            var objMargin = ObjectBrowser.Margin;
+            objMargin.Top += 30;
+            ObjectBrowser.Margin = objMargin;
+            TxtSearchResults.Visibility = Visibility.Visible;
+            VisualsShown = true;
+        }
+
+        private void HideSearchVisuals()
+        {
+            var objMargin = ObjectBrowser.Margin;
+            objMargin.Top -= 30;
+            ObjectBrowser.Margin = objMargin;
+            TxtSearchResults.Visibility = Visibility.Hidden;
+            VisualsShown = false;
         }
 
         private void ChangeObjectBrowserToDirectory(string dir, string filter = "")
