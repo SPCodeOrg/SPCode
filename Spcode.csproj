@@ -458,16 +458,6 @@
     <Resource Include="UI\STheme\Images\VTabGroup.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Icons\iconmonstr-file-5-16.png" />
-    <Resource Include="Resources\Icons\iconmonstr-file-8-16.png" />
-    <Resource Include="Resources\Icons\iconmonstr-folder-13-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Icons\iconmonstr-code-fork-1-20.png" />
-    <Resource Include="Resources\Icons\iconmonstr-code-fork-2-20.png" />
-    <Resource Include="Resources\Icons\iconmonstr-code-fork-4-20.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Deploy\DotNetChecker.nsh" />
     <ClInclude Include="Deploy\FileAssociation.nsh" />
     <ClInclude Include="Deploy\GPLv3.txt" />
@@ -492,7 +482,6 @@
     <Resource Include="Resources\Icons\icon-txt.png" />
     <Resource Include="Resources\Icons\icon-folder.png" />
     <Resource Include="Resources\Icons\icon-gear.png" />
-    <Resource Include="Resources\Icons\iconmonstr-note-27-16.png" />
     <Resource Include="Resources\Icons\empty-box.png" />
     <Resource Include="Resources\AboutImages\AdoptOpenJDK.jpg" />
     <Resource Include="Resources\AboutImages\peace-maker.jpg" />
