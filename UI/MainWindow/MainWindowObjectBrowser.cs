@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -19,16 +17,18 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
+        #region Variables
         private string CurrentObjectBrowserDirectory = string.Empty;
         private readonly DispatcherTimer SearchCooldownTimer;
         private bool VisualsShown = false;
 
-        private Dictionary<string, string> FileIcons = new()
+        private readonly Dictionary<string, string> FileIcons = new()
         {
             { ".sp", Constants.PluginIcon },
             { ".inc", Constants.IncludeIcon },
             { ".txt", Constants.TxtIcon },
         };
+        #endregion
 
         #region Events
         private void TreeViewOBItem_Expanded(object sender, RoutedEventArgs e)
@@ -86,10 +86,6 @@ namespace SPCode.UI
                         }
                 }
             }
-            else
-            {
-                ObjectBrowser.ContextMenu = null;
-            }
             e.Handled = true;
         }
 
@@ -127,27 +123,37 @@ namespace SPCode.UI
 
         private void OBItemOpenFileLocation_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItemFile = ((ObjectBrowser.SelectedItem as TreeViewItem).Tag as ObjectBrowserTag).Value;
-            Process.Start("explorer.exe", $"/select, \"{selectedItemFile}\"");
+            var selectedItemFile = ((ObjectBrowser.SelectedItem as TreeViewItem)?.Tag as ObjectBrowserTag)?.Value;
+            if (selectedItemFile != null)
+            {
+                Process.Start("explorer.exe", $"/select, \"{selectedItemFile}\"");
+            }
         }
 
         private void OBItemRename_Click(object sender, RoutedEventArgs e)
         {
-            var file = ((ObjectBrowser.SelectedItem as TreeViewItem).Tag as ObjectBrowserTag).Value;
-            var renameWindow = new RenameWindow(file);
-            renameWindow.ShowDialog();
-            if (!string.IsNullOrEmpty(renameWindow.NewName))
+            if (ObjectBrowser.SelectedItem is TreeViewItem file)
             {
-                File.Move(file, Path.GetDirectoryName(file) + $@"\{renameWindow.NewName}");
-                OBDirList_SelectionChanged(null, null);
+                var fileTag = file.Tag as ObjectBrowserTag;
+                var renameWindow = new RenameWindow(fileTag.Value);
+                renameWindow.ShowDialog();
+                if (!string.IsNullOrEmpty(renameWindow.NewName))
+                {
+                    File.Move(fileTag.Value, Path.GetDirectoryName(fileTag.Value) + $@"\{renameWindow.NewName}");
+                    file.Header = BuildTreeViewItemContent(renameWindow.NewName, FileIcons[new FileInfo(fileTag.Value).Extension]);
+                    fileTag.Value = new FileInfo(fileTag.Value).DirectoryName + @"\" + renameWindow.NewName;
+                }
             }
         }
 
         private void OBItemDelete_Click(object sender, RoutedEventArgs e)
         {
-            var file = ((ObjectBrowser.SelectedItem as TreeViewItem).Tag as ObjectBrowserTag).Value;
-            File.Delete(file);
-            OBDirList_SelectionChanged(null, null);
+            var file = ((ObjectBrowser.SelectedItem as TreeViewItem)?.Tag as ObjectBrowserTag)?.Value;
+            if (file != null)
+            {
+                File.Delete(file);
+                OBDirList_SelectionChanged(null, null);
+            }
         }
 
         private void ListViewOBItem_SelectFile(object sender, RoutedEventArgs e)
@@ -161,6 +167,7 @@ namespace SPCode.UI
                 OBSearch.Clear();
                 HideSearchVisuals();
             }
+            ObjectBrowser.ContextMenu = null;
             var ee = GetCurrentEditorElement();
             if (ee != null)
             {
@@ -182,6 +189,7 @@ namespace SPCode.UI
                 OBSearch.Clear();
                 HideSearchVisuals();
             }
+            ObjectBrowser.ContextMenu = null;
             var cc = Program.Configs[Program.SelectedConfig];
             if (cc.SMDirectories.Count > 0)
             {
@@ -204,6 +212,7 @@ namespace SPCode.UI
 
         private void OBSearch_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            ObjectBrowser.ContextMenu = null;
             switch (e.Key)
             {
                 case Key.Escape:
@@ -235,7 +244,6 @@ namespace SPCode.UI
         #endregion
 
         #region Methods
-
         private void Search(string filter)
         {
             // Set up visuals
@@ -291,7 +299,7 @@ namespace SPCode.UI
                     var fInfo = new FileInfo(file);
                     var tvi = new TreeViewItem()
                     {
-                        Header = BuildTreeViewItemContent(fInfo.Name, FileIcons[fInfo.Extension] , fInfo.FullName),
+                        Header = BuildTreeViewItemContent(fInfo.Name, FileIcons[fInfo.Extension], fInfo.FullName),
                         ToolTip = fInfo.FullName,
                         Tag = new ObjectBrowserTag()
                         {
@@ -409,8 +417,10 @@ namespace SPCode.UI
         private List<TreeViewItem> BuildDirectoryItems(string dir)
         {
             var itemList = new List<TreeViewItem>();
+
             var spFiles = Directory.GetFiles(dir, "*.sp", SearchOption.TopDirectoryOnly);
             var incFiles = Directory.GetFiles(dir, "*.inc", SearchOption.TopDirectoryOnly);
+            var txtFiles = Directory.GetFiles(dir, "*.txt", SearchOption.TopDirectoryOnly);
             var directories = Directory.GetDirectories(dir, "*", SearchOption.TopDirectoryOnly);
 
             // If we have to build contents of an empty folder...
@@ -430,73 +440,63 @@ namespace SPCode.UI
                 return itemList;
             }
 
-            foreach (var d in directories)
+            var itemsToAdd = new List<string>();
+            itemsToAdd.AddRange(directories);
+            itemsToAdd.AddRange(incFiles);
+            itemsToAdd.AddRange(spFiles);
+            itemsToAdd.AddRange(txtFiles);
+
+            foreach (var item in itemsToAdd)
             {
-                var dInfo = new DirectoryInfo(d);
-                if (!dInfo.Exists)
+                var attr = File.GetAttributes(item);
+                if (attr.HasFlag(FileAttributes.Directory))
                 {
-                    continue;
-                }
-                try
-                {
-                    dInfo.GetAccessControl();
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    continue;
-                }
-                var tvi = new TreeViewItem()
-                {
-                    Header = BuildTreeViewItemContent(dInfo.Name, Constants.FolderIcon),
-                    Tag = new ObjectBrowserTag()
+                    var dInfo = new DirectoryInfo(item);
+                    if (!dInfo.Exists)
                     {
-                        Kind = ObjectBrowserItemKind.Directory,
-                        Value = dInfo.FullName
+                        continue;
                     }
-                };
-                // This is to trigger the "expandability" of the TreeViewItem, if it's a directory
-                tvi.Items.Add("");
-                itemList.Add(tvi);
-            }
-            foreach (var f in spFiles)
-            {
-                var fInfo = new FileInfo(f);
-                if (!fInfo.Exists)
-                {
-                    continue;
-                }
-                var tvi = new TreeViewItem()
-                {
-                    Header = BuildTreeViewItemContent(fInfo.Name, Constants.PluginIcon),
-                    Tag = new ObjectBrowserTag()
+                    try
                     {
-                        Kind = ObjectBrowserItemKind.File,
-                        Value = fInfo.FullName
+                        dInfo.GetAccessControl();
                     }
-                };
-                tvi.MouseDoubleClick += TreeViewOBItemFile_DoubleClicked;
-                tvi.MouseDown += TreeViewOBItem_RightClicked;
-                itemList.Add(tvi);
-            }
-            foreach (var f in incFiles)
-            {
-                var fInfo = new FileInfo(f);
-                if (!fInfo.Exists)
-                {
-                    continue;
-                }
-                var tvi = new TreeViewItem()
-                {
-                    Header = BuildTreeViewItemContent(fInfo.Name, Constants.IncludeIcon),
-                    Tag = new ObjectBrowserTag()
+                    catch (UnauthorizedAccessException)
                     {
-                        Kind = ObjectBrowserItemKind.File,
-                        Value = fInfo.FullName
+                        continue;
                     }
-                };
-                tvi.MouseDoubleClick += TreeViewOBItemFile_DoubleClicked;
-                tvi.MouseRightButtonDown += TreeViewOBItem_RightClicked;
-                itemList.Add(tvi);
+                    var tvi = new TreeViewItem()
+                    {
+                        Header = BuildTreeViewItemContent(dInfo.Name, Constants.FolderIcon),
+                        Tag = new ObjectBrowserTag()
+                        {
+                            Kind = ObjectBrowserItemKind.Directory,
+                            Value = dInfo.FullName
+                        }
+                    };
+                    // This is to trigger the "expandability" of the TreeViewItem, if it's a directory
+                    tvi.Items.Add("");
+                    itemList.Add(tvi);
+                }
+                else
+                {
+                    var fInfo = new FileInfo(item);
+                    if (!fInfo.Exists)
+                    {
+                        continue;
+                    }
+                    var tvi = new TreeViewItem()
+                    {
+                        Header = BuildTreeViewItemContent(fInfo.Name, FileIcons[fInfo.Extension]),
+                        Tag = new ObjectBrowserTag()
+                        {
+                            Kind = ObjectBrowserItemKind.File,
+                            Value = fInfo.FullName
+                        }
+                    };
+                    tvi.MouseDoubleClick += TreeViewOBItemFile_DoubleClicked;
+                    tvi.MouseDown += TreeViewOBItem_RightClicked;
+                    itemList.Add(tvi);
+                }
             }
             return itemList;
         }
@@ -527,6 +527,7 @@ namespace SPCode.UI
                     FontStyle = FontStyles.Italic,
                     FontSize = FontSize - 2,
                 });
+                lbl.IsHitTestVisible = false;
             }
             stack.Children.Add(image);
             stack.Children.Add(lbl);
@@ -536,7 +537,7 @@ namespace SPCode.UI
         private static TreeViewItem VisualUpwardSearch(DependencyObject source)
         {
             // Snippet that allows me to select items while right-clicking them to enable Context Menu capabilities
-            while (source != null && !(source is TreeViewItem) && !(source is Run))
+            while (source != null && !(source is TreeViewItem))
             {
                 source = VisualTreeHelper.GetParent(source);
             }

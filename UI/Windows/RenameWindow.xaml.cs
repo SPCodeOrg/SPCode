@@ -26,11 +26,19 @@ namespace SPCode.UI.Windows
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
 
-            Language_Translate();
-            _file = file;
-            TxtName.Text = Path.GetFileName(_file);
-            TxtName.Focus();
-            TxtName.Select(0, TxtName.Text.LastIndexOf('.'));
+            try
+            {
+                Language_Translate();
+                _file = file;
+                TxtName.Text = Path.GetFileName(_file);
+                TxtName.Focus();
+                TxtName.Select(0, TxtName.Text.LastIndexOf('.'));
+            }
+            catch (Exception)
+            {
+                NewName = string.Empty;
+                Close();
+            }
         }
         #endregion
 
