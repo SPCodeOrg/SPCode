@@ -275,14 +275,14 @@
           </ListView.ItemsPanel>
           <ListViewItem x:Name="OBTabFile" Selected="ListViewOBItem_SelectFile">
             <StackPanel Orientation="Horizontal">
-              <TextBlock x:Name="OBItemText_File" Text="File Directory" />
-              <Image Source="/SPCode;component/Resources/Icons/iconmonstr-code-fork-1-20.png" Width="20" Height="20" />
+              <Image Source="/SPCode;component/Resources/Icons/icon-folder.png" Width="18" Height="18" />
+              <TextBlock x:Name="OBItemText_File" Text="File Directory" Margin="5,0,0,0" />
             </StackPanel>
           </ListViewItem>
           <ListViewItem x:Name="OBTabConfig" Selected="ListViewOBItem_SelectConfig">
             <StackPanel Orientation="Horizontal">
-              <TextBlock x:Name="OBItemText_Config" Text="Config Directory" />
-              <Image Source="/SPCode;component/Resources/Icons/iconmonstr-code-fork-2-20.png" Width="20" Height="20" />
+              <Image Source="/SPCode;component/Resources/Icons/icon-gear.png" Width="18" Height="18" />
+              <TextBlock x:Name="OBItemText_Config" Text="Config Directory" Margin="5,0,0,0" />
             </StackPanel>
           </ListViewItem>
         </ListView>

@@ -511,7 +511,7 @@ namespace SPCode.UI
             image.Height = 16;
             var lbl = new TextBlock
             {
-                Margin = new Thickness(2.0, 0.0, 0.0, 0.0)
+                Margin = new Thickness(5.0, 0.0, 0.0, 0.0)
             };
 
             if (string.IsNullOrEmpty(path))

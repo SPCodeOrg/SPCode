@@ -487,6 +487,11 @@
     <ClInclude Include="Resources\Misc\Templates\Template_Generic.sp" />
     <ClInclude Include="Resources\Misc\Templates\Template_TF2.sp" />
     <Content Include="Deploy\nsis-plugins\DotNetChecker.dll" />
+    <Resource Include="Resources\Icons\icon-include.png" />
+    <Resource Include="Resources\Icons\icon-plugin.png" />
+    <Resource Include="Resources\Icons\icon-txt.png" />
+    <Resource Include="Resources\Icons\icon-folder.png" />
+    <Resource Include="Resources\Icons\icon-gear.png" />
     <Resource Include="Resources\Icons\iconmonstr-note-27-16.png" />
     <Resource Include="Resources\Icons\empty-box.png" />
     <Resource Include="Resources\AboutImages\AdoptOpenJDK.jpg" />
