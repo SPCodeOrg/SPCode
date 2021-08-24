@@ -1,6 +1,6 @@
 ﻿namespace SPCode.Utils
 {
-    public class Constants
+    public static class Constants
     {
         public const string GitHubNewIssueLink = "https://github.com/Hexer10/SPCode/issues/new";
         public const string GitHubLatestRelease = "https://github.com/Hexer10/SPCode/releases/latest";
@@ -15,6 +15,7 @@
         public const string IncludeIcon = "icon-include.png";
         public const string PluginIcon = "icon-plugin.png";
         public const string TxtIcon = "icon-txt.png";
+        public const string SmxIcon = "icon-smx.png";
         public const string EmptyIcon = "empty-box.png";
     }
 }

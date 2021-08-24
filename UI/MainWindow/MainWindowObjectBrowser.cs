@@ -27,6 +27,9 @@ namespace SPCode.UI
             { ".sp", Constants.PluginIcon },
             { ".inc", Constants.IncludeIcon },
             { ".txt", Constants.TxtIcon },
+            { ".cfg", Constants.TxtIcon },
+            { ".ini", Constants.TxtIcon },
+            { ".smx", Constants.SmxIcon },
         };
         #endregion
 
@@ -246,41 +249,48 @@ namespace SPCode.UI
         #region Methods
         private void Search(string filter)
         {
-            // Set up visuals
-            if (string.IsNullOrWhiteSpace(filter))
+            try
             {
-                HideSearchVisuals();
-                ObjectBrowser.Items.Clear();
-                ChangeObjectBrowserToDirectory(CurrentObjectBrowserDirectory);
-                return;
-            }
-
-            ShowSearchVisuals();
-
-            // Create list with all dirs, including the one we're standing on
-            var dirs = new List<string>(Directory.GetDirectories(CurrentObjectBrowserDirectory, "*.*", SearchOption.AllDirectories));
-            dirs.Insert(0, CurrentObjectBrowserDirectory);
-
-            // Clear all items
-            ObjectBrowser.Items.Clear();
-
-            // Create List<TreeViewItem> with filter and add all items to TreeView
-            foreach (var item in SearchFiles(dirs, filter))
-            {
-                ObjectBrowser.Items.Add(item);
-            }
-            if (ObjectBrowser.Items.Count == 0)
-            {
-                ObjectBrowser.Items.Add(new TreeViewItem()
+                // Set up visuals
+                if (string.IsNullOrWhiteSpace(filter))
                 {
-                    Header = BuildTreeViewItemContent($"{Program.Translations.GetLanguage("NoResultsThisDir")}", Constants.EmptyIcon),
-                    FontStyle = FontStyles.Italic,
-                    Foreground = new SolidColorBrush(Colors.Gray),
-                    Tag = new ObjectBrowserTag()
+                    HideSearchVisuals();
+                    ObjectBrowser.Items.Clear();
+                    ChangeObjectBrowserToDirectory(CurrentObjectBrowserDirectory);
+                    return;
+                }
+
+                ShowSearchVisuals();
+
+                // Create list with all dirs, including the one we're standing on
+                var dirs = new List<string>(Directory.GetDirectories(CurrentObjectBrowserDirectory, "*.*", SearchOption.AllDirectories));
+                dirs.Insert(0, CurrentObjectBrowserDirectory);
+
+                // Clear all items
+                ObjectBrowser.Items.Clear();
+
+                // Create List<TreeViewItem> with filter and add all items to TreeView
+                foreach (var item in SearchFiles(dirs, filter))
+                {
+                    ObjectBrowser.Items.Add(item);
+                }
+                if (ObjectBrowser.Items.Count == 0)
+                {
+                    ObjectBrowser.Items.Add(new TreeViewItem()
                     {
-                        Kind = ObjectBrowserItemKind.Empty
-                    }
-                });
+                        Header = BuildTreeViewItemContent($"{Program.Translations.GetLanguage("NoResultsThisDir")}", Constants.EmptyIcon),
+                        FontStyle = FontStyles.Italic,
+                        Foreground = new SolidColorBrush(Colors.Gray),
+                        Tag = new ObjectBrowserTag()
+                        {
+                            Kind = ObjectBrowserItemKind.Empty
+                        }
+                    });
+                }
+            }
+            catch (Exception)
+            {
+
             }
         }
 
@@ -291,8 +301,8 @@ namespace SPCode.UI
             foreach (var dir in dirs)
             {
                 var files = Directory.GetFiles(dir)
-                    .Where(x => x.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .Where(x => new FileInfo(x).Extension == ".inc" || new FileInfo(x).Extension == ".sp" || new FileInfo(x).Extension == ".txt")
+                    .Where(x => new FileInfo(x).Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(x => FileIcons.ContainsKey(new FileInfo(x).Extension))
                     .ToList();
                 foreach (var file in files)
                 {
@@ -421,6 +431,9 @@ namespace SPCode.UI
             var spFiles = Directory.GetFiles(dir, "*.sp", SearchOption.TopDirectoryOnly);
             var incFiles = Directory.GetFiles(dir, "*.inc", SearchOption.TopDirectoryOnly);
             var txtFiles = Directory.GetFiles(dir, "*.txt", SearchOption.TopDirectoryOnly);
+            var cfgFiles = Directory.GetFiles(dir, "*.cfg", SearchOption.TopDirectoryOnly);
+            var iniFiles = Directory.GetFiles(dir, "*.ini", SearchOption.TopDirectoryOnly);
+            var smxFiles = Directory.GetFiles(dir, "*.smx", SearchOption.TopDirectoryOnly);
             var directories = Directory.GetDirectories(dir, "*", SearchOption.TopDirectoryOnly);
 
             // If we have to build contents of an empty folder...
@@ -444,7 +457,10 @@ namespace SPCode.UI
             itemsToAdd.AddRange(directories);
             itemsToAdd.AddRange(incFiles);
             itemsToAdd.AddRange(spFiles);
+            itemsToAdd.AddRange(smxFiles);
             itemsToAdd.AddRange(txtFiles);
+            itemsToAdd.AddRange(cfgFiles);
+            itemsToAdd.AddRange(iniFiles);
 
             foreach (var item in itemsToAdd)
             {
