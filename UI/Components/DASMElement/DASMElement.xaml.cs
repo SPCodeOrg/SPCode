@@ -15,6 +15,7 @@ namespace SPCode.UI.Components
 
         private SmxFile file_;
         private readonly StringBuilder detail_buffer_ = new();
+        public string FilePath;
 
         public DASMElement()
         {
@@ -31,6 +32,7 @@ namespace SPCode.UI.Components
             detailbox_.Options.HighlightCurrentLine = true;
             detailbox_.TextArea.SelectionCornerRadius = 0.0;
             detailbox_.SyntaxHighlighting = new DASMHighlighting();
+            FilePath = fInfo.FullName;
         }
 
         private void LoadFile(FileInfo fInfo)
@@ -917,6 +919,12 @@ namespace SPCode.UI.Components
         }
 
         public delegate void DrawNodeFn();
+
+        public void Close()
+        {
+            Program.MainWindow.DASMReferences.Remove(this);
+            Program.MainWindow.UpdateWindowTitle();
+        }
 
         public class NodeData
         {

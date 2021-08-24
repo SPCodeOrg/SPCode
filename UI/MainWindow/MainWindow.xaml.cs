@@ -23,6 +23,7 @@ namespace SPCode.UI
         private readonly Storyboard BlendOverEffect;
         private readonly Storyboard DisableServerAnim;
         public readonly List<EditorElement> EditorsReferences = new();
+        public readonly List<DASMElement> DASMReferences = new();
         private readonly Storyboard EnableServerAnim;
         public readonly List<MenuItem> MenuItems;
 
@@ -128,9 +129,11 @@ namespace SPCode.UI
             var fileInfo = new FileInfo(filePath);
             if (fileInfo.Exists)
             {
-                var extension = fileInfo.Extension.ToLowerInvariant().Trim('.', ' ');
-                if (extension == "sp" || extension == "inc" || extension == "txt" || extension == "cfg" ||
-                    extension == "ini")
+                if (fileInfo.Extension == ".sp" || 
+                    fileInfo.Extension == ".inc" || 
+                    fileInfo.Extension == ".txt" || 
+                    fileInfo.Extension == ".cfg" ||
+                    fileInfo.Extension == ".ini")
                 {
                     var finalPath = fileInfo.FullName;
                     try
@@ -191,13 +194,26 @@ namespace SPCode.UI
                         }
                     }
                 }
-                else if (extension == "smx")
+                else if (fileInfo.Extension == ".smx")
                 {
+                    var viewers = GetAllDASMElements();
+                    if (viewers != null)
+                    {
+                        foreach (var dasmviewer in viewers)
+                        {
+                            if (dasmviewer.FilePath == fileInfo.FullName)
+                            {
+                                DockingManager.ActiveContent = dasmviewer;
+                                return true;
+                            }
+                        }
+                    }
                     var layoutDocument = new LayoutDocument { Title = "DASM: " + fileInfo.Name };
                     var dasmElement = new DASMElement(fileInfo);
                     layoutDocument.Content = dasmElement;
                     DockingPane.Children.Add(layoutDocument);
                     DockingPane.SelectedContentIndex = DockingPane.ChildrenCount - 1;
+                    DASMReferences.Add(dasmElement);
                 }
 
                 if (UseBlendoverEffect)
@@ -235,6 +251,7 @@ namespace SPCode.UI
         private void DockingManager_DocumentClosed(object sender, DocumentClosedEventArgs e)
         {
             (e.Document.Content as EditorElement)?.Close();
+            (e.Document.Content as DASMElement)?.Close();
             UpdateWindowTitle();
             UpdateOBFileButton();
         }
@@ -297,7 +314,7 @@ namespace SPCode.UI
 
             Program.OptionsObject.LastOpenFiles = lastOpenFiles.ToArray();
 
-            Program.discordClient.Dispose();
+            Program.DiscordClient.Dispose();
 #if !DEBUG
             if (Program.UpdateStatus.IsAvailable)
             {
@@ -381,22 +398,23 @@ namespace SPCode.UI
         public void UpdateWindowTitle()
         {
             var ee = GetCurrentEditorElement();
-            var someEditorIsOpen = ee != null;
+            var de = GetCurrentDASMElement();
+            var someEditorIsOpen = ee != null || de != null;
             var outString = "Idle";
             if (someEditorIsOpen)
             {
-                outString = ee.FullFilePath;
-                ee.editor.Focus();
+                outString = ee?.FullFilePath ?? de.FilePath;
             }
 
             outString += " - SPCode";
 
-            if (Program.discordClient.IsInitialized)
+            if (Program.DiscordClient.IsInitialized)
             {
-                Program.discordClient.SetPresence(new RichPresence
+                var action = ee == null ? "Viewing" : "Editing";
+                Program.DiscordClient.SetPresence(new RichPresence
                 {
-                    Timestamps = Program.discordTime,
-                    State = someEditorIsOpen ? $"Editing {Path.GetFileName(ee.FullFilePath)}" : "Idle",
+                    Timestamps = Program.DiscordTime,
+                    State = someEditorIsOpen ? $"{action} {Path.GetFileName(ee?.FullFilePath ?? de.FilePath)}" : "Idle",
                     Assets = new Assets
                     {
                         LargeImageKey = "immagine",

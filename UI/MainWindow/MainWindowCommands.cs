@@ -29,9 +29,29 @@ namespace SPCode.UI
             return outElement;
         }
 
+        public DASMElement GetCurrentDASMElement()
+        {
+            DASMElement outElement = null;
+            if (DockingPane.SelectedContent?.Content != null)
+            {
+                var possElement = DockingManager.ActiveContent;
+                if (possElement is DASMElement element)
+                {
+                    outElement = element;
+                }
+            }
+
+            return outElement;
+        }
+
         public EditorElement[] GetAllEditorElements()
         {
             return EditorsReferences.Count < 1 ? null : EditorsReferences.ToArray();
+        }
+
+        public DASMElement[] GetAllDASMElements()
+        {
+            return DASMReferences.Count < 1 ? null : DASMReferences.ToArray();
         }
 
         private void Command_New()
