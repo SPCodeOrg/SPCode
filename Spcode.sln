@@ -1,14 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29926.136
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPCode", "SPCode.csproj", "{60D2BA42-B59B-4B49-928E-C0CDDE254917}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B4E00F2D-DD73-42C7-A0CA-BA92B2A05850} = {B4E00F2D-DD73-42C7-A0CA-BA92B2A05850}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpcodeUpdater", "Deploy\SpcodeUpdater\SpcodeUpdater.csproj", "{402651FB-269B-4858-8D2A-6DF7E0B9A36E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPCodeUpdater", "Deploy\SpcodeUpdater\SPCodeUpdater.csproj", "{402651FB-269B-4858-8D2A-6DF7E0B9A36E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourcepawnCondenser", "SourcepawnCondenser\SourcepawnCondenser\SourcepawnCondenser.csproj", "{B4E00F2D-DD73-42C7-A0CA-BA92B2A05850}"
 EndProject
