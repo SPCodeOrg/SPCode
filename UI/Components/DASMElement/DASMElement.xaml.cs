@@ -349,7 +349,6 @@ namespace SPCode.UI.Components
                     switch (kind)
                     {
                         case V1Param.Constant:
-                        case V1Param.CaseTable:
                             buffer.Append(string.Format(" 0x{0:x}", value));
                             comment.Append(string.Format(" {0}", value));
                             break;
