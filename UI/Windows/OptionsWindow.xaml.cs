@@ -10,6 +10,7 @@ using DiscordRPC;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
 using SPCode.UI.Components;
+using SPCode.Utils;
 
 namespace SPCode.UI.Windows
 {
@@ -437,19 +438,41 @@ namespace SPCode.UI.Windows
             Debug.Assert(DiscordPresence.IsChecked != null, "DiscordPresence.IsChecked != null");
             var val = DiscordPresence.IsChecked.Value;
             Program.OptionsObject.Program_DiscordPresence = val;
-            if (val && !Program.discordClient.IsInitialized)
+            if (val && !Program.DiscordClient.IsInitialized)
             {
-                Program.discordClient = new DiscordRpcClient("692110664948514836");
-                Program.discordTime = Timestamps.Now;
+                Program.DiscordClient = new DiscordRpcClient(Constants.DiscordRPCAppID);
+                Program.DiscordTime = Timestamps.Now;
 
                 // Init Discord RPC
-                Program.discordClient.Initialize();
+                Program.DiscordClient.Initialize();
 
                 Program.MainWindow.UpdateWindowTitle();
             }
-            else if (!val && Program.discordClient.IsInitialized)
+            else if (!val && Program.DiscordClient.IsInitialized)
             {
-                Program.discordClient.Dispose();
+                Program.DiscordClient.Dispose();
+            }
+        }
+
+        private void DiscordPresenceTime_Changed(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChanging)
+            {
+                return;
+            }
+
+            Debug.Assert(DiscordPresenceTime.IsChecked != null, "DiscordPresenceTime.IsChecked != null");
+            var val = DiscordPresenceTime.IsChecked.Value;
+            Program.OptionsObject.Program_DiscordPresenceTime = val;
+            if (!Program.DiscordClient.IsInitialized)
+            {
+                Program.DiscordClient = new DiscordRpcClient(Constants.DiscordRPCAppID);
+                Program.DiscordTime = val ? Program.DiscordTime : null;
+
+                // Init Discord RPC
+                Program.DiscordClient.Initialize();
+
+                Program.MainWindow.UpdateWindowTitle();
             }
         }
 

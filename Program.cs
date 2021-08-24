@@ -33,8 +33,8 @@ namespace SPCode
         public static UpdateInfo UpdateStatus;
 
         public static bool RCCKMade;
-        public static DiscordRpcClient discordClient = new(Constants.DiscordRPCAppID);
-        public static Timestamps discordTime = Timestamps.Now;
+        public static DiscordRpcClient DiscordClient = new(Constants.DiscordRPCAppID);
+        public static Timestamps DiscordTime = Timestamps.Now;
 
         public static string Indentation => OptionsObject.Editor_ReplaceTabsToWhitespace
             ? new string(' ', OptionsObject.Editor_IndentationSize)
@@ -90,13 +90,13 @@ namespace SPCode
                     if (OptionsObject.Program_DiscordPresence)
                     {
                         // Init Discord RPC
-                        discordClient.Initialize();
+                        DiscordClient.Initialize();
 
                         // Set default presence
-                        discordClient.SetPresence(new RichPresence
+                        DiscordClient.SetPresence(new RichPresence
                         {
                             State = "Idle",
-                            Timestamps = discordTime,
+                            Timestamps = DiscordTime,
                             Assets = new Assets
                             {
                                 LargeImageKey = "immagine"
