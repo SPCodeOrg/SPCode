@@ -58,6 +58,11 @@ namespace SPCode.UI.Windows
             }
         }
 
+        private void TxtName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CheckExtension();
+        }
+
         private void BtAccept_Click(object sender, RoutedEventArgs e)
         {
             Submit();
@@ -103,6 +108,27 @@ namespace SPCode.UI.Windows
             }
 
             return false;
+        }
+
+        private void CheckExtension()
+        {
+            try
+            {
+                if (!Program.MainWindow.FileIcons.ContainsKey(TxtName.Text.Substring(TxtName.Text.LastIndexOf('.'))))
+                {
+                    lblError.Content = Program.Translations.GetLanguage("FileNotSupported");
+                    lblError.ToolTip = Program.Translations.GetLanguage("FileWillBeExcluded");
+                }
+                else
+                {
+                    lblError.Content = "";
+                    lblError.ToolTip = "";
+                }
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // this is ugly and newbish but I'm lazy and it works
+            }
         }
 
         public void Language_Translate()

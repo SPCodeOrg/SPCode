@@ -286,6 +286,10 @@
             </StackPanel>
           </ListViewItem>
         </ListView>
+        <Button x:Name="BtExpandCollapse" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Height="22" Width="22" Margin="0,3,2,0"
+                Background="{DynamicResource WhiteBrush}" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1.5" Click="BtExpandCollapse_Click"/>
+        <Button x:Name="BtRefreshDir" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Height="22" Width="22" Margin="0,3,27,0"
+                Background="{DynamicResource WhiteBrush}" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1.5" Click="BtRefreshDir_Click"/>
       </Grid>
       <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="5" Background="{DynamicResource GrayBrush5}" />
       <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="30" Margin="0,5,0,0" Style="{DynamicResource MetroFlatButton}" Click="CloseErrorResultGrid">

@@ -353,6 +353,8 @@ namespace SPCode.Interop
             language.Add("SearchFiles", "Search files");
             language.Add("SearchResults", "Search results");
             language.Add("NoResultsThisDir", "No results on this directory!");
+            language.Add("FileNotSupported", "File not supported!");
+            language.Add("FileWillBeExcluded", "The file will be excluded from the file browser once renamed.");
         }
     }
 }

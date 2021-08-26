@@ -464,16 +464,29 @@ namespace SPCode.UI.Windows
             Debug.Assert(DiscordPresenceTime.IsChecked != null, "DiscordPresenceTime.IsChecked != null");
             var val = DiscordPresenceTime.IsChecked.Value;
             Program.OptionsObject.Program_DiscordPresenceTime = val;
-            if (!Program.DiscordClient.IsInitialized)
-            {
-                Program.DiscordClient = new DiscordRpcClient(Constants.DiscordRPCAppID);
-                Program.DiscordTime = val ? Program.DiscordTime : null;
+            //if (val)
+            //{
+            //    Program.DiscordClient.SetPresence(new RichPresence
+            //    {
+            //        Timestamps = null,
+            //        Assets = new Assets
+            //        {
+            //            LargeImageKey = "immagine"
+            //        }
+            //    });
+            //}
+            //else
+            //{
+            //    Program.DiscordClient.SetPresence(new RichPresence
+            //    {
+            //        Timestamps = Program.DiscordTime,
+            //        Assets = new Assets
+            //        {
+            //            LargeImageKey = "immagine"
+            //        }
+            //    });
+            //}
 
-                // Init Discord RPC
-                Program.DiscordClient.Initialize();
-
-                Program.MainWindow.UpdateWindowTitle();
-            }
         }
 
         private void AutoSave_Changed(object sender, RoutedEventArgs e)

@@ -22,7 +22,7 @@ namespace SPCode.UI
         private readonly DispatcherTimer SearchCooldownTimer;
         private bool VisualsShown = false;
 
-        private readonly Dictionary<string, string> FileIcons = new()
+        public readonly Dictionary<string, string> FileIcons = new()
         {
             { ".sp", Constants.PluginIcon },
             { ".inc", Constants.IncludeIcon },
@@ -137,14 +137,34 @@ namespace SPCode.UI
         {
             if (ObjectBrowser.SelectedItem is TreeViewItem file)
             {
+                // Open up the Rename Window and fetch the new name from there
                 var fileTag = file.Tag as ObjectBrowserTag;
                 var renameWindow = new RenameWindow(fileTag.Value);
                 renameWindow.ShowDialog();
+
+                ObjectBrowser.ContextMenu = null;
+
+                // If we didn't receive an empty name...
                 if (!string.IsNullOrEmpty(renameWindow.NewName))
                 {
-                    File.Move(fileTag.Value, Path.GetDirectoryName(fileTag.Value) + $@"\{renameWindow.NewName}");
-                    file.Header = BuildTreeViewItemContent(renameWindow.NewName, FileIcons[new FileInfo(fileTag.Value).Extension]);
-                    fileTag.Value = new FileInfo(fileTag.Value).DirectoryName + @"\" + renameWindow.NewName;
+                    var oldFileInfo = new FileInfo(fileTag.Value);
+                    var newFileInfo = new FileInfo(oldFileInfo.DirectoryName + @"\" + renameWindow.NewName);
+
+                    // Rename file
+                    File.Move(oldFileInfo.FullName, newFileInfo.FullName);
+
+                    // If the new extension is not supported by SPCode, remove it from object browser
+                    // else, rename and update the item
+                    if (!FileIcons.ContainsKey(newFileInfo.Extension))
+                    {
+                        file.Visibility = Visibility.Collapsed;
+                        return;
+                    }
+                    else
+                    {
+                        fileTag.Value = newFileInfo.FullName;
+                        file.Header = BuildTreeViewItemContent(renameWindow.NewName, FileIcons[newFileInfo.Extension]);
+                    }
                 }
             }
         }
@@ -244,6 +264,16 @@ namespace SPCode.UI
             Search(OBSearch.Text);
         }
 
+        private void BtExpandCollapse_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtRefreshDir_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         #endregion
 
         #region Methods
@@ -301,8 +331,7 @@ namespace SPCode.UI
             foreach (var dir in dirs)
             {
                 var files = Directory.GetFiles(dir)
-                    .Where(x => new FileInfo(x).Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .Where(x => FileIcons.ContainsKey(new FileInfo(x).Extension))
+                    .Where(x => x.Substring(x.LastIndexOf('.')).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0 && FileIcons.ContainsKey(x.Substring(x.LastIndexOf('.'))))
                     .ToList();
                 foreach (var file in files)
                 {
@@ -428,16 +457,26 @@ namespace SPCode.UI
         {
             var itemList = new List<TreeViewItem>();
 
-            var spFiles = Directory.GetFiles(dir, "*.sp", SearchOption.TopDirectoryOnly);
-            var incFiles = Directory.GetFiles(dir, "*.inc", SearchOption.TopDirectoryOnly);
-            var txtFiles = Directory.GetFiles(dir, "*.txt", SearchOption.TopDirectoryOnly);
-            var cfgFiles = Directory.GetFiles(dir, "*.cfg", SearchOption.TopDirectoryOnly);
-            var iniFiles = Directory.GetFiles(dir, "*.ini", SearchOption.TopDirectoryOnly);
-            var smxFiles = Directory.GetFiles(dir, "*.smx", SearchOption.TopDirectoryOnly);
+            // GetFiles() filter is not precise and doing new FileInfo(x).Extension is slower
             var directories = Directory.GetDirectories(dir, "*", SearchOption.TopDirectoryOnly);
+            var incFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".inc")).ToList();
+            var spFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".sp")).ToList();
+            var smxFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".smx")).ToList();
+            var txtFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".txt")).ToList();
+            var cfgFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".cfg")).ToList();
+            var iniFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".ini")).ToList();
+
+            var itemsToAdd = new List<string>();
+            itemsToAdd.AddRange(directories);
+            itemsToAdd.AddRange(incFiles);
+            itemsToAdd.AddRange(spFiles);
+            itemsToAdd.AddRange(smxFiles);
+            itemsToAdd.AddRange(txtFiles);
+            itemsToAdd.AddRange(cfgFiles);
+            itemsToAdd.AddRange(iniFiles);
 
             // If we have to build contents of an empty folder...
-            if (spFiles.Length + incFiles.Length + directories.Length == 0)
+            if (itemsToAdd.Count == 0)
             {
                 var tvi = new TreeViewItem()
                 {
@@ -452,15 +491,6 @@ namespace SPCode.UI
                 itemList.Add(tvi);
                 return itemList;
             }
-
-            var itemsToAdd = new List<string>();
-            itemsToAdd.AddRange(directories);
-            itemsToAdd.AddRange(incFiles);
-            itemsToAdd.AddRange(spFiles);
-            itemsToAdd.AddRange(smxFiles);
-            itemsToAdd.AddRange(txtFiles);
-            itemsToAdd.AddRange(cfgFiles);
-            itemsToAdd.AddRange(iniFiles);
 
             foreach (var item in itemsToAdd)
             {
