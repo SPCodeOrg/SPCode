@@ -276,6 +276,7 @@ namespace SPCode.UI
 
         private void BtRefreshDir_Click(object sender, RoutedEventArgs e)
         {
+            ObjectBrowser.ContextMenu = null;
             ChangeObjectBrowserToDirectory(CurrentObjectBrowserDirectory);
         }
 
