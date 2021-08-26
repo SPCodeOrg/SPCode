@@ -18,6 +18,38 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
         <ResourceDictionary>
+          
+          <!-- Button style with pressed effects -->
+          
+          <Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="{DynamicResource WhiteBrush}"/>
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                  <Border Background="{TemplateBinding Background}" BorderBrush="{DynamicResource AccentColorBrush}">
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource AccentColorBrush3}"/>
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{DynamicResource AccentBaseColorBrush}"/>
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+          
+          <!--Button Images-->
+
+          <Image x:Key="ImgReload" Source="/SPCode;component/Resources/Icons/icon-reload.png" Width="16"/>
+          <Image x:Key="ImgCollapse" Source="/SPCode;component/Resources/Icons/icon-collapse.png" Width="16"/>
+          <Image x:Key="ImgExpand" Source="/SPCode;component/Resources/Icons/icon-expand.png" Width="16"/>
+
+          <!--BlendOverEffect used on save and such-->
+          
           <Storyboard x:Key="BlendOverEffect" Duration="00:00:00.5" Storyboard.TargetName="BlendEffectPlane" Storyboard.TargetProperty="Opacity">
             <DoubleAnimationUsingKeyFrames>
               <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.00" />
@@ -25,6 +57,7 @@
               <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.50" />
             </DoubleAnimationUsingKeyFrames>
           </Storyboard>
+          
           <Storyboard x:Key="FadeFindReplaceGridIn" Duration="00:00:00.2" Storyboard.TargetName="FindReplaceGrid">
             <DoubleAnimation To="1" Duration="00:00:00.2" Storyboard.TargetProperty="Opacity" />
           </Storyboard>
@@ -286,10 +319,13 @@
             </StackPanel>
           </ListViewItem>
         </ListView>
-        <Button x:Name="BtExpandCollapse" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Height="22" Width="22" Margin="0,3,2,0"
-                Background="{DynamicResource WhiteBrush}" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1.5" Click="BtExpandCollapse_Click"/>
-        <Button x:Name="BtRefreshDir" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Height="22" Width="22" Margin="0,3,27,0"
-                Background="{DynamicResource WhiteBrush}" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1.5" Click="BtRefreshDir_Click"/>
+
+        <Button x:Name="BtExpandCollapse" Style="{StaticResource ButtonStyle}" Content="{StaticResource ImgCollapse}" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Height="22" Width="22" Margin="0,3,2,0"
+                Click="BtExpandCollapse_Click" ToolTip="Collapse all Directories"/>
+
+        <Button x:Name="BtRefreshDir" Style="{StaticResource ButtonStyle}" Content="{StaticResource ImgReload}" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Height="22" Width="22" Margin="0,3,27,0"
+                Click="BtRefreshDir_Click" ToolTip="Refresh Object Browser"/>
+
       </Grid>
       <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="5" Background="{DynamicResource GrayBrush5}" />
       <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="30" Margin="0,5,0,0" Style="{DynamicResource MetroFlatButton}" Click="CloseErrorResultGrid">
