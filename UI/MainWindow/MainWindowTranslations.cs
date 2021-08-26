@@ -88,6 +88,10 @@ namespace SPCode.UI
             {
                 item.Header = Program.Translations.GetLanguage(item.Name);
             };
+
+            BtExpandCollapse.ToolTip = Program.Translations.GetLanguage(OBExpanded ? "ExpandAllDirs" : "CollapseAllDirs");
+            BtRefreshDir.ToolTip = Program.Translations.GetLanguage("RefreshOB");
+
         }
     }
 }

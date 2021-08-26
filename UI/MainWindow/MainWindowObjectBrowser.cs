@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -21,6 +22,7 @@ namespace SPCode.UI
         private string CurrentObjectBrowserDirectory = string.Empty;
         private readonly DispatcherTimer SearchCooldownTimer;
         private bool VisualsShown = false;
+        private bool OBExpanded = false;
 
         public readonly Dictionary<string, string> FileIcons = new()
         {
@@ -175,7 +177,7 @@ namespace SPCode.UI
             if (file != null)
             {
                 File.Delete(file);
-                OBDirList_SelectionChanged(null, null);
+                (ObjectBrowser.SelectedItem as TreeViewItem).Visibility = Visibility.Collapsed;
             }
         }
 
@@ -266,12 +268,15 @@ namespace SPCode.UI
 
         private void BtExpandCollapse_Click(object sender, RoutedEventArgs e)
         {
-
+            OBExpanded = !OBExpanded;
+            MoveSubContainers(ObjectBrowser, OBExpanded);
+            BtExpandCollapse.Content = (Image)FindResource(OBExpanded ? "ImgCollapse" : "ImgExpand");
+            BtExpandCollapse.ToolTip = Program.Translations.GetLanguage(OBExpanded ? "CollapseAllDirs" : "ExpandAllDirs");
         }
 
         private void BtRefreshDir_Click(object sender, RoutedEventArgs e)
         {
-
+            ChangeObjectBrowserToDirectory(CurrentObjectBrowserDirectory);
         }
 
         #endregion
@@ -331,7 +336,7 @@ namespace SPCode.UI
             foreach (var dir in dirs)
             {
                 var files = Directory.GetFiles(dir)
-                    .Where(x => x.Substring(x.LastIndexOf('.')).IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0 && FileIcons.ContainsKey(x.Substring(x.LastIndexOf('.'))))
+                    .Where(x => new FileInfo(x).Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0 && FileIcons.ContainsKey(x.Substring(x.LastIndexOf('.'))))
                     .ToList();
                 foreach (var file in files)
                 {
@@ -377,6 +382,33 @@ namespace SPCode.UI
             ObjectBrowser.Margin = objMargin;
             TxtSearchResults.Visibility = Visibility.Hidden;
             VisualsShown = false;
+        }
+
+        private static void MoveSubContainers(ItemsControl parentContainer, bool expand)
+        {
+            foreach (var item in parentContainer.Items)
+            {
+                if (parentContainer.ItemContainerGenerator.ContainerFromItem(item) is TreeViewItem currentContainer && currentContainer.Items.Count > 0)
+                {
+                    // Expand the current item.
+                    currentContainer.IsExpanded = expand;
+                    if (currentContainer.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
+                    {
+                        // If the sub containers of current item is not ready, we need to wait until
+                        // they are generated.
+                        currentContainer.ItemContainerGenerator.StatusChanged += delegate
+                        {
+                            MoveSubContainers(currentContainer, expand);
+                        };
+                    }
+                    else
+                    {
+                        // If the sub containers of current item is ready, we can directly go to the next
+                        // iteration to expand them.
+                        MoveSubContainers(currentContainer, expand);
+                    }
+                }
+            }
         }
 
         private void ChangeObjectBrowserToDirectory(string dir)

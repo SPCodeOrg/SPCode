@@ -18,14 +18,13 @@ namespace SPCode.Interop
 
         public string GetLanguage(string langID)
         {
-            //Sucks, someone have to do it better
-            try
+            if (language.ContainsKey(langID))
             {
                 return language[langID];
             }
-            catch (Exception)
+            else
             {
-                throw new Exception($"{langID} is not a known language-phrase");
+                return "";
             }
         }
 
@@ -355,6 +354,9 @@ namespace SPCode.Interop
             language.Add("NoResultsThisDir", "No results on this directory!");
             language.Add("FileNotSupported", "File not supported!");
             language.Add("FileWillBeExcluded", "The file will be excluded from the file browser once renamed.");
+            language.Add("ExpandAllDirs", "Expand all directories");
+            language.Add("CollapseAllDirs", "Collapse all directories");
+            language.Add("RefreshOB", "Reload current directory");
         }
     }
 }
