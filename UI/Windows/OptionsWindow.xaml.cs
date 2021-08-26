@@ -721,7 +721,6 @@ namespace SPCode.UI.Windows
             }
 
             HardwareSalts.Content = Program.Translations.GetLanguage("HardwareEncryption");
-            DiscordPresence.Content = Program.Translations.GetLanguage("EnableRPC");
             ProgramHeader.Header = $" {Program.Translations.GetLanguage("Program")}";
             DefaultButton.Content = Program.Translations.GetLanguage("DefaultValues");
             HardwareAcc.Content = Program.Translations.GetLanguage("HardwareAcc");
@@ -750,6 +749,9 @@ namespace SPCode.UI.Windows
             HighlightDeprecateds.Content = Program.Translations.GetLanguage("HighDeprecat");
             AutoSaveBlock.Text = Program.Translations.GetLanguage("AutoSaveMin");
             DefaultButton.Content = Program.Translations.GetLanguage("DefaultValues");
+            DiscordPresence.Content = Program.Translations.GetLanguage("EnableRPC");
+            DiscordPresenceTime.Content = Program.Translations.GetLanguage("EnableRPCTime");
+            DiscordPresenceFile.Content = Program.Translations.GetLanguage("EnableRPCFile");
 
             foreach (var item in HotkeysGrid.Children)
             {

@@ -325,7 +325,6 @@ namespace SPCode.Interop
             language.Add("Add", "Add");
             language.Add("Remove", "Remove");
             language.Add("HardwareEncryption", "Hardware encryption");
-            language.Add("EnableRPC", "Enable Discord Rich Presence");
             language.Add("CheckingUpdates", "Checking for updates");
             language.Add("GoToLine", "Go to line");
             language.Add("GoToOffset", "Go to offset");
@@ -357,6 +356,9 @@ namespace SPCode.Interop
             language.Add("ExpandAllDirs", "Expand all directories");
             language.Add("CollapseAllDirs", "Collapse all directories");
             language.Add("RefreshOB", "Reload current directory");
+            language.Add("EnableRPC", "Enable Discord Rich Presence");
+            language.Add("EnableRPCTime", "Show elapsed time");
+            language.Add("EnableRPCFile", "Show current file");
         }
     }
 }
