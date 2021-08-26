@@ -38,6 +38,7 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
         public byte[] Program_CryptoKey;
         public bool Program_DiscordPresence = true;
         public bool Program_DiscordPresenceTime = true;
+        public bool Program_DiscordPresenceFile = true;
 
         public bool Program_DynamicISAC = true;
 

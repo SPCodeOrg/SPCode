@@ -440,6 +440,9 @@ namespace SPCode.UI.Windows
             Program.OptionsObject.Program_DiscordPresence = val;
             if (val && !Program.DiscordClient.IsInitialized)
             {
+                DiscordPresenceTime.IsEnabled = true;
+                DiscordPresenceFile.IsEnabled = true;
+
                 Program.DiscordClient = new DiscordRpcClient(Constants.DiscordRPCAppID);
                 Program.DiscordTime = Timestamps.Now;
 
@@ -450,6 +453,8 @@ namespace SPCode.UI.Windows
             }
             else if (!val && Program.DiscordClient.IsInitialized)
             {
+                DiscordPresenceTime.IsEnabled = false;
+                DiscordPresenceFile.IsEnabled = false;
                 Program.DiscordClient.Dispose();
             }
         }
@@ -464,29 +469,40 @@ namespace SPCode.UI.Windows
             Debug.Assert(DiscordPresenceTime.IsChecked != null, "DiscordPresenceTime.IsChecked != null");
             var val = DiscordPresenceTime.IsChecked.Value;
             Program.OptionsObject.Program_DiscordPresenceTime = val;
-            //if (val)
-            //{
-            //    Program.DiscordClient.SetPresence(new RichPresence
-            //    {
-            //        Timestamps = null,
-            //        Assets = new Assets
-            //        {
-            //            LargeImageKey = "immagine"
-            //        }
-            //    });
-            //}
-            //else
-            //{
-            //    Program.DiscordClient.SetPresence(new RichPresence
-            //    {
-            //        Timestamps = Program.DiscordTime,
-            //        Assets = new Assets
-            //        {
-            //            LargeImageKey = "immagine"
-            //        }
-            //    });
-            //}
+            Program.DiscordClient.SetPresence(new RichPresence
+            {
+                Timestamps = val ? Program.DiscordTime : null,
+                State = Program.OptionsObject.Program_DiscordPresenceFile ? "Idle" : null,
+                Assets = new Assets
+                {
+                    LargeImageKey = "immagine"
+                }
+            });
+            // Calling this to set State to the opened file
+            Program.MainWindow.UpdateWindowTitle();
+        }
 
+        private void DiscordPresenceFile_Changed(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChanging)
+            {
+                return;
+            }
+
+            Debug.Assert(DiscordPresenceFile.IsChecked != null, "DiscordPresenceFile.IsChecked != null");
+            var val = DiscordPresenceFile.IsChecked.Value;
+            Program.OptionsObject.Program_DiscordPresenceFile = val;
+            Program.DiscordClient.SetPresence(new RichPresence
+            {
+                Timestamps = Program.OptionsObject.Program_DiscordPresenceTime ? Program.DiscordTime : null,
+                State = val ? "" : null,
+                Assets = new Assets
+                {
+                    LargeImageKey = "immagine"
+                }
+            });
+            // Calling this to set State to the opened file
+            Program.MainWindow.UpdateWindowTitle();
         }
 
         private void AutoSave_Changed(object sender, RoutedEventArgs e)
@@ -629,6 +645,10 @@ namespace SPCode.UI.Windows
             IndentationSize.Value = Program.OptionsObject.Editor_IndentationSize;
             HardwareSalts.IsChecked = Program.OptionsObject.Program_UseHardwareSalts;
             DiscordPresence.IsChecked = Program.OptionsObject.Program_DiscordPresence;
+            DiscordPresenceTime.IsChecked = Program.OptionsObject.Program_DiscordPresenceTime;
+            DiscordPresenceFile.IsChecked = Program.OptionsObject.Program_DiscordPresenceFile;
+            DiscordPresenceTime.IsEnabled = Program.OptionsObject.Program_DiscordPresence;
+            DiscordPresenceFile.IsEnabled = Program.OptionsObject.Program_DiscordPresence;
         }
 
         private void ToggleRestartText(bool FullEffect = false)

@@ -413,8 +413,8 @@ namespace SPCode.UI
                 var action = ee == null ? "Viewing" : "Editing";
                 Program.DiscordClient.SetPresence(new RichPresence
                 {
-                    Timestamps = Program.DiscordTime,
-                    State = someEditorIsOpen ? $"{action} {Path.GetFileName(ee?.FullFilePath ?? de.FilePath)}" : "Idle",
+                    Timestamps = Program.OptionsObject.Program_DiscordPresenceTime ? Program.DiscordTime : null,
+                    State = Program.OptionsObject.Program_DiscordPresenceFile ? someEditorIsOpen ? $"{action} {Path.GetFileName(ee?.FullFilePath ?? de.FilePath)}" : "Idle" : null,
                     Assets = new Assets
                     {
                         LargeImageKey = "immagine",
