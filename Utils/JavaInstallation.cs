@@ -30,7 +30,7 @@ namespace SPCode.Utils
             Absent,
             Correct
         }
-       
+
         public async Task InstallJava()
         {
             // Spawn progress dialog when downloading Java
@@ -77,7 +77,7 @@ namespace SPCode.Utils
                     Program.Translations.GetLanguage("JavaDownErrorTitle"),
                     Program.Translations.GetLanguage("JavaDownErrorMessage"),
                     MessageDialogStyle.AffirmativeAndNegative, _metroDialogOptions) == MessageDialogResult.Affirmative)
-{
+                {
                     Process.Start(new ProcessStartInfo
                     {
                         FileName = JavaLink,
@@ -113,7 +113,14 @@ namespace SPCode.Utils
                 return JavaResults.Absent;
             }
 
-            return int.Parse(output.Split(' ')[1].Split('.')[0]) < JavaVersionForLysis ? JavaResults.Outdated : JavaResults.Correct;
+            if (int.TryParse(output.Split(' ')[1].Split('.')[0], out var ver))
+            {
+                return ver < JavaVersionForLysis ? JavaResults.Outdated : JavaResults.Correct;
+            }
+            else
+            {
+                return JavaResults.Absent;
+            }
         }
     }
 }
