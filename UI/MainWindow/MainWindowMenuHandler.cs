@@ -295,15 +295,14 @@ namespace SPCode.UI
             {
                 foreach (var child in parentItem.Items)
                 {
-                    if (child is MenuItem)
+                    if (child is MenuItem subChild)
                     {
-                        var castedChild = child as MenuItem;
                         foreach (var hkItem in Program.HotkeysList)
                         {
                             // Assign InputGestureText to all items
-                            if (castedChild.Name == $"MenuI_{hkItem.Command}")
+                            if (subChild.Name == $"MenuI_{hkItem.Command}")
                             {
-                                castedChild.InputGestureText = hkItem.Hotkey.ToString() == "None" ? string.Empty : hkItem.Hotkey.ToString();
+                                subChild.InputGestureText = hkItem.Hotkey.ToString() == "None" ? string.Empty : hkItem.Hotkey.ToString();
                                 break;
                             }
                             // Also assign InputGestureText to the stock restricted commands
@@ -311,9 +310,9 @@ namespace SPCode.UI
                             {
                                 foreach (var hk in HotkeyControl.RestrictedHotkeys)
                                 {
-                                    if (castedChild.Name == $"MenuI_{hk.Key}")
+                                    if (subChild.Name == $"MenuI_{hk.Key}")
                                     {
-                                        castedChild.InputGestureText = hk.Value;
+                                        subChild.InputGestureText = hk.Value;
                                         break;
                                     }
                                 }
