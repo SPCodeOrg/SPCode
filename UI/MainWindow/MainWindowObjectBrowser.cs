@@ -277,6 +277,9 @@ namespace SPCode.UI
         private void BtRefreshDir_Click(object sender, RoutedEventArgs e)
         {
             ObjectBrowser.ContextMenu = null;
+            OBExpanded = false;
+            BtExpandCollapse.Content = (Image)FindResource("ImgExpand");
+            BtExpandCollapse.ToolTip = Program.Translations.GetLanguage("ExpandAllDirs");
             ChangeObjectBrowserToDirectory(CurrentObjectBrowserDirectory);
         }
 
