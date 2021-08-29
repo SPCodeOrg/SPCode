@@ -270,7 +270,7 @@
           </dock:LayoutRoot>
         </dock:DockingManager>
         <GridSplitter Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="5" Background="{DynamicResource GrayBrush5}" />
-        <TreeView Grid.Column="1" x:Name="ObjectBrowser" TreeViewItem.Expanded="TreeViewOBItem_Expanded" PreviewMouseRightButtonDown="TreeViewOBItem_RightClicked" Margin="0,54,0,26">
+        <TreeView Grid.Column="1" x:Name="ObjectBrowser" TreeViewItem.Expanded="TreeViewOBItem_Expanded" TreeViewItem.Collapsed="TreeViewOBItem_Collapsed" PreviewMouseRightButtonDown="TreeViewOBItem_RightClicked" Margin="0,54,0,26">
           <TreeView.Resources>
             <ContextMenu x:Name="TVIContextMenu" x:Key="TVIContextMenu" StaysOpen="true">
               <MenuItem x:Name="OpenFileLocation" Header="Open file location" Click="OBItemOpenFileLocation_Click"/>

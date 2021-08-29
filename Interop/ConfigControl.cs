@@ -201,9 +201,8 @@ namespace SPCode.Interop
 
         public string FTPHost = "ftp://localhost/";
 
-        public string
-            FTPPassword =
-                string.Empty; //securestring? No! Because it's saved in plaintext and if you want to keep it a secret, you shouldn't automaticly uploade it anyways...
+        // securestring? No! Because it's saved in plaintext and if you want to keep it a secret, you shouldn't automatically upload it anyways...
+        public string FTPPassword = string.Empty; 
 
         public string FTPUser = string.Empty;
         public string Name = string.Empty;

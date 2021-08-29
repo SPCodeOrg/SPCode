@@ -21,6 +21,8 @@ namespace SPCode.UI
         #region Variables
         private string CurrentObjectBrowserDirectory = string.Empty;
         private readonly DispatcherTimer SearchCooldownTimer;
+        private List<TreeViewItem> ExpandedItems = new();
+        private List<TreeViewItem> ExpandedItemsBuffer = new();
         private bool VisualsShown = false;
         private bool OBExpanded = false;
 
@@ -38,28 +40,25 @@ namespace SPCode.UI
         #region Events
         private void TreeViewOBItem_Expanded(object sender, RoutedEventArgs e)
         {
-            var source = e.Source;
-            if (source is not TreeViewItem)
+            if (e.Source is not TreeViewItem item)
             {
                 return;
             }
-            var item = (TreeViewItem)source;
             var itemInfo = (ObjectBrowserTag)item.Tag;
             if (itemInfo.Kind != ObjectBrowserItemKind.Directory || !Directory.Exists(itemInfo.Value))
             {
                 return;
             }
+            OnExpandedItem(item);
+        }
 
-            Debug.Assert(Dispatcher != null, nameof(Dispatcher) + " != null");
-            using (Dispatcher.DisableProcessing())
+        private void TreeViewOBItem_Collapsed(object sender, RoutedEventArgs e)
+        {
+            if (e.Source is not TreeViewItem item)
             {
-                item.Items.Clear();
-                var newItems = BuildDirectoryItems(itemInfo.Value);
-                foreach (var i in newItems)
-                {
-                    item.Items.Add(i);
-                }
+                return;
             }
+            ExpandedItems.Remove(item);
         }
 
         private void TreeViewOBItem_RightClicked(object sender, MouseButtonEventArgs e)
@@ -276,16 +275,36 @@ namespace SPCode.UI
 
         private void BtRefreshDir_Click(object sender, RoutedEventArgs e)
         {
+            // Delete context menu to prevent performing actions on potentially null elements
             ObjectBrowser.ContextMenu = null;
-            OBExpanded = false;
-            BtExpandCollapse.Content = (Image)FindResource("ImgExpand");
-            BtExpandCollapse.ToolTip = Program.Translations.GetLanguage("ExpandAllDirs");
-            ChangeObjectBrowserToDirectory(CurrentObjectBrowserDirectory);
+
+            // Refresh files from root directory - delete all files only
+            foreach (TreeViewItem item in ObjectBrowser.Items)
+            {
+                if ((item.Tag as ObjectBrowserTag).Kind == ObjectBrowserItemKind.File)
+                {
+                    item.Visibility = Visibility.Collapsed;
+                }
+            }
+
+            // Get all items from root dir, and add only files
+            var newRootItems = BuildDirectoryItems(CurrentObjectBrowserDirectory, out _).Where(x => (x.Tag as ObjectBrowserTag).Kind == ObjectBrowserItemKind.File).ToList();
+            newRootItems.ForEach(x => ObjectBrowser.Items.Add(x));
+
+            // Refresh all items remembering folding state
+            ExpandedItemsBuffer = new List<TreeViewItem>(ExpandedItems);
+            ExpandedItems.Clear();
+            ExpandedItemsBuffer.ForEach(x => OnExpandedItem(x));
         }
 
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Gets a list of files based on the 'filter' search criteria to append as new items to the Object Browser.
+        /// </summary>
+        /// <param name="filter">The filter text</param>
         private void Search(string filter)
         {
             try
@@ -309,7 +328,7 @@ namespace SPCode.UI
                 ObjectBrowser.Items.Clear();
 
                 // Create List<TreeViewItem> with filter and add all items to TreeView
-                foreach (var item in SearchFiles(dirs, filter))
+                foreach (var item in GetFiles(dirs, filter))
                 {
                     ObjectBrowser.Items.Add(item);
                 }
@@ -333,7 +352,13 @@ namespace SPCode.UI
             }
         }
 
-        private List<TreeViewItem> SearchFiles(List<string> dirs, string filter)
+        /// <summary>
+        /// Gets all files that match the search criteria specified in 'filter' in all the specified directories in 'dirs'.
+        /// </summary>
+        /// <param name="dirs">List of directories to search from</param>
+        /// <param name="filter">Search criteria to compare against</param>
+        /// <returns></returns>
+        private List<TreeViewItem> GetFiles(List<string> dirs, string filter)
         {
             var list = new List<TreeViewItem>();
 
@@ -362,6 +387,9 @@ namespace SPCode.UI
             return list;
         }
 
+        /// <summary>
+        /// Shows 'Search Results' title from the Object Browser and lowers TreeView height.
+        /// </summary>
         private void ShowSearchVisuals()
         {
             if (VisualsShown)
@@ -375,6 +403,9 @@ namespace SPCode.UI
             VisualsShown = true;
         }
 
+        /// <summary>
+        /// Hides 'Search Results' title from the Object Browser and restores TreeView height.
+        /// </summary>
         private void HideSearchVisuals()
         {
             if (!VisualsShown)
@@ -388,6 +419,29 @@ namespace SPCode.UI
             VisualsShown = false;
         }
 
+        /// <summary>
+        /// Helper function to fill all the contents of an expanded directory in the Object Browser.
+        /// </summary>
+        /// <param name="item">The directory kind received item, to resolve all its children.</param>
+        private void OnExpandedItem(TreeViewItem item)
+        {
+            var itemInfo = (ObjectBrowserTag)item.Tag;
+            ExpandedItems.Add(item);
+            Debug.Assert(Dispatcher != null, nameof(Dispatcher) + " != null");
+            using (Dispatcher.DisableProcessing())
+            {
+                item.Items.Clear();
+                var newItems = BuildDirectoryItems(itemInfo.Value, out var itemsToExpand);
+                newItems.ForEach(x => item.Items.Add(x));
+                itemsToExpand.ForEach(x => x.IsExpanded = true);
+            }
+        }
+
+        /// <summary>
+        /// Helper function to assist the Expand/Collapse All directories button in the Object Browser.
+        /// </summary>
+        /// <param name="parentContainer">The TreeViewItem received to recursively expand or collapse everything inside it.</param>
+        /// <param name="expand">Whether to expand or collapse the items.</param>
         private static void MoveSubContainers(ItemsControl parentContainer, bool expand)
         {
             foreach (var item in parentContainer.Items)
@@ -415,6 +469,10 @@ namespace SPCode.UI
             }
         }
 
+        /// <summary>
+        /// Clears all Object Browser items and fills them with the specified directory's children (collapsing all expansions).
+        /// </summary>
+        /// <param name="dir">Directory to fetch contents from.</param>
         private void ChangeObjectBrowserToDirectory(string dir)
         {
             if (string.IsNullOrWhiteSpace(dir))
@@ -457,7 +515,7 @@ namespace SPCode.UI
                 parentDirItem.MouseDoubleClick += TreeViewOBItemParentDir_DoubleClicked;
                 parentDirItem.PreviewMouseRightButtonDown += TreeViewOBItem_RightClicked;
                 ObjectBrowser.Items.Add(parentDirItem);
-                var newItems = BuildDirectoryItems(dir);
+                var newItems = BuildDirectoryItems(dir, out _);
                 foreach (var item in newItems)
                 {
                     ObjectBrowser.Items.Add(item);
@@ -465,6 +523,9 @@ namespace SPCode.UI
             }
         }
 
+        /// <summary>
+        /// Similar funcionality described in ChangeObjectBrowserToDirectory, adapted to work on drives
+        /// </summary>
         private void ChangeObjectBrowserToDrives()
         {
             Program.OptionsObject.Program_ObjectBrowserDirectory = "0:";
@@ -479,7 +540,7 @@ namespace SPCode.UI
                     {
                         var tvi = new TreeViewItem()
                         {
-                            Header = BuildTreeViewItemContent(dInfo.Name, "iconmonstr-folder-13-16.png"),
+                            Header = BuildTreeViewItemContent(dInfo.Name, Constants.FolderIcon),
                             Tag = new ObjectBrowserTag() { Kind = ObjectBrowserItemKind.Directory, Value = dInfo.RootDirectory.FullName }
                         };
                         tvi.Items.Add("...");
@@ -489,8 +550,16 @@ namespace SPCode.UI
             }
         }
 
-        private List<TreeViewItem> BuildDirectoryItems(string dir)
+        /// <summary>
+        /// Helper function to build an expanded item's contents. <br/>
+        /// It outs a TreeViewItem list to be used when using the Reload function to keep directories expanded after refreshing.
+        /// </summary>
+        /// <param name="dir">Directory to fetch contents from.</param>
+        /// <param name="itemsToExpand">List of items that were expanded before calling this function to reload the Object Browser items.</param>
+        /// <returns></returns>
+        private List<TreeViewItem> BuildDirectoryItems(string dir, out List<TreeViewItem> itemsToExpand)
         {
+            itemsToExpand = new();
             var itemList = new List<TreeViewItem>();
 
             // GetFiles() filter is not precise and doing new FileInfo(x).Extension is slower
@@ -556,6 +625,10 @@ namespace SPCode.UI
                         }
                     };
                     // This is to trigger the "expandability" of the TreeViewItem, if it's a directory
+                    if (ExpandedItemsBuffer.Any(x => ((ObjectBrowserTag)x.Tag).Value == dInfo.FullName))
+                    {
+                        itemsToExpand.Add(tvi);
+                    }
                     tvi.Items.Add("");
                     itemList.Add(tvi);
                 }
@@ -583,6 +656,14 @@ namespace SPCode.UI
             return itemList;
         }
 
+        /// <summary>
+        /// Helper function to build the visuals of the TreeViewItem that's going to be created.
+        /// </summary>
+        /// <param name="headerString">The text of the item.</param>
+        /// <param name="iconFile">Icon that will be displayed</param>
+        /// <param name="path">Optional path specification to show next to the header</param>
+        /// <seealso cref="Search(string)"/>
+        /// <returns>Newly created StackPanel</returns>
         private StackPanel BuildTreeViewItemContent(string headerString, string iconFile, string path = "")
         {
             var stack = new StackPanel { Orientation = Orientation.Horizontal };
@@ -616,9 +697,13 @@ namespace SPCode.UI
             return stack;
         }
 
+        /// <summary>
+        /// Helper function to retrieve a TreeViewItem while right-clicking it to enable context menu capabilities
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         private static TreeViewItem VisualUpwardSearch(DependencyObject source)
         {
-            // Snippet that allows me to select items while right-clicking them to enable Context Menu capabilities
             while (source != null && !(source is TreeViewItem))
             {
                 source = VisualTreeHelper.GetParent(source);
