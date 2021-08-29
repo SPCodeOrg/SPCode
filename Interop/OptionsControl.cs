@@ -53,25 +53,25 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
 
         public bool Program_UseHardwareAcceleration = true;
         public bool Program_UseHardwareSalts = true;
-        public SerializeableColor SH_Chars = new(0xFF, 0xD6, 0x9C, 0x85);
+        public SerializableColor SH_Chars = new(0xFF, 0xD6, 0x9C, 0x85);
 
-        public SerializeableColor SH_Comments = new(0xFF, 0x57, 0xA6, 0x49);
-        public SerializeableColor SH_CommentsMarker = new(0xFF, 0xFF, 0x20, 0x20);
-        public SerializeableColor SH_Constants = new(0xFF, 0xBC, 0x62, 0xC5);
-        public SerializeableColor SH_ContextKeywords = new(0xFF, 0x56, 0x9C, 0xD5);
-        public SerializeableColor SH_Deprecated = new(0xFF, 0xFF, 0x00, 0x00);
-        public SerializeableColor SH_Functions = new(0xFF, 0x56, 0x9C, 0xD5);
+        public SerializableColor SH_Comments = new(0xFF, 0x57, 0xA6, 0x49);
+        public SerializableColor SH_CommentsMarker = new(0xFF, 0xFF, 0x20, 0x20);
+        public SerializableColor SH_Constants = new(0xFF, 0xBC, 0x62, 0xC5);
+        public SerializableColor SH_ContextKeywords = new(0xFF, 0x56, 0x9C, 0xD5);
+        public SerializableColor SH_Deprecated = new(0xFF, 0xFF, 0x00, 0x00);
+        public SerializableColor SH_Functions = new(0xFF, 0x56, 0x9C, 0xD5);
 
         public bool SH_HighlightDeprecateds = true;
-        public SerializeableColor SH_Keywords = new(0xFF, 0x56, 0x9C, 0xD5);
-        public SerializeableColor SH_Methods = new(0xFF, 0x3B, 0xC6, 0x7E);
-        public SerializeableColor SH_Numbers = new(0xFF, 0x97, 0x97, 0x97);
-        public SerializeableColor SH_PreProcessor = new(0xFF, 0x7E, 0x7E, 0x7E);
-        public SerializeableColor SH_SpecialCharacters = new(0xFF, 0x8F, 0x8F, 0x8F);
-        public SerializeableColor SH_Strings = new(0xFF, 0xF4, 0x6B, 0x6C);
-        public SerializeableColor SH_Types = new(0xFF, 0x28, 0x90, 0xB0); //56 9C D5
-        public SerializeableColor SH_TypesValues = new(0xFF, 0x56, 0x9C, 0xD5);
-        public SerializeableColor SH_UnkownFunctions = new(0xFF, 0x45, 0x85, 0xC5);
+        public SerializableColor SH_Keywords = new(0xFF, 0x56, 0x9C, 0xD5);
+        public SerializableColor SH_Methods = new(0xFF, 0x3B, 0xC6, 0x7E);
+        public SerializableColor SH_Numbers = new(0xFF, 0x97, 0x97, 0x97);
+        public SerializableColor SH_PreProcessor = new(0xFF, 0x7E, 0x7E, 0x7E);
+        public SerializableColor SH_SpecialCharacters = new(0xFF, 0x8F, 0x8F, 0x8F);
+        public SerializableColor SH_Strings = new(0xFF, 0xF4, 0x6B, 0x6C);
+        public SerializableColor SH_Types = new(0xFF, 0x28, 0x90, 0xB0); //56 9C D5
+        public SerializableColor SH_TypesValues = new(0xFF, 0x56, 0x9C, 0xD5);
+        public SerializableColor SH_UnkownFunctions = new(0xFF, 0x45, 0x85, 0xC5);
 
         public bool UI_Animations = true;
         public bool UI_ShowToolBar;
@@ -168,34 +168,34 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
 
         public void NormalizeSHColors()
         {
-            SH_Comments = new SerializeableColor(0xFF, 0x57, 0xA6, 0x49);
-            SH_CommentsMarker = new SerializeableColor(0xFF, 0xFF, 0x20, 0x20);
-            SH_Strings = new SerializeableColor(0xFF, 0xF4, 0x6B, 0x6C);
-            SH_PreProcessor = new SerializeableColor(0xFF, 0x7E, 0x7E, 0x7E);
-            SH_Types = new SerializeableColor(0xFF, 0x28, 0x90, 0xB0); //56 9C D5
-            SH_TypesValues = new SerializeableColor(0xFF, 0x56, 0x9C, 0xD5);
-            SH_Keywords = new SerializeableColor(0xFF, 0x56, 0x9C, 0xD5);
-            SH_ContextKeywords = new SerializeableColor(0xFF, 0x56, 0x9C, 0xD5);
-            SH_Chars = new SerializeableColor(0xFF, 0xD6, 0x9C, 0x85);
-            SH_UnkownFunctions = new SerializeableColor(0xFF, 0x45, 0x85, 0xC5);
-            SH_Numbers = new SerializeableColor(0xFF, 0x97, 0x97, 0x97);
-            SH_SpecialCharacters = new SerializeableColor(0xFF, 0x8F, 0x8F, 0x8F);
-            SH_Deprecated = new SerializeableColor(0xFF, 0xFF, 0x00, 0x00);
-            SH_Constants = new SerializeableColor(0xFF, 0xBC, 0x62, 0xC5);
-            SH_Functions = new SerializeableColor(0xFF, 0x56, 0x9C, 0xD5);
-            SH_Methods = new SerializeableColor(0xFF, 0x3B, 0xC6, 0x7E);
+            SH_Comments = new SerializableColor(0xFF, 0x57, 0xA6, 0x49);
+            SH_CommentsMarker = new SerializableColor(0xFF, 0xFF, 0x20, 0x20);
+            SH_Strings = new SerializableColor(0xFF, 0xF4, 0x6B, 0x6C);
+            SH_PreProcessor = new SerializableColor(0xFF, 0x7E, 0x7E, 0x7E);
+            SH_Types = new SerializableColor(0xFF, 0x28, 0x90, 0xB0); //56 9C D5
+            SH_TypesValues = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
+            SH_Keywords = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
+            SH_ContextKeywords = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
+            SH_Chars = new SerializableColor(0xFF, 0xD6, 0x9C, 0x85);
+            SH_UnkownFunctions = new SerializableColor(0xFF, 0x45, 0x85, 0xC5);
+            SH_Numbers = new SerializableColor(0xFF, 0x97, 0x97, 0x97);
+            SH_SpecialCharacters = new SerializableColor(0xFF, 0x8F, 0x8F, 0x8F);
+            SH_Deprecated = new SerializableColor(0xFF, 0xFF, 0x00, 0x00);
+            SH_Constants = new SerializableColor(0xFF, 0xBC, 0x62, 0xC5);
+            SH_Functions = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
+            SH_Methods = new SerializableColor(0xFF, 0x3B, 0xC6, 0x7E);
         }
     }
 
     [Serializable]
-    public class SerializeableColor
+    public class SerializableColor
     {
         public byte A;
         public byte B;
         public byte G;
         public byte R;
 
-        public SerializeableColor(byte _A, byte _R, byte _G, byte _B)
+        public SerializableColor(byte _A, byte _R, byte _G, byte _B)
         {
             A = _A;
             R = _R;
@@ -203,12 +203,12 @@ namespace SPCode //leave this here instead of .Interop because of reasons...
             B = _B;
         }
 
-        public static implicit operator SerializeableColor(Color c)
+        public static implicit operator SerializableColor(Color c)
         {
-            return new SerializeableColor(c.A, c.R, c.G, c.B);
+            return new SerializableColor(c.A, c.R, c.G, c.B);
         }
 
-        public static implicit operator Color(SerializeableColor c)
+        public static implicit operator Color(SerializableColor c)
         {
             return Color.FromArgb(c.A, c.R, c.G, c.B);
         }

@@ -2,12 +2,9 @@
 
 namespace SPCode.Utils
 {
-    public class BracketHighlightHelpers
+    public static class BracketHelpers
     {
-        public BracketHighlightHelpers() { }
-
-        #region Quick Search Helpers
-        public int QuickSearchBracketBackward(IDocument document, int offset, char openBracket, char closingBracket)
+        public static int QuickSearchBracketBackward(IDocument document, int offset, char openBracket, char closingBracket)
         {
             var brackets = -1;
             for (var i = offset; i >= 0; --i)
@@ -49,7 +46,7 @@ namespace SPCode.Utils
             return -1;
         }
 
-        public int QuickSearchBracketForward(IDocument document, int offset, char openBracket, char closingBracket)
+        public static int QuickSearchBracketForward(IDocument document, int offset, char openBracket, char closingBracket)
         {
             var brackets = 1;
             // try "quick find" - find the matching bracket if there is no string/comment in the way
@@ -94,7 +91,7 @@ namespace SPCode.Utils
             return -1;
         }
 
-        public bool CheckForCommentBlockForward(IDocument document, int offset)
+        public static bool CheckForCommentBlockForward(IDocument document, int offset)
         {
             for (var i = offset; i < document.TextLength; ++i)
             {
@@ -123,7 +120,7 @@ namespace SPCode.Utils
             return false;
         }
 
-        public bool CheckForCommentBlockBackward(IDocument document, int offset)
+        public static bool CheckForCommentBlockBackward(IDocument document, int offset)
         {
             for (var i = offset; i >= 0; --i)
             {
@@ -152,7 +149,7 @@ namespace SPCode.Utils
             return false;
         }
 
-        public bool CheckForCommentLine(IDocument document, int offset)
+        public static bool CheckForCommentLine(IDocument document, int offset)
         {
             for (var i = offset; i >= 0; --i)
             {
@@ -176,7 +173,7 @@ namespace SPCode.Utils
             return false;
         }
 
-        public bool CheckForString(IDocument document, int offset)
+        public static bool CheckForString(IDocument document, int offset)
         {
             var quoteFound = false;
             for (var i = offset; i >= 0; --i)
@@ -228,7 +225,7 @@ namespace SPCode.Utils
             return false;
         }
 
-        public bool CheckForChar(IDocument document, int offset)
+        public static bool CheckForChar(IDocument document, int offset)
         {
             var apFound = false;
             for (var i = offset; i >= 0; --i)
@@ -262,6 +259,5 @@ namespace SPCode.Utils
             }
             return false;
         }
-        #endregion
     }
 }

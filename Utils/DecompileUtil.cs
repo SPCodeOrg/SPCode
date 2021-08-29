@@ -23,7 +23,6 @@ namespace SPCode.Utils
 
         public async Task DecompilePlugin()
         {
-
             var java = new JavaInstallation();
 
             // First we check the java version of the user, and act accordingly

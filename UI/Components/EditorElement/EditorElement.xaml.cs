@@ -45,7 +45,6 @@ namespace SPCode.UI.Components
         public new LayoutDocument Parent;
         private bool SelectionIsHighlited;
         private bool WantFoldingUpdate;
-        public BracketHighlightHelpers bracketHelper = new();
 
         public string FullFilePath
         {
@@ -365,7 +364,7 @@ namespace SPCode.UI.Components
         {
             if (Program.OptionsObject.Editor_ReformatLineAfterSemicolon)
             {
-                if (e.Text == ";" && !bracketHelper.CheckForString(editor.Document, editor.CaretOffset - 1))
+                if (e.Text == ";" && !BracketHelpers.CheckForString(editor.Document, editor.CaretOffset - 1))
                 {
                     if (editor.CaretOffset >= 0)
                     {
@@ -410,11 +409,11 @@ namespace SPCode.UI.Components
                         var document = editor.Document;
                         var offset = editor.TextArea.Caret.Offset;
                         if (editor.SelectionLength == 0 && offset + 1 < document.TextLength &&
-                            (bracketHelper.CheckForCommentBlockForward(document, offset) ||
-                            bracketHelper.CheckForCommentBlockBackward(document, offset) ||
-                            bracketHelper.CheckForCommentLine(document, offset) ||
-                            bracketHelper.CheckForString(document, offset) ||
-                            bracketHelper.CheckForChar(document, offset)))
+                            (BracketHelpers.CheckForCommentBlockForward(document, offset) ||
+                            BracketHelpers.CheckForCommentBlockBackward(document, offset) ||
+                            BracketHelpers.CheckForCommentLine(document, offset) ||
+                            BracketHelpers.CheckForString(document, offset) ||
+                            BracketHelpers.CheckForChar(document, offset)))
                         {
                             break;
                         }
@@ -933,35 +932,5 @@ namespace SPCode.UI.Components
             }
         }
         #endregion
-    }
-
-    public class ColorizeSelection : DocumentColorizingTransformer
-    {
-        public bool HighlightSelection;
-        public string SelectionString = string.Empty;
-
-        protected override void ColorizeLine(DocumentLine line)
-        {
-            if (HighlightSelection)
-            {
-                if (string.IsNullOrWhiteSpace(SelectionString))
-                {
-                    return;
-                }
-
-                var lineStartOffset = line.Offset;
-                var text = CurrentContext.Document.GetText(line);
-                var start = 0;
-                int index;
-                while ((index = text.IndexOf(SelectionString, start, StringComparison.Ordinal)) >= 0)
-                {
-                    ChangeLinePart(
-                        lineStartOffset + index,
-                        lineStartOffset + index + SelectionString.Length,
-                        element => { element.BackgroundBrush = Brushes.LightGray; });
-                    start = index + 1;
-                }
-            }
-        }
     }
 }
