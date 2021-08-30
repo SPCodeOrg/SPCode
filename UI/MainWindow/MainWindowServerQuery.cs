@@ -64,7 +64,7 @@ namespace SPCode.UI
 
         private string ReplaceRconCMDVariables(string input)
         {
-            if (compiledFileNames.Count < 1)
+            if (CompiledFileNames.Count < 1)
             {
                 return input;
             }
@@ -73,7 +73,7 @@ namespace SPCode.UI
             {
                 var replacement = new StringBuilder();
                 replacement.AppendLine();
-                foreach (var fileName in compiledFileNames)
+                foreach (var fileName in CompiledFileNames)
                 {
                     replacement.Append("sm plugins reload " + StripSMXPostFix(fileName) + ";");
                 }
@@ -86,7 +86,7 @@ namespace SPCode.UI
             {
                 var replacement = new StringBuilder();
                 replacement.AppendLine();
-                foreach (var fileName in compiledFileNames)
+                foreach (var fileName in CompiledFileNames)
                 {
                     replacement.Append("sm plugins load " + StripSMXPostFix(fileName) + ";");
                 }
@@ -99,7 +99,7 @@ namespace SPCode.UI
             {
                 var replacement = new StringBuilder();
                 replacement.AppendLine();
-                foreach (var fileName in compiledFileNames)
+                foreach (var fileName in CompiledFileNames)
                 {
                     replacement.Append("sm plugins unload " + StripSMXPostFix(fileName) + ";");
                 }

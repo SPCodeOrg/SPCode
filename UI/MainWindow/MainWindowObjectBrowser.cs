@@ -275,6 +275,18 @@ namespace SPCode.UI
 
         private void BtRefreshDir_Click(object sender, RoutedEventArgs e)
         {
+            RefreshObjectBrowser();
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Refreshes the object browser's items, remembering folding states.
+        /// </summary>
+        private void RefreshObjectBrowser()
+        {
             // Delete context menu to prevent performing actions on potentially null elements
             ObjectBrowser.ContextMenu = null;
 
@@ -296,10 +308,6 @@ namespace SPCode.UI
             ExpandedItems.Clear();
             ExpandedItemsBuffer.ForEach(x => OnExpandedItem(x));
         }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         /// Gets a list of files based on the 'filter' search criteria to append as new items to the Object Browser.
@@ -438,7 +446,7 @@ namespace SPCode.UI
         }
 
         /// <summary>
-        /// Helper function to assist the Expand/Collapse All directories button in the Object Browser.
+        /// Helper function to collapse or expand all of the items of the Object Browser.
         /// </summary>
         /// <param name="parentContainer">The TreeViewItem received to recursively expand or collapse everything inside it.</param>
         /// <param name="expand">Whether to expand or collapse the items.</param>

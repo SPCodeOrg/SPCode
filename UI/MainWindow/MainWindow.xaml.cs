@@ -13,6 +13,7 @@ using DiscordRPC;
 using MahApps.Metro;
 using SPCode.Interop.Updater;
 using SPCode.UI.Components;
+using SPCode.Utils;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 
@@ -123,8 +124,7 @@ namespace SPCode.UI
 
         }
 
-        public bool TryLoadSourceFile(string filePath, bool UseBlendoverEffect = true, bool TryOpenIncludes = true,
-            bool SelectMe = false)
+        public bool TryLoadSourceFile(string filePath, bool UseBlendoverEffect = true, bool TryOpenIncludes = true, bool SelectMe = false)
         {
             var fileInfo = new FileInfo(filePath);
             if (fileInfo.Exists)

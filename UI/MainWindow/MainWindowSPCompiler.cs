@@ -14,9 +14,9 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
-        private readonly List<string> compiledFileNames = new();
-        private readonly List<string> compiledFiles = new();
-        private readonly List<string> nonUploadedFiles = new();
+        private readonly List<string> CompiledFileNames = new();
+        private readonly List<string> CompiledFiles = new();
+        private readonly List<string> NonUploadedFiles = new();
 
         private bool InCompiling;
         private Thread ServerCheckThread;
@@ -35,9 +35,9 @@ namespace SPCode.UI
             // Saves all editors, sets InCompiling flag, clears all fields
             Command_SaveAll();
             InCompiling = true;
-            compiledFiles.Clear();
-            compiledFileNames.Clear();
-            nonUploadedFiles.Clear();
+            CompiledFiles.Clear();
+            CompiledFileNames.Clear();
+            NonUploadedFiles.Clear();
 
             // Grabs current config
             var c = Program.Configs[Program.SelectedConfig];
@@ -170,17 +170,13 @@ namespace SPCode.UI
                             }
 
                             ProcessUITasks();
+
                             try
                             {
                                 process.Start();
                                 process.WaitForExit();
                             }
                             catch (Exception)
-                            {
-                                InCompiling = false;
-                            }
-
-                            if (!InCompiling) //cannot await in catch
                             {
                                 await progressTask.CloseAsync();
                                 await this.ShowMessageAsync(Program.Translations.GetLanguage("SPCompNotStarted"),
@@ -211,9 +207,9 @@ namespace SPCode.UI
                             stringOutput.AppendLine(Program.Translations.GetLanguage("Done"));
                             if (File.Exists(outFile))
                             {
-                                compiledFiles.Add(outFile);
-                                nonUploadedFiles.Add(outFile);
-                                compiledFileNames.Add(destinationFileName);
+                                CompiledFiles.Add(outFile);
+                                NonUploadedFiles.Add(outFile);
+                                CompiledFileNames.Add(destinationFileName);
                             }
 
                             var execResult_Post = ExecuteCommandLine(c.PostCmd, fileInfo.DirectoryName,
@@ -263,6 +259,7 @@ namespace SPCode.UI
                         }
                     }
 
+                    RefreshObjectBrowser();
                     await progressTask.CloseAsync();
                 }
             }
@@ -278,16 +275,16 @@ namespace SPCode.UI
 
         private void Copy_Plugins(bool OvertakeOutString = false)
         {
-            if (compiledFiles.Count > 0)
+            if (CompiledFiles.Count > 0)
             {
                 var copyCount = 0;
                 var c = Program.Configs[Program.SelectedConfig];
                 if (!string.IsNullOrWhiteSpace(c.CopyDirectory))
                 {
-                    nonUploadedFiles.Clear();
+                    NonUploadedFiles.Clear();
 
                     var stringOutput = new StringBuilder();
-                    foreach (var file in compiledFiles)
+                    foreach (var file in CompiledFiles)
                     {
                         try
                         {
@@ -297,7 +294,7 @@ namespace SPCode.UI
                                 var destinationFileName = destFile.Name;
                                 var copyFileDestination = Path.Combine(c.CopyDirectory, destinationFileName);
                                 File.Copy(file, copyFileDestination, true);
-                                nonUploadedFiles.Add(copyFileDestination);
+                                NonUploadedFiles.Add(copyFileDestination);
                                 stringOutput.AppendLine($"{Program.Translations.GetLanguage("Copied")}: " + file);
                                 ++copyCount;
                                 if (c.DeleteAfterCopy)
@@ -334,13 +331,14 @@ namespace SPCode.UI
                             CompileOutputRow.Height = new GridLength(200.0);
                         }
                     });
+                    RefreshObjectBrowser();
                 }
             }
         }
 
         private void FTPUpload_Plugins()
         {
-            if (nonUploadedFiles.Count <= 0)
+            if (NonUploadedFiles.Count <= 0)
             {
                 return;
             }
@@ -355,7 +353,7 @@ namespace SPCode.UI
             try
             {
                 var ftp = new FTP(c.FTPHost, c.FTPUser, c.FTPPassword);
-                foreach (var file in nonUploadedFiles)
+                foreach (var file in NonUploadedFiles)
                 {
                     var fileInfo = new FileInfo(file);
                     if (fileInfo.Exists)
@@ -526,13 +524,5 @@ namespace SPCode.UI
             CMD = CMD.Replace("{pluginname}", pluginName);
             return CMD;
         }
-    }
-
-    public class ErrorDataGridRow
-    {
-        public string File { set; get; }
-        public string Line { set; get; }
-        public string Type { set; get; }
-        public string Details { set; get; }
     }
 }

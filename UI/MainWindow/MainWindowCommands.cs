@@ -66,6 +66,7 @@ namespace SPCode.UI
             File.Create(newFilePath).Close();
 
             AddEditorElement(newFilePath, $"New Plugin ({newFileNum}).sp", true);
+            RefreshObjectBrowser();
         }
 
         private void Command_NewFromTemplate()

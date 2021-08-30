@@ -222,6 +222,7 @@
     <Compile Include="Utils\Config.cs" />
     <Compile Include="Utils\Constants.cs" />
     <Compile Include="Utils\DecompileUtil.cs" />
+    <Compile Include="Utils\ErrorDataGridRow.cs" />
     <Compile Include="Utils\Hotkey.cs" />
     <Compile Include="Utils\HotkeyInfo.cs" />
     <Compile Include="Utils\HotkeyUtils.cs" />
