@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -68,7 +69,7 @@ namespace SPCode.Interop.Updater
             foreach (var release in info.AllReleases)
             {
                 releasesBody.Append($"**%{{color:{GetAccentHex()}}}Version {release.TagName}%** ");
-                releasesBody.AppendLine($"*%{{color:gray}}({release.CreatedAt.DateTime:MM/dd/yyyy})% *\r\n");
+                releasesBody.AppendLine($"*%{{color:gray}}({MonthToTitlecase(release.CreatedAt)})% *\r\n");
                 releasesBody.AppendLine(release.Body + "\r\n");
             }
 
@@ -153,6 +154,12 @@ namespace SPCode.Interop.Updater
         private string GetAccentHex()
         {
             return ThemeManager.DetectAppStyle(this).Item2.Resources["AccentColor"].ToString();
+        }
+
+        private static string MonthToTitlecase(DateTimeOffset dateOff)
+        {
+            var date = dateOff.DateTime.ToString("MMMM dd, yyyy", CultureInfo.GetCultureInfo("en-US"));
+            return char.ToUpper(date[0]) + date.Substring(1);
         }
         #endregion
     }
