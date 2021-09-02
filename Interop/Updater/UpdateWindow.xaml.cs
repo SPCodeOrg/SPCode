@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Windows;
-using Markdig;
+using MahApps.Metro;
+using MdXaml;
 using Octokit;
 using SPCode.Utils;
 
@@ -12,9 +15,12 @@ namespace SPCode.Interop.Updater
 {
     public partial class UpdateWindow
     {
+        #region Variables
         private readonly UpdateInfo updateInfo;
         public bool Succeeded;
+        #endregion
 
+        #region Constructors
         public UpdateWindow()
         {
             InitializeComponent();
@@ -22,22 +28,19 @@ namespace SPCode.Interop.Updater
 
         public UpdateWindow(UpdateInfo info) : this()
         {
-            updateInfo = info;
 
-            Title = string.Format(Program.Translations.GetLanguage("VersionAvailable"), info.Release.TagName);
-            MainLine.Text = Program.Translations.GetLanguage("WantToUpdate");
-            ActionYesButton.Content = Program.Translations.GetLanguage("Yes");
-            ActionNoButton.Content = Program.Translations.GetLanguage("No");
-            ActionGithubButton.Content = Program.Translations.GetLanguage("ViewGithub");
-            DescriptionBox.AppendText(Markdown.ToPlainText(updateInfo.Release.Body));
-            
-            
-            if (info.SkipDialog)
+            if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
             {
-                StartUpdate();
+                ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
+                    ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
-        }
 
+            PrepareUpdateWindow(info);
+            
+        }
+        #endregion
+
+        #region Events
         private void ActionYesButton_Click(object sender, RoutedEventArgs e)
         {
             StartUpdate();
@@ -46,6 +49,42 @@ namespace SPCode.Interop.Updater
         private void ActionNoButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+        private void ActionGithubButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(Constants.GitHubLatestRelease));
+        }
+        #endregion
+
+        #region Methods
+        public void PrepareUpdateWindow(UpdateInfo info)
+        {
+            Title = string.Format(Program.Translations.GetLanguage("VersionAvailable"), info.AllReleases[0].TagName);
+            MainLine.Text = Program.Translations.GetLanguage("WantToUpdate");
+            ActionYesButton.Content = Program.Translations.GetLanguage("Yes");
+            ActionNoButton.Content = Program.Translations.GetLanguage("No");
+            ActionGithubButton.Content = Program.Translations.GetLanguage("ViewGithub");
+
+            var releasesBody = new StringBuilder();
+
+            foreach (var release in info.AllReleases)
+            {
+                releasesBody.Append($"**%{{color:{GetAccentHex()}}}Version {release.TagName}%** ");
+                releasesBody.AppendLine($"*%{{color:gray}}({release.CreatedAt.DateTime:MM/dd/yyyy})% *\r\n");
+                releasesBody.AppendLine(release.Body + "\r\n");
+            }
+
+            releasesBody.Append($"*%{{color:gray}}More releases in {Constants.GitHubReleases}%*");
+
+            var document = new Markdown();
+            var content = document.Transform(releasesBody.ToString());
+            content.FontFamily = new System.Windows.Media.FontFamily("Segoe UI");
+            DescriptionBox.Document = content;
+
+            if (info.SkipDialog)
+            {
+                StartUpdate();
+            }
         }
 
         private void StartUpdate()
@@ -60,8 +99,7 @@ namespace SPCode.Interop.Updater
             ActionNoButton.Visibility = Visibility.Hidden;
             ActionGithubButton.Visibility = Visibility.Hidden;
             Icon.Visibility = Visibility.Hidden;
-            Progress.IsActive = true;
-            MainLine.Text = string.Format(Program.Translations.GetLanguage("UpdatingTo"), updateInfo.Release.TagName);
+            MainLine.Text = string.Format(Program.Translations.GetLanguage("UpdatingTo"), updateInfo.AllReleases[0].TagName);
             SubLine.Text = Program.Translations.GetLanguage("DownloadingUpdater");
             var t = new Thread(UpdateDownloadWorker);
             t.Start();
@@ -69,12 +107,7 @@ namespace SPCode.Interop.Updater
 
         private void UpdateDownloadWorker()
         {
-#if DEBUG
-            var asset = new ReleaseAsset("", 0, "", "SPCodeUpdater.exe", "", "", "", 0, 0, DateTimeOffset.Now,
-                DateTimeOffset.Now, "https://hexah.net/SPCodeUpdater.exe", null);
-#else
             var asset = updateInfo.Asset;
-#endif
             if (File.Exists(asset.Name))
             {
                 File.Delete(asset.Name);
@@ -118,10 +151,11 @@ namespace SPCode.Interop.Updater
 
             Close();
         }
-        
-        private void ActionGithubButton_Click(object sender, RoutedEventArgs e)
+
+        private string GetAccentHex()
         {
-            Process.Start(new ProcessStartInfo(Constants.GitHubLatestRelease));
+            return ThemeManager.DetectAppStyle(this).Item2.Resources["AccentColor"].ToString();
         }
+        #endregion
     }
 }

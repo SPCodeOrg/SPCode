@@ -21,7 +21,7 @@ namespace SPCode.UI
         #region Variables
         private string CurrentObjectBrowserDirectory = string.Empty;
         private readonly DispatcherTimer SearchCooldownTimer;
-        private List<TreeViewItem> ExpandedItems = new();
+        private readonly List<TreeViewItem> ExpandedItems = new();
         private List<TreeViewItem> ExpandedItemsBuffer = new();
         private bool VisualsShown = false;
         private bool OBExpanded = false;

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Octokit;
@@ -25,10 +27,9 @@ namespace SPCode.Interop.Updater
             var info = new UpdateInfo();
             try
             {
-                var latestVer = await GetLatest();
-                if (!IsUpToDate(Assembly.GetEntryAssembly()?.GetName().Version, Version.Parse(latestVer.TagName)))
+                info.AllReleases = await GetAllReleases();
+                if (!IsUpToDate(Assembly.GetEntryAssembly()?.GetName().Version, Version.Parse(info.AllReleases[0].TagName)))
                 {
-                    info.Release = latestVer;
                     if (info.Asset == null)
                     {
                         throw new Exception("Unable to find a valid asset!");
@@ -61,11 +62,16 @@ namespace SPCode.Interop.Updater
             return currentVer.CompareTo(latestVer) >= 0;
         }
 
-        private static async Task<Release> GetLatest()
+        private static async Task<List<Release>> GetAllReleases()
         {
             var client = new GitHubClient(new ProductHeaderValue("spcode-client"));
-            var latestRelease = await client.Repository.Release.GetLatest("Hexer10", "SPCode");
-            return latestRelease;
+            var allReleases = await client.Repository.Release.GetAll("Hexer10", "SPCode");
+            var list = new List<Release>();
+            foreach (var item in allReleases)
+            {
+                list.Add(item);
+            }
+            return list.Take(10).ToList();
         }
     }
 }
