@@ -228,7 +228,7 @@ namespace SPCode.UI
                     if (!PressedEscape)
                     {
                         progressTask.SetProgress(1.0);
-                        CompileOutput.Text = stringOutput.ToString();
+                        LogTextbox.Text = stringOutput.ToString();
                         if (c.AutoCopy)
                         {
                             progressTask.SetTitle(Program.Translations.GetLanguage("CopyingFiles"));
@@ -319,11 +319,11 @@ namespace SPCode.UI
                     {
                         if (OvertakeOutString)
                         {
-                            CompileOutput.AppendText(stringOutput.ToString());
+                            LogTextbox.AppendText(stringOutput.ToString());
                         }
                         else
                         {
-                            CompileOutput.Text = stringOutput.ToString();
+                            LogTextbox.Text = stringOutput.ToString();
                         }
 
                         if (CompileOutputRow.Height.Value < 11.0)
@@ -391,7 +391,7 @@ namespace SPCode.UI
             stringOutput.AppendLine(Program.Translations.GetLanguage("Done"));
             Dispatcher.Invoke(() =>
             {
-                CompileOutput.Text = stringOutput.ToString();
+                LogTextbox.Text = stringOutput.ToString();
                 if (CompileOutputRow.Height.Value < 11.0)
                 {
                     CompileOutputRow.Height = new GridLength(200.0);

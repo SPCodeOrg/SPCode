@@ -13,8 +13,8 @@ namespace SPCode.UI
             }
             if (!Initial)
             {
-                compileButtonDict = new ObservableCollection<string>() { Program.Translations.GetLanguage("CompileAll"), Program.Translations.GetLanguage("CompileCurrent") };
-                actionButtonDict = new ObservableCollection<string>() { Program.Translations.GetLanguage("Copy"), Program.Translations.GetLanguage("UploadFTP"), Program.Translations.GetLanguage("StartServer") };
+                CompileButtonDict = new ObservableCollection<string>() { Program.Translations.GetLanguage("CompileAll"), Program.Translations.GetLanguage("CompileCurrent") };
+                ActionButtonDict = new ObservableCollection<string>() { Program.Translations.GetLanguage("Copy"), Program.Translations.GetLanguage("UploadFTP"), Program.Translations.GetLanguage("StartServer") };
                 ((MenuItem)ConfigMenu.Items[ConfigMenu.Items.Count - 1]).Header = Program.Translations.GetLanguage("EditConfig");
                 var ee = GetAllEditorElements();
                 if (ee != null)

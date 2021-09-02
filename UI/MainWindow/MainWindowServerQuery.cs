@@ -54,7 +54,7 @@ namespace SPCode.UI
 
             Dispatcher.Invoke(() =>
             {
-                CompileOutput.Text = stringOutput.ToString();
+                LogTextbox.Text = stringOutput.ToString();
                 if (CompileOutputRow.Height.Value < 11.0)
                 {
                     CompileOutputRow.Height = new GridLength(200.0);

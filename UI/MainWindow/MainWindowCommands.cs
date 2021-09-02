@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
+using SPCode.Interop;
 using SPCode.UI.Components;
 using SPCode.UI.Windows;
 using SPCode.Utils;
@@ -13,7 +14,6 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
-
         public EditorElement GetCurrentEditorElement()
         {
             EditorElement outElement = null;
@@ -335,7 +335,12 @@ namespace SPCode.UI
         private void Command_ToggleCommentLine()
         {
             var ee = GetCurrentEditorElement();
-            ee?.ToggleCommentOnLine();
+            if (ee == null)
+            {
+                LoggingControl.LogAction("No editor selected.");
+                return;
+            }
+            ee.ToggleCommentOnLine();
         }
 
         public void Command_ChangeCase(bool toUpper)

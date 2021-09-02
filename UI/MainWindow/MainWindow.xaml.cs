@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using DiscordRPC;
 using MahApps.Metro;
+using SPCode.Interop;
 using SPCode.Interop.Updater;
 using SPCode.UI.Components;
 using SPCode.Utils;
@@ -30,14 +31,14 @@ namespace SPCode.UI
 
         private readonly bool FullyInitialized;
 
-        private ObservableCollection<string> actionButtonDict = new()
+        private ObservableCollection<string> ActionButtonDict = new()
         {
             Program.Translations.GetLanguage("Copy"),
             Program.Translations.GetLanguage("UploadFTP"),
             Program.Translations.GetLanguage("StartServer")
         };
 
-        private ObservableCollection<string> compileButtonDict = new()
+        private ObservableCollection<string> CompileButtonDict = new()
         {
             Program.Translations.GetLanguage("CompileAll"),
             Program.Translations.GetLanguage("CompileCurrent")
@@ -64,9 +65,9 @@ namespace SPCode.UI
             heightDescriptor.AddValueChanged(EditorObjectBrowserGrid.ColumnDefinitions[1],
                 EditorObjectBrowserGridRow_WidthChanged);
             FillConfigMenu();
-            CompileButton.ItemsSource = compileButtonDict;
+            CompileButton.ItemsSource = CompileButtonDict;
             CompileButton.SelectedIndex = 0;
-            CActionButton.ItemsSource = actionButtonDict;
+            CActionButton.ItemsSource = ActionButtonDict;
             CActionButton.SelectedIndex = 0;
 
             if (Program.OptionsObject.UI_ShowToolBar)
@@ -122,6 +123,8 @@ namespace SPCode.UI
 
             SearchCooldownTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
             SearchCooldownTimer.Tick += OnSearchCooldownTimerTick;
+
+            LoggingControl.LogBox = LogTextbox;
 
         }
 
