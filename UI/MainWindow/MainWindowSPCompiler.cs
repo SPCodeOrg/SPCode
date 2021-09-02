@@ -97,7 +97,7 @@ namespace SPCode.UI
                     if (ee.FullFilePath.EndsWith(".sp"))
                     {
                         filesToCompile.Add(ee.FullFilePath);
-                   }
+                    }
                 }
 
                 var compileCount = filesToCompile.Count;

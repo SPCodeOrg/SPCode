@@ -24,7 +24,7 @@ namespace SPCode.UI.Windows
                 ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
-            _editor = Program.MainWindow.GetCurrentEditorElement().editor; 
+            _editor = Program.MainWindow.GetCurrentEditorElement().editor;
             _lineNumber = _editor.LineCount;
             _offsetNumber = _editor.Document.TextLength;
 
@@ -60,7 +60,7 @@ namespace SPCode.UI.Windows
 
         private void JumpNumber_TextChanged(object sender, TextChangedEventArgs e)
         {
-            CheckInput(out _);            
+            CheckInput(out _);
         }
 
         private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
@@ -124,7 +124,7 @@ namespace SPCode.UI.Windows
 
             var textStr = JumpNumber.Text;
 
-            if (!int.TryParse(textStr, out var text) || string.IsNullOrEmpty(textStr)) 
+            if (!int.TryParse(textStr, out var text) || string.IsNullOrEmpty(textStr))
             {
                 btJump.IsEnabled = false;
                 lblError.Content = "Invalid input!";

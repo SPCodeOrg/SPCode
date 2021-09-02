@@ -19,8 +19,9 @@ namespace SPCode.UI.Windows
         private LayoutDocumentPane _dockingPane;
         private bool IsSearchFieldOpen;
         private readonly ObservableCollection<string> findReplaceButtonDict = new()
-        { 
-            Program.Translations.GetLanguage("Replace"), Program.Translations.GetLanguage("ReplaceAll") 
+        {
+            Program.Translations.GetLanguage("Replace"),
+            Program.Translations.GetLanguage("ReplaceAll")
         };
         #endregion
 

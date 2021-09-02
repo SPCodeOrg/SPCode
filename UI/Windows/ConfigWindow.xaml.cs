@@ -13,7 +13,6 @@ using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using SPCode.Interop;
 using SPCode.Utils;
 
 namespace SPCode.UI.Windows

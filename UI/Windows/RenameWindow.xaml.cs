@@ -3,8 +3,6 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using ICSharpCode.AvalonEdit;
 using MahApps.Metro;
 
 namespace SPCode.UI.Windows

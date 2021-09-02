@@ -11,18 +11,16 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Folding;
-using ICSharpCode.AvalonEdit.Rendering;
 using ICSharpCode.AvalonEdit.Utils;
 using MahApps.Metro.Controls.Dialogs;
 using SourcepawnCondenser;
 using SourcepawnCondenser.SourcemodDefinition;
+using SPCode.Utils;
 using SPCode.Utils.SPSyntaxTidy;
 using Xceed.Wpf.AvalonDock.Layout;
 using Timer = System.Timers.Timer;
-using SPCode.Utils;
-using ControlzEx.Standard;
-using ICSharpCode.AvalonEdit.Editing;
 
 namespace SPCode.UI.Components
 {

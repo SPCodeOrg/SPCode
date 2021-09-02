@@ -1,16 +1,15 @@
-﻿using SPCode.UI.Components;
-using SPCode.Interop;
+﻿using System;
 using System.IO;
-using System.Xml;
-using System;
-using SPCode.Utils;
-using System.Windows.Threading;
-using System.Windows.Input;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Controls;
-using System.Diagnostics;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Threading;
+using System.Xml;
+using SPCode.Interop;
+using SPCode.UI.Components;
+using SPCode.Utils;
 
 namespace SPCode.UI.Windows
 {

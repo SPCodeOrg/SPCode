@@ -37,9 +37,10 @@ namespace SPCode.UI
             Program.Translations.GetLanguage("StartServer")
         };
 
-        private ObservableCollection<string> compileButtonDict = new() { 
-            Program.Translations.GetLanguage("CompileAll"), 
-            Program.Translations.GetLanguage("CompileCurrent") 
+        private ObservableCollection<string> compileButtonDict = new()
+        {
+            Program.Translations.GetLanguage("CompileAll"),
+            Program.Translations.GetLanguage("CompileCurrent")
         };
 
         public MainWindow()
@@ -67,7 +68,7 @@ namespace SPCode.UI
             CompileButton.SelectedIndex = 0;
             CActionButton.ItemsSource = actionButtonDict;
             CActionButton.SelectedIndex = 0;
-            
+
             if (Program.OptionsObject.UI_ShowToolBar)
             {
                 Win_ToolBar.Height = double.NaN;
@@ -129,9 +130,9 @@ namespace SPCode.UI
             var fileInfo = new FileInfo(filePath);
             if (fileInfo.Exists)
             {
-                if (fileInfo.Extension == ".sp" || 
-                    fileInfo.Extension == ".inc" || 
-                    fileInfo.Extension == ".txt" || 
+                if (fileInfo.Extension == ".sp" ||
+                    fileInfo.Extension == ".inc" ||
+                    fileInfo.Extension == ".txt" ||
                     fileInfo.Extension == ".cfg" ||
                     fileInfo.Extension == ".ini")
                 {

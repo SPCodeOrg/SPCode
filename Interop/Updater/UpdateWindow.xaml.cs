@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -8,7 +7,6 @@ using System.Threading;
 using System.Windows;
 using MahApps.Metro;
 using MdXaml;
-using Octokit;
 using SPCode.Utils;
 
 namespace SPCode.Interop.Updater
@@ -36,7 +34,7 @@ namespace SPCode.Interop.Updater
             }
 
             PrepareUpdateWindow(info);
-            
+
         }
         #endregion
 

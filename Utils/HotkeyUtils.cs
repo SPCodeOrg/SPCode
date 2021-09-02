@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 namespace SPCode.Utils
 {
@@ -11,7 +6,7 @@ namespace SPCode.Utils
     {
         public static bool IsKeyModifier(Key key)
         {
-            return key is 
+            return key is
                 Key.LeftCtrl or
                 Key.RightCtrl or
                 Key.LeftAlt or

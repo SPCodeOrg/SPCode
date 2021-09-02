@@ -291,12 +291,12 @@ namespace SPCode.Interop
             language.Add("RCONCommand", "Seconding RCON Commands");
             language.Add("JavaInstallCheck", "Checking for Java installation");
             language.Add("JavaNotFoundTitle", "Java was not found");
-            language.Add("JavaNotFoundMessage", 
+            language.Add("JavaNotFoundMessage",
                 "SPCode needs Java to decompile plugins, but it couldn't get it to work properly - " +
                 "perhaps due to an absent or incorrect Java installation. " +
                 "Do you wish to download and install it now?");
             language.Add("JavaOutdatedTitle", "Java version found is outdated");
-            language.Add("JavaOutdatedMessage", 
+            language.Add("JavaOutdatedMessage",
                 "SPCode requires Java 11 SDK or later to decompile plugins. " +
                 "We found an outdated version in your system. " +
                 "Do you wish to download and upgrade it now?");
