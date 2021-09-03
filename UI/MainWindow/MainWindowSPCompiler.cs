@@ -25,6 +25,10 @@ namespace SPCode.UI
         private bool ServerIsRunning;
         private Process ServerProcess;
 
+        /// <summary>
+        /// Compiles the specified scripts.
+        /// </summary>
+        /// <param name="compileAll"></param>
         private async void Compile_SPScripts(bool compileAll = true)
         {
             // Checks if the program is compiling to avoid doing it again
@@ -278,6 +282,10 @@ namespace SPCode.UI
             InCompiling = false;
         }
 
+        /// <summary>
+        /// Copies the compiled plugins to the specified destination.
+        /// </summary>
+        /// <param name="OvertakeOutString"></param>
         private void Copy_Plugins(bool OvertakeOutString = false)
         {
             if (CompiledFiles.Count > 0)
@@ -341,6 +349,9 @@ namespace SPCode.UI
             }
         }
 
+        /// <summary>
+        /// Uploads the compiled plugins via FTP to the specified destination.
+        /// </summary>
         private void FTPUpload_Plugins()
         {
             if (NonUploadedFiles.Count <= 0)
@@ -407,6 +418,9 @@ namespace SPCode.UI
             });
         }
 
+        /// <summary>
+        /// Starts the server with the specified parameters.
+        /// </summary>
         private void Server_Start()
         {
             if (ServerIsRunning)
@@ -478,7 +492,6 @@ namespace SPCode.UI
             });
         }
 
-
         private string ShortenScriptFileName(string fileName)
         {
             if (fileName.EndsWith(".sp", StringComparison.InvariantCultureIgnoreCase))
@@ -489,6 +502,17 @@ namespace SPCode.UI
             return fileName;
         }
 
+        /// <summary>
+        /// Executes the commands from the pre and post compile commands boxes.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="directory"></param>
+        /// <param name="copyDir"></param>
+        /// <param name="scriptFile"></param>
+        /// <param name="scriptName"></param>
+        /// <param name="pluginFile"></param>
+        /// <param name="pluginName"></param>
+        /// <returns></returns>
         private string ExecuteCommandLine(string code, string directory, string copyDir, string scriptFile,
             string scriptName, string pluginFile, string pluginName)
         {
@@ -520,6 +544,11 @@ namespace SPCode.UI
             return result;
         }
 
+        /// <summary>
+        /// Replaces the placeholders from the pre and post compile commands boxes with the corresponding content.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         private string ReplaceCMDVariables(string CMD, string scriptDir, string copyDir, string scriptFile,
             string scriptName, string pluginFile, string pluginName)
         {

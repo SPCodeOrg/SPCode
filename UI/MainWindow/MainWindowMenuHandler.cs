@@ -287,6 +287,9 @@ namespace SPCode.UI
             }
         }
 
+        /// <summary>
+        /// Loads the input gesture texts to the menu items.
+        /// </summary>
         private void LoadInputGestureTexts()
         {
             // Welcome to foreach hell

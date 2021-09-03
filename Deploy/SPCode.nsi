@@ -43,6 +43,7 @@ File Xceed.Wpf.AvalonDock.Themes.Metro.dll
 File smxdasm.dll
 File QueryMaster.dll
 File Ionic.BZip2.dll
+File MdXaml.dll
 File SourcepawnCondenser.dll
 File ByteSize.dll
 File Renci.SshNet.dll
@@ -137,6 +138,7 @@ Delete $INSTDIR\Ionic.BZip2.dll
 Delete $INSTDIR\SourcepawnCondenser.dll
 Delete $INSTDIR\Renci.SshNet.dll
 Delete $INSTDIR\Newtonsoft.Json.dll
+Delete $INSTDIR\MdXaml.dll
 Delete $INSTDIR\DiscordRPC.dll
 Delete $INSTDIR\Microsoft.WindowsAPICodePack.dll
 Delete $INSTDIR\Microsoft.WindowsAPICodePack.Shell.dll

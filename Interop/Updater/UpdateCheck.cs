@@ -9,6 +9,10 @@ namespace SPCode.Interop.Updater
 {
     public static class UpdateCheck
     {
+        /// <summary>
+        /// Calls the CheckInternal function to set the IsAvailable flag.
+        /// </summary>
+        /// <returns></returns>
         public static async Task Check()
         {
             if (Program.UpdateStatus != null)
@@ -22,6 +26,10 @@ namespace SPCode.Interop.Updater
             await CheckInternal();
         }
 
+        /// <summary>
+        /// Compares versions by getting all releases to see if there's an update available or not.
+        /// </summary>
+        /// <returns></returns>
         private static async Task CheckInternal()
         {
             var info = new UpdateInfo();
@@ -57,11 +65,21 @@ namespace SPCode.Interop.Updater
             }
         }
 
+        /// <summary>
+        /// Compares versions.
+        /// </summary>
+        /// <param name="currentVer"></param>
+        /// <param name="latestVer"></param>
+        /// <returns></returns>
         private static bool IsUpToDate(Version currentVer, Version latestVer)
         {
             return currentVer.CompareTo(latestVer) >= 0;
         }
 
+        /// <summary>
+        /// Calls the GitHub API to get all releases.
+        /// </summary>
+        /// <returns></returns>
         private static async Task<List<Release>> GetAllReleases()
         {
             var client = new GitHubClient(new ProductHeaderValue("spcode-client"));

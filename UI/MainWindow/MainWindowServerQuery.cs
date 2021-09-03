@@ -8,6 +8,9 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
+        /// <summary>
+        /// Queries the server with the specified command in the command box of the config.
+        /// </summary>
         private void Server_Query()
         {
             var c = Program.Configs[Program.SelectedConfig];
@@ -62,6 +65,11 @@ namespace SPCode.UI
             });
         }
 
+        /// <summary>
+        /// Replaces the placeholders from the commands box with the corresponding content.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         private string ReplaceRconCMDVariables(string input)
         {
             if (CompiledFileNames.Count < 1)
@@ -111,6 +119,11 @@ namespace SPCode.UI
             return input;
         }
 
+        /// <summary>
+        /// Strips the '.smx' from the specified string
+        /// </summary>
+        /// <param name="fileName">File name to strip the extension from.</param>
+        /// <returns></returns>
         private string StripSMXPostFix(string fileName)
         {
             if (fileName.EndsWith(".smx"))

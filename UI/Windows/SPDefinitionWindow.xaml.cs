@@ -16,11 +16,14 @@ namespace SPCode.UI.Windows
 {
     public partial class SPDefinitionWindow
     {
+        #region Variables
         private readonly SMBaseDefinition[] defArray;
         private readonly Brush errorSearchBoxBrush = new SolidColorBrush(Color.FromArgb(0x50, 0xA0, 0x30, 0));
         private readonly ListViewItem[] items;
         private readonly Timer searchTimer = new(1000.0);
+        #endregion
 
+        #region Constructors
         public SPDefinitionWindow()
         {
             InitializeComponent();
@@ -80,7 +83,9 @@ namespace SPCode.UI.Windows
 
             searchTimer.Elapsed += SearchTimer_Elapsed;
         }
+        #endregion
 
+        #region Events
         private void SearchTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             DoSearch();
@@ -250,6 +255,15 @@ namespace SPCode.UI.Windows
             }
         }
 
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            SPProgress.IsIndeterminate = true;
+            searchTimer.Stop();
+            searchTimer.Start();
+        }
+        #endregion
+
+        #region Methods
         private void GoToDefinition()
         {
             var item = (ListViewItem)SPBox.SelectedItem;
@@ -274,13 +288,6 @@ namespace SPCode.UI.Windows
                     return;
                 }
             }
-        }
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            SPProgress.IsIndeterminate = true;
-            searchTimer.Stop();
-            searchTimer.Start();
         }
 
         private void DoSearch()
@@ -313,7 +320,6 @@ namespace SPCode.UI.Windows
                 return;
             }*/
         }
-
-
+        #endregion
     }
 }

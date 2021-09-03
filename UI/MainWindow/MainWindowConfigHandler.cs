@@ -7,6 +7,9 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
+        /// <summary>
+        /// Fills the config menu with all available configs.
+        /// </summary>
         public void FillConfigMenu()
         {
             ConfigMenu.Items.Clear();
@@ -39,6 +42,10 @@ namespace SPCode.UI
             ChangeConfig(name);
         }
 
+        /// <summary>
+        /// Changes to the specified config.
+        /// </summary>
+        /// <param name="index">The config index to change to</param>
         public void ChangeConfig(int index)
         {
             if (index < 0 || index >= Program.Configs.Length)
@@ -68,6 +75,10 @@ namespace SPCode.UI
             OBDirList.SelectedIndex = 0;
         }
 
+        /// <summary>
+        /// Overload of ChangeConfig to take the name of the config.
+        /// </summary>
+        /// <param name="name">Name of the config to change to.</param>
         private void ChangeConfig(string name)
         {
             for (var i = 0; i < Program.Configs.Length; ++i)

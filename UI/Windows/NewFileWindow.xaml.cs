@@ -14,25 +14,10 @@ namespace SPCode.UI.Windows
 {
     public partial class NewFileWindow
     {
-        // From https://github.com/CrucialCoding/Spedit/commit/d2edde54385bb76eccdf13934ce33a8a7e3cc31e
+        #region Variables
         private readonly string PathStr = Program.Configs[Program.SelectedConfig].SMDirectories[0];
         private Dictionary<string, TemplateInfo> TemplateDictionary;
-
         private ICommand textBoxButtonFileCmd;
-
-        public NewFileWindow()
-        {
-            InitializeComponent();
-            Language_Translate();
-            if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
-            {
-                ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
-                    ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
-            }
-
-            ParseTemplateFile();
-            TemplateListBox.SelectedIndex = 0;
-        }
 
         public ICommand TextBoxButtonFileCmd
         {
@@ -73,6 +58,81 @@ namespace SPCode.UI.Windows
             }
         }
 
+        private class SimpleCommand : ICommand
+        {
+            public Predicate<object> CanExecutePredicate { get; set; }
+            public Action<object> ExecuteAction { get; set; }
+
+            public bool CanExecute(object parameter)
+            {
+                return true;
+            }
+
+            public event EventHandler CanExecuteChanged
+            {
+                add => CommandManager.RequerySuggested += value;
+                remove => CommandManager.RequerySuggested -= value;
+            }
+
+            public void Execute(object parameter)
+            {
+                ExecuteAction?.Invoke(parameter);
+            }
+        }
+        #endregion
+
+        #region Constructors
+        public NewFileWindow()
+        {
+            InitializeComponent();
+            Language_Translate();
+            if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
+            {
+                ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
+                    ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
+            }
+
+            ParseTemplateFile();
+            TemplateListBox.SelectedIndex = 0;
+        }
+        #endregion
+
+        #region Events
+        private void TemplateListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var templateInfo = TemplateDictionary[(string)TemplateListBox.SelectedItem];
+            PrevieBox.Text = File.ReadAllText(templateInfo.Path);
+            PathBox.Text = Path.Combine(PathStr, templateInfo.NewName);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            GoToSelectedTemplate();
+        }
+
+        private void TemplateListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            GoToSelectedTemplate();
+        }
+
+        private void TemplateListBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                GoToSelectedTemplate();
+            }
+        }
+
+        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
+        }
+        #endregion
+
+        #region Methods
         private void ParseTemplateFile()
         {
             TemplateDictionary = new Dictionary<string, TemplateInfo>();
@@ -121,13 +181,6 @@ namespace SPCode.UI.Windows
             }
         }
 
-        private void TemplateListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var templateInfo = TemplateDictionary[(string)TemplateListBox.SelectedItem];
-            PrevieBox.Text = File.ReadAllText(templateInfo.Path);
-            PathBox.Text = Path.Combine(PathStr, templateInfo.NewName);
-        }
-
         private void Language_Translate()
         {
             if (Program.Translations.IsDefault)
@@ -139,54 +192,6 @@ namespace SPCode.UI.Windows
             SaveButton.Content = Program.Translations.GetLanguage("Save");
         }
 
-        private class SimpleCommand : ICommand
-        {
-            public Predicate<object> CanExecutePredicate { get; set; }
-            public Action<object> ExecuteAction { get; set; }
-
-            public bool CanExecute(object parameter)
-            {
-                return true;
-            }
-
-            public event EventHandler CanExecuteChanged
-            {
-                add => CommandManager.RequerySuggested += value;
-                remove => CommandManager.RequerySuggested -= value;
-            }
-
-            public void Execute(object parameter)
-            {
-                ExecuteAction?.Invoke(parameter);
-            }
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            GoToSelectedTemplate();
-        }
-
-        private void TemplateListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            GoToSelectedTemplate();
-        }
-
-        private void TemplateListBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                GoToSelectedTemplate();
-            }
-        }
-
-        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-            {
-                Close();
-            }
-        }
-
         private void GoToSelectedTemplate()
         {
             var destFile = new FileInfo(PathBox.Text);
@@ -195,14 +200,6 @@ namespace SPCode.UI.Windows
             Program.MainWindow.TryLoadSourceFile(destFile.FullName, true, true, true);
             Close();
         }
-
-    }
-
-    public class TemplateInfo
-    {
-        public string FileName;
-        public string Name;
-        public string NewName;
-        public string Path;
+        #endregion
     }
 }

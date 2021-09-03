@@ -4,7 +4,6 @@ using System.Text;
 using System.Windows;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
-using SPCode.Interop;
 using SPCode.UI.Components;
 using SPCode.UI.Windows;
 using SPCode.Utils;
@@ -14,6 +13,10 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
+        /// <summary>
+        /// Gets the current editor element.
+        /// </summary>
+        /// <returns></returns>
         public EditorElement GetCurrentEditorElement()
         {
             EditorElement outElement = null;
@@ -29,6 +32,10 @@ namespace SPCode.UI
             return outElement;
         }
 
+        /// <summary>
+        /// Gets the current DASM element.
+        /// </summary>
+        /// <returns></returns>
         public DASMElement GetCurrentDASMElement()
         {
             DASMElement outElement = null;
@@ -44,16 +51,27 @@ namespace SPCode.UI
             return outElement;
         }
 
+        /// <summary>
+        /// Gets an array of all open editor elements.
+        /// </summary>
+        /// <returns></returns>
         public EditorElement[] GetAllEditorElements()
         {
             return EditorsReferences.Count < 1 ? null : EditorsReferences.ToArray();
         }
 
+        /// <summary>
+        /// Gets an array of all open DASM elements.
+        /// </summary>
+        /// <returns></returns>
         public DASMElement[] GetAllDASMElements()
         {
             return DASMReferences.Count < 1 ? null : DASMReferences.ToArray();
         }
 
+        /// <summary>
+        /// Creates a new SourcePawn Script file and loads it.
+        /// </summary>
         private void Command_New()
         {
             string newFilePath;
@@ -69,6 +87,9 @@ namespace SPCode.UI
             RefreshObjectBrowser();
         }
 
+        /// <summary>
+        /// Opens a new window for the user to create a new SourcePawn Script from a template.
+        /// </summary>
         private void Command_NewFromTemplate()
         {
             var nfWindow = new NewFileWindow
@@ -79,6 +100,9 @@ namespace SPCode.UI
             nfWindow.ShowDialog();
         }
 
+        /// <summary>
+        /// Opens the Open File window for the user to load a file into the editor.
+        /// </summary>
         private void Command_Open()
         {
             var ofd = new OpenFileDialog
@@ -114,6 +138,9 @@ namespace SPCode.UI
             Activate();
         }
 
+        /// <summary>
+        /// Saves the current file.
+        /// </summary>
         private void Command_Save()
         {
             var ee = GetCurrentEditorElement();
@@ -124,6 +151,9 @@ namespace SPCode.UI
             }
         }
 
+        /// <summary>
+        /// Opens the Save As window.
+        /// </summary>
         private void Command_SaveAs()
         {
             var ee = GetCurrentEditorElement();
@@ -147,6 +177,9 @@ namespace SPCode.UI
             }
         }
 
+        /// <summary>
+        /// Opens the Go To Line window.
+        /// </summary>
         private void Command_GoToLine()
         {
             if (GetAllEditorElements() == null)
@@ -157,6 +190,9 @@ namespace SPCode.UI
             goToLineWindow.ShowDialog();
         }
 
+        /// <summary>
+        /// Deletes the line the caret is in.
+        /// </summary>
         private void Command_DeleteLine()
         {
             var ee = GetCurrentEditorElement();
@@ -166,6 +202,9 @@ namespace SPCode.UI
             }
         }
 
+        /// <summary>
+        /// Opens the Search window.
+        /// </summary>
         private void Command_FindReplace()
         {
             if (GetAllEditorElements() == null)
@@ -190,6 +229,9 @@ namespace SPCode.UI
             findWindow.FindBox.Focus();
         }
 
+        /// <summary>
+        /// Saves all opened files.
+        /// </summary>
         private void Command_SaveAll()
         {
             var editors = GetAllEditorElements();
@@ -209,6 +251,9 @@ namespace SPCode.UI
             }
         }
 
+        /// <summary>
+        /// Closes the current file opened.
+        /// </summary>
         private void Command_Close()
         {
             var ee = GetCurrentEditorElement();
@@ -222,6 +267,9 @@ namespace SPCode.UI
             UpdateOBFileButton();
         }
 
+        /// <summary>
+        /// Closes all files opened.
+        /// </summary>
         private async void Command_CloseAll()
         {
             var editors = GetAllEditorElements();
@@ -271,6 +319,9 @@ namespace SPCode.UI
             UpdateOBFileButton();
         }
 
+        /// <summary>
+        /// Undoes the previous action.
+        /// </summary>
         private void Command_Undo()
         {
             var ee = GetCurrentEditorElement();
@@ -283,6 +334,9 @@ namespace SPCode.UI
             }
         }
 
+        /// <summary>
+        /// Redoes the latter action.
+        /// </summary>
         private void Command_Redo()
         {
             var ee = GetCurrentEditorElement();
@@ -295,25 +349,38 @@ namespace SPCode.UI
             }
         }
 
+        /// <summary>
+        /// Cut command.
+        /// </summary>
         private void Command_Cut()
         {
             var ee = GetCurrentEditorElement();
             ee?.editor.Cut();
         }
 
+        /// <summary>
+        /// Copy command.
+        /// </summary>
         private void Command_Copy()
         {
             var ee = GetCurrentEditorElement();
             ee?.editor.Copy();
         }
 
+        /// <summary>
+        /// Paste command.
+        /// </summary>
         private void Command_Paste()
         {
             var ee = GetCurrentEditorElement();
             ee?.editor.Paste();
         }
 
-        private void Command_FlushFoldingState(bool state)
+        /// <summary>
+        /// Collapses or expands all foldings in the editor.
+        /// </summary>
+        /// <param name="folded">Whether to fold all foldings (true to collapse all).</param>
+        private void Command_FlushFoldingState(bool folded)
         {
             var ee = GetCurrentEditorElement();
             if (ee?.foldingManager != null)
@@ -321,33 +388,41 @@ namespace SPCode.UI
                 var foldings = ee.foldingManager.AllFoldings;
                 foreach (var folding in foldings)
                 {
-                    folding.IsFolded = state;
+                    folding.IsFolded = folded;
                 }
             }
         }
 
+        /// <summary>
+        /// Select all command.
+        /// </summary>
         private void Command_SelectAll()
         {
             var ee = GetCurrentEditorElement();
             ee?.editor.SelectAll();
         }
 
+        /// <summary>
+        /// Comment or uncomment the line the caret is in.
+        /// </summary>
         private void Command_ToggleCommentLine()
         {
-            var ee = GetCurrentEditorElement();
-            if (ee == null)
-            {
-                LoggingControl.LogAction("No editor selected.");
-                return;
-            }
-            ee.ToggleCommentOnLine();
+            GetCurrentEditorElement()?.ToggleCommentOnLine();
         }
 
+        /// <summary>
+        /// Change the case of the current selection.
+        /// </summary>
+        /// <param name="toUpper">Whether to transform to uppercase</param>
         public void Command_ChangeCase(bool toUpper)
         {
             GetCurrentEditorElement()?.ChangeCase(toUpper);
         }
 
+        /// <summary>
+        /// Perform a code reformat to clean loose whitespaces/wrongly indented code.
+        /// </summary>
+        /// <param name="All"></param>
         private void Command_TidyCode(bool All)
         {
             var editors = All ? GetAllEditorElements() : new[] { GetCurrentEditorElement() };
@@ -393,12 +468,18 @@ namespace SPCode.UI
             }
         }
 
+        /// <summary>
+        /// Opens the Open File window for the user to select a file to decompile.
+        /// </summary>
         private async void Command_Decompile()
         {
             var decomp = new DecompileUtil();
             await decomp.DecompilePlugin();
         }
 
+        /// <summary>
+        /// Opens the Search Definition window.
+        /// </summary>
         private void Command_OpenSPDef()
         {
             var spDefinitionWindow = new SPDefinitionWindow

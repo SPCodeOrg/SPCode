@@ -11,11 +11,13 @@ using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
 using SPCode.UI.Components;
 using SPCode.Utils;
+using SPCode.Utils.Models;
 
 namespace SPCode.UI.Windows
 {
     public partial class OptionsWindow
     {
+        #region Variables
         private readonly string[] AvailableAccents =
         {
             "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald", "Teal", "Cyan", "Cobalt", "Indigo", "Violet",
@@ -24,7 +26,9 @@ namespace SPCode.UI.Windows
         };
         private bool RestartTextIsShown;
         private readonly bool AllowChanging;
+        #endregion
 
+        #region Constructors
         public OptionsWindow()
         {
             InitializeComponent();
@@ -45,6 +49,7 @@ namespace SPCode.UI.Windows
             SaveHotkeyTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
             SaveHotkeyTimer.Tick += OnTimerTick;
         }
+        #endregion
 
         #region Events
         private void DefaultButton_Click(object sender, RoutedEventArgs e)
@@ -766,16 +771,5 @@ namespace SPCode.UI.Windows
             }
         }
         #endregion
-    }
-
-    public class ComboboxItem
-    {
-        public string Text { get; set; }
-        public string Value { get; set; }
-
-        public override string ToString()
-        {
-            return Text;
-        }
     }
 }

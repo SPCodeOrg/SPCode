@@ -16,11 +16,16 @@ namespace SPCode.Interop
 
         private readonly Dictionary<string, string> language = new(StringComparer.OrdinalIgnoreCase);
 
-        public string GetLanguage(string langID)
+        /// <summary>
+        /// Gets the translation of the specified phrase.
+        /// </summary>
+        /// <param name="phrase">The phrase to return translated</param>
+        /// <returns></returns>
+        public string GetLanguage(string phrase)
         {
-            if (language.ContainsKey(langID))
+            if (language.ContainsKey(phrase))
             {
-                return language[langID];
+                return language[phrase];
             }
             else
             {
@@ -28,6 +33,11 @@ namespace SPCode.Interop
             }
         }
 
+        /// <summary>
+        /// Loads the specified language.
+        /// </summary>
+        /// <param name="lang">The language to load</param>
+        /// <param name="Initial"></param>
         public void LoadLanguage(string lang, bool Initial = false)
         {
             FillToEnglishDefaults();
@@ -90,6 +100,9 @@ namespace SPCode.Interop
             AvailableLanguageIDs = languageIDList.ToArray();
         }
 
+        /// <summary>
+        /// Fills to default English phrases.
+        /// </summary>
         private void FillToEnglishDefaults()
         {
             language.Clear();

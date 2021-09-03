@@ -34,7 +34,8 @@ namespace SPCode.Interop.Updater
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
 
-            PrepareUpdateWindow(info);
+            PrepareUpdateWindow();
+            updateInfo = info;
 
         }
         #endregion
@@ -56,9 +57,12 @@ namespace SPCode.Interop.Updater
         #endregion
 
         #region Methods
-        public void PrepareUpdateWindow(UpdateInfo info)
+        /// <summary>
+        /// Prepares the update window with all the necessary info.
+        /// </summary>
+        public void PrepareUpdateWindow()
         {
-            Title = string.Format(Program.Translations.GetLanguage("VersionAvailable"), info.AllReleases[0].TagName);
+            Title = string.Format(Program.Translations.GetLanguage("VersionAvailable"), updateInfo.AllReleases[0].TagName);
             MainLine.Text = Program.Translations.GetLanguage("WantToUpdate");
             ActionYesButton.Content = Program.Translations.GetLanguage("Yes");
             ActionNoButton.Content = Program.Translations.GetLanguage("No");
@@ -66,7 +70,7 @@ namespace SPCode.Interop.Updater
 
             var releasesBody = new StringBuilder();
 
-            foreach (var release in info.AllReleases)
+            foreach (var release in updateInfo.AllReleases)
             {
                 releasesBody.Append($"**%{{color:{GetAccentHex()}}}Version {release.TagName}%** ");
                 releasesBody.AppendLine($"*%{{color:gray}}({MonthToTitlecase(release.CreatedAt)})% *\r\n");
@@ -80,12 +84,15 @@ namespace SPCode.Interop.Updater
             content.FontFamily = new System.Windows.Media.FontFamily("Segoe UI");
             DescriptionBox.Document = content;
 
-            if (info.SkipDialog)
+            if (updateInfo.SkipDialog)
             {
                 StartUpdate();
             }
         }
 
+        /// <summary>
+        /// Triggers the update process
+        /// </summary>
         private void StartUpdate()
         {
             if (updateInfo == null)
@@ -104,6 +111,9 @@ namespace SPCode.Interop.Updater
             t.Start();
         }
 
+        /// <summary>
+        /// Download worker in charge of downloading the updater asset.
+        /// </summary>
         private void UpdateDownloadWorker()
         {
             var asset = updateInfo.Asset;
@@ -130,6 +140,9 @@ namespace SPCode.Interop.Updater
             Dispatcher.Invoke(FinalizeUpdate);
         }
 
+        /// <summary>
+        /// Dowload finalized callback
+        /// </summary>
         private void FinalizeUpdate()
         {
             SubLine.Text = Program.Translations.GetLanguage("StartingUpdater");
@@ -137,7 +150,11 @@ namespace SPCode.Interop.Updater
             try
             {
                 Process.Start(new ProcessStartInfo
-                { Arguments = "/C SPCodeUpdater.exe", FileName = "cmd", WindowStyle = ProcessWindowStyle.Hidden });
+                {
+                    Arguments = "/C SPCodeUpdater.exe",
+                    FileName = "cmd",
+                    WindowStyle = ProcessWindowStyle.Hidden
+                });
                 Succeeded = true;
             }
             catch (Exception e)
@@ -151,11 +168,20 @@ namespace SPCode.Interop.Updater
             Close();
         }
 
+        /// <summary>
+        /// Transforms the current accent color into the hex color format.
+        /// </summary>
+        /// <returns></returns>
         private string GetAccentHex()
         {
             return ThemeManager.DetectAppStyle(this).Item2.Resources["AccentColor"].ToString();
         }
 
+        /// <summary>
+        /// Returns the specified DateTimeOffset into a MMMM dd, yyyy with the month's initial letter in uppercase.
+        /// </summary>
+        /// <param name="dateOff"></param>
+        /// <returns></returns>
         private static string MonthToTitlecase(DateTimeOffset dateOff)
         {
             var date = dateOff.DateTime.ToString("MMMM dd, yyyy", CultureInfo.GetCultureInfo("en-US"));

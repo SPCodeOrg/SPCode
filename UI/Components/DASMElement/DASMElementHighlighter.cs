@@ -42,7 +42,7 @@ namespace SPCode.UI.Components
                 });
                 rs.Rules.Add(new HighlightingRule() //opcodes
                 {
-                    Regex = RegexKeywordsHelper.GetRegexFromKeywords(opcodestrings, true),
+                    Regex = RegexKeywordsHelper.GetRegexFromKeywords(OpCodeStrings, true),
                     Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_CommentsMarker) }
                 });
                 rs.Rules.Add(new HighlightingRule() //hexnumbers
@@ -88,7 +88,7 @@ namespace SPCode.UI.Components
             }
         }
 
-        public static string[] opcodestrings = new string[] { "none", "load.pri", "load.alt", "load.s.pri", "load.s.alt", "lref.pri", "lref.alt", "lref.s.pri",
+        public static string[] OpCodeStrings = new string[] { "none", "load.pri", "load.alt", "load.s.pri", "load.s.alt", "lref.pri", "lref.alt", "lref.s.pri",
             "lref.s.alt", "load.i", "lodb.i", "const.pri", "const.alt", "addr.pri", "addr.alt", "stor.pri", "stor.alt", "stor.s.pri", "stor.s.alt", "sref.pri",
             "sref.alt", "sref.s.pri", "sref.s.alt", "stor.i", "strb.i", "lidx", "lidx.b", "idxaddr", "idxaddr.b", "align.pri", "align.alt", "lctrl", "sctrl",
             "move.pri", "move.alt", "xchg", "push.pri", "push.alt", "push.r", "push.c", "push", "push.s", "pop.pri", "pop.alt", "stack", "heap", "proc", "ret",

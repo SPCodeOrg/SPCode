@@ -49,10 +49,13 @@ namespace SPCode.Interop
             { "SelectAll", "Ctrl+A" }
         };
 
+        /// <summary>
+        /// Buffers the hotkeys to an array in memory.
+        /// </summary>
         public static void BufferHotkeys()
         {
             // Buffer hotkeys in global HotkeyInfo list
-            Program.HotkeysList = new List<HotkeyInfo>();
+            Program.HotkeysList = new();
             var document = new XmlDocument();
             document.Load(Constants.HotkeysFile);
 
@@ -62,6 +65,9 @@ namespace SPCode.Interop
             }
         }
 
+        /// <summary>
+        /// Creates the default hotkeys, stores them in an XML and buffers them.
+        /// </summary>
         public static void CreateDefaultHotkeys()
         {
             // Create the XML document
@@ -70,6 +76,7 @@ namespace SPCode.Interop
             var rootElement = document.CreateElement(string.Empty, "Hotkeys", string.Empty);
             document.AppendChild(rootElement);
 
+            // Fill it with the default hotkeys from the dictionary
             foreach (var item in DefaultHotkeys)
             {
                 var element = document.CreateElement(string.Empty, item.Key, string.Empty);

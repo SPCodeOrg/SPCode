@@ -14,7 +14,6 @@ using MahApps.Metro;
 using SPCode.Interop;
 using SPCode.Interop.Updater;
 using SPCode.UI.Components;
-using SPCode.Utils;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 
@@ -22,6 +21,7 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
+        #region Variables
         private readonly Storyboard BlendOverEffect;
         private readonly Storyboard DisableServerAnim;
         public readonly List<EditorElement> EditorsReferences = new();
@@ -43,7 +43,9 @@ namespace SPCode.UI
             Program.Translations.GetLanguage("CompileAll"),
             Program.Translations.GetLanguage("CompileCurrent")
         };
+        #endregion
 
+        #region Constructors
         public MainWindow()
         {
             InitializeComponent();
@@ -125,9 +127,129 @@ namespace SPCode.UI
             SearchCooldownTimer.Tick += OnSearchCooldownTimerTick;
 
             LoggingControl.LogBox = LogTextbox;
+        }
+        #endregion
 
+        #region Events
+        private void DockingManager_ActiveContentChanged(object sender, EventArgs e)
+        {
+            UpdateWindowTitle();
+            UpdateOBFileButton();
         }
 
+        private void DockingManager_DocumentClosed(object sender, DocumentClosedEventArgs e)
+        {
+            (e.Document.Content as EditorElement)?.Close();
+            (e.Document.Content as DASMElement)?.Close();
+            UpdateWindowTitle();
+            UpdateOBFileButton();
+        }
+
+        private void DockingPaneGroup_ChildrenTreeChanged(object sender, ChildrenTreeChangedEventArgs e)
+        {
+            // Luqs: Code taken from VisualPawn Editor (Not published yet)
+
+            // if the active LayoutDocumentPane gets closed 
+            // 1. it will not be in the LayoutDocumentPaneGroup.
+            // 2. editor that get added to it will not be shown in the client.
+            // Solution: Set the active LayoutDocumentPane to the first LayoutDocumentPaneGroup avilable child.
+
+            if (e.Change == ChildrenTreeChange.DirectChildrenChanged
+                && !DockingPaneGroup.Children.Contains(DockingPane)
+                && DockingPaneGroup.Children.Count > 0
+                && DockingPaneGroup.Children[0] is LayoutDocumentPane pane)
+            {
+                DockingPane = pane;
+            }
+        }
+
+        private void MetroWindow_Closing(object sender, CancelEventArgs e)
+        {
+            ServerCheckThread?.Abort(); //a join would not work, so we have to be..forcefully...
+            var lastOpenFiles = new List<string>();
+            var editors = GetAllEditorElements();
+            bool? SaveUnsaved = null;
+            if (editors != null)
+            {
+                foreach (var editor in editors)
+                {
+                    if (File.Exists(editor.FullFilePath))
+                    {
+                        lastOpenFiles.Add(editor.FullFilePath);
+                        if (editor.NeedsSave)
+                        {
+                            if (SaveUnsaved == null)
+                            {
+                                var result = MessageBox.Show(this, Program.Translations.GetLanguage("SavingUFiles"),
+                                    Program.Translations.GetLanguage("Saving"), MessageBoxButton.YesNo,
+                                    MessageBoxImage.Question);
+                                SaveUnsaved = result == MessageBoxResult.Yes;
+                            }
+
+                            if (SaveUnsaved.Value)
+                            {
+                                editor.Close(true);
+                            }
+                            else
+                            {
+                                editor.Close(false, false);
+                            }
+                        }
+                        else
+                        {
+                            editor.Close(false, false);
+                        }
+                    }
+                }
+            }
+
+            Program.OptionsObject.LastOpenFiles = lastOpenFiles.ToArray();
+
+            Program.DiscordClient.Dispose();
+#if !DEBUG
+            if (Program.UpdateStatus.IsAvailable)
+            {
+                var updateWin = new UpdateWindow(Program.UpdateStatus) { Owner = this };
+                updateWin.ShowDialog();
+            }
+#endif
+        }
+
+        private void MetroWindow_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                Activate();
+                Focus();
+                Debug.Assert(files != null, nameof(files) + " != null");
+                for (var i = 0; i < files.Length; ++i)
+                {
+                    TryLoadSourceFile(files[i], i == 0, true, i == 0);
+                }
+            }
+        }
+
+
+
+        private void EditorObjectBrowserGridRow_WidthChanged(object sender, EventArgs e)
+        {
+            if (FullyInitialized)
+            {
+                Program.OptionsObject.Program_ObjectbrowserWidth = ObjectBrowserColumn.Width.Value;
+            }
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Loads a file into the editor.
+        /// </summary>
+        /// <param name="filePath">The path of the file to load</param>
+        /// <param name="UseBlendoverEffect">Whether to execute the blendover effect</param>
+        /// <param name="TryOpenIncludes">Whether to open the includes associated with that file</param>
+        /// <param name="SelectMe">Whether to focus the editor element once the file gets opened</param>
+        /// <returns>If the file opening was successful or not</returns>
         public bool TryLoadSourceFile(string filePath, bool UseBlendoverEffect = true, bool TryOpenIncludes = true, bool SelectMe = false)
         {
             var fileInfo = new FileInfo(filePath);
@@ -231,6 +353,12 @@ namespace SPCode.UI
             return false;
         }
 
+        /// <summary>
+        /// Adds a new editor element associated with the file to the Docking Manager.
+        /// </summary>
+        /// <param name="filePath">The path of the file</param>
+        /// <param name="name">The title of the tab</param>
+        /// <param name="SelectMe">Whether to focus this editor element once created.</param>
         private void AddEditorElement(string filePath, string name, bool SelectMe)
         {
             var layoutDocument = new LayoutDocument { Title = name };
@@ -246,103 +374,9 @@ namespace SPCode.UI
             }
         }
 
-        private void DockingManager_ActiveContentChanged(object sender, EventArgs e)
-        {
-            UpdateWindowTitle();
-            UpdateOBFileButton();
-        }
-
-        private void DockingManager_DocumentClosed(object sender, DocumentClosedEventArgs e)
-        {
-            (e.Document.Content as EditorElement)?.Close();
-            (e.Document.Content as DASMElement)?.Close();
-            UpdateWindowTitle();
-            UpdateOBFileButton();
-        }
-
-        // Code taken from VisualPawn Editer (Not published yet)
-        private void DockingPaneGroup_ChildrenTreeChanged(object sender, ChildrenTreeChangedEventArgs e)
-        {
-            // if the active LayoutDocumentPane gets closed 
-            // 1. it will not be in the LayoutDocumentPaneGroup.
-            // 2. editor that get added to it will not be shown in the client.
-            // Solution: Set the active LayoutDocumentPane to the first LayoutDocumentPaneGroup avilable child.
-            if (e.Change == ChildrenTreeChange.DirectChildrenChanged
-                && !DockingPaneGroup.Children.Contains(DockingPane)
-                && DockingPaneGroup.Children.Count > 0
-                && DockingPaneGroup.Children[0] is LayoutDocumentPane pane)
-            {
-                DockingPane = pane;
-            }
-        }
-
-        private void MetroWindow_Closing(object sender, CancelEventArgs e)
-        {
-            ServerCheckThread?.Abort(); //a join would not work, so we have to be..forcefully...
-            var lastOpenFiles = new List<string>();
-            var editors = GetAllEditorElements();
-            bool? SaveUnsaved = null;
-            if (editors != null)
-            {
-                foreach (var editor in editors)
-                {
-                    if (File.Exists(editor.FullFilePath))
-                    {
-                        lastOpenFiles.Add(editor.FullFilePath);
-                        if (editor.NeedsSave)
-                        {
-                            if (SaveUnsaved == null)
-                            {
-                                var result = MessageBox.Show(this, Program.Translations.GetLanguage("SavingUFiles"),
-                                    Program.Translations.GetLanguage("Saving"), MessageBoxButton.YesNo,
-                                    MessageBoxImage.Question);
-                                SaveUnsaved = result == MessageBoxResult.Yes;
-                            }
-
-                            if (SaveUnsaved.Value)
-                            {
-                                editor.Close(true);
-                            }
-                            else
-                            {
-                                editor.Close(false, false);
-                            }
-                        }
-                        else
-                        {
-                            editor.Close(false, false);
-                        }
-                    }
-                }
-            }
-
-            Program.OptionsObject.LastOpenFiles = lastOpenFiles.ToArray();
-
-            Program.DiscordClient.Dispose();
-#if !DEBUG
-            if (Program.UpdateStatus.IsAvailable)
-            {
-                var updateWin = new UpdateWindow(Program.UpdateStatus) { Owner = this };
-                updateWin.ShowDialog();
-            }
-#endif
-        }
-
-        private void MetroWindow_Drop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                Activate();
-                Focus();
-                Debug.Assert(files != null, nameof(files) + " != null");
-                for (var i = 0; i < files.Length; ++i)
-                {
-                    TryLoadSourceFile(files[i], i == 0, true, i == 0);
-                }
-            }
-        }
-
+        /// <summary>
+        /// Performs a visual refresh on the editor.
+        /// </summary>
         public static void ProcessUITasks()
         {
             var frame = new DispatcherFrame();
@@ -355,50 +389,9 @@ namespace SPCode.UI
             Dispatcher.PushFrame(frame);
         }
 
-        private void ErrorResultGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var row = (ErrorDataGridRow)ErrorResultGrid.SelectedItem;
-            if (row == null)
-            {
-                return;
-            }
-
-            var fileName = row.File;
-            var editors = GetAllEditorElements();
-            if (editors == null)
-            {
-                return;
-            }
-
-            foreach (var editor in editors)
-            {
-                if (editor.FullFilePath == fileName)
-                {
-                    editor.Parent.IsSelected = true;
-                    var line = GetLineInteger(row.Line);
-                    if (line > 0 && line <= editor.editor.LineCount)
-                    {
-                        var lineObj = editor.editor.Document.Lines[line - 1];
-                        editor.editor.ScrollToLine(line - 1);
-                        editor.editor.Select(lineObj.Offset, lineObj.Length);
-                    }
-                }
-            }
-        }
-
-        private void CloseErrorResultGrid(object sender, RoutedEventArgs e)
-        {
-            CompileOutputRow.Height = new GridLength(8.0);
-        }
-
-        private void EditorObjectBrowserGridRow_WidthChanged(object sender, EventArgs e)
-        {
-            if (FullyInitialized)
-            {
-                Program.OptionsObject.Program_ObjectbrowserWidth = ObjectBrowserColumn.Width.Value;
-            }
-        }
-
+        /// <summary>
+        /// Updates the editor's title and the Discord RPC status with the currently opened file.
+        /// </summary>
         public void UpdateWindowTitle()
         {
             var ee = GetCurrentEditorElement();
@@ -433,28 +426,6 @@ namespace SPCode.UI
 
             Title = outString;
         }
-
-        private int GetLineInteger(string lineStr)
-        {
-            var end = 0;
-            for (var i = 0; i < lineStr.Length; ++i)
-            {
-                if (lineStr[i] >= '0' && lineStr[i] <= '9')
-                {
-                    end = i;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            if (int.TryParse(lineStr.Substring(0, end + 1), out var line))
-            {
-                return line;
-            }
-
-            return -1;
-        }
+        #endregion
     }
 }

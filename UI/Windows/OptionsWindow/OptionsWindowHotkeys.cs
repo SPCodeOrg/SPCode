@@ -15,11 +15,14 @@ namespace SPCode.UI.Windows
 {
     public partial class OptionsWindow
     {
+        #region Variables
         private readonly DispatcherTimer SaveHotkeyTimer;
         private HotkeyEditorControl _ctrl;
         private Hotkey _currentControlHotkey;
         private FontStyle _currentFontStyle;
+        #endregion
 
+        #region Events
         private void Hotkey_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             var key = e.Key;
@@ -45,19 +48,25 @@ namespace SPCode.UI.Windows
             SaveHotkeyTimer.Stop();
             SaveHotkey();
         }
+        #endregion
 
+        #region Methods
+        /// <summary>
+        /// Saves the input hotkey to the Hotkeys file, and caches it.
+        /// </summary>
         private void SaveHotkey()
         {
+            // Create the hotkeys file if it doesn't exist for some reason
             if (!File.Exists(Constants.HotkeysFile))
             {
                 HotkeyControl.CreateDefaultHotkeys();
             }
 
+            // Get the control name by separating it from its x:Name suffix
             var ctrlName = _ctrl.Name.Substring(2);
 
             foreach (var hkInfo in Program.HotkeysList)
             {
-
                 // Check if the user has cleared the hotkey field
                 if (_ctrl.Hotkey == null)
                 {
@@ -65,7 +74,6 @@ namespace SPCode.UI.Windows
                     _ctrl.FontStyle = FontStyles.Italic;
                     break;
                 }
-
                 // Check if the received hotkey is not already assigned
                 else if (_ctrl.Hotkey != null && hkInfo.Hotkey != null && hkInfo.Hotkey.ToString() == _ctrl.Hotkey.ToString() && hkInfo.Command != ctrlName)
                 {
@@ -74,7 +82,6 @@ namespace SPCode.UI.Windows
                     ShowLabel(Program.Translations.GetLanguage("InUse"));
                     return;
                 }
-
                 // Check if the attempted hotkey is not restricted
                 else if (HotkeyControl.RestrictedHotkeys.Where(x => _ctrl.Hotkey != null && x.Value.Equals(_ctrl.Hotkey.ToString())).Count() > 0)
                 {
@@ -121,6 +128,10 @@ namespace SPCode.UI.Windows
             }
         }
 
+        /// <summary>
+        /// Show an error label with the specified message.
+        /// </summary>
+        /// <param name="message">The message to display in the label.</param>
         private void ShowLabel(string message)
         {
             LblDisallowed.Visibility = Visibility.Visible;
@@ -130,9 +141,13 @@ namespace SPCode.UI.Windows
             LblDisallowed.FontWeight = FontWeights.Bold;
         }
 
+        /// <summary>
+        /// Hides the error label.
+        /// </summary>
         private void HideLabel()
         {
             LblDisallowed.Visibility = Visibility.Collapsed;
         }
+        #endregion
     }
 }

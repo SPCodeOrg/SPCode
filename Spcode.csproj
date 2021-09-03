@@ -133,6 +133,7 @@
     <Compile Include="UI\Interop\LanguageChooserWindow.xaml.cs">
       <DependentUpon>LanguageChooserWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\MainWindow\MainWindowErrorResultGrid.cs" />
     <Compile Include="UI\MainWindow\MainWindowServerQuery.cs" />
     <Compile Include="UI\MainWindow\MainWindowSPCompiler.cs" />
     <Compile Include="UI\MainWindow\MainWindowCommands.cs" />
@@ -173,21 +174,23 @@
     </Compile>
     <Compile Include="UI\Components\EditorElement\Highlighting\BracketHighlightHelpers.cs" />
     <Compile Include="UI\Components\EditorElement\Highlighting\BracketSearchResult.cs" />
-    <Compile Include="Utils\Config.cs" />
+    <Compile Include="Utils\Models\ComboboxItem.cs" />
+    <Compile Include="Utils\Models\Config.cs" />
     <Compile Include="Utils\Constants.cs" />
     <Compile Include="Utils\DecompileUtil.cs" />
-    <Compile Include="Utils\ErrorDataGridRow.cs" />
-    <Compile Include="Utils\Hotkey.cs" />
-    <Compile Include="Utils\HotkeyInfo.cs" />
+    <Compile Include="Utils\Models\ErrorDataGridRow.cs" />
+    <Compile Include="Utils\Models\Hotkey.cs" />
+    <Compile Include="Utils\Models\HotkeyInfo.cs" />
     <Compile Include="Utils\HotkeyUtils.cs" />
     <Compile Include="Utils\JavaInstallation.cs" />
     <Compile Include="Utils\ObjectBrowserUtils.cs" />
     <Compile Include="Utils\Paths.cs" />
-    <Compile Include="Utils\FTP.cs" />
+    <Compile Include="Utils\Models\FTP.cs" />
     <Compile Include="Utils\ManagedAES.cs" />
     <Compile Include="UI\Components\EditorElement\Highlighting\SPBracketSearcher.cs" />
     <Compile Include="Utils\SPSyntaxTidy\SPSyntaxTidy.cs" />
     <Compile Include="Utils\SPSyntaxTidy\SPTokenizer.cs" />
+    <Compile Include="Utils\Models\TemplateInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Interop\Updater\UpdateWindow.xaml">

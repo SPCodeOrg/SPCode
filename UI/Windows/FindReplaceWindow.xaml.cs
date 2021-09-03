@@ -25,7 +25,7 @@ namespace SPCode.UI.Windows
         };
         #endregion
 
-        #region Constructor
+        #region Constructors
         public FindReplaceWindow()
         {
             InitializeComponent();
@@ -39,12 +39,91 @@ namespace SPCode.UI.Windows
             ReplaceButton.SelectedIndex = 0;
 
             LoadEditorsInfo();
-
             Language_Translate();
-
         }
         #endregion
 
+        #region Events
+        private void CloseFindReplaceGrid(object sender, RoutedEventArgs e)
+        {
+            ToggleSearchField();
+        }
+
+        private void SearchButtonClicked(object sender, RoutedEventArgs e)
+        {
+            Search();
+        }
+
+        private void ReplaceButtonClicked(object sender, RoutedEventArgs e)
+        {
+            if (ReplaceButton.SelectedIndex == 1)
+            {
+                ReplaceAll();
+            }
+            else
+            {
+                Replace();
+            }
+        }
+
+        private void CountButtonClicked(object sender, RoutedEventArgs e)
+        {
+            Count();
+        }
+
+        private void SearchBoxTextChanged(object sender, RoutedEventArgs e)
+        {
+            FindResultBlock.Text = string.Empty;
+        }
+
+        private void SearchBoxKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Search();
+            }
+        }
+
+        private void ReplaceBoxKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Replace();
+            }
+        }
+
+        private void FindReplaceGrid_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                ToggleSearchField();
+            }
+        }
+
+        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Escape:
+                    {
+                        Close();
+                        break;
+                    }
+                case Key.F3:
+                    {
+                        Search();
+                        break;
+                    }
+            }
+        }
+
+        private void MetroWindow_Closed(object sender, EventArgs e)
+        {
+            Program.IsSearchOpen = false;
+        }
+        #endregion
+
+        #region Methods
         private void ToggleSearchField()
         {
             LoadEditorsInfo();
@@ -85,55 +164,6 @@ namespace SPCode.UI.Windows
                 }
                 FindBox.Focus();
                 FindBox.SelectAll();
-            }
-        }
-
-        private void CloseFindReplaceGrid(object sender, RoutedEventArgs e)
-        {
-            ToggleSearchField();
-        }
-        private void SearchButtonClicked(object sender, RoutedEventArgs e)
-        {
-            Search();
-        }
-        private void ReplaceButtonClicked(object sender, RoutedEventArgs e)
-        {
-            if (ReplaceButton.SelectedIndex == 1)
-            {
-                ReplaceAll();
-            }
-            else
-            {
-                Replace();
-            }
-        }
-        private void CountButtonClicked(object sender, RoutedEventArgs e)
-        {
-            Count();
-        }
-        private void SearchBoxTextChanged(object sender, RoutedEventArgs e)
-        {
-            FindResultBlock.Text = string.Empty;
-        }
-        private void SearchBoxKeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                Search();
-            }
-        }
-        private void ReplaceBoxKeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                Replace();
-            }
-        }
-        private void FindReplaceGrid_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-            {
-                ToggleSearchField();
             }
         }
 
@@ -403,27 +433,6 @@ namespace SPCode.UI.Windows
             return value;
         }
 
-        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
-        {
-            switch (e.Key)
-            {
-                case Key.Escape:
-                    {
-                        Close();
-                        break;
-                    }
-                case Key.F3:
-                    {
-                        Search();
-                        break;
-                    }
-            }
-        }
-        private void MetroWindow_Closed(object sender, EventArgs e)
-        {
-            Program.IsSearchOpen = false;
-        }
-
         private void LoadEditorsInfo()
         {
             _editor = Program.MainWindow.GetCurrentEditorElement();
@@ -445,5 +454,6 @@ namespace SPCode.UI.Windows
             CCBox.Content = Program.Translations.GetLanguage("CaseSen");
             MLRBox.Content = Program.Translations.GetLanguage("MultilineRegex");
         }
+        #endregion
     }
 }

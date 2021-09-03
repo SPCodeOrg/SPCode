@@ -8,8 +8,56 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
+        #region Variables
         public Dictionary<string, Action> Commands;
+        #endregion
 
+        #region Events
+        private void MainWindowEvent_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (!e.IsDown)
+            {
+                return;
+            }
+
+            var key = e.Key;
+            var modifiers = Keyboard.Modifiers;
+
+            if (key == Key.System)
+            {
+                key = e.SystemKey;
+            }
+
+            if (!HotkeyUtils.IsKeyModifier(key))
+            {
+                ProcessHotkey(new Hotkey(key, modifiers));
+            }
+
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Processes the received hotkey and matches it with the associated command.
+        /// </summary>
+        /// <param name="hk">The hotkey to process</param>
+        /// <param name="e">Optional arguments from EditorElement to process input from there by calling Handled to true</param>
+        public void ProcessHotkey(Hotkey hk, KeyEventArgs e = null)
+        {
+            var hotkeyInfo = Program.HotkeysList.FirstOrDefault(x => x.Hotkey != null && x.Hotkey.ToString() == hk.ToString());
+            if (hotkeyInfo != null)
+            {
+                Commands[hotkeyInfo.Command]();
+                if (e != null)
+                {
+                    e.Handled = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Loads the commands dictionary.
+        /// </summary>
         private void LoadCommandsDictionary()
         {
             Commands = new()
@@ -45,40 +93,6 @@ namespace SPCode.UI
                 { "SendRCON", Server_Query },
             };
         }
-
-        private void MainWindowEvent_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (!e.IsDown)
-            {
-                return;
-            }
-
-            var key = e.Key;
-            var modifiers = Keyboard.Modifiers;
-
-            if (key == Key.System)
-            {
-                key = e.SystemKey;
-            }
-
-            if (!HotkeyUtils.IsKeyModifier(key))
-            {
-                ProcessHotkey(new Hotkey(key, modifiers));
-            }
-
-        }
-
-        public void ProcessHotkey(Hotkey hk, KeyEventArgs e = null)
-        {
-            var hotkeyInfo = Program.HotkeysList.FirstOrDefault(x => x.Hotkey != null && x.Hotkey.ToString() == hk.ToString());
-            if (hotkeyInfo != null)
-            {
-                Commands[hotkeyInfo.Command]();
-                if (e != null)
-                {
-                    e.Handled = true;
-                }
-            }
-        }
+        #endregion
     }
 }
