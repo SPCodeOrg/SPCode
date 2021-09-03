@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using MahApps.Metro.Controls.Dialogs;
+using SPCode.Interop;
 using SPCode.Utils;
 
 namespace SPCode.UI
@@ -31,6 +32,8 @@ namespace SPCode.UI
             {
                 return;
             }
+
+            LoggingControl.LogAction($"Compiling {(compileAll ? "plugins..." : "plugin...")}");
 
             // Saves all editors, sets InCompiling flag, clears all fields
             Command_SaveAll();
@@ -222,6 +225,7 @@ namespace SPCode.UI
                             stringOutput.AppendLine();
                             progressTask.SetProgress((double)(i + 1) / compileCount);
                             ProcessUITasks();
+                            LoggingControl.LogAction($"Compiled {compileCount} plugin(s).");
                         }
                     }
 
@@ -265,6 +269,7 @@ namespace SPCode.UI
             }
             else
             {
+                LoggingControl.LogAction($"No compiler found, aborting.");
                 await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"),
                     Program.Translations.GetLanguage("SPCompNotFound"), MessageDialogStyle.Affirmative,
                     MetroDialogOptions);
@@ -277,12 +282,12 @@ namespace SPCode.UI
         {
             if (CompiledFiles.Count > 0)
             {
+                LoggingControl.LogAction($"Copying plugin(s)...");
                 var copyCount = 0;
                 var c = Program.Configs[Program.SelectedConfig];
                 if (!string.IsNullOrWhiteSpace(c.CopyDirectory))
                 {
                     NonUploadedFiles.Clear();
-
                     var stringOutput = new StringBuilder();
                     foreach (var file in CompiledFiles)
                     {
@@ -319,11 +324,11 @@ namespace SPCode.UI
                     {
                         if (OvertakeOutString)
                         {
-                            LogTextbox.AppendText(stringOutput.ToString());
+                            LoggingControl.LogAction(stringOutput.ToString());
                         }
                         else
                         {
-                            LogTextbox.Text = stringOutput.ToString();
+                            LoggingControl.LogAction(stringOutput.ToString());
                         }
 
                         if (CompileOutputRow.Height.Value < 11.0)
@@ -343,9 +348,12 @@ namespace SPCode.UI
                 return;
             }
 
+            LoggingControl.LogAction("Uploading plugins...");
+
             var c = Program.Configs[Program.SelectedConfig];
             if (string.IsNullOrWhiteSpace(c.FTPHost) || string.IsNullOrWhiteSpace(c.FTPUser))
             {
+                LoggingControl.LogAction("Host or User fields are empty, aborting upload.");
                 return;
             }
 
@@ -391,7 +399,7 @@ namespace SPCode.UI
             stringOutput.AppendLine(Program.Translations.GetLanguage("Done"));
             Dispatcher.Invoke(() =>
             {
-                LogTextbox.Text = stringOutput.ToString();
+                LoggingControl.LogAction(stringOutput.ToString());
                 if (CompileOutputRow.Height.Value < 11.0)
                 {
                     CompileOutputRow.Height = new GridLength(200.0);
@@ -405,7 +413,7 @@ namespace SPCode.UI
             {
                 return;
             }
-
+            LoggingControl.LogAction("Starting server...");
             var c = Program.Configs[Program.SelectedConfig];
             var serverOptionsPath = c.ServerFile;
             if (string.IsNullOrWhiteSpace(serverOptionsPath))
