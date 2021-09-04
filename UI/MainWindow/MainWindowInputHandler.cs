@@ -87,7 +87,7 @@ namespace SPCode.UI
                 { "SearchDefinition", Command_OpenSPDef },
                 { "CompileCurrent", () => Compile_SPScripts(false) },
                 { "CompileAll", () => Compile_SPScripts() },
-                { "CopyPlugins", () => Copy_Plugins() },
+                { "CopyPlugins", Copy_Plugins },
                 { "UploadFTP", FTPUpload_Plugins },
                 { "StartServer", Server_Start },
                 { "SendRCON", Server_Query },

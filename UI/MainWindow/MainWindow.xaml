@@ -342,7 +342,14 @@
           <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
         <TextBox x:Name="LogTextbox" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" TextWrapping="Wrap"
-                         Margin="5,0,0,0" IsReadOnly="True" AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Visible" />
+                         Margin="5,0,0,0" IsReadOnly="True" AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Auto"
+                         PreviewMouseRightButtonDown="LogTextbox_PreviewMouseRightButtonDown">
+          <TextBox.Resources>
+            <ContextMenu x:Name="LogContextMenu" x:Key="LogContextMenu" StaysOpen="true">
+              <MenuItem x:Name="ClearLogs" Header="Clear logs" Click="ClearLogs_Click"/>
+            </ContextMenu>
+          </TextBox.Resources>
+        </TextBox>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="5" Background="LightGray" />
         <DataGrid x:Name="ErrorResultGrid" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsReadOnly="True"
                           SelectionMode="Single" AutoGenerateColumns="False" SelectionChanged="ErrorResultGrid_SelectionChanged">

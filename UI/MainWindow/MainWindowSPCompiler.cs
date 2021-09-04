@@ -7,6 +7,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Media;
 using MahApps.Metro.Controls.Dialogs;
 using SPCode.Interop;
 using SPCode.Utils;
@@ -36,8 +38,6 @@ namespace SPCode.UI
             {
                 return;
             }
-
-            LoggingControl.LogAction($"Compiling {(compileAll ? "plugins..." : "plugin...")}");
 
             // Saves all editors, sets InCompiling flag, clears all fields
             Command_SaveAll();
@@ -121,6 +121,8 @@ namespace SPCode.UI
                             @"^(?<File>.+?)\((?<Line>[0-9]+(\s*--\s*[0-9]+)?)\)\s*:\s*(?<Type>[a-zA-Z]+\s+([a-zA-Z]+\s+)?[0-9]+)\s*:(?<Details>.+)",
                             RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
 
+                    var compiledSuccess = 0;
+
                     // Loops through all files to compile
                     for (var i = 0; i < compileCount; ++i)
                     {
@@ -134,7 +136,6 @@ namespace SPCode.UI
                         progressTask.SetMessage($"{file} ({i}/{compileCount}) ");
                         ProcessUITasks();
                         var fileInfo = new FileInfo(file);
-                        stringOutput.AppendLine(fileInfo.Name);
                         if (fileInfo.Exists)
                         {
                             var process = new Process();
@@ -144,6 +145,7 @@ namespace SPCode.UI
                             process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                             process.StartInfo.CreateNoWindow = true;
                             process.StartInfo.FileName = spCompInfo.FullName;
+
                             var destinationFileName = ShortenScriptFileName(fileInfo.Name) + ".smx";
                             var outFile = Path.Combine(fileInfo.DirectoryName, destinationFileName);
                             if (File.Exists(outFile))
@@ -173,7 +175,7 @@ namespace SPCode.UI
                                 fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
                             if (!string.IsNullOrWhiteSpace(execResult))
                             {
-                                stringOutput.AppendLine(execResult.Trim('\n', '\r'));
+
                             }
 
                             ProcessUITasks();
@@ -208,10 +210,15 @@ namespace SPCode.UI
                                     });
                                 }
 
+                                LoggingControl.LogAction(fileInfo.Name + " (error)");
                                 File.Delete(errorFile);
                             }
+                            else
+                            {
+                                LoggingControl.LogAction(fileInfo.Name);
+                                compiledSuccess++;
+                            }
 
-                            stringOutput.AppendLine(Program.Translations.GetLanguage("Done"));
                             if (File.Exists(outFile))
                             {
                                 CompiledFiles.Add(outFile);
@@ -223,25 +230,27 @@ namespace SPCode.UI
                                 c.CopyDirectory, fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
                             if (!string.IsNullOrWhiteSpace(execResult_Post))
                             {
-                                stringOutput.AppendLine(execResult_Post.Trim('\n', '\r'));
+
                             }
 
-                            stringOutput.AppendLine();
                             progressTask.SetProgress((double)(i + 1) / compileCount);
                             ProcessUITasks();
-                            LoggingControl.LogAction($"Compiled {compileCount} plugin(s).");
                         }
+                    }
+
+                    if (compiledSuccess > 0)
+                    {
+                        LoggingControl.LogAction($"Compiled {compiledSuccess} {(compileAll ? "plugins" : "plugin")}.", 2);
                     }
 
                     if (!PressedEscape)
                     {
                         progressTask.SetProgress(1.0);
-                        LogTextbox.Text = stringOutput.ToString();
                         if (c.AutoCopy)
                         {
                             progressTask.SetTitle(Program.Translations.GetLanguage("CopyingFiles"));
                             progressTask.SetIndeterminate();
-                            await Task.Run(() => Copy_Plugins(true));
+                            await Task.Run(() => Copy_Plugins());
                             progressTask.SetProgress(1.0);
                         }
 
@@ -285,8 +294,7 @@ namespace SPCode.UI
         /// <summary>
         /// Copies the compiled plugins to the specified destination.
         /// </summary>
-        /// <param name="OvertakeOutString"></param>
-        private void Copy_Plugins(bool OvertakeOutString = false)
+        private void Copy_Plugins()
         {
             if (CompiledFiles.Count > 0)
             {
@@ -330,15 +338,7 @@ namespace SPCode.UI
 
                     Dispatcher.Invoke(() =>
                     {
-                        if (OvertakeOutString)
-                        {
-                            LoggingControl.LogAction(stringOutput.ToString());
-                        }
-                        else
-                        {
-                            LoggingControl.LogAction(stringOutput.ToString());
-                        }
-
+                        LoggingControl.LogAction(stringOutput.ToString());
                         if (CompileOutputRow.Height.Value < 11.0)
                         {
                             CompileOutputRow.Height = new GridLength(200.0);
@@ -407,10 +407,10 @@ namespace SPCode.UI
                 stringOutput.AppendLine($"{Program.Translations.GetLanguage("Details")}: " + e.Message);
             }
 
-            stringOutput.AppendLine(Program.Translations.GetLanguage("Done"));
+            stringOutput.Append(Program.Translations.GetLanguage("Done"));
             Dispatcher.Invoke(() =>
             {
-                LoggingControl.LogAction(stringOutput.ToString());
+                //LoggingControl.LogAction(stringOutput.ToString());
                 if (CompileOutputRow.Height.Value < 11.0)
                 {
                     CompileOutputRow.Height = new GridLength(200.0);
