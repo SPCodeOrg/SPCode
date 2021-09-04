@@ -42,11 +42,6 @@ namespace SPCode.UI
             CompileOutputRow.Height = new GridLength(8.0);
         }
 
-        /// <summary>
-        /// Gets the number of the supplied line from its text.
-        /// </summary>
-        /// <param name="lineStr">The line to get the number from</param>
-        /// <returns></returns>
         private int GetLineInteger(string lineStr)
         {
             var end = 0;
