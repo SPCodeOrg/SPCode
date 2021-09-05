@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,13 +15,16 @@ namespace SPCode.UI
         /// </summary>
         private void Server_Query()
         {
+            var output = new List<string>();
             var c = Program.Configs[Program.SelectedConfig];
             if (string.IsNullOrWhiteSpace(c.RConIP) || string.IsNullOrWhiteSpace(c.RConCommands))
             {
-                return;
+                output.Add("The RCON IP or the Commands fields are empty.");
+                goto Dispatcher;
             }
 
-            var stringOutput = new StringBuilder();
+            output.Add("Sending commands...");
+
             try
             {
                 var type = EngineType.GoldSource;
@@ -32,7 +36,7 @@ namespace SPCode.UI
                 using (var server = ServerQuery.GetServerInstance(type, c.RConIP, c.RConPort, null))
                 {
                     var serverInfo = server.GetInfo();
-                    stringOutput.AppendLine(serverInfo.Name);
+                    output.Add(serverInfo.Name);
                     using var rcon = server.GetControl(c.RConPassword);
                     var cmds = ReplaceRconCMDVariables(c.RConCommands).Split('\n');
                     foreach (var cmd in cmds)
@@ -42,23 +46,24 @@ namespace SPCode.UI
                             var command = cmd.Trim('\r').Trim();
                             if (!string.IsNullOrWhiteSpace(command))
                             {
-                                stringOutput.AppendLine(rcon.SendCommand(command));
+                                output.Add(rcon.SendCommand(command));
                             }
                         });
                         t.Wait();
                     }
                 }
-
-                stringOutput.AppendLine("Done");
+                output.Add("Commands sent.");
             }
             catch (Exception e)
             {
-                stringOutput.AppendLine("Error: " + e.Message);
+                output.Add("Error: " + e.Message);
             }
+
+        Dispatcher:
 
             Dispatcher.Invoke(() =>
             {
-                LogTextbox.Text = stringOutput.ToString();
+                output.ForEach(x => LoggingControl.LogAction(x));
                 if (CompileOutputRow.Height.Value < 11.0)
                 {
                     CompileOutputRow.Height = new GridLength(200.0);

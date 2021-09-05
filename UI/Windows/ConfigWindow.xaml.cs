@@ -13,6 +13,7 @@ using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using SPCode.Interop;
 using SPCode.Utils;
 
 namespace SPCode.UI.Windows
@@ -556,6 +557,7 @@ namespace SPCode.UI.Windows
             }
 
             File.WriteAllText(Paths.GetConfigFilePath(), outString.ToString());
+            LoggingControl.LogAction($"Configs saved.", 2);
         }
 
         private void Language_Translate()

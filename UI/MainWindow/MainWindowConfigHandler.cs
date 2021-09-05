@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using SPCode.Interop;
 using SPCode.UI.Components;
 using SPCode.UI.Windows;
 
@@ -40,6 +41,7 @@ namespace SPCode.UI
         {
             var name = (string)((MenuItem)sender).Header;
             ChangeConfig(name);
+            LoggingControl.LogAction($"Changed to config \"{name}\".");
         }
 
         /// <summary>
