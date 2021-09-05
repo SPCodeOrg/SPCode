@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using QueryMaster;
+using SPCode.Interop;
 
 namespace SPCode.UI
 {

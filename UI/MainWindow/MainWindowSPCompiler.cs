@@ -296,56 +296,67 @@ namespace SPCode.UI
         /// </summary>
         private void Copy_Plugins()
         {
+            var output = new List<string>();
             if (CompiledFiles.Count > 0)
             {
-                LoggingControl.LogAction($"Copying plugin(s)...");
                 var copyCount = 0;
                 var c = Program.Configs[Program.SelectedConfig];
-                if (!string.IsNullOrWhiteSpace(c.CopyDirectory))
+                if (string.IsNullOrWhiteSpace(c.CopyDirectory))
                 {
-                    NonUploadedFiles.Clear();
-                    var stringOutput = new StringBuilder();
-                    foreach (var file in CompiledFiles)
+                    output.Add($"Copy directory is empty.");
+                    goto Dispatcher;
+                }
+                if (!Directory.Exists(c.CopyDirectory))
+                {
+                    output.Add("The specified Copy Directory was not found.");
+                    goto Dispatcher;
+                }
+                output.Add($"Copying plugin(s)...");
+                NonUploadedFiles.Clear();
+                var stringOutput = new StringBuilder();
+                foreach (var file in CompiledFiles)
+                {
+                    var destFile = new FileInfo(file);
+                    try
                     {
-                        try
+                        if (destFile.Exists)
                         {
-                            var destFile = new FileInfo(file);
-                            if (destFile.Exists)
+                            var destinationFileName = destFile.Name;
+                            var copyFileDestination = Path.Combine(c.CopyDirectory, destinationFileName);
+                            File.Copy(file, copyFileDestination, true);
+                            NonUploadedFiles.Add(copyFileDestination);
+                            output.Add($"{Program.Translations.GetLanguage("Copied")}: {copyFileDestination}");
+                            ++copyCount;
+                            if (c.DeleteAfterCopy)
                             {
-                                var destinationFileName = destFile.Name;
-                                var copyFileDestination = Path.Combine(c.CopyDirectory, destinationFileName);
-                                File.Copy(file, copyFileDestination, true);
-                                NonUploadedFiles.Add(copyFileDestination);
-                                stringOutput.AppendLine($"{Program.Translations.GetLanguage("Copied")}: " + file);
-                                ++copyCount;
-                                if (c.DeleteAfterCopy)
-                                {
-                                    File.Delete(file);
-                                    stringOutput.AppendLine($"{Program.Translations.GetLanguage("Deleted")}: " + file);
-                                }
+                                File.Delete(file);
+                                output.Add($"{Program.Translations.GetLanguage("Deleted")}: {copyFileDestination}");
                             }
                         }
-                        catch (Exception)
-                        {
-                            stringOutput.AppendLine($"{Program.Translations.GetLanguage("FailCopy")}: " + file);
-                        }
                     }
-
-                    if (copyCount == 0)
+                    catch (Exception ex)
                     {
-                        stringOutput.AppendLine(Program.Translations.GetLanguage("NoFilesCopy"));
+                        output.Add($"{Program.Translations.GetLanguage("FailCopy")}: {destFile.Name}");
+                        output.Add(ex.Message);
                     }
-
-                    Dispatcher.Invoke(() =>
-                    {
-                        LoggingControl.LogAction(stringOutput.ToString());
-                        if (CompileOutputRow.Height.Value < 11.0)
-                        {
-                            CompileOutputRow.Height = new GridLength(200.0);
-                        }
-                    });
-                    RefreshObjectBrowser();
                 }
+
+                if (copyCount == 0)
+                {
+                    output.Add($"{Program.Translations.GetLanguage("NoFilesCopy")}");
+                }
+
+            Dispatcher:
+
+                Dispatcher.Invoke(() =>
+                {
+                    output.ForEach(x => LoggingControl.LogAction(x));
+                    if (CompileOutputRow.Height.Value < 11.0)
+                    {
+                        CompileOutputRow.Height = new GridLength(200.0);
+                    }
+                    RefreshObjectBrowser();
+                });
             }
         }
 
@@ -354,21 +365,21 @@ namespace SPCode.UI
         /// </summary>
         private void FTPUpload_Plugins()
         {
+            var output = new List<string>();
             if (NonUploadedFiles.Count <= 0)
             {
                 return;
             }
 
-            LoggingControl.LogAction("Uploading plugins...");
-
             var c = Program.Configs[Program.SelectedConfig];
             if (string.IsNullOrWhiteSpace(c.FTPHost) || string.IsNullOrWhiteSpace(c.FTPUser))
             {
-                LoggingControl.LogAction("Host or User fields are empty, aborting upload.");
-                return;
+                output.Add("FTP Host or User fields are empty.");
+                goto Dispatcher;
             }
 
-            var stringOutput = new StringBuilder();
+            output.Add("Uploading plugin(s)...");
+
             try
             {
                 var ftp = new FTP(c.FTPHost, c.FTPUser, c.FTPPassword);
@@ -390,27 +401,28 @@ namespace SPCode.UI
                         try
                         {
                             ftp.Upload(uploadDir, file);
-                            stringOutput.AppendLine($"{Program.Translations.GetLanguage("Uploaded")}: " + file);
+                            output.Add($"{Program.Translations.GetLanguage("Uploaded")}: {fileInfo.Name}");
                         }
                         catch (Exception e)
                         {
-                            stringOutput.AppendLine(string.Format(Program.Translations.GetLanguage("ErrorUploadFile"),
-                                file, uploadDir));
-                            stringOutput.AppendLine($"{Program.Translations.GetLanguage("Details")}: " + e.Message);
+                            output.Add(string.Format(Program.Translations.GetLanguage("ErrorUploadFile"),
+                                fileInfo.Name, uploadDir));
+                            output.Add($"{Program.Translations.GetLanguage("Details")}: {e.Message}");
                         }
                     }
                 }
             }
             catch (Exception e)
             {
-                stringOutput.AppendLine(Program.Translations.GetLanguage("ErrorUpload"));
-                stringOutput.AppendLine($"{Program.Translations.GetLanguage("Details")}: " + e.Message);
+                output.Add(Program.Translations.GetLanguage("ErrorUpload"));
+                output.Add($"{Program.Translations.GetLanguage("Details")}: " + e.Message);
             }
 
-            stringOutput.Append(Program.Translations.GetLanguage("Done"));
+        Dispatcher:
+
             Dispatcher.Invoke(() =>
             {
-                //LoggingControl.LogAction(stringOutput.ToString());
+                output.ForEach(x => LoggingControl.LogAction(x));
                 if (CompileOutputRow.Height.Value < 11.0)
                 {
                     CompileOutputRow.Height = new GridLength(200.0);
