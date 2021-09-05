@@ -439,20 +439,22 @@ namespace SPCode.UI
             {
                 return;
             }
-            LoggingControl.LogAction("Starting server...");
             var c = Program.Configs[Program.SelectedConfig];
             var serverOptionsPath = c.ServerFile;
             if (string.IsNullOrWhiteSpace(serverOptionsPath))
             {
+                LoggingControl.LogAction("No executable specified to start server.", 2);
                 return;
             }
 
             var serverExec = new FileInfo(serverOptionsPath);
             if (!serverExec.Exists)
             {
+                LoggingControl.LogAction("The specified server executable file doesn't exist.", 2);
                 return;
             }
 
+            LoggingControl.LogAction("Starting server...");
             try
             {
                 ServerProcess = new Process
@@ -501,6 +503,7 @@ namespace SPCode.UI
                     DisableServerAnim.Begin();
                     UpdateWindowTitle();
                 }
+                LoggingControl.LogAction("Server started.", 2);
             });
         }
 
@@ -517,14 +520,6 @@ namespace SPCode.UI
         /// <summary>
         /// Executes the commands from the pre and post compile commands boxes.
         /// </summary>
-        /// <param name="code"></param>
-        /// <param name="directory"></param>
-        /// <param name="copyDir"></param>
-        /// <param name="scriptFile"></param>
-        /// <param name="scriptName"></param>
-        /// <param name="pluginFile"></param>
-        /// <param name="pluginName"></param>
-        /// <returns></returns>
         private string ExecuteCommandLine(string code, string directory, string copyDir, string scriptFile,
             string scriptName, string pluginFile, string pluginName)
         {
@@ -559,8 +554,6 @@ namespace SPCode.UI
         /// <summary>
         /// Replaces the placeholders from the pre and post compile commands boxes with the corresponding content.
         /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
         private string ReplaceCMDVariables(string CMD, string scriptDir, string copyDir, string scriptFile,
             string scriptName, string pluginFile, string pluginName)
         {
