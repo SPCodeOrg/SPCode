@@ -58,6 +58,7 @@ namespace SPCode.UI.Components
                 }
             }
         }
+
         public bool NeedsSave
         {
             get => _NeedsSave;
@@ -85,7 +86,10 @@ namespace SPCode.UI.Components
         #endregion
 
         #region Constructors
-        public EditorElement()
+        /// <summary>
+        /// This constructor calls its string-parametrized overload when sent from the templates window
+        /// </summary>
+        public EditorElement() : this(Program.SelectedTemplatePath)
         {
             InitializeComponent();
         }
@@ -94,13 +98,16 @@ namespace SPCode.UI.Components
         {
             InitializeComponent();
 
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return;
+            }
+
             bracketSearcher = new SPBracketSearcher();
             bracketHighlightRenderer = new BracketHighlightRenderer(editor.TextArea.TextView);
             editor.TextArea.IndentationStrategy = new EditorIndentationStrategy();
 
             editor.CaptureMouse();
-
-            //KeyDown += EditorElement_KeyDown;
 
             editor.TextArea.Caret.PositionChanged += Caret_PositionChanged;
             editor.TextArea.SelectionChanged += TextArea_SelectionChanged;

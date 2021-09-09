@@ -29,6 +29,7 @@ namespace SPCode
         public static List<HotkeyInfo> HotkeysList;
         public static Config[] Configs;
         public static int SelectedConfig;
+        public static string SelectedTemplatePath;
 
         public static UpdateInfo UpdateStatus;
 

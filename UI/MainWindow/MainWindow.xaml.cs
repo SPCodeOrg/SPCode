@@ -347,6 +347,7 @@ namespace SPCode.UI
                     BlendOverEffect.Begin();
                 }
 
+                RefreshObjectBrowser();
                 return true;
             }
 

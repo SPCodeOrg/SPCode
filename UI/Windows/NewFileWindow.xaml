@@ -1,10 +1,22 @@
-﻿<controls:MetroWindow x:Class="SPCode.UI.Windows.NewFileWindow"
-             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             Width="800" Height="500" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" GlowBrush="{DynamicResource AccentColorBrush}"
-                      Title="New" ShowTitleBar="False" KeyDown="MetroWindow_KeyDown">
+﻿<controls:MetroWindow 
+  x:Name="NewFileWind"
+  x:Class="SPCode.UI.Windows.NewFileWindow"
+  xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:uc="clr-namespace:SPCode.UI.Components"
+  Width="800" 
+  Height="500" 
+  MinWidth="800"
+  MinHeight="500"
+  ResizeMode="CanResizeWithGrip" 
+  WindowStartupLocation="CenterOwner" 
+  GlowBrush="{DynamicResource AccentColorBrush}"
+  Title="New" 
+  ShowTitleBar="False" 
+  KeyDown="MetroWindow_KeyDown">
+
   <controls:MetroWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -21,12 +33,36 @@
       <ColumnDefinition Width="17*"/>
       <ColumnDefinition Width="183*"/>
     </Grid.ColumnDefinitions>
-    <ListBox Name="TemplateListBox" HorizontalAlignment="Left" Width="250" Margin="0,0,0,50" SelectionChanged="TemplateListBox_SelectionChanged" MouseDoubleClick="TemplateListBox_MouseDoubleClick" KeyDown="TemplateListBox_KeyDown" Grid.ColumnSpan="2" />
+
+    <ListBox 
+      Name="TemplateListBox" 
+      HorizontalAlignment="Left" 
+      Width="250" 
+      Margin="0,0,0,50" 
+      SelectionChanged="TemplateListBox_SelectionChanged" 
+      Grid.ColumnSpan="2">
+
+      <ListBox.ContextMenu>
+        <ContextMenu>
+          <MenuItem Header="Add" Click="TemplateListItem_Context_Add"/>
+          <MenuItem Header="Edit" Click="TemplateListItem_Context_Edit"/>
+          <MenuItem Header="Delete" Click="TemplateListItem_Context_Delete"/>
+        </ContextMenu>
+      </ListBox.ContextMenu>
+    </ListBox>
+
     <TextBlock Name="PreviewBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="192,10,0,0" Text="Preview:" IsHitTestVisible="False" Grid.Column="1" />
-    <TextBox Name="PrevieBox" Margin="192,30,5,50" IsReadOnly="True" Grid.Column="1" />
+
+    <uc:EditorElement 
+      x:Name="PreviewBox" 
+      Margin="192,30,5,50" 
+      Grid.Column="1">
+
+    </uc:EditorElement>
     <TextBox Name="PathBox" VerticalAlignment="Bottom" Margin="5,0,120,5" 
                  Style="{StaticResource SearchMetroTextBox}"
                  controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFileCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Grid.ColumnSpan="2" />
-    <Button Name="SaveButton" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5" Content="Save" Width="100" Click="Button_Click" Grid.Column="1" />
+    <Button Name="SaveButton" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5" Content="Save" Width="100" Click="SaveButton_Click" Grid.Column="1" />
+    <TextBox x:Name="TbxRenameTemplate" Grid.Column="1" Visibility="Collapsed" HorizontalAlignment="Left" Margin="245,6,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="140" Height="21"/>
   </Grid>
 </controls:MetroWindow>

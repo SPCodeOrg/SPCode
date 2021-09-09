@@ -49,7 +49,7 @@ namespace SPCode.UI
             // Grabs current config
             var c = Program.Configs[Program.SelectedConfig];
 
-            // Creates all flags and wrappers
+            // Creates flags
             FileInfo spCompInfo = null;
             var SpCompFound = false;
             var PressedEscape = false;

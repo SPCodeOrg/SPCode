@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
+using System.Xml.Linq;
 using MahApps.Metro;
 using Microsoft.Win32;
+using SPCode.UI.Components;
 using SPCode.Utils;
 
 namespace SPCode.UI.Windows
@@ -16,8 +19,10 @@ namespace SPCode.UI.Windows
     {
         #region Variables
         private readonly string PathStr = Program.Configs[Program.SelectedConfig].SMDirectories[0];
-        private Dictionary<string, TemplateInfo> TemplateDictionary;
+        private bool TemplateEditMode = false;
+        private bool TemplateNewMode = false;
         private ICommand textBoxButtonFileCmd;
+        private List<ListBoxItem> LBIList;
 
         public ICommand TextBoxButtonFileCmd
         {
@@ -84,7 +89,13 @@ namespace SPCode.UI.Windows
         #region Constructors
         public NewFileWindow()
         {
+            // We cache templates first before calling InitializeComponent, because
+            // inside CacheTemplates I set the Program.SelectedTemplatePath variable
+            // so the EditorElement has something to work with before initializing
+
+            CacheTemplates();
             InitializeComponent();
+            ParseTemplateFile();
             Language_Translate();
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
             {
@@ -92,35 +103,119 @@ namespace SPCode.UI.Windows
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
 
-            ParseTemplateFile();
             TemplateListBox.SelectedIndex = 0;
+            PreviewBox.editor.IsReadOnly = true;
+            PreviewBox.editor.FontSize = 12;
+            PreviewBox.CompileBox.Visibility = Visibility.Collapsed;
+            PreviewBox.StatusLine_Column.Visibility = Visibility.Collapsed;
+            PreviewBox.StatusLine_FontSize.Visibility = Visibility.Collapsed;
+            PreviewBox.StatusLine_Offset.Visibility = Visibility.Collapsed;
+            PreviewBox.StatusLine_Line.Visibility = Visibility.Collapsed;
+            PreviewBox.StatusLine_SelectionLength.Visibility = Visibility.Collapsed;
+
         }
         #endregion
 
         #region Events
         private void TemplateListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var templateInfo = TemplateDictionary[(string)TemplateListBox.SelectedItem];
-            PrevieBox.Text = File.ReadAllText(templateInfo.Path);
-            PathBox.Text = Path.Combine(PathStr, templateInfo.NewName);
+            if (TemplateListBox.SelectedItem != null)
+            {
+                var templateInfo = (TemplateListBox.SelectedItem as ListBoxItem).Tag as TemplateInfo;
+                Program.SelectedTemplatePath = templateInfo.Path;
+                PreviewBox.editor.Text = File.ReadAllText(templateInfo.Path);
+                PathBox.Text = Path.Combine(PathStr, templateInfo.NewName);
+            }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            if (TemplateEditMode)
+            {
+                TemplateEditMode = false;
+
+                foreach (ListBoxItem item in TemplateListBox.Items)
+                {
+                    item.IsEnabled = true;
+                }
+
+                PathBox.IsEnabled = true;
+                PreviewBox.editor.IsReadOnly = true;
+                SaveTemplate();
+                HideVisuals();
+                return;
+            }
+
+            if (TemplateNewMode)
+            {
+                TemplateNewMode = false;
+
+                foreach (ListBoxItem item in TemplateListBox.Items)
+                {
+                    item.IsEnabled = true;
+                }
+
+                PathBox.IsEnabled = true;
+                PreviewBox.editor.IsReadOnly = true;
+                CreateTemplate();
+                HideVisuals();
+                return;
+            }
             GoToSelectedTemplate();
         }
 
-        private void TemplateListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void TemplateListItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            GoToSelectedTemplate();
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                GoToSelectedTemplate();
+            }
         }
 
-        private void TemplateListBox_KeyDown(object sender, KeyEventArgs e)
+        private void TemplateListItem_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
                 GoToSelectedTemplate();
             }
+        }
+
+        private void TemplateListItem_Context_Add(object sender, RoutedEventArgs e)
+        {
+            TemplateNewMode = true;
+
+            foreach (ListBoxItem item in TemplateListBox.Items)
+            {
+                item.IsEnabled = false;
+            }
+
+            PathBox.IsEnabled = false;
+            PreviewBox.editor.IsReadOnly = false;
+            PreviewBox.editor.TextArea.Focus();
+            PreviewBox.editor.Clear();
+
+            ShowVisuals(true);
+        }
+
+        private void TemplateListItem_Context_Edit(object sender, RoutedEventArgs e)
+        {
+            TemplateEditMode = true;
+
+            foreach (ListBoxItem item in TemplateListBox.Items)
+            {
+                item.IsEnabled = false;
+            }
+
+            PathBox.IsEnabled = false;
+            PreviewBox.editor.IsReadOnly = false;
+            PreviewBox.editor.TextArea.Focus();
+
+            ShowVisuals(false);
+        }
+
+        private void TemplateListItem_Context_Delete(object sender, RoutedEventArgs e)
+        {
+            DeleteTemplate(TemplateListBox.SelectedItem as ListBoxItem);
         }
 
         private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
@@ -130,14 +225,19 @@ namespace SPCode.UI.Windows
                 Close();
             }
         }
+
         #endregion
 
         #region Methods
-        private void ParseTemplateFile()
+
+        /// <summary>
+        /// Cache all templates into a local List of ListBoxItems
+        /// </summary>
+        private void CacheTemplates()
         {
-            TemplateDictionary = new Dictionary<string, TemplateInfo>();
             if (File.Exists(Paths.GetTemplatesFilePath()))
             {
+                LBIList = new List<ListBoxItem>();
                 using Stream stream = File.OpenRead(Paths.GetTemplatesFilePath());
                 var doc = new XmlDocument();
                 doc.Load(stream);
@@ -166,18 +266,34 @@ namespace SPCode.UI.Windows
                         if (File.Exists(FilePathStr))
                         {
                             Debug.Assert(NameStr != null, nameof(NameStr) + " != null");
-                            TemplateDictionary.Add(NameStr,
-                                new TemplateInfo
+
+                            var lbi = new ListBoxItem()
+                            {
+                                Tag = new TemplateInfo()
                                 {
                                     Name = NameStr,
                                     FileName = FileNameStr,
-                                    Path = FilePathStr,
-                                    NewName = NewNameStr
-                                });
-                            TemplateListBox.Items.Add(NameStr);
+                                    NewName = NewNameStr,
+                                    Path = FilePathStr
+                                },
+                                Content = NameStr
+                            };
+
+                            lbi.MouseDoubleClick += TemplateListItem_MouseDoubleClick;
+                            lbi.KeyDown += TemplateListItem_KeyDown;
+                            LBIList.Add(lbi);
                         }
                     }
                 }
+                Program.SelectedTemplatePath = LBIList.Count > 0 ? (LBIList[0].Tag as TemplateInfo).Path : null;
+            }
+        }
+
+        private void ParseTemplateFile()
+        {
+            foreach (var item in LBIList)
+            {
+                TemplateListBox.Items.Add(item);
             }
         }
 
@@ -187,7 +303,6 @@ namespace SPCode.UI.Windows
             {
                 return;
             }
-
             PreviewBlock.Text = $"{Program.Translations.GetLanguage("Preview")}:";
             SaveButton.Content = Program.Translations.GetLanguage("Save");
         }
@@ -195,10 +310,92 @@ namespace SPCode.UI.Windows
         private void GoToSelectedTemplate()
         {
             var destFile = new FileInfo(PathBox.Text);
-            var templateInfo = TemplateDictionary[(string)TemplateListBox.SelectedItem];
+            var templateInfo = (TemplateListBox.SelectedItem as ListBoxItem).Tag as TemplateInfo;
             File.Copy(templateInfo.Path, destFile.FullName, true);
             Program.MainWindow.TryLoadSourceFile(destFile.FullName, true, true, true);
+
             Close();
+        }
+
+        private void SaveTemplate()
+        {
+            var temp = TemplateListBox.SelectedItem as ListBoxItem;
+            var tempFilePath = Paths.GetTemplatesFilePath();
+
+            // Save the file's content
+            var path = (temp.Tag as TemplateInfo).Path;
+            File.WriteAllText(path, PreviewBox.editor.Text);
+
+            // Save the new entry in Templates.xml
+            using Stream stream = File.OpenRead(tempFilePath);
+            var doc = new XmlDocument();
+            doc.Load(stream);
+            stream.Dispose();
+
+            foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
+            {
+                if (node.Attributes["Name"].Value == temp.Content.ToString())
+                {
+                    node.Attributes["Name"].Value = TbxRenameTemplate.Text;
+                    return;
+                }
+            }
+        }
+
+        private void DeleteTemplate(ListBoxItem temp)
+        {
+            TemplateListBox.Items.RemoveAt(TemplateListBox.SelectedIndex);
+            File.Delete(new FileInfo((temp.Tag as TemplateInfo).Path).FullName);
+            using Stream stream = File.OpenRead(Paths.GetTemplatesFilePath());
+            var doc = new XmlDocument();
+            doc.Load(stream);
+            stream.Dispose();
+            foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
+            {
+                if (node.Attributes["Name"].Value == temp.Content.ToString())
+                {
+                    doc.ChildNodes[0].RemoveChild(node);
+                    doc.Save(Paths.GetTemplatesFilePath());
+                    return;
+                }
+            }
+        }
+
+        private void CreateTemplate()
+        {
+            var tempFilePath = Paths.GetTemplatesFilePath();
+
+            using Stream stream = File.OpenRead(tempFilePath);
+            var doc = new XmlDocument();
+            doc.Load(stream);
+            stream.Dispose();
+
+            var newNode = doc.CreateElement("Template");
+            newNode.SetAttribute("Name", TbxRenameTemplate.Text);
+            newNode.SetAttribute("NewName", PathBox.Text);
+            newNode.SetAttribute("File", new FileInfo(PathBox.Text).Name);
+
+            doc.ChildNodes[0].AppendChild(newNode);
+            doc.Save(tempFilePath);
+        }
+
+        private void ShowVisuals(bool isNewTemplate)
+        {
+            PreviewBlock.Text = $"{Program.Translations.GetLanguage("Name")}:";
+            TbxRenameTemplate.Text = isNewTemplate ? "" : (TemplateListBox.SelectedItem as ListBoxItem).Content.ToString();
+            TbxRenameTemplate.Visibility = Visibility.Visible;
+            var mg = PreviewBox.Margin;
+            mg.Top += 10;
+            PreviewBox.Margin = mg;
+        }
+
+        private void HideVisuals()
+        {
+            PreviewBlock.Text = $"{Program.Translations.GetLanguage("Preview")}:";
+            TbxRenameTemplate.Visibility = Visibility.Collapsed;
+            var mg = PreviewBox.Margin;
+            mg.Top -= 10;
+            PreviewBox.Margin = mg;
         }
         #endregion
     }
