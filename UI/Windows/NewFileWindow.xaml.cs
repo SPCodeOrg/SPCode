@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Xml;
 using System.Xml.Linq;
 using MahApps.Metro;
@@ -97,6 +99,7 @@ namespace SPCode.UI.Windows
             InitializeComponent();
             ParseTemplateFile();
             Language_Translate();
+            Program.MainWindow.EditorsReferences.Add(PreviewBox);
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
             {
                 ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
@@ -132,6 +135,15 @@ namespace SPCode.UI.Windows
         {
             if (TemplateEditMode)
             {
+                var tempName = TbxRenameTemplate.Text;
+                if (!IsValidTemplate(ref tempName, out var message))
+                {
+                    TbxRenameTemplate.BorderBrush = new SolidColorBrush(Colors.Red);
+                    LblError.Visibility = Visibility.Visible;
+                    LblError.Content = message;
+                    return;
+                }
+
                 TemplateEditMode = false;
 
                 foreach (ListBoxItem item in TemplateListBox.Items)
@@ -141,7 +153,7 @@ namespace SPCode.UI.Windows
 
                 PathBox.IsEnabled = true;
                 PreviewBox.editor.IsReadOnly = true;
-                SaveTemplate();
+                SaveTemplate(tempName);
                 HideVisuals();
                 return;
             }
@@ -218,12 +230,17 @@ namespace SPCode.UI.Windows
             DeleteTemplate(TemplateListBox.SelectedItem as ListBoxItem);
         }
 
-        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        private void NewFileWind_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {
                 Close();
             }
+        }
+
+        private void NewFileWind_Closing(object sender, CancelEventArgs e)
+        {
+            Program.MainWindow.EditorsReferences.Remove(PreviewBox);
         }
 
         #endregion
@@ -317,7 +334,7 @@ namespace SPCode.UI.Windows
             Close();
         }
 
-        private void SaveTemplate()
+        private void SaveTemplate(string name)
         {
             var temp = TemplateListBox.SelectedItem as ListBoxItem;
             var tempFilePath = Paths.GetTemplatesFilePath();
@@ -332,14 +349,18 @@ namespace SPCode.UI.Windows
             doc.Load(stream);
             stream.Dispose();
 
-            foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
+            foreach (XmlElement elem in doc.ChildNodes[0].ChildNodes)
             {
-                if (node.Attributes["Name"].Value == temp.Content.ToString())
+                if (elem.Attributes["Name"].Value == temp.Content.ToString())
                 {
-                    node.Attributes["Name"].Value = TbxRenameTemplate.Text;
-                    return;
+                    elem.Attributes["Name"].Value = name;
+                    doc.Save(tempFilePath);
+                    break;
                 }
             }
+
+            // Save new list item
+            temp.Content = name;
         }
 
         private void DeleteTemplate(ListBoxItem temp)
@@ -393,9 +414,40 @@ namespace SPCode.UI.Windows
         {
             PreviewBlock.Text = $"{Program.Translations.GetLanguage("Preview")}:";
             TbxRenameTemplate.Visibility = Visibility.Collapsed;
+            LblError.Visibility = Visibility.Collapsed;
             var mg = PreviewBox.Margin;
             mg.Top -= 10;
             PreviewBox.Margin = mg;
+        }
+
+        private bool IsValidTemplate(ref string name, out string message)
+        {
+            message = string.Empty;
+            var tempName = name;
+
+            if (TemplateListBox.Items.Cast<ListBoxItem>().ToList().Any(x => x.Content.ToString().ToLower() == tempName.ToLower()))
+            {
+                message = Program.Translations.GetLanguage("TemplateExists");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name)) 
+            {
+                message = Program.Translations.GetLanguage("EmptyName");
+                return false;
+            }
+
+            var arr = name.ToCharArray();
+            arr = Array.FindAll(arr, c => char.IsLetterOrDigit(c) || char.IsWhiteSpace(c) || c == '-');
+
+            if (arr.Length == 0)
+            {
+                message = Program.Translations.GetLanguage("IllegalCharacters");
+                return false;
+            }
+
+            name = new string(arr);
+            return true;
         }
         #endregion
     }

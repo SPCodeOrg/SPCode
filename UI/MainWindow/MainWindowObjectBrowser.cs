@@ -632,11 +632,11 @@ namespace SPCode.UI
                             Value = dInfo.FullName
                         }
                     };
-                    // This is to trigger the "expandability" of the TreeViewItem, if it's a directory
                     if (ExpandedItemsBuffer.Any(x => ((ObjectBrowserTag)x.Tag).Value == dInfo.FullName))
                     {
                         itemsToExpand.Add(tvi);
                     }
+                    // This is to trigger the "expandability" of the TreeViewItem, if it's a directory
                     tvi.Items.Add("");
                     itemList.Add(tvi);
                 }

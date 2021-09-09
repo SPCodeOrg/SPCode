@@ -536,7 +536,6 @@ namespace SPCode.UI.Components
                 editor.ScrollToVerticalOffset(editor.VerticalOffset -
                                               (Math.Sign((double)e.Delta) * LineHeight *
                                               Program.OptionsObject.Editor_ScrollLines));
-                //editor.ScrollToVerticalOffset(editor.VerticalOffset - ((double)e.Delta * editor.FontSize * Program.OptionsObject.Editor_ScrollSpeed));
                 e.Handled = true;
             }
 
@@ -691,7 +690,6 @@ namespace SPCode.UI.Components
                             continue;
                         }
                     }
-
 
                     el.InterruptLoadAutoCompletes(smFunctions, acNodes,
                         isNodes, smDef.Methodmaps.ToArray());

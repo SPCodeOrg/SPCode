@@ -4,7 +4,6 @@
   xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:uc="clr-namespace:SPCode.UI.Components"
   Width="800" 
   Height="500" 
@@ -15,7 +14,8 @@
   GlowBrush="{DynamicResource AccentColorBrush}"
   Title="New" 
   ShowTitleBar="False" 
-  KeyDown="MetroWindow_KeyDown">
+  KeyDown="NewFileWind_KeyDown"
+  Closing="NewFileWind_Closing">
 
   <controls:MetroWindow.Resources>
     <ResourceDictionary>
@@ -63,6 +63,7 @@
                  Style="{StaticResource SearchMetroTextBox}"
                  controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFileCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Grid.ColumnSpan="2" />
     <Button Name="SaveButton" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5" Content="Save" Width="100" Click="SaveButton_Click" Grid.Column="1" />
-    <TextBox x:Name="TbxRenameTemplate" Grid.Column="1" Visibility="Collapsed" HorizontalAlignment="Left" Margin="245,6,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="140" Height="21"/>
+    <TextBox x:Name="TbxRenameTemplate" Grid.Column="1" Visibility="Collapsed" HorizontalAlignment="Left" Margin="245,6,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="343" Height="21"/>
+    <Label x:Name="LblError" Grid.Column="1" FontWeight="Bold" FontSize="12" Visibility="Collapsed" Foreground="Red" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Margin="375,5,0,0" VerticalAlignment="Top" Width="208" Height="26"/>
   </Grid>
 </controls:MetroWindow>

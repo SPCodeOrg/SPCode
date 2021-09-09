@@ -19,17 +19,27 @@ namespace SPCode.UI
         /// <returns></returns>
         public EditorElement GetCurrentEditorElement()
         {
-            EditorElement outElement = null;
+            if (Application.Current != null)
+            {
+                foreach (Window win in Application.Current.Windows)
+                {
+                    if (win is NewFileWindow newFileWin)
+                    {
+                        return newFileWin.PreviewBox;
+                    }
+                }
+            }
+
             if (DockingPane.SelectedContent?.Content != null)
             {
                 var possElement = DockingManager.ActiveContent;
                 if (possElement is EditorElement element)
                 {
-                    outElement = element;
+                    return element;
                 }
             }
 
-            return outElement;
+            return null;
         }
 
         /// <summary>
@@ -215,10 +225,10 @@ namespace SPCode.UI
             {
                 foreach (Window win in Application.Current.Windows)
                 {
-                    if (win is FindReplaceWindow)
+                    if (win is FindReplaceWindow findWin)
                     {
-                        win.Activate();
-                        (win as FindReplaceWindow).FindBox.Focus();
+                        findWin.Activate();
+                        findWin.FindBox.Focus();
                         return;
                     }
                 }

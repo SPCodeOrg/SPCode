@@ -23,14 +23,7 @@ namespace SPCode.Interop
         /// <returns></returns>
         public string GetLanguage(string phrase)
         {
-            if (language.ContainsKey(phrase))
-            {
-                return language[phrase];
-            }
-            else
-            {
-                return "";
-            }
+            return language.ContainsKey(phrase) ? language[phrase] : string.Empty;
         }
 
         /// <summary>
@@ -372,6 +365,8 @@ namespace SPCode.Interop
             language.Add("EnableRPC", "Enable Discord Rich Presence");
             language.Add("EnableRPCTime", "Show elapsed time");
             language.Add("EnableRPCFile", "Show current file");
+            language.Add("TemplateExists", "Template name already exists");
+            language.Add("IllegalCharacters", "Illegal characters");
         }
     }
 }
