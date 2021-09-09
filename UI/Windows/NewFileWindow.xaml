@@ -49,6 +49,7 @@
           <MenuItem Header="Delete" Click="TemplateListItem_Context_Delete"/>
         </ContextMenu>
       </ListBox.ContextMenu>
+
     </ListBox>
 
     <TextBlock Name="PreviewBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="192,10,0,0" Text="Preview:" IsHitTestVisible="False" Grid.Column="1" />

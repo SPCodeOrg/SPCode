@@ -187,7 +187,7 @@ namespace SPCode.UI.Windows
             {
                 this.ShowMessageAsync(Program.Translations.GetLanguage("CannotDelConf"),
                     Program.Translations.GetLanguage("YCannotDelConf"), MessageDialogStyle.Affirmative,
-                    MetroDialogOptions);
+                    Program.MainWindow.MetroDialogOptions);
                 return;
             }
 
@@ -488,7 +488,7 @@ namespace SPCode.UI.Windows
                     e.Cancel = true;
                     this.ShowMessageAsync(Program.Translations.GetLanguage("ErrorSavingConfigs"),
                         Program.Translations.GetLanguage("EmptyConfigNames"), MessageDialogStyle.Affirmative,
-                        MetroDialogOptions);
+                        Program.MainWindow.MetroDialogOptions);
                     return;
                 }
             }
@@ -500,7 +500,7 @@ namespace SPCode.UI.Windows
                 e.Cancel = true;
                 this.ShowMessageAsync(Program.Translations.GetLanguage("ErrorSavingConfigs"),
                     Program.Translations.GetLanguage("DuplicateConfigNames"), MessageDialogStyle.Affirmative,
-                    MetroDialogOptions);
+                    Program.MainWindow.MetroDialogOptions);
                 return;
             }
 

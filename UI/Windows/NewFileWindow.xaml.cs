@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Xml;
 using System.Xml.Linq;
 using MahApps.Metro;
+using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using SPCode.UI.Components;
 using SPCode.Utils;
@@ -208,6 +209,11 @@ namespace SPCode.UI.Windows
 
         private void TemplateListItem_Context_Edit(object sender, RoutedEventArgs e)
         {
+            if (TemplateListBox.SelectedItem == null)
+            {
+                return;
+            }
+
             TemplateEditMode = true;
 
             foreach (ListBoxItem item in TemplateListBox.Items)
@@ -223,7 +229,14 @@ namespace SPCode.UI.Windows
 
         private void TemplateListItem_Context_Delete(object sender, RoutedEventArgs e)
         {
+            if (TemplateListBox.SelectedItem == null)
+            {
+                return;
+            }
+
             DeleteTemplate(TemplateListBox.SelectedItem as ListBoxItem);
+            PreviewBox.editor.Clear();
+            TemplateListBox.SelectedIndex = 0;
         }
 
         private void NewFileWind_KeyDown(object sender, KeyEventArgs e)
@@ -322,12 +335,19 @@ namespace SPCode.UI.Windows
 
         private void GoToSelectedTemplate()
         {
-            var destFile = new FileInfo(PathBox.Text);
-            var templateInfo = (TemplateListBox.SelectedItem as ListBoxItem).Tag as TemplateInfo;
-            File.Copy(templateInfo.Path, destFile.FullName, true);
-            Program.MainWindow.TryLoadSourceFile(destFile.FullName, true, true, true);
+            try
+            {
+                var destFile = new FileInfo(PathBox.Text);
+                var templateInfo = (TemplateListBox.SelectedItem as ListBoxItem).Tag as TemplateInfo;
+                File.Copy(templateInfo.Path, destFile.FullName, true);
+                Program.MainWindow.TryLoadSourceFile(destFile.FullName, true, true, true);
 
-            Close();
+                Close();
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+            }
         }
 
         private void SaveTemplate(string name)
