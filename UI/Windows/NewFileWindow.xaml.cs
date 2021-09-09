@@ -151,7 +151,6 @@ namespace SPCode.UI.Windows
                     item.IsEnabled = true;
                 }
 
-                PathBox.IsEnabled = true;
                 PreviewBox.editor.IsReadOnly = true;
                 SaveTemplate(tempName);
                 HideVisuals();
@@ -167,7 +166,6 @@ namespace SPCode.UI.Windows
                     item.IsEnabled = true;
                 }
 
-                PathBox.IsEnabled = true;
                 PreviewBox.editor.IsReadOnly = true;
                 CreateTemplate();
                 HideVisuals();
@@ -201,7 +199,6 @@ namespace SPCode.UI.Windows
                 item.IsEnabled = false;
             }
 
-            PathBox.IsEnabled = false;
             PreviewBox.editor.IsReadOnly = false;
             PreviewBox.editor.TextArea.Focus();
             PreviewBox.editor.Clear();
@@ -218,7 +215,6 @@ namespace SPCode.UI.Windows
                 item.IsEnabled = false;
             }
 
-            PathBox.IsEnabled = false;
             PreviewBox.editor.IsReadOnly = false;
             PreviewBox.editor.TextArea.Focus();
 
@@ -308,9 +304,9 @@ namespace SPCode.UI.Windows
 
         private void ParseTemplateFile()
         {
-            foreach (var item in LBIList)
+            if (LBIList != null)
             {
-                TemplateListBox.Items.Add(item);
+                LBIList.ForEach(x => TemplateListBox.Items.Add(x));
             }
         }
 
@@ -353,14 +349,33 @@ namespace SPCode.UI.Windows
             {
                 if (elem.Attributes["Name"].Value == temp.Content.ToString())
                 {
+                    var pathboxFileInfo = new FileInfo(PathBox.Text);
+                    var newFilePath = Path.GetDirectoryName(path) + Path.DirectorySeparatorChar + pathboxFileInfo.Name.Replace(" ", "");
+
+                    // Update name of template
                     elem.Attributes["Name"].Value = name;
+                    temp.Content = name;
+
+                    // Update NewFile name that's going to create, only if the item's file name is different from the one in PathBox
+                    if (elem.Attributes["NewName"].Value.ToString() != pathboxFileInfo.Name)
+                    {
+                        elem.Attributes["NewName"].Value = pathboxFileInfo.Name;
+                        File.Move(path, newFilePath);
+                        elem.Attributes["File"].Value = pathboxFileInfo.Name.Replace(" ", "");
+
+                        // Save new properties to list item
+                        temp.Tag = new TemplateInfo()
+                        {
+                            Name = name,
+                            NewName = pathboxFileInfo.Name,
+                            Path = newFilePath,
+                            FileName = pathboxFileInfo.Name.Replace(" ", "")
+                        };
+                    }
                     doc.Save(tempFilePath);
                     break;
                 }
             }
-
-            // Save new list item
-            temp.Content = name;
         }
 
         private void DeleteTemplate(ListBoxItem temp)
@@ -425,13 +440,13 @@ namespace SPCode.UI.Windows
             message = string.Empty;
             var tempName = name;
 
-            if (TemplateListBox.Items.Cast<ListBoxItem>().ToList().Any(x => x.Content.ToString().ToLower() == tempName.ToLower()))
+            if (tempName != (TemplateListBox.SelectedItem as ListBoxItem).Content.ToString() && TemplateListBox.Items.Cast<ListBoxItem>().ToList().Any(x => x.Content.ToString().ToLower() == tempName.ToLower()))
             {
                 message = Program.Translations.GetLanguage("TemplateExists");
                 return false;
             }
 
-            if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name)) 
+            if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
             {
                 message = Program.Translations.GetLanguage("EmptyName");
                 return false;
