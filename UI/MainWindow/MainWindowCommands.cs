@@ -108,6 +108,7 @@ namespace SPCode.UI
                 ShowInTaskbar = false
             };
             nfWindow.ShowDialog();
+            UpdateWindowTitle();
         }
 
         /// <summary>
@@ -312,9 +313,9 @@ namespace SPCode.UI
                         }
                     }
 
-                    var Result = await this.ShowMessageAsync(Program.Translations.GetLanguage("SaveFollow"),
+                    var result = await this.ShowMessageAsync(Program.Translations.GetLanguage("SaveFollow"),
                         str.ToString(), MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions);
-                    if (Result == MessageDialogResult.Affirmative)
+                    if (result == MessageDialogResult.Affirmative)
                     {
                         ForceSave = true;
                     }

@@ -123,13 +123,20 @@ namespace SPCode.UI.Windows
         #region Events
         private void TemplateListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (TemplateListBox.SelectedItem != null)
+            try
             {
-                var templateInfo = (TemplateListBox.SelectedItem as ListBoxItem).Tag as TemplateInfo;
-                Program.SelectedTemplatePath = templateInfo.Path;
-                PreviewBox.editor.Text = File.ReadAllText(templateInfo.Path);
-                PathBox.Text = Path.Combine(PathStr, templateInfo.NewName);
+                if (TemplateListBox.SelectedItem != null && (TemplateListBox.SelectedItem as ListBoxItem).Tag is TemplateInfo templateInfo)
+                {
+                    Program.SelectedTemplatePath = templateInfo.Path;
+                    PreviewBox.editor.Text = File.ReadAllText(templateInfo.Path);
+                    PathBox.Text = Path.Combine(PathStr, templateInfo.NewName);
+                }
             }
+            catch (Exception ex)
+            {
+                PreviewBox.editor.Text = $"/* \n\n{ex.Message}\n\n{ex.StackTrace}\n\n*/";
+            }
+            
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -160,6 +167,15 @@ namespace SPCode.UI.Windows
 
             if (TemplateNewMode)
             {
+                var tempName = TbxRenameTemplate.Text;
+                if (!IsValidTemplate(ref tempName, out var message))
+                {
+                    TbxRenameTemplate.BorderBrush = new SolidColorBrush(Colors.Red);
+                    LblError.Visibility = Visibility.Visible;
+                    LblError.Content = message;
+                    return;
+                }
+
                 TemplateNewMode = false;
 
                 foreach (ListBoxItem item in TemplateListBox.Items)
@@ -168,11 +184,25 @@ namespace SPCode.UI.Windows
                 }
 
                 PreviewBox.editor.IsReadOnly = true;
-                CreateTemplate();
+                CreateTemplate(tempName);
                 HideVisuals();
                 return;
             }
             GoToSelectedTemplate();
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (TemplateEditMode || TemplateNewMode)
+            {
+                HideVisuals(TemplateNewMode);
+                TemplateEditMode = false;
+                TemplateNewMode = false;
+            }
+            else
+            {
+                Close();
+            }
         }
 
         private void TemplateListItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -194,16 +224,14 @@ namespace SPCode.UI.Windows
         private void TemplateListItem_Context_Add(object sender, RoutedEventArgs e)
         {
             TemplateNewMode = true;
-
-            foreach (ListBoxItem item in TemplateListBox.Items)
+            TemplateListBox.Items.Add(new ListBoxItem()
             {
-                item.IsEnabled = false;
-            }
-
+                Content = "New Template"
+            });
+            TemplateListBox.SelectedIndex = TemplateListBox.Items.Count - 1;
             PreviewBox.editor.IsReadOnly = false;
             PreviewBox.editor.TextArea.Focus();
             PreviewBox.editor.Clear();
-
             ShowVisuals(true);
         }
 
@@ -213,17 +241,9 @@ namespace SPCode.UI.Windows
             {
                 return;
             }
-
             TemplateEditMode = true;
-
-            foreach (ListBoxItem item in TemplateListBox.Items)
-            {
-                item.IsEnabled = false;
-            }
-
             PreviewBox.editor.IsReadOnly = false;
             PreviewBox.editor.TextArea.Focus();
-
             ShowVisuals(false);
         }
 
@@ -417,22 +437,42 @@ namespace SPCode.UI.Windows
             }
         }
 
-        private void CreateTemplate()
+        private void CreateTemplate(string name)
         {
             var tempFilePath = Paths.GetTemplatesFilePath();
+            var pathBoxFileInfo = new FileInfo(PathBox.Text);
 
+            // Save in XML
             using Stream stream = File.OpenRead(tempFilePath);
             var doc = new XmlDocument();
             doc.Load(stream);
             stream.Dispose();
 
             var newNode = doc.CreateElement("Template");
-            newNode.SetAttribute("Name", TbxRenameTemplate.Text);
-            newNode.SetAttribute("NewName", PathBox.Text);
-            newNode.SetAttribute("File", new FileInfo(PathBox.Text).Name);
+            newNode.SetAttribute("Name", name);
+            newNode.SetAttribute("NewName", pathBoxFileInfo.Name);
+            newNode.SetAttribute("File", pathBoxFileInfo.Name.Replace(" ", ""));
 
             doc.ChildNodes[0].AppendChild(newNode);
             doc.Save(tempFilePath);
+
+            // Create file
+            var newFilePath = Path.GetDirectoryName(tempFilePath) + Path.DirectorySeparatorChar + pathBoxFileInfo.Name.Replace(" ", "");
+            File.WriteAllText(newFilePath, PreviewBox.editor.Text);
+
+            // Save ListBoxItem
+            var lbi = new ListBoxItem()
+            {
+                Content = name,
+                Tag = new TemplateInfo()
+                {
+                    FileName = pathBoxFileInfo.Name.Replace(" ", ""),
+                    Name = name,
+                    NewName = pathBoxFileInfo.Name,
+                    Path = newFilePath,
+                }
+            };
+            TemplateListBox.Items[TemplateListBox.Items.Count - 1] = lbi;
         }
 
         private void ShowVisuals(bool isNewTemplate)
@@ -443,9 +483,13 @@ namespace SPCode.UI.Windows
             var mg = PreviewBox.Margin;
             mg.Top += 10;
             PreviewBox.Margin = mg;
+            foreach (ListBoxItem item in TemplateListBox.Items)
+            {
+                item.IsEnabled = false;
+            }
         }
 
-        private void HideVisuals()
+        private void HideVisuals(bool canceledFromNewTemplate = false)
         {
             PreviewBlock.Text = $"{Program.Translations.GetLanguage("Preview")}:";
             TbxRenameTemplate.Visibility = Visibility.Collapsed;
@@ -453,6 +497,15 @@ namespace SPCode.UI.Windows
             var mg = PreviewBox.Margin;
             mg.Top -= 10;
             PreviewBox.Margin = mg;
+            foreach (ListBoxItem item in TemplateListBox.Items)
+            {
+                item.IsEnabled = true;
+            }
+            if (canceledFromNewTemplate)
+            {
+                TemplateListBox.SelectedIndex = 0;
+                TemplateListBox.Items.RemoveAt(TemplateListBox.Items.Count - 1);
+            }
         }
 
         private bool IsValidTemplate(ref string name, out string message)
@@ -485,5 +538,6 @@ namespace SPCode.UI.Windows
             return true;
         }
         #endregion
+        
     }
 }
