@@ -101,6 +101,10 @@ namespace SPCode
                             Assets = new Assets
                             {
                                 LargeImageKey = "immagine"
+                            },
+                            Buttons = new Button[]
+                            {
+                                new Button() { Label = Constants.GitHubRepositoryText, Url = Constants.GitHubRepository }
                             }
                         });
                     }

@@ -12,6 +12,7 @@ using MahApps.Metro.Controls.Dialogs;
 using SPCode.UI.Components;
 using SPCode.Utils;
 using SPCode.Utils.Models;
+using Button = DiscordRPC.Button;
 
 namespace SPCode.UI.Windows
 {
@@ -481,6 +482,10 @@ namespace SPCode.UI.Windows
                 Assets = new Assets
                 {
                     LargeImageKey = "immagine"
+                },
+                Buttons = new Button[]
+                {
+                    new Button() { Label = Constants.GitHubRepositoryText, Url = Constants.GitHubRepository }
                 }
             });
             // Calling this to set State to the opened file
@@ -504,6 +509,10 @@ namespace SPCode.UI.Windows
                 Assets = new Assets
                 {
                     LargeImageKey = "immagine"
+                },
+                Buttons = new Button[]
+                {
+                    new Button() { Label = Constants.GitHubRepositoryText, Url = Constants.GitHubRepository }
                 }
             });
             // Calling this to set State to the opened file

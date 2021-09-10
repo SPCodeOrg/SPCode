@@ -14,8 +14,10 @@ using MahApps.Metro;
 using SPCode.Interop;
 using SPCode.Interop.Updater;
 using SPCode.UI.Components;
+using SPCode.Utils;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
+using Button = DiscordRPC.Button;
 
 namespace SPCode.UI
 {
@@ -416,6 +418,10 @@ namespace SPCode.UI
                     Assets = new Assets
                     {
                         LargeImageKey = "immagine",
+                    },
+                    Buttons = new Button[]
+                    {
+                        new Button() { Label = Constants.GitHubRepositoryText, Url = Constants.GitHubRepository }
                     }
                 });
             }
