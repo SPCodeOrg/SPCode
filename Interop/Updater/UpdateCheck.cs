@@ -83,7 +83,7 @@ namespace SPCode.Interop.Updater
         private static async Task<List<Release>> GetAllReleases()
         {
             var client = new GitHubClient(new ProductHeaderValue("spcode-client"));
-            var allReleases = await client.Repository.Release.GetAll("Hexer10", "SPCode");
+            var allReleases = await client.Repository.Release.GetAll("SPCodeOrg", "SPCode");
             var list = new List<Release>();
             foreach (var item in allReleases)
             {

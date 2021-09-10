@@ -2,10 +2,10 @@
 {
     public static class Constants
     {
-        public const string GitHubRepository = "https://github.com/Hexer10/SPCode";
-        public const string GitHubNewIssueLink = "https://github.com/Hexer10/SPCode/issues/new";
-        public const string GitHubReleases = "https://github.com/Hexer10/SPCode/releases";
-        public const string GitHubLatestRelease = "https://github.com/Hexer10/SPCode/releases/latest";
+        public const string GitHubRepository = "https://github.com/SPCodeOrg/SPCode";
+        public const string GitHubNewIssueLink = "https://github.com/SPCodeOrg/SPCode/issues/new";
+        public const string GitHubReleases = "https://github.com/SPCodeOrg/SPCode/releases";
+        public const string GitHubLatestRelease = "https://github.com/SPCodeOrg/SPCode/releases/latest";
         public const string GitHubRepositoryText = "GitHub Repository";
         public const string DiscordRPCAppID = "692110664948514836";
         public const string JavaDownloadSite64 = "https://api.adoptopenjdk.net/v3/installer/latest/15/ga/windows/x64/jdk/hotspot/normal/adoptopenjdk?project=jdk";
