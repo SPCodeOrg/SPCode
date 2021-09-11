@@ -43,6 +43,7 @@ namespace SPCode.UI.Components
         public new LayoutDocument Parent;
         private bool SelectionIsHighlited;
         private bool WantFoldingUpdate;
+        public bool IsTemplateEditor = false;
 
         public string FullFilePath
         {
@@ -91,6 +92,7 @@ namespace SPCode.UI.Components
         /// </summary>
         public EditorElement() : this(Program.SelectedTemplatePath)
         {
+            IsTemplateEditor = true;
             InitializeComponent();
         }
 

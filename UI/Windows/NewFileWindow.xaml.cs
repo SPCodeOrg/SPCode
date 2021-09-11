@@ -100,6 +100,7 @@ namespace SPCode.UI.Windows
             InitializeComponent();
             ParseTemplateFile();
             Language_Translate();
+            PreviewBox.Parent = new Xceed.Wpf.AvalonDock.Layout.LayoutDocument();
             Program.MainWindow.EditorsReferences.Add(PreviewBox);
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
             {
@@ -127,7 +128,6 @@ namespace SPCode.UI.Windows
             {
                 if (TemplateListBox.SelectedItem != null && (TemplateListBox.SelectedItem as ListBoxItem).Tag is TemplateInfo templateInfo)
                 {
-                    Program.SelectedTemplatePath = templateInfo.Path;
                     PreviewBox.editor.Text = File.ReadAllText(templateInfo.Path);
                     PathBox.Text = Path.Combine(PathStr, templateInfo.NewName);
                 }
