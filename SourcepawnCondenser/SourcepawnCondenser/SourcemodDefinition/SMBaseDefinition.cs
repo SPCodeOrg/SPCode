@@ -1,12 +1,22 @@
-﻿namespace SourcepawnCondenser.SourcemodDefinition
-{
-    public class SMBaseDefinition
-    {
-        public int Index = -1;
-        public int Length = 0;
-        public string File = string.Empty;
+﻿using System.Dynamic;
 
-        public string Name = string.Empty;
-        public string CommentString = string.Empty;
+namespace SourcepawnCondenser.SourcemodDefinition
+{
+    public abstract class SMBaseDefinition
+    {
+        protected SMBaseDefinition(int index, int length, string file, string name, string commentString)
+        {
+            Index = index;
+            Length = length;
+            File = file;
+            Name = name;
+            CommentString = commentString;
+        }
+
+        public int Index { get; }
+        public int Length { get; }
+        public string File { get; }
+        public string Name { get; }
+        public string CommentString { get; }
     }
 }

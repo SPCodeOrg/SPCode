@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using SourcepawnCondenser.SourcemodDefinition;
 using SourcepawnCondenser.Tokenizer;
 
@@ -12,20 +14,20 @@ namespace SourcepawnCondenser
         private int ConsumeSMFunction()
         {
             var kind = SMFunctionKind.Unknown;
-            var startPosition = position;
+            var startPosition = _position;
             var iteratePosition = startPosition + 1;
             var functionReturnType = string.Empty;
             var functionName = string.Empty;
 
-            switch (t[startPosition].Value)
+            switch (_tokens[startPosition].Value)
             {
                 case "stock":
                     {
-                        if (startPosition + 1 < length)
+                        if (startPosition + 1 < _length)
                         {
-                            if (t[startPosition + 1].Kind == TokenKind.FunctionIndicator)
+                            if (_tokens[startPosition + 1].Kind == TokenKind.FunctionIndicator)
                             {
-                                if (t[startPosition + 1].Value == "static")
+                                if (_tokens[startPosition + 1].Value == "static")
                                 {
                                     kind = SMFunctionKind.StockStatic;
                                     ++iteratePosition;
@@ -49,11 +51,11 @@ namespace SourcepawnCondenser
                     }
                 case "public":
                     {
-                        if (startPosition + 1 < length)
+                        if (startPosition + 1 < _length)
                         {
-                            if (t[startPosition + 1].Kind == TokenKind.FunctionIndicator)
+                            if (_tokens[startPosition + 1].Kind == TokenKind.FunctionIndicator)
                             {
-                                if (t[startPosition + 1].Value == "native")
+                                if (_tokens[startPosition + 1].Value == "native")
                                 {
                                     kind = SMFunctionKind.PublicNative;
                                     ++iteratePosition;
@@ -77,7 +79,7 @@ namespace SourcepawnCondenser
                     }
                 default:
                     {
-                        functionReturnType = t[startPosition].Value;
+                        functionReturnType = _tokens[startPosition].Value;
                         break;
                     }
             }
@@ -89,13 +91,13 @@ namespace SourcepawnCondenser
                 commentTokenIndex = BacktraceTestForToken(startPosition - 1, TokenKind.SingleLineComment, true, false);
                 if (commentTokenIndex != -1)
                 {
-                    var strBuilder = new StringBuilder(t[commentTokenIndex].Value);
+                    var strBuilder = new StringBuilder(_tokens[commentTokenIndex].Value);
                     while ((commentTokenIndex =
                         BacktraceTestForToken(commentTokenIndex - 1, TokenKind.SingleLineComment, true,
                             false)) != -1)
                     {
                         strBuilder.Insert(0, Environment.NewLine);
-                        strBuilder.Insert(0, t[commentTokenIndex].Value);
+                        strBuilder.Insert(0, _tokens[commentTokenIndex].Value);
                     }
 
                     functionCommentString = strBuilder.ToString();
@@ -103,30 +105,30 @@ namespace SourcepawnCondenser
             }
             else
             {
-                functionCommentString = t[commentTokenIndex].Value;
+                functionCommentString = _tokens[commentTokenIndex].Value;
             }
 
             for (; iteratePosition < startPosition + 5; ++iteratePosition)
             {
-                if (t.Length > iteratePosition + 1)
+                if (_tokens.Count > iteratePosition + 1)
                 {
-                    if (t[iteratePosition].Kind == TokenKind.Identifier)
+                    if (_tokens[iteratePosition].Kind == TokenKind.Identifier)
                     {
-                        if (t[iteratePosition + 1].Kind == TokenKind.ParenthesisOpen)
+                        if (_tokens[iteratePosition + 1].Kind == TokenKind.ParenthesisOpen)
                         {
-                            functionName = t[iteratePosition].Value;
+                            functionName = _tokens[iteratePosition].Value;
                             break;
                         }
 
-                        functionReturnType = t[iteratePosition].Value;
+                        functionReturnType = _tokens[iteratePosition].Value;
                         continue;
                     }
 
-                    if (t[iteratePosition].Kind == TokenKind.Character)
+                    if (_tokens[iteratePosition].Kind == TokenKind.Character)
                     {
-                        if (t[iteratePosition].Value.Length > 0)
+                        if (_tokens[iteratePosition].Value.Length > 0)
                         {
-                            var testChar = t[iteratePosition].Value[0];
+                            var testChar = _tokens[iteratePosition].Value[0];
                             if (testChar == ':' || testChar == '[' || testChar == ']')
                             {
                                 continue;
@@ -147,38 +149,38 @@ namespace SourcepawnCondenser
 
             ++iteratePosition;
             var functionParameters = new List<string>();
-            var parameterDeclIndexStart = t[iteratePosition].Index;
+            var parameterDeclIndexStart = _tokens[iteratePosition].Index;
             var parameterDeclIndexEnd = -1;
             var lastParameterIndex = parameterDeclIndexStart;
             var parenthesisCounter = 0;
             var gotCommaBreak = false;
             var outTokenIndex = -1;
             var braceState = 0;
-            for (; iteratePosition < length; ++iteratePosition)
+            for (; iteratePosition < _length; ++iteratePosition)
             {
-                if (t[iteratePosition].Kind == TokenKind.ParenthesisOpen)
+                if (_tokens[iteratePosition].Kind == TokenKind.ParenthesisOpen)
                 {
                     ++parenthesisCounter;
                     continue;
                 }
 
-                if (t[iteratePosition].Kind == TokenKind.ParenthesisClose)
+                if (_tokens[iteratePosition].Kind == TokenKind.ParenthesisClose)
                 {
                     --parenthesisCounter;
                     if (parenthesisCounter == 0)
                     {
                         outTokenIndex = iteratePosition;
-                        parameterDeclIndexEnd = t[iteratePosition].Index;
-                        var length = t[iteratePosition].Index - 1 - (lastParameterIndex + 1);
+                        parameterDeclIndexEnd = _tokens[iteratePosition].Index;
+                        var length = _tokens[iteratePosition].Index - 1 - (lastParameterIndex + 1);
                         if (gotCommaBreak)
                         {
                             functionParameters.Add(length == 0
                                 ? string.Empty
-                                : source.Substring(lastParameterIndex + 1, length + 1).Trim());
+                                : _source.Substring(lastParameterIndex + 1, length + 1).Trim());
                         }
                         else if (length > 0)
                         {
-                            var singleParameterString = source.Substring(lastParameterIndex + 1, length + 1);
+                            var singleParameterString = _source.Substring(lastParameterIndex + 1, length + 1);
                             if (!string.IsNullOrWhiteSpace(singleParameterString))
                             {
                                 functionParameters.Add(singleParameterString);
@@ -191,24 +193,24 @@ namespace SourcepawnCondenser
                     continue;
                 }
 
-                if (t[iteratePosition].Kind == TokenKind.BraceOpen)
+                if (_tokens[iteratePosition].Kind == TokenKind.BraceOpen)
                 {
                     ++braceState;
                 }
 
-                if (t[iteratePosition].Kind == TokenKind.BraceClose)
+                if (_tokens[iteratePosition].Kind == TokenKind.BraceClose)
                 {
                     --braceState;
                 }
 
-                if (t[iteratePosition].Kind == TokenKind.Comma && braceState == 0)
+                if (_tokens[iteratePosition].Kind == TokenKind.Comma && braceState == 0)
                 {
                     gotCommaBreak = true;
-                    var length = t[iteratePosition].Index - 1 - (lastParameterIndex + 1);
+                    var length = _tokens[iteratePosition].Index - 1 - (lastParameterIndex + 1);
                     functionParameters.Add(length == 0
                         ? string.Empty
-                        : source.Substring(lastParameterIndex + 1, length + 1).Trim());
-                    lastParameterIndex = t[iteratePosition].Index;
+                        : _source.Substring(lastParameterIndex + 1, length + 1).Trim());
+                    lastParameterIndex = _tokens[iteratePosition].Index;
                 }
             }
 
@@ -219,20 +221,20 @@ namespace SourcepawnCondenser
 
             var localVars = new List<SMVariable>();
 
-            if (outTokenIndex + 1 < length)
+            if (outTokenIndex + 1 < _length)
             {
-                if (t[outTokenIndex + 1].Kind == TokenKind.Semicolon)
+                if (_tokens[outTokenIndex + 1].Kind == TokenKind.Semicolon)
                 {
-                    def.Functions.Add(new SMFunction
+                    _def.Functions.Add(new SMFunction
                     {
                         FunctionKind = kind,
-                        Index = t[startPosition].Index,
+                        Index = _tokens[startPosition].Index,
                         EndPos = parameterDeclIndexEnd,
-                        File = FileName,
-                        Length = parameterDeclIndexEnd - t[startPosition].Index + 1,
+                        File = _fileName,
+                        Length = parameterDeclIndexEnd - _tokens[startPosition].Index + 1,
                         Name = functionName,
-                        FullName = TrimFullname(source.Substring(t[startPosition].Index,
-                            parameterDeclIndexEnd - t[startPosition].Index + 1)),
+                        FullName = TrimFullname(_source.Substring(_tokens[startPosition].Index,
+                            parameterDeclIndexEnd - _tokens[startPosition].Index + 1)),
                         ReturnType = functionReturnType,
                         CommentString = TrimComments(functionCommentString),
                         Parameters = functionParameters.ToArray(),
@@ -240,34 +242,34 @@ namespace SourcepawnCondenser
                     });
                     return outTokenIndex + 1;
                 }
+
                 var nextOpenBraceTokenIndex = FortraceTestForToken(outTokenIndex + 1, TokenKind.BraceOpen, true, false);
                 if (nextOpenBraceTokenIndex != -1)
                 {
                     braceState = 0;
-                    for (var i = nextOpenBraceTokenIndex; i < length; ++i)
+                    for (var i = nextOpenBraceTokenIndex; i < _length; ++i)
                     {
-                        if (t[i].Kind == TokenKind.BraceOpen)
+                        if (_tokens[i].Kind == TokenKind.BraceOpen)
                         {
                             ++braceState;
                         }
-                        else if (t[i].Kind == TokenKind.BraceClose)
+                        else if (_tokens[i].Kind == TokenKind.BraceClose)
                         {
                             --braceState;
                             if (braceState == 0)
                             {
-                                var segment = new ArraySegment<Token>(t, nextOpenBraceTokenIndex,
-                                    i - nextOpenBraceTokenIndex);
-                                localVars = LocalVars.ConsumeSMVariableLocal(segment.ToArray(), FileName);
-                                def.Functions.Add(new SMFunction
+                                localVars = LocalVars.ConsumeSMVariableLocal(
+                                    _tokens.GetRange(nextOpenBraceTokenIndex, i - nextOpenBraceTokenIndex), _fileName);
+                                _def.Functions.Add(new SMFunction
                                 {
-                                    EndPos = t[nextOpenBraceTokenIndex + (i - nextOpenBraceTokenIndex) + 1].Index,
+                                    EndPos = _tokens[nextOpenBraceTokenIndex + (i - nextOpenBraceTokenIndex) + 1].Index,
                                     FunctionKind = kind,
-                                    Index = t[startPosition].Index,
-                                    File = FileName,
-                                    Length = parameterDeclIndexEnd - t[startPosition].Index + 1,
+                                    Index = _tokens[startPosition].Index,
+                                    File = _fileName,
+                                    Length = parameterDeclIndexEnd - _tokens[startPosition].Index + 1,
                                     Name = functionName,
-                                    FullName = TrimFullname(source.Substring(t[startPosition].Index,
-                                        parameterDeclIndexEnd - t[startPosition].Index + 1)),
+                                    FullName = TrimFullname(_source.Substring(_tokens[startPosition].Index,
+                                        parameterDeclIndexEnd - _tokens[startPosition].Index + 1)),
                                     ReturnType = functionReturnType,
                                     CommentString = TrimComments(functionCommentString),
                                     Parameters = functionParameters.ToArray(),
@@ -280,16 +282,16 @@ namespace SourcepawnCondenser
                 }
             }
 
-            def.Functions.Add(new SMFunction
+            _def.Functions.Add(new SMFunction
             {
                 EndPos = parameterDeclIndexEnd,
                 FunctionKind = kind,
-                Index = t[startPosition].Index,
-                File = FileName,
-                Length = parameterDeclIndexEnd - t[startPosition].Index + 1,
+                Index = _tokens[startPosition].Index,
+                File = _fileName,
+                Length = parameterDeclIndexEnd - _tokens[startPosition].Index + 1,
                 Name = functionName,
-                FullName = TrimFullname(source.Substring(t[startPosition].Index,
-                    parameterDeclIndexEnd - t[startPosition].Index + 1)),
+                FullName = TrimFullname(_source.Substring(_tokens[startPosition].Index,
+                    parameterDeclIndexEnd - _tokens[startPosition].Index + 1)),
                 ReturnType = functionReturnType,
                 CommentString = TrimComments(functionCommentString),
                 Parameters = functionParameters.ToArray(),
@@ -301,111 +303,47 @@ namespace SourcepawnCondenser
 
     internal static class LocalVars
     {
-        public static List<SMVariable> ConsumeSMVariableLocal(Token[] t, string FileName)
+        public static List<SMVariable> ConsumeSMVariableLocal(IImmutableList<Token> t, string FileName)
         {
             var position = 0;
-            var length = t.Length;
+            var length = t.Count;
 
             var variables = new List<SMVariable>();
+
+            // every kind of variable declaration has at least 3 characters.
             if (3 >= length)
             {
                 return variables;
             }
+
             try
             {
+                // Loop all tokens
                 while (position < length)
                 {
-                    var startIndex = t[position].Index;
-
-                    var varType = t[position].Value;
-                    string varName;
-                    var size = new List<string>();
-                    var dimensions = 0;
-                    var index = -1;
-
-                    // Dynamic array: "char[] x = new char[64];"
-                    var continueNext = false;
-
+                    // Return if there are not enough tokens to find any variable.
                     if (position + 3 >= length)
                     {
                         return variables;
                     }
 
-                    if (t[position + 1].Kind == TokenKind.Character)
+                    var startIndex = t[position].Index;
+                    var varType = t[position].Value;
+                    string varName;
+                    var size = new List<string>();
+                    var dimensions = 0;
+                    var index = -1;
+                    var continueNext = false;
+
+                    // Dynamic array: "char[] x = new char[64];"
+                    var result = ConsumeDynamicArray(t, position, length, startIndex, FileName, varType);
+                    if (result.count != -1)
                     {
-                        for (var i = 1; i < length; i += 2)
-                        {
-                            index = i;
-                            if (t[position + i].Kind == TokenKind.Identifier)
-                            {
-                                break;
-                            }
-
-                            if (t[position + i].Value == "[" && t[position + i + 1].Value == "]")
-                            {
-                                dimensions++;
-                                continue;
-                            }
-
-                            continueNext = true;
-                            break;
-                        }
-
-                        if (continueNext)
-                        {
-                            position++;
-                            continue;
-                        }
-
-
-                        varName = t[position + index].Value;
-
-                        if (t[position + index + 1].Kind != TokenKind.Assignment ||
-                            t[position + index + 2].Kind != TokenKind.New || t[position + index + 3].Value != varType)
-                        {
-                            position++;
-                            continue;
-                        }
-
-                        for (var i = index + 4; i < length - 2; i += 3)
-                        {
-                            if (t[position + i].Kind == TokenKind.Semicolon)
-                            {
-                                variables.Add(new SMVariable
-                                {
-                                    Index = startIndex,
-                                    Length = t[position + i].Index - startIndex,
-                                    File = FileName,
-                                    Name = varName,
-                                    Type = varType,
-                                    Dimensions = dimensions,
-                                    Size = size
-                                });
-                                continueNext = true;
-                                position += i;
-                                break;
-                            }
-
-                            if (t[position + i].Value == "[" &&
-                                (t[position + i + 1].Kind == TokenKind.Number ||
-                                 t[position + i + 1].Kind == TokenKind.Identifier) &&
-                                t[position + i + 2].Value == "]")
-                            {
-                                size.Add(t[position + i + 1].Value);
-                                continue;
-                            }
-
-                            continueNext = true;
-                            position++;
-                            break;
-                        }
-
-                        if (continueNext)
-                        {
-                            continue;
-                        }
-                    }
-
+                        variables.Add(result.variable);
+                        position += result.count;
+                        break;
+                    } 
+                    // All the other kind of declarations required the second token to be an identifier.
                     if (t[position + 1].Kind != TokenKind.Identifier)
                     {
                         position++;
@@ -433,7 +371,7 @@ namespace SourcepawnCondenser
                         case TokenKind.Assignment when (t[position + 3].Kind == TokenKind.Number ||
                                                         t[position + 3].Kind == TokenKind.Quote ||
                                                         t[position + 3].Kind == TokenKind.Identifier)
-                                                        && t[position + 4].Kind == TokenKind.Semicolon:
+                                                       && t[position + 4].Kind == TokenKind.Semicolon:
                             variables.Add(new SMVariable
                             {
                                 Index = startIndex,
@@ -476,6 +414,8 @@ namespace SourcepawnCondenser
 
                             dimensions++;
                             i += 3;
+
+                            // Here throws
                             size.Add(t[position + i + 1].Value);
                             continue;
                         }
@@ -581,12 +521,99 @@ namespace SourcepawnCondenser
                     position++;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 // ignore for now
             }
 
             return variables;
+        }
+
+        private static (SMVariable? variable, int count) ConsumeDynamicArray(IImmutableList<Token> tokens, int position,
+            int length, int startIndex, string FileName, string varType)
+        {
+            var dimensions = 0;
+            var count = -1;
+            var size = new List<string>();
+
+            if (tokens.Count < 11)
+            {
+                return (null, -1);
+            }
+
+            if (tokens[position + 1].Kind == TokenKind.Character)
+            {
+                // Match all array dimensions.
+                for (var i = 1; i < length; i += 2)
+                {
+                    if (tokens[position + i].Kind == TokenKind.Identifier)
+                    {
+                        count = i;
+                        break;
+                    }
+
+                    if (tokens[position + i].Value == "[" && tokens[position + i + 1].Value == "]")
+                    {
+                        dimensions++;
+                        continue;
+                    }
+
+                    return (null, -1);
+                }
+
+                if (count == -1)
+                {
+                    return (null, -1);
+                }
+
+                var varName = tokens[position + count].Value;
+
+                // Validate the tokens for a dynamic array declaration
+                if (tokens[position + count + 1].Kind != TokenKind.Assignment ||
+                    tokens[position + count + 2].Kind != TokenKind.New ||
+                    tokens[position + count + 3].Kind != TokenKind.Identifier)
+                {
+                    return (null, -1);
+                }
+
+                // Increase the index since we already validate the last 3 tokens (assign, new and type).
+                count += 4;
+
+                for (var i = count; i < length - 2; i += 3)
+                {
+                    // Parsing done, add to the array.
+                    if (tokens[position + i].Kind == TokenKind.Semicolon)
+                    {
+                        return (
+                            new SMVariable
+                            {
+                                Index = startIndex,
+                                Length = tokens[position + i].Index - startIndex,
+                                File = FileName,
+                                Name = varName,
+                                Type = varType,
+                                Dimensions = dimensions,
+                                Size = size
+                            }, i);
+                    }
+
+                    // Match all the dimensions.
+                    if (tokens[position + i].Value == "[" &&
+                        (tokens[position + i + 1].Kind == TokenKind.Number ||
+                         tokens[position + i + 1].Kind == TokenKind.Identifier) &&
+                        tokens[position + i + 2].Value == "]")
+                    {
+                        size.Add(tokens[position + i + 1].Value);
+                        continue;
+                    }
+
+
+                    return (null, -1);
+                }
+
+            }
+            return (null, -1);
         }
     }
 }

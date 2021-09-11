@@ -7,27 +7,27 @@ namespace SourcepawnCondenser
     {
         private int ConsumeSMPPDirective()
         {
-            if (t[position].Value == "#define")
+            if (_tokens[_position].Value == "#define")
             {
-                if ((position + 1) < length)
+                if ((_position + 1) < _length)
                 {
-                    if (t[position + 1].Kind == TokenKind.Identifier)
+                    if (_tokens[_position + 1].Kind == TokenKind.Identifier)
                     {
-                        def.Defines.Add(new SMDefine()
+                        _def.Defines.Add(new SMDefine()
                         {
-                            Index = t[position].Index,
-                            Length = t[position + 1].Index - t[position].Index + t[position + 1].Length,
-                            File = FileName,
-                            Name = t[position + 1].Value
+                            Index = _tokens[_position].Index,
+                            Length = _tokens[_position + 1].Index - _tokens[_position].Index + _tokens[_position + 1].Length,
+                            File = _fileName,
+                            Name = _tokens[_position + 1].Value
                         });
-                        for (var j = position + 1; j < length; ++j)
+                        for (var j = _position + 1; j < _length; ++j)
                         {
-                            if (t[j].Kind == TokenKind.EOL)
+                            if (_tokens[j].Kind == TokenKind.EOL)
                             {
                                 return j;
                             }
                         }
-                        return position + 1;
+                        return _position + 1;
                     }
                 }
             }

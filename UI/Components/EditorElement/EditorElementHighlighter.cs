@@ -181,99 +181,101 @@ namespace SPCode.UI.Components
                     Color = new HighlightingColor { Foreground = stringBrush }
                 });
 
-                if (smDef != null)
-                {
-                    if (smDef.Defines.Count > 0)
-                    {
-                        rs.Rules.Add(new HighlightingRule
-                        {
-                            Regex = new Regex(string.Join("|", smDef.Defines.Select(e => "\\b" + Regex.Escape(e.Name) + "\\b").ToArray())),
-                            Color = new HighlightingColor
-                            { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants) }
-                        });
-                    }
-                }
-                var def = Program.Configs[Program.SelectedConfig].GetSMDef();
-                if (def.TypeStrings.Length > 0)
-                {
-                    rs.Rules.Add(new HighlightingRule //types
-                    {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.TypeStrings, true),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Types) }
-                    });
-                }
-
-                if (def.ConstantsStrings.Length > 0)
-                {
-                    rs.Rules.Add(new HighlightingRule //constants
-                    {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.ConstantsStrings, true),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants) }
-                    });
-                }
-
-                if (def.FunctionStrings.Length > 0)
-                {
-                    rs.Rules.Add(new HighlightingRule //Functions
-                    {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.FunctionStrings, true),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Functions) }
-                    });
-                }
-
-                if (def.MethodsStrings.Length > 0)
-                {
-                    rs.Rules.Add(new HighlightingRule //Methods
-                    {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.MethodsStrings),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
-                    });
-                }
-
-                if (def.FieldStrings.Length > 0)
-                {
-                    rs.Rules.Add(new HighlightingRule //Methods
-                    {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.FieldStrings),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
-                    });
-                }
-
-                if (def.StructFieldStrings.Length > 0)
-                {
-                    rs.Rules.Add(new HighlightingRule //Methods
-                    {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.StructFieldStrings),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
-                    });
-                }
-
-                if (def.StructMethodStrings.Length > 0)
-                {
-                    rs.Rules.Add(new HighlightingRule //Methods
-                    {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(
-                            def.StructMethodStrings),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
-                    });
-                }
-
                 rs.Rules.Add(new HighlightingRule //unknown function calls
                 {
                     Regex = new Regex(@"\b\w+(?=\s*\()",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     Color = new HighlightingColor
-                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_UnkownFunctions) }
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_UnkownFunctions) }
                 });
 
                 rs.Name = "MainRule";
+                
+                if (smDef == null)
+                {
+                    return rs;
+                }
+                
+                if (smDef.Defines.Count > 0)
+                {
+                    rs.Rules.Add(new HighlightingRule
+                    {
+                        Regex = new Regex(string.Join("|", smDef.Defines.Select(e => "\\b" + Regex.Escape(e.Name) + "\\b").ToArray())),
+                        Color = new HighlightingColor
+                            { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants) }
+                    });
+                }
+                
+                if (smDef.TypeStrings.Length > 0)
+                {
+                    rs.Rules.Add(new HighlightingRule //types
+                    {
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(smDef.TypeStrings, true),
+                        Color = new HighlightingColor
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Types) }
+                    });
+                }
+
+                if (smDef.ConstantsStrings.Length > 0)
+                {
+                    rs.Rules.Add(new HighlightingRule //constants
+                    {
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(smDef.ConstantsStrings, true),
+                        Color = new HighlightingColor
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants) }
+                    });
+                }
+
+                if (smDef.FunctionStrings.Length > 0)
+                {
+                    rs.Rules.Add(new HighlightingRule //Functions
+                    {
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(smDef.FunctionStrings, true),
+                        Color = new HighlightingColor
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Functions) }
+                    });
+                }
+
+                if (smDef.MethodsStrings.Length > 0)
+                {
+                    rs.Rules.Add(new HighlightingRule //Methods
+                    {
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(smDef.MethodsStrings),
+                        Color = new HighlightingColor
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
+                    });
+                }
+
+                if (smDef.FieldStrings.Length > 0)
+                {
+                    rs.Rules.Add(new HighlightingRule //Methods
+                    {
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(smDef.FieldStrings),
+                        Color = new HighlightingColor
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
+                    });
+                }
+
+                if (smDef.StructFieldStrings.Length > 0)
+                {
+                    rs.Rules.Add(new HighlightingRule //Methods
+                    {
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(smDef.StructFieldStrings),
+                        Color = new HighlightingColor
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
+                    });
+                }
+
+                if (smDef.StructMethodStrings.Length > 0)
+                {
+                    rs.Rules.Add(new HighlightingRule //Methods
+                    {
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(
+                            smDef.StructMethodStrings),
+                        Color = new HighlightingColor
+                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
+                    });
+                }
                 return rs;
             }
         }

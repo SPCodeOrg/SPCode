@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Text;
 using SourcepawnCondenser.SourcemodDefinition;
 using SourcepawnCondenser.Tokenizer;
@@ -7,33 +10,34 @@ namespace SourcepawnCondenser
 {
     public partial class Condenser
     {
-        private readonly SMDefinition def;
+        private readonly SMDefinition _def;
 
-        private readonly string FileName;
-        private readonly int length;
-        private readonly string source;
-        private readonly Token[] t;
-        private int position;
+        private readonly string _fileName;
+        private readonly int _length;
+        private readonly string _source;
+        private readonly ImmutableList<Token> _tokens;
+        private int _position;
 
         public Condenser(string sourceCode, string fileName)
         {
-            t = Tokenizer.Tokenizer.TokenizeString(sourceCode, true).ToArray();
-            position = 0;
-            length = t.Length;
-            def = new SMDefinition();
-            source = sourceCode;
+            _tokens = Tokenizer.Tokenizer.TokenizeString(sourceCode, true).ToImmutableList();
+            _position = 0;
+            _length = _tokens.Count;
+
+            _def = new SMDefinition();
+            _source = sourceCode;
             if (fileName.EndsWith(".inc", StringComparison.InvariantCultureIgnoreCase))
             {
                 fileName = fileName.Substring(0, fileName.Length - 4);
             }
 
-            FileName = fileName;
+            _fileName = fileName;
         }
 
         public SMDefinition Condense()
         {
             Token ct;
-            while ((ct = t[position]).Kind != TokenKind.EOF)
+            while ((ct = _tokens[_position]).Kind != TokenKind.EOF)
             {
                 switch (ct.Kind)
                 {
@@ -42,7 +46,7 @@ namespace SourcepawnCondenser
                             var newIndex = ConsumeSMFunction();
                             if (newIndex != -1)
                             {
-                                position = newIndex + 1;
+                                _position = newIndex + 1;
                                 continue;
                             }
 
@@ -53,7 +57,7 @@ namespace SourcepawnCondenser
                             var newIndex = ConsumeSMEnumStruct();
                             if (newIndex != -1)
                             {
-                                position = newIndex + 1;
+                                _position = newIndex + 1;
                                 continue;
                             }
 
@@ -64,7 +68,7 @@ namespace SourcepawnCondenser
                             var newIndex = ConsumeSMEnum();
                             if (newIndex != -1)
                             {
-                                position = newIndex + 1;
+                                _position = newIndex + 1;
                                 continue;
                             }
 
@@ -75,7 +79,7 @@ namespace SourcepawnCondenser
                             var newIndex = ConsumeSMStruct();
                             if (newIndex != -1)
                             {
-                                position = newIndex + 1;
+                                _position = newIndex + 1;
                                 continue;
                             }
 
@@ -86,7 +90,7 @@ namespace SourcepawnCondenser
                             var newIndex = ConsumeSMPPDirective();
                             if (newIndex != -1)
                             {
-                                position = newIndex + 1;
+                                _position = newIndex + 1;
                                 continue;
                             }
 
@@ -97,7 +101,7 @@ namespace SourcepawnCondenser
                             var newIndex = ConsumeSMConstant();
                             if (newIndex != -1)
                             {
-                                position = newIndex + 1;
+                                _position = newIndex + 1;
                                 continue;
                             }
 
@@ -108,7 +112,7 @@ namespace SourcepawnCondenser
                             var newIndex = ConsumeSMMethodmap();
                             if (newIndex != -1)
                             {
-                                position = newIndex + 1;
+                                _position = newIndex + 1;
                                 continue;
                             }
 
@@ -119,7 +123,7 @@ namespace SourcepawnCondenser
                             var newIndex = ConsumeSMTypeset();
                             if (newIndex != -1)
                             {
-                                position = newIndex + 1;
+                                _position = newIndex + 1;
                                 continue;
                             }
 
@@ -130,7 +134,7 @@ namespace SourcepawnCondenser
                             var newIndex = ConsumeSMTypedef();
                             if (newIndex != -1)
                             {
-                                position = newIndex + 1;
+                                _position = newIndex + 1;
                                 continue;
                             }
 
@@ -141,7 +145,7 @@ namespace SourcepawnCondenser
                             var newIndex = ConsumeSMVariable();
                             if (newIndex != -1)
                             {
-                                position = newIndex + 1;
+                                _position = newIndex + 1;
                                 continue;
                             }
 
@@ -149,25 +153,25 @@ namespace SourcepawnCondenser
                             newIndex = ConsumeSMFunction();
                             if (newIndex != -1)
                             {
-                                position = newIndex + 1;
+                                _position = newIndex + 1;
                                 continue;
                             }
                         }
                         break;
                 }
 
-                ++position;
+                ++_position;
             }
 
-            def.Sort();
-            return def;
+            _def.Sort();
+            return _def;
         }
 
         private int BacktraceTestForToken(int StartPosition, TokenKind TestKind, bool IgnoreEOL, bool IgnoreOtherTokens)
         {
             for (var i = StartPosition; i >= 0; --i)
             {
-                if (t[i].Kind == TestKind)
+                if (_tokens[i].Kind == TestKind)
                 {
                     return i;
                 }
@@ -177,7 +181,7 @@ namespace SourcepawnCondenser
                     continue;
                 }
 
-                if (t[i].Kind == TokenKind.EOL && IgnoreEOL)
+                if (_tokens[i].Kind == TokenKind.EOL && IgnoreEOL)
                 {
                     continue;
                 }
@@ -190,9 +194,9 @@ namespace SourcepawnCondenser
 
         private int FortraceTestForToken(int StartPosition, TokenKind TestKind, bool IgnoreEOL, bool IgnoreOtherTokens)
         {
-            for (var i = StartPosition; i < length; ++i)
+            for (var i = StartPosition; i < _length; ++i)
             {
-                if (t[i].Kind == TestKind)
+                if (_tokens[i].Kind == TestKind)
                 {
                     return i;
                 }
@@ -202,7 +206,7 @@ namespace SourcepawnCondenser
                     continue;
                 }
 
-                if (t[i].Kind == TokenKind.EOL && IgnoreEOL)
+                if (_tokens[i].Kind == TokenKind.EOL && IgnoreEOL)
                 {
                     continue;
                 }
