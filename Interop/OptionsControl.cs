@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Windows.Media;
 using SPCode.Utils;
 
-namespace SPCode //leave this here instead of .Interop because of reasons...
+namespace SPCode.Interop
 {
     [Serializable]
     public class OptionsControl

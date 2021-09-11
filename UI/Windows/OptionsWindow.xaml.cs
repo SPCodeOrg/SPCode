@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using DiscordRPC;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
+using SPCode.Interop;
 using SPCode.UI.Components;
 using SPCode.Utils;
 using SPCode.Utils.Models;
