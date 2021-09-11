@@ -136,12 +136,12 @@ namespace SPCode.UI.Windows
             {
                 PreviewBox.editor.Text = $"/* \n\n{ex.Message}\n\n{ex.StackTrace}\n\n*/";
             }
-            
+
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TemplateEditMode)
+            if (TemplateEditMode || TemplateNewMode)
             {
                 var tempName = TbxRenameTemplate.Text;
                 if (!IsValidTemplate(ref tempName, out var message))
@@ -152,39 +152,22 @@ namespace SPCode.UI.Windows
                     return;
                 }
 
-                TemplateEditMode = false;
-
                 foreach (ListBoxItem item in TemplateListBox.Items)
                 {
                     item.IsEnabled = true;
                 }
 
                 PreviewBox.editor.IsReadOnly = true;
-                SaveTemplate(tempName);
-                HideVisuals();
-                return;
-            }
 
-            if (TemplateNewMode)
-            {
-                var tempName = TbxRenameTemplate.Text;
-                if (!IsValidTemplate(ref tempName, out var message))
+                if (TemplateEditMode)
                 {
-                    TbxRenameTemplate.BorderBrush = new SolidColorBrush(Colors.Red);
-                    LblError.Visibility = Visibility.Visible;
-                    LblError.Content = message;
-                    return;
+                    SaveTemplate(tempName);
+                }
+                else
+                {
+                    CreateTemplate(tempName);
                 }
 
-                TemplateNewMode = false;
-
-                foreach (ListBoxItem item in TemplateListBox.Items)
-                {
-                    item.IsEnabled = true;
-                }
-
-                PreviewBox.editor.IsReadOnly = true;
-                CreateTemplate(tempName);
                 HideVisuals();
                 return;
             }
@@ -193,11 +176,22 @@ namespace SPCode.UI.Windows
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TemplateEditMode || TemplateNewMode)
+            if (TemplateEditMode)
             {
-                HideVisuals(TemplateNewMode);
+                HideVisuals();
                 TemplateEditMode = false;
+                PreviewBox.editor.IsReadOnly = true;
+                var tInfo = (TemplateListBox.SelectedItem as ListBoxItem).Tag as TemplateInfo;
+                PreviewBox.editor.Text = File.ReadAllText(tInfo.Path);
+                PathBox.Text = tInfo.Path;
+            }
+            else if (TemplateNewMode)
+            {
+                HideVisuals();
                 TemplateNewMode = false;
+                PreviewBox.editor.IsReadOnly = true;
+                TemplateListBox.SelectedIndex = 0;
+                TemplateListBox.Items.RemoveAt(TemplateListBox.Items.Count - 1);
             }
             else
             {
@@ -472,6 +466,7 @@ namespace SPCode.UI.Windows
                     Path = newFilePath,
                 }
             };
+            lbi.MouseDoubleClick += TemplateListItem_MouseDoubleClick;
             TemplateListBox.Items[TemplateListBox.Items.Count - 1] = lbi;
         }
 
@@ -489,7 +484,7 @@ namespace SPCode.UI.Windows
             }
         }
 
-        private void HideVisuals(bool canceledFromNewTemplate = false)
+        private void HideVisuals()
         {
             PreviewBlock.Text = $"{Program.Translations.GetLanguage("Preview")}:";
             TbxRenameTemplate.Visibility = Visibility.Collapsed;
@@ -500,11 +495,6 @@ namespace SPCode.UI.Windows
             foreach (ListBoxItem item in TemplateListBox.Items)
             {
                 item.IsEnabled = true;
-            }
-            if (canceledFromNewTemplate)
-            {
-                TemplateListBox.SelectedIndex = 0;
-                TemplateListBox.Items.RemoveAt(TemplateListBox.Items.Count - 1);
             }
         }
 
@@ -538,6 +528,6 @@ namespace SPCode.UI.Windows
             return true;
         }
         #endregion
-        
+
     }
 }
