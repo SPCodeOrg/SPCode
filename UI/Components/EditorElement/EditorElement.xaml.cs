@@ -492,6 +492,28 @@ namespace SPCode.UI.Components
 
                     break;
 
+                case ")":
+                    if (Program.OptionsObject.Editor_AutoCloseBrackets && editor.TextArea.Document.GetCharAt(editor.TextArea.Caret.Offset - 1) == '(')
+                    {
+                        e.Handled = true;
+                        editor.TextArea.Caret.Offset += 1;
+                    }
+                    break;
+                case "]":
+                    if (Program.OptionsObject.Editor_AutoCloseBrackets && editor.TextArea.Document.GetCharAt(editor.TextArea.Caret.Offset - 1) == '[')
+                    {
+                        e.Handled = true;
+                        editor.TextArea.Caret.Offset += 1;
+                    }
+                    break;
+                case "}":
+                    if (Program.OptionsObject.Editor_AutoCloseBrackets && editor.TextArea.Document.GetCharAt(editor.TextArea.Caret.Offset - 1) == '{')
+                    {
+                        e.Handled = true;
+                        editor.TextArea.Caret.Offset += 1;
+                    }
+                    break;
+
                 case "\"":
                 case "'":
                     if (!Program.OptionsObject.Editor_AutoCloseStringChars)
