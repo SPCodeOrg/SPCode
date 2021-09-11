@@ -360,7 +360,7 @@ namespace SPCode.UI.Windows
                 var destFile = new FileInfo(PathBox.Text);
                 var templateInfo = (TemplateListBox.SelectedItem as ListBoxItem).Tag as TemplateInfo;
                 File.Copy(templateInfo.Path, destFile.FullName, true);
-                Program.MainWindow.TryLoadSourceFile(destFile.FullName, true, true, true);
+                Program.MainWindow.TryLoadSourceFile(destFile.FullName, out _, true, true, true);
 
                 Close();
             }

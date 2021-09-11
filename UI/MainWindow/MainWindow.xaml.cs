@@ -93,7 +93,7 @@ namespace SPCode.UI
             {
                 foreach (var file in Program.OptionsObject.LastOpenFiles)
                 {
-                    TryLoadSourceFile(file, false);
+                    TryLoadSourceFile(file, out _, false);
                 }
             }
 
@@ -102,7 +102,7 @@ namespace SPCode.UI
             {
                 if (!args[i].EndsWith("exe"))
                 {
-                    TryLoadSourceFile(args[i], false, true, i == 0);
+                    TryLoadSourceFile(args[i], out _, false, true, i == 0);
                 }
             }
 
@@ -227,7 +227,7 @@ namespace SPCode.UI
                 Debug.Assert(files != null, nameof(files) + " != null");
                 for (var i = 0; i < files.Length; ++i)
                 {
-                    TryLoadSourceFile(files[i], i == 0, true, i == 0);
+                    TryLoadSourceFile(files[i], out _, i == 0, true, i == 0);
                 }
             }
         }
@@ -249,11 +249,13 @@ namespace SPCode.UI
         /// </summary>
         /// <param name="filePath">The path of the file to load</param>
         /// <param name="UseBlendoverEffect">Whether to execute the blendover effect</param>
+        /// <param name="outEditor">The editor that has been loaded</param>
         /// <param name="TryOpenIncludes">Whether to open the includes associated with that file</param>
         /// <param name="SelectMe">Whether to focus the editor element once the file gets opened</param>
         /// <returns>If the file opening was successful or not</returns>
-        public bool TryLoadSourceFile(string filePath, bool UseBlendoverEffect = true, bool TryOpenIncludes = true, bool SelectMe = false)
+        public bool TryLoadSourceFile(string filePath, out EditorElement outEditor, bool UseBlendoverEffect = true, bool TryOpenIncludes = true, bool SelectMe = false)
         {
+            outEditor = null;
             var fileInfo = new FileInfo(filePath);
             if (fileInfo.Exists)
             {
@@ -285,12 +287,13 @@ namespace SPCode.UI
                                     editor.Parent.IsSelected = true;
                                 }
 
+                                outEditor = editor;
                                 return true;
                             }
                         }
                     }
 
-                    AddEditorElement(finalPath, fileInfo.Name, SelectMe);
+                    AddEditorElement(finalPath, fileInfo.Name, SelectMe, out outEditor);
                     if (TryOpenIncludes && Program.OptionsObject.Program_OpenCustomIncludes)
                     {
                         using var textReader = fileInfo.OpenText();
@@ -312,7 +315,7 @@ namespace SPCode.UI
 
                                 fileName = Path.Combine(
                                     fileInfo.DirectoryName ?? throw new NullReferenceException(), fileName);
-                                TryLoadSourceFile(fileName, false,
+                                TryLoadSourceFile(fileName, out _, false,
                                     Program.OptionsObject.Program_OpenIncludesRecursively);
                             }
                             catch (Exception)
@@ -362,11 +365,11 @@ namespace SPCode.UI
         /// <param name="filePath">The path of the file</param>
         /// <param name="name">The title of the tab</param>
         /// <param name="SelectMe">Whether to focus this editor element once created.</param>
-        private void AddEditorElement(string filePath, string name, bool SelectMe)
+        private void AddEditorElement(string filePath, string name, bool SelectMe, out EditorElement editor)
         {
             var layoutDocument = new LayoutDocument { Title = name };
             layoutDocument.ToolTip = filePath;
-            var editor = new EditorElement(filePath) { Parent = layoutDocument };
+            editor = new EditorElement(filePath) { Parent = layoutDocument };
             layoutDocument.Content = editor;
             EditorsReferences.Add(editor);
             DockingPane.Children.Add(layoutDocument);

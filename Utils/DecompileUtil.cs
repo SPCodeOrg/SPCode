@@ -120,7 +120,7 @@ namespace SPCode.Utils
                     }
 
                     // Load the decompiled file to SPCode
-                    _win.TryLoadSourceFile(destFile, true, false, true);
+                    _win.TryLoadSourceFile(destFile, out _, true, false, true);
                     if (task != null)
                     {
                         await task.CloseAsync();

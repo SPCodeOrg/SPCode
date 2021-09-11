@@ -121,7 +121,7 @@ namespace SPCode.UI
             var itemInfo = (ObjectBrowserTag)item.Tag;
             if (itemInfo.Kind == ObjectBrowserItemKind.File)
             {
-                TryLoadSourceFile(itemInfo.Value, true, false, true);
+                TryLoadSourceFile(itemInfo.Value, out _, true, false, true);
             }
         }
 

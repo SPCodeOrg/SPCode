@@ -8,6 +8,7 @@ using System.Windows.Input;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using SourcepawnCondenser.SourcemodDefinition;
+using SPCode.Interop;
 
 namespace SPCode.UI.Components
 {
@@ -44,18 +45,18 @@ namespace SPCode.UI.Components
                     }
 
                     await Task.Delay(100);
-                    var result = Program.MainWindow.TryLoadSourceFile(file, true, false, true);
-                    if (!result)
+                    if (Program.MainWindow.TryLoadSourceFile(file, out var newEditor, true, false, true) && newEditor != null)
                     {
-                        Debug.Print($"File {file} not found!");
+                        newEditor.editor.TextArea.Caret.Offset = sm.Index;
+                        newEditor.editor.TextArea.Caret.BringCaretToView();
+                        newEditor.editor.TextArea.Selection = Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
+                        return;
+                    }
+                    else
+                    {
+                        LoggingControl.LogAction($"File {file} not found!");
                         continue;
                     }
-                    var newEditor = Program.MainWindow.GetCurrentEditorElement();
-                    Debug.Assert(newEditor != null);
-                    newEditor.editor.TextArea.Caret.Offset = sm.Index;
-                    newEditor.editor.TextArea.Caret.BringCaretToView();
-                    newEditor.editor.TextArea.Selection = Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
-                    return;
                 }
             }
 

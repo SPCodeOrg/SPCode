@@ -1,5 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.IO;
+using System.Windows;
 using System.Windows.Controls;
+using SPCode.UI.Components;
 using SPCode.Utils;
 
 namespace SPCode.UI
@@ -14,26 +17,53 @@ namespace SPCode.UI
                 return;
             }
 
-            var fileName = row.File;
             var editors = GetAllEditorElements();
             if (editors == null)
             {
                 return;
             }
 
-            foreach (var editor in editors)
+            // Create a file info with the supplied file 
+            var fileName = row.File;
+            var fInfo = new FileInfo(fileName);
+
+            // If it doesn't exist, it's probably a local file relative to one of the scripts being compiled
+            if (!fInfo.Exists)
             {
-                if (editor.FullFilePath == fileName)
+                var exists = false;
+
+                // We're gonna search for the file containing the error
+                // inside every compiled scripts location
+                foreach (var script in ScriptsCompiled)
                 {
-                    editor.Parent.IsSelected = true;
-                    var line = GetLineInteger(row.Line);
-                    if (line > 0 && line <= editor.editor.LineCount)
+                    var scriptDirInfo = Path.GetDirectoryName(script);
+                    fInfo = new FileInfo(scriptDirInfo + Path.DirectorySeparatorChar + fileName);
+                    if (fInfo.Exists)
                     {
-                        var lineObj = editor.editor.Document.Lines[line - 1];
-                        editor.editor.ScrollToLine(line - 1);
-                        editor.editor.Select(lineObj.Offset, lineObj.Length);
+                        exists = true;
+                        break;
                     }
                 }
+
+                if (!exists)
+                {
+                    return;
+                }
+            }
+
+            // Look for the file that has the error among those that are open
+            foreach (var ed in editors)
+            {
+                if (ed.FullFilePath == fInfo.FullName)
+                {
+                    GoToErrorLine(ed, row);
+                }
+            }
+
+            // If it's not opened, open it and go to the error line
+            if (TryLoadSourceFile(fInfo.FullName, out var editor, true, false, true) && editor != null)
+            {
+                GoToErrorLine(editor, row);
             }
         }
 
@@ -63,6 +93,19 @@ namespace SPCode.UI
             }
 
             return -1;
+        }
+
+        private void GoToErrorLine(EditorElement editor, ErrorDataGridRow row)
+        {
+            editor.Parent.IsSelected = true;
+            var line = GetLineInteger(row.Line);
+            if (line > 0 && line <= editor.editor.LineCount)
+            {
+                var lineObj = editor.editor.Document.Lines[line - 1];
+                editor.editor.ScrollToLine(line - 1);
+                editor.editor.Select(lineObj.Offset, lineObj.Length);
+                return;
+            }
         }
     }
 }

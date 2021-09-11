@@ -17,6 +17,8 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
+        private List<string> ScriptsCompiled;
+
         private readonly List<string> CompiledFileNames = new();
         private readonly List<string> CompiledFiles = new();
         private readonly List<string> NonUploadedFiles = new();
@@ -65,229 +67,227 @@ namespace SPCode.UI
                 }
             }
 
-            if (SpCompFound)
-            {
-                // If the compiler was found, it starts adding to a list all of the files to compile
-                var filesToCompile = new List<string>();
-                if (compileAll)
-                {
-                    var editors = GetAllEditorElements();
-                    if (editors == null)
-                    {
-                        InCompiling = false;
-                        return;
-                    }
-
-                    foreach (var t in editors)
-                    {
-                        var compileBoxIsChecked = t.CompileBox.IsChecked;
-                        if (compileBoxIsChecked != null && compileBoxIsChecked.Value)
-                        {
-                            filesToCompile.Add(t.FullFilePath);
-                        }
-                    }
-                }
-                else
-                {
-                    var ee = GetCurrentEditorElement();
-                    if (ee == null)
-                    {
-                        InCompiling = false;
-                        return;
-                    }
-
-                    /*
-                    ** I've struggled a bit here. Should i check, if the CompileBox is checked 
-                    ** and only compile if it's checked or should it be ignored and compiled anyway?
-                    ** I decided, to compile anyway but give me feedback/opinions.
-                    */
-                    if (ee.FullFilePath.EndsWith(".sp"))
-                    {
-                        filesToCompile.Add(ee.FullFilePath);
-                    }
-                }
-
-                var compileCount = filesToCompile.Count;
-                if (compileCount > 0)
-                {
-                    // Shows the 'Compiling...' window
-                    ErrorResultGrid.Items.Clear();
-                    var progressTask = await this.ShowProgressAsync(Program.Translations.GetLanguage("Compiling"), "",
-                        false, MetroDialogOptions);
-                    progressTask.SetProgress(0.0);
-                    var stringOutput = new StringBuilder();
-                    var errorFilterRegex =
-                        new Regex(
-                            @"^(?<File>.+?)\((?<Line>[0-9]+(\s*--\s*[0-9]+)?)\)\s*:\s*(?<Type>[a-zA-Z]+\s+([a-zA-Z]+\s+)?[0-9]+)\s*:(?<Details>.+)",
-                            RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
-
-                    var compiledSuccess = 0;
-
-                    // Loops through all files to compile
-                    for (var i = 0; i < compileCount; ++i)
-                    {
-                        if (!InCompiling) //pressed escape
-                        {
-                            PressedEscape = true;
-                            break;
-                        }
-
-                        var file = filesToCompile[i];
-                        progressTask.SetMessage($"{file} ({i}/{compileCount}) ");
-                        ProcessUITasks();
-                        var fileInfo = new FileInfo(file);
-                        if (fileInfo.Exists)
-                        {
-                            var process = new Process();
-                            process.StartInfo.WorkingDirectory =
-                                fileInfo.DirectoryName ?? throw new NullReferenceException();
-                            process.StartInfo.UseShellExecute = true;
-                            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                            process.StartInfo.CreateNoWindow = true;
-                            process.StartInfo.FileName = spCompInfo.FullName;
-
-                            var destinationFileName = ShortenScriptFileName(fileInfo.Name) + ".smx";
-                            var outFile = Path.Combine(fileInfo.DirectoryName, destinationFileName);
-                            if (File.Exists(outFile))
-                            {
-                                File.Delete(outFile);
-                            }
-
-                            var errorFile = $@"{fileInfo.DirectoryName}\error_{Environment.TickCount}_{file.GetHashCode():X}_{i}.txt";
-                            if (File.Exists(errorFile))
-                            {
-                                File.Delete(errorFile);
-                            }
-
-                            var includeDirectories = new StringBuilder();
-                            foreach (var dir in c.SMDirectories)
-                            {
-                                includeDirectories.Append(" -i=\"" + dir + "\"");
-                            }
-
-                            var includeStr = includeDirectories.ToString();
-
-                            process.StartInfo.Arguments =
-                                "\"" + fileInfo.FullName + "\" -o=\"" + outFile + "\" -e=\"" + errorFile + "\"" +
-                                includeStr + " -O=" + c.OptimizeLevel + " -v=" + c.VerboseLevel;
-                            progressTask.SetProgress((i + 1 - 0.5d) / compileCount);
-                            var execResult = ExecuteCommandLine(c.PreCmd, fileInfo.DirectoryName, c.CopyDirectory,
-                                fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
-                            if (!string.IsNullOrWhiteSpace(execResult))
-                            {
-
-                            }
-
-                            ProcessUITasks();
-
-                            try
-                            {
-                                process.Start();
-                                process.WaitForExit();
-                            }
-                            catch (Exception)
-                            {
-                                await progressTask.CloseAsync();
-                                await this.ShowMessageAsync(Program.Translations.GetLanguage("SPCompNotStarted"),
-                                    Program.Translations.GetLanguage("Error"), MessageDialogStyle.Affirmative,
-                                    MetroDialogOptions);
-                                return;
-                            }
-
-                            if (File.Exists(errorFile))
-                            {
-                                var errorStr = File.ReadAllText(errorFile);
-                                stringOutput.AppendLine(errorStr.Trim('\n', '\r'));
-                                var mc = errorFilterRegex.Matches(errorStr);
-                                for (var j = 0; j < mc.Count; ++j)
-                                {
-                                    ErrorResultGrid.Items.Add(new ErrorDataGridRow
-                                    {
-                                        File = mc[j].Groups["File"].Value.Trim(),
-                                        Line = mc[j].Groups["Line"].Value.Trim(),
-                                        Type = mc[j].Groups["Type"].Value.Trim(),
-                                        Details = mc[j].Groups["Details"].Value.Trim()
-                                    });
-                                }
-
-                                LoggingControl.LogAction(fileInfo.Name + " (error)");
-                                File.Delete(errorFile);
-                            }
-                            else
-                            {
-                                LoggingControl.LogAction(fileInfo.Name);
-                                compiledSuccess++;
-                            }
-
-                            if (File.Exists(outFile))
-                            {
-                                CompiledFiles.Add(outFile);
-                                NonUploadedFiles.Add(outFile);
-                                CompiledFileNames.Add(destinationFileName);
-                            }
-
-                            var execResult_Post = ExecuteCommandLine(c.PostCmd, fileInfo.DirectoryName,
-                                c.CopyDirectory, fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
-                            if (!string.IsNullOrWhiteSpace(execResult_Post))
-                            {
-
-                            }
-
-                            progressTask.SetProgress((double)(i + 1) / compileCount);
-                            ProcessUITasks();
-                        }
-                    }
-
-                    if (compiledSuccess > 0)
-                    {
-                        LoggingControl.LogAction($"Compiled {compiledSuccess} {(compileAll ? "plugins" : "plugin")}.", 2);
-                    }
-
-                    if (!PressedEscape)
-                    {
-                        progressTask.SetProgress(1.0);
-                        if (c.AutoCopy)
-                        {
-                            progressTask.SetTitle(Program.Translations.GetLanguage("CopyingFiles"));
-                            progressTask.SetIndeterminate();
-                            await Task.Run(() => Copy_Plugins());
-                            progressTask.SetProgress(1.0);
-                        }
-
-                        if (c.AutoUpload)
-                        {
-                            progressTask.SetTitle(Program.Translations.GetLanguage("FTPUploading"));
-                            progressTask.SetIndeterminate();
-                            await Task.Run(FTPUpload_Plugins);
-                            progressTask.SetProgress(1.0);
-                        }
-
-                        if (c.AutoRCON)
-                        {
-                            progressTask.SetTitle(Program.Translations.GetLanguage("RCONCommand"));
-                            progressTask.SetIndeterminate();
-                            await Task.Run(Server_Query);
-                            progressTask.SetProgress(1.0);
-                        }
-
-                        if (CompileOutputRow.Height.Value < 11.0)
-                        {
-                            CompileOutputRow.Height = new GridLength(200.0);
-                        }
-                    }
-
-                    RefreshObjectBrowser();
-                    await progressTask.CloseAsync();
-                }
-            }
-            else
+            if (!SpCompFound)
             {
                 LoggingControl.LogAction($"No compiler found, aborting.");
                 await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"),
                     Program.Translations.GetLanguage("SPCompNotFound"), MessageDialogStyle.Affirmative,
                     MetroDialogOptions);
+                return;
             }
 
+            // If the compiler was found, it starts adding to a list all of the files to compile
+            ScriptsCompiled = new();
+            if (compileAll)
+            {
+                var editors = GetAllEditorElements();
+                if (editors == null)
+                {
+                    InCompiling = false;
+                    return;
+                }
+
+                foreach (var t in editors)
+                {
+                    var compileBoxIsChecked = t.CompileBox.IsChecked;
+                    if (compileBoxIsChecked != null && compileBoxIsChecked.Value)
+                    {
+                        ScriptsCompiled.Add(t.FullFilePath);
+                    }
+                }
+            }
+            else
+            {
+                var ee = GetCurrentEditorElement();
+                if (ee == null)
+                {
+                    InCompiling = false;
+                    return;
+                }
+
+                /*
+                ** I've struggled a bit here. Should i check, if the CompileBox is checked 
+                ** and only compile if it's checked or should it be ignored and compiled anyway?
+                ** I decided, to compile anyway but give me feedback/opinions.
+                */
+                if (ee.FullFilePath.EndsWith(".sp"))
+                {
+                    ScriptsCompiled.Add(ee.FullFilePath);
+                }
+            }
+
+            var compileCount = ScriptsCompiled.Count;
+            if (compileCount > 0)
+            {
+                // Shows the 'Compiling...' window
+                ErrorResultGrid.Items.Clear();
+                var progressTask = await this.ShowProgressAsync(Program.Translations.GetLanguage("Compiling"), "",
+                    false, MetroDialogOptions);
+                progressTask.SetProgress(0.0);
+                var stringOutput = new StringBuilder();
+                var errorFilterRegex =
+                    new Regex(
+                        @"^(?<File>.+?)\((?<Line>[0-9]+(\s*--\s*[0-9]+)?)\)\s*:\s*(?<Type>[a-zA-Z]+\s+([a-zA-Z]+\s+)?[0-9]+)\s*:(?<Details>.+)",
+                        RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
+
+                var compiledSuccess = 0;
+
+                // Loops through all files to compile
+                for (var i = 0; i < compileCount; ++i)
+                {
+                    if (!InCompiling) //pressed escape
+                    {
+                        PressedEscape = true;
+                        break;
+                    }
+
+                    var file = ScriptsCompiled[i];
+                    progressTask.SetMessage($"{file} ({i}/{compileCount}) ");
+                    ProcessUITasks();
+                    var fileInfo = new FileInfo(file);
+                    if (fileInfo.Exists)
+                    {
+                        var process = new Process();
+                        process.StartInfo.WorkingDirectory =
+                            fileInfo.DirectoryName ?? throw new NullReferenceException();
+                        process.StartInfo.UseShellExecute = true;
+                        process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                        process.StartInfo.CreateNoWindow = true;
+                        process.StartInfo.FileName = spCompInfo.FullName;
+
+                        var destinationFileName = ShortenScriptFileName(fileInfo.Name) + ".smx";
+                        var outFile = Path.Combine(fileInfo.DirectoryName, destinationFileName);
+                        if (File.Exists(outFile))
+                        {
+                            File.Delete(outFile);
+                        }
+
+                        var errorFile = $@"{fileInfo.DirectoryName}\error_{Environment.TickCount}_{file.GetHashCode():X}_{i}.txt";
+                        if (File.Exists(errorFile))
+                        {
+                            File.Delete(errorFile);
+                        }
+
+                        var includeDirectories = new StringBuilder();
+                        foreach (var dir in c.SMDirectories)
+                        {
+                            includeDirectories.Append(" -i=\"" + dir + "\"");
+                        }
+
+                        var includeStr = includeDirectories.ToString();
+
+                        process.StartInfo.Arguments =
+                            "\"" + fileInfo.FullName + "\" -o=\"" + outFile + "\" -e=\"" + errorFile + "\"" +
+                            includeStr + " -O=" + c.OptimizeLevel + " -v=" + c.VerboseLevel;
+                        progressTask.SetProgress((i + 1 - 0.5d) / compileCount);
+                        var execResult = ExecuteCommandLine(c.PreCmd, fileInfo.DirectoryName, c.CopyDirectory,
+                            fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
+                        if (!string.IsNullOrWhiteSpace(execResult))
+                        {
+
+                        }
+
+                        ProcessUITasks();
+
+                        try
+                        {
+                            process.Start();
+                            process.WaitForExit();
+                        }
+                        catch (Exception)
+                        {
+                            await progressTask.CloseAsync();
+                            await this.ShowMessageAsync(Program.Translations.GetLanguage("SPCompNotStarted"),
+                                Program.Translations.GetLanguage("Error"), MessageDialogStyle.Affirmative,
+                                MetroDialogOptions);
+                            return;
+                        }
+
+                        if (File.Exists(errorFile))
+                        {
+                            var errorStr = File.ReadAllText(errorFile);
+                            stringOutput.AppendLine(errorStr.Trim('\n', '\r'));
+                            var mc = errorFilterRegex.Matches(errorStr);
+                            for (var j = 0; j < mc.Count; ++j)
+                            {
+                                ErrorResultGrid.Items.Add(new ErrorDataGridRow
+                                {
+                                    File = mc[j].Groups["File"].Value.Trim(),
+                                    Line = mc[j].Groups["Line"].Value.Trim(),
+                                    Type = mc[j].Groups["Type"].Value.Trim(),
+                                    Details = mc[j].Groups["Details"].Value.Trim()
+                                });
+                            }
+
+                            LoggingControl.LogAction(fileInfo.Name + " (error)");
+                            File.Delete(errorFile);
+                        }
+                        else
+                        {
+                            LoggingControl.LogAction(fileInfo.Name);
+                            compiledSuccess++;
+                        }
+
+                        if (File.Exists(outFile))
+                        {
+                            CompiledFiles.Add(outFile);
+                            NonUploadedFiles.Add(outFile);
+                            CompiledFileNames.Add(destinationFileName);
+                        }
+
+                        var execResult_Post = ExecuteCommandLine(c.PostCmd, fileInfo.DirectoryName,
+                            c.CopyDirectory, fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
+                        if (!string.IsNullOrWhiteSpace(execResult_Post))
+                        {
+
+                        }
+
+                        progressTask.SetProgress((double)(i + 1) / compileCount);
+                        ProcessUITasks();
+                    }
+                }
+
+                if (compiledSuccess > 0)
+                {
+                    LoggingControl.LogAction($"Compiled {compiledSuccess} {(compileAll ? "plugins" : "plugin")}.", 2);
+                }
+
+                if (!PressedEscape)
+                {
+                    progressTask.SetProgress(1.0);
+                    if (c.AutoCopy)
+                    {
+                        progressTask.SetTitle(Program.Translations.GetLanguage("CopyingFiles"));
+                        progressTask.SetIndeterminate();
+                        await Task.Run(() => Copy_Plugins());
+                        progressTask.SetProgress(1.0);
+                    }
+
+                    if (c.AutoUpload)
+                    {
+                        progressTask.SetTitle(Program.Translations.GetLanguage("FTPUploading"));
+                        progressTask.SetIndeterminate();
+                        await Task.Run(FTPUpload_Plugins);
+                        progressTask.SetProgress(1.0);
+                    }
+
+                    if (c.AutoRCON)
+                    {
+                        progressTask.SetTitle(Program.Translations.GetLanguage("RCONCommand"));
+                        progressTask.SetIndeterminate();
+                        await Task.Run(Server_Query);
+                        progressTask.SetProgress(1.0);
+                    }
+
+                    if (CompileOutputRow.Height.Value < 11.0)
+                    {
+                        CompileOutputRow.Height = new GridLength(200.0);
+                    }
+                }
+
+                RefreshObjectBrowser();
+                await progressTask.CloseAsync();
+            }
             InCompiling = false;
         }
 

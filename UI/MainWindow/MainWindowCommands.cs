@@ -93,7 +93,7 @@ namespace SPCode.UI
 
             File.Create(newFilePath).Close();
 
-            AddEditorElement(newFilePath, $"New Plugin ({newFileNum}).sp", true);
+            AddEditorElement(newFilePath, $"New Plugin ({newFileNum}).sp", true, out _);
             RefreshObjectBrowser();
         }
 
@@ -133,7 +133,7 @@ namespace SPCode.UI
                 {
                     for (var i = 0; i < ofd.FileNames.Length; ++i)
                     {
-                        AnyFileLoaded |= TryLoadSourceFile(ofd.FileNames[i], i == 0, true, i == 0);
+                        AnyFileLoaded |= TryLoadSourceFile(ofd.FileNames[i], out _, i == 0, true, i == 0);
                     }
 
                     if (!AnyFileLoaded)
