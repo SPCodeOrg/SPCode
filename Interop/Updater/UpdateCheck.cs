@@ -85,11 +85,11 @@ namespace SPCode.Interop.Updater
             var client = new GitHubClient(new ProductHeaderValue("spcode-client"));
             var allReleases = await client.Repository.Release.GetAll("SPCodeOrg", "SPCode");
             var list = new List<Release>();
-            foreach (var item in allReleases)
+            for (int i = 0; i <= 10; i++)
             {
-                list.Add(item);
+                list.Add(allReleases[i]);
             }
-            return list.Take(10).ToList();
+            return list;
         }
     }
 }
