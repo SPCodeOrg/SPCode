@@ -1,16 +1,28 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using SourcepawnCondenser.Tokenizer;
 
 namespace SourcepawnCondenser.SourcemodDefinition
 {
     public class SMFunction : SMBaseDefinition
     {
-        public int EndPos = -1;
+        public int EndPos;
 
-        public string FullName = string.Empty;
-        public string ReturnType = string.Empty;
-        public string[] Parameters = new string[0];
-        public SMFunctionKind FunctionKind = SMFunctionKind.Unknown;
-        public List<SMVariable> FuncVariables = new List<SMVariable>();
+        public readonly string FullName;
+        public readonly string ReturnType;
+        public readonly List<string> Parameters;
+        public readonly SMFunctionKind FunctionKind;
+        public readonly List<SMVariable> FuncVariables;
+
+        public SMFunction(IImmutableList<Token> tokens, int endToken, string file, string name, string commentString, string fullName, string returnType, List<string> parameters, SMFunctionKind functionKind, List<SMVariable> funcVariables) : base(tokens.First().Index, tokens[endToken].Index - tokens.First().Index, file, name, commentString)
+        {
+            FullName = fullName;
+            ReturnType = returnType;
+            Parameters = parameters;
+            FunctionKind = functionKind;
+            FuncVariables = funcVariables;
+        }
     }
 
     public enum SMFunctionKind
@@ -23,6 +35,6 @@ namespace SourcepawnCondenser.SourcemodDefinition
         PublicNative,
         Static,
         Normal,
-        Unknown
+        None
     }
 }

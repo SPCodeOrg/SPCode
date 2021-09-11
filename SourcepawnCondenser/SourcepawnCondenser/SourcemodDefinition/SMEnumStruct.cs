@@ -4,23 +4,43 @@ namespace SourcepawnCondenser.SourcemodDefinition
 {
     public class SMEnumStruct : SMBaseDefinition
     {
-        public List<SMEnumStructField> Fields = new List<SMEnumStructField>();
-        public List<SMEnumStructMethod> Methods = new List<SMEnumStructMethod>();
+        public readonly List<SMEnumStructField> Fields;
+        public readonly List<SMEnumStructMethod> Methods;
+
+        public SMEnumStruct(int index, int length, string file, string name, string commentString, List<SMEnumStructField> fields, List<SMEnumStructMethod> methods) : base(index, length, file, name, commentString)
+        {
+            Fields = fields;
+            Methods = methods;
+        }
     }
 
     public class SMEnumStructField : SMBaseDefinition
     {
-        public string MethodmapName = string.Empty;
-        public string FullName = string.Empty;
+        public readonly string MethodmapName;
+        public readonly string FullName;
         //public string Type = string.Empty; not needed yet
+        public SMEnumStructField(int index, int length, string file, string name, string commentString, string methodmapName, string fullName) : base(index, length, file, name, commentString)
+        {
+            MethodmapName = methodmapName;
+            FullName = fullName;
+        }
     }
 
     public class SMEnumStructMethod : SMBaseDefinition
     {
-        public string MethodmapName = string.Empty;
-        public string FullName = string.Empty;
-        public string ReturnType = string.Empty;
-        public string[] Parameters = new string[0];
-        public string[] MethodKind = new string[0];
+        public readonly string MethodmapName;
+        public readonly string FullName;
+        public readonly string ReturnType;
+        public readonly List<string> Parameters;
+        public readonly List<string> MethodKind;
+
+        public SMEnumStructMethod(int index, int length, string file, string name, string commentString, string methodmapName, string fullName, string returnType, List<string> parameters, List<string> methodKind) : base(index, length, file, name, commentString)
+        {
+            MethodmapName = methodmapName;
+            FullName = fullName;
+            ReturnType = returnType;
+            Parameters = parameters;
+            MethodKind = methodKind;
+        }
     }
 }

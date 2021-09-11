@@ -9,6 +9,8 @@
         BraceClose,             //d
         ParenthesisOpen,        //d
         ParenthesisClose,       //d
+        BracketOpen,       //d
+        BracketClose,       //d
         Quote,                  //d
         SingleLineComment,      //d
         MultiLineComment,       //d
