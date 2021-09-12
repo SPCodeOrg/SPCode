@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using MahApps.Metro.Controls.Dialogs;
 using SPCode.Interop;
 using SPCode.Interop.Updater;
@@ -17,6 +19,7 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
+        #region Events
         private void FileMenu_Open(object sender, RoutedEventArgs e)
         {
             var editors = GetAllEditorElements();
@@ -153,7 +156,6 @@ namespace SPCode.UI
         {
             Command_ToggleCommentLine();
         }
-
 
         private void Menu_SelectAll(object sender, RoutedEventArgs e)
         {
@@ -297,7 +299,9 @@ namespace SPCode.UI
                 case 2: Server_Start(); break;
             }
         }
+        #endregion
 
+        #region Methods
         /// <summary>
         /// Loads the input gesture texts to the menu items.
         /// </summary>
@@ -336,6 +340,15 @@ namespace SPCode.UI
             }
         }
 
+        private void AddNewRecentFile(string filePath)
+        {
+            if (!Program.OptionsObject.RecentFiles.Any(x => x.Equals(filePath)))
+            {
+                MenuI_Recent.Items.Insert(0, BuildRecentFileItem(filePath));
+                Program.OptionsObject.RecentFiles.AddFirst(filePath);
+            }
+        }
+
         private void LoadRecentsList()
         {
             var recentsList = Program.OptionsObject.RecentFiles;
@@ -348,29 +361,58 @@ namespace SPCode.UI
 
             foreach (var file in recentsList)
             {
-                var fInfo = new FileInfo(file);
-                var lbl = new TextBlock();
-
-                lbl.Inlines.Add($"{fInfo.Name}  ");
-                lbl.Inlines.Add(new Run(fInfo.FullName)
-                {
-                    FontSize = FontSize - 2,
-                    Foreground = new SolidColorBrush(Colors.DarkGray),
-                    FontStyle = FontStyles.Italic
-                });
-
-                var mi = new MenuItem()
-                {
-                    Header = lbl
-                };
-
-                mi.Click += (sender, e) =>
-                {
-                    TryLoadSourceFile(fInfo.FullName, out _, true, false, true);
-                };
-
-                MenuI_Recent.Items.Add(mi);
+                MenuI_Recent.Items.Add(BuildRecentFileItem(file));
             }
         }
+
+        private MenuItem BuildRecentFileItem(string file)
+        {
+            // Create FileInfo to handle file
+            var fInfo = new FileInfo(file);
+
+            // Create the image for the file
+            var img = new Image()
+            {
+                Source = new BitmapImage(new Uri($"/SPCode;component/Resources/Icons/{FileIcons[fInfo.Extension]}", UriKind.Relative)),
+                Width = 15,
+                Height = 15
+            };
+
+            // Create the text that the MenuItem will display
+            var text = new TextBlock()
+            {
+                Margin = new Thickness(5.0, 0.0, 0.0, 0.0),
+            };
+            text.Inlines.Add($"{fInfo.Name}  ");
+            text.Inlines.Add(new Run(fInfo.FullName)
+            {
+                FontSize = FontSize - 2,
+                Foreground = new SolidColorBrush(Colors.DarkGray),
+                FontStyle = FontStyles.Italic
+            });
+
+            // Create the StackPanel where we will place image and text
+            var stack = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+            };
+            stack.Children.Add(img);
+            stack.Children.Add(text);
+
+            // Create the MenuItem and set the header to the created StackPanel
+            var mi = new MenuItem()
+            {
+                Header = stack
+            };
+
+            // Set the click callback to open the file
+            mi.Click += (sender, e) =>
+            {
+                TryLoadSourceFile(fInfo.FullName, out _, true, false, true);
+            };
+
+            return mi;
+        }
+        #endregion
     }
 }
