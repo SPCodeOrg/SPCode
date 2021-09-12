@@ -210,7 +210,7 @@ namespace SPCode.UI.Components
 
         private async void TextArea_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (!Keyboard.IsKeyDown(Key.LeftCtrl))
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl) || IsTemplateEditor)
             {
                 return;
             }
