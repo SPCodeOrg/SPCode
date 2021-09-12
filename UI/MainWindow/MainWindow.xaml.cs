@@ -343,12 +343,7 @@ namespace SPCode.UI
                             }
                         }
                     }
-                    var layoutDocument = new LayoutDocument { Title = "DASM: " + fileInfo.Name };
-                    var dasmElement = new DASMElement(fileInfo);
-                    layoutDocument.Content = dasmElement;
-                    DockingPane.Children.Add(layoutDocument);
-                    DockingPane.SelectedContentIndex = DockingPane.ChildrenCount - 1;
-                    DASMReferences.Add(dasmElement);
+                    AddDASMElement(fileInfo);
                 }
 
                 if (UseBlendoverEffect)
@@ -383,6 +378,20 @@ namespace SPCode.UI
                 layoutDocument.IsSelected = true;
                 editor.editor.TextArea.Caret.Show();
             }
+        }
+
+        /// <summary>
+        /// Adds a new DASM element associated with the file to the Docking Manager.
+        /// </summary>
+        private void AddDASMElement(FileInfo fileInfo)
+        {
+            var layoutDocument = new LayoutDocument { Title = "DASM: " + fileInfo.Name };
+            var dasmElement = new DASMElement(fileInfo);
+            DASMReferences.Add(dasmElement);
+            layoutDocument.Content = dasmElement;
+            DockingPane.Children.Add(layoutDocument);
+            DockingPane.SelectedContentIndex = DockingPane.ChildrenCount - 1;
+            AddNewRecentFile(fileInfo.FullName);
         }
 
         /// <summary>
@@ -442,42 +451,5 @@ namespace SPCode.UI
             Title = outString;
         }
         #endregion
-
-        private void AddNewRecentFile(string filePath)
-        {
-            if (Program.OptionsObject.RecentFiles.Any(x => x.Equals(filePath)))
-            {
-                return;
-            }
-            MenuI_Recent.IsEnabled = true;
-            Program.OptionsObject.RecentFiles.AddFirst(filePath);
-            var fInfo = new FileInfo(filePath);
-            var lbl = new TextBlock();
-
-            lbl.Inlines.Add($"{fInfo.Name}  ");
-            lbl.Inlines.Add(new Run(fInfo.FullName)
-            {
-                FontSize = FontSize - 2,
-                Foreground = new SolidColorBrush(Colors.DarkGray),
-                FontStyle = FontStyles.Italic
-            });
-
-            var mi = new MenuItem()
-            {
-                Header = lbl
-            };
-
-            mi.Click += (sender, e) =>
-            {
-                TryLoadSourceFile(fInfo.FullName, out _, true, false, true);
-            };
-
-            MenuI_Recent.Items.Insert(0, mi);
-            if (MenuI_Recent.Items.Count > 10)
-            {
-                MenuI_Recent.Items.RemoveAt(10);
-                Program.OptionsObject.RecentFiles.RemoveLast();
-            }
-        }
     }
 }

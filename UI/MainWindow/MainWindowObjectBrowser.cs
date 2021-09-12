@@ -724,7 +724,7 @@ namespace SPCode.UI
         /// </summary>
         public void UpdateOBFileButton()
         {
-            if (GetAllEditorElements() == null)
+            if (GetAllEditorElements() == null && GetAllDASMElements() == null)
             {
                 OBTabFile.IsEnabled = false;
                 OBTabFile.IsSelected = false;
