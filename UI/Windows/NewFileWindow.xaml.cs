@@ -9,12 +9,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
-using System.Xml.Linq;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
-using SPCode.UI.Components;
 using SPCode.Utils;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace SPCode.UI.Windows
 {
@@ -100,7 +99,7 @@ namespace SPCode.UI.Windows
             InitializeComponent();
             ParseTemplateFile();
             Language_Translate();
-            PreviewBox.Parent = new Xceed.Wpf.AvalonDock.Layout.LayoutDocument();
+            PreviewBox.Parent = new LayoutDocument();
             Program.MainWindow.EditorsReferences.Add(PreviewBox);
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
             {
@@ -257,7 +256,7 @@ namespace SPCode.UI.Windows
         {
             if (e.Key == Key.Escape)
             {
-                Close();
+                CancelButton_Click(null, null);
             }
         }
 
