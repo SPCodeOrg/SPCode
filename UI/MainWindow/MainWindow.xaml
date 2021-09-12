@@ -22,9 +22,9 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
         <ResourceDictionary>
-          
+
           <!-- Button style with pressed effects -->
-          
+
           <Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{DynamicResource WhiteBrush}"/>
             <Setter Property="Template">
@@ -45,7 +45,7 @@
               </Trigger>
             </Style.Triggers>
           </Style>
-          
+
           <!--Button Images-->
 
           <Image x:Key="ImgReload" Source="/SPCode;component/Resources/Icons/icon-reload.png" Width="16"/>
@@ -53,7 +53,7 @@
           <Image x:Key="ImgExpand" Source="/SPCode;component/Resources/Icons/icon-expand.png" Width="16"/>
 
           <!--BlendOverEffect used on save and such-->
-          
+
           <Storyboard x:Key="BlendOverEffect" Duration="00:00:00.5" Storyboard.TargetName="BlendEffectPlane" Storyboard.TargetProperty="Opacity">
             <DoubleAnimationUsingKeyFrames>
               <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.00" />
@@ -61,7 +61,7 @@
               <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.50" />
             </DoubleAnimationUsingKeyFrames>
           </Storyboard>
-          
+
           <Storyboard x:Key="FadeFindReplaceGridIn" Duration="00:00:00.2" Storyboard.TargetName="FindReplaceGrid">
             <DoubleAnimation To="1" Duration="00:00:00.2" Storyboard.TargetProperty="Opacity" />
           </Storyboard>
@@ -92,7 +92,7 @@
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </controls:MetroWindow.Resources>
-  
+
   <controls:MetroWindow.LeftWindowCommands>
     <controls:WindowCommands>
       <Grid x:Name="MainWindowCommands">
@@ -101,6 +101,13 @@
             <MenuItem x:Name="MenuI_New" Header="New" Click="Menu_New"/>
             <MenuItem x:Name="MenuI_NewTemplate" Header="New From Template" Click="Menu_NewFromTemplate"/>
             <MenuItem x:Name="MenuI_Open" Header="Open" Click="Menu_Open"/>
+            <MenuItem x:Name="MenuI_Recent" Header="Recent files">
+              <MenuItem.ContextMenu>
+                <ContextMenu>
+                  <MenuItem x:Name="MenuI_ClearRecent" Header="Clear recent" Click="Menu_ClearRecent"/>
+                </ContextMenu>
+              </MenuItem.ContextMenu>
+            </MenuItem>
             <Separator />
             <MenuItem x:Name="MenuI_Save" Header="Save" Click="Menu_Save"/>
             <MenuItem x:Name="MenuI_SaveAll" Header="Save All" Click="Menu_SaveAll"/>

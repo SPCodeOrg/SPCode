@@ -4,9 +4,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using DiscordRPC;
@@ -122,6 +125,7 @@ namespace SPCode.UI
 
             LoadInputGestureTexts();
             LoadCommandsDictionary();
+            LoadRecentsList();
 
             UpdateOBFileButton();
 
@@ -373,6 +377,7 @@ namespace SPCode.UI
             layoutDocument.Content = editor;
             EditorsReferences.Add(editor);
             DockingPane.Children.Add(layoutDocument);
+            AddNewRecentFile(filePath);
             if (SelectMe)
             {
                 layoutDocument.IsSelected = true;
@@ -437,5 +442,42 @@ namespace SPCode.UI
             Title = outString;
         }
         #endregion
+
+        private void AddNewRecentFile(string filePath)
+        {
+            if (Program.OptionsObject.RecentFiles.Any(x => x.Equals(filePath)))
+            {
+                return;
+            }
+            MenuI_Recent.IsEnabled = true;
+            Program.OptionsObject.RecentFiles.AddFirst(filePath);
+            var fInfo = new FileInfo(filePath);
+            var lbl = new TextBlock();
+
+            lbl.Inlines.Add($"{fInfo.Name}  ");
+            lbl.Inlines.Add(new Run(fInfo.FullName)
+            {
+                FontSize = FontSize - 2,
+                Foreground = new SolidColorBrush(Colors.DarkGray),
+                FontStyle = FontStyles.Italic
+            });
+
+            var mi = new MenuItem()
+            {
+                Header = lbl
+            };
+
+            mi.Click += (sender, e) =>
+            {
+                TryLoadSourceFile(fInfo.FullName, out _, true, false, true);
+            };
+
+            MenuI_Recent.Items.Insert(0, mi);
+            if (MenuI_Recent.Items.Count > 10)
+            {
+                MenuI_Recent.Items.RemoveAt(10);
+                Program.OptionsObject.RecentFiles.RemoveLast();
+            }
+        }
     }
 }

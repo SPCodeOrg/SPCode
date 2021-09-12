@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 using MahApps.Metro.Controls.Dialogs;
 using SPCode.Interop;
 using SPCode.Interop.Updater;
 using SPCode.UI.Windows;
 using SPCode.Utils;
+using SPCode.Utils.Models;
 
 namespace SPCode.UI
 {
@@ -23,11 +27,18 @@ namespace SPCode.UI
             }
 
             var EditorIsSelected = GetCurrentEditorElement() != null;
-            ((MenuItem)((MenuItem)sender).Items[4]).IsEnabled = EditorIsSelected;
-            ((MenuItem)((MenuItem)sender).Items[6]).IsEnabled = EditorIsSelected;
-            ((MenuItem)((MenuItem)sender).Items[8]).IsEnabled = EditorIsSelected;
-            ((MenuItem)((MenuItem)sender).Items[5]).IsEnabled = EditorsAreOpen;
-            ((MenuItem)((MenuItem)sender).Items[9]).IsEnabled = EditorsAreOpen;
+            MenuI_Save.IsEnabled = EditorIsSelected;
+            MenuI_SaveAs.IsEnabled = EditorIsSelected;
+            MenuI_Close.IsEnabled = EditorIsSelected;
+            MenuI_SaveAll.IsEnabled = EditorsAreOpen;
+            MenuI_CloseAll.IsEnabled = EditorsAreOpen;
+        }
+
+        private void Menu_ClearRecent(object sender, RoutedEventArgs e)
+        {
+            Program.OptionsObject.RecentFiles.Clear();
+            MenuI_Recent.Items.Clear();
+            MenuI_Recent.IsEnabled = false;
         }
 
         private void Menu_New(object sender, RoutedEventArgs e)
@@ -322,6 +333,43 @@ namespace SPCode.UI
                         }
                     }
                 }
+            }
+        }
+
+        private void LoadRecentsList()
+        {
+            var recentsList = Program.OptionsObject.RecentFiles;
+
+            if (recentsList.Count == 0)
+            {
+                MenuI_Recent.IsEnabled = false;
+                return;
+            }
+
+            foreach (var file in recentsList)
+            {
+                var fInfo = new FileInfo(file);
+                var lbl = new TextBlock();
+
+                lbl.Inlines.Add($"{fInfo.Name}  ");
+                lbl.Inlines.Add(new Run(fInfo.FullName)
+                {
+                    FontSize = FontSize - 2,
+                    Foreground = new SolidColorBrush(Colors.DarkGray),
+                    FontStyle = FontStyles.Italic
+                });
+
+                var mi = new MenuItem()
+                {
+                    Header = lbl
+                };
+
+                mi.Click += (sender, e) =>
+                {
+                    TryLoadSourceFile(fInfo.FullName, out _, true, false, true);
+                };
+
+                MenuI_Recent.Items.Add(mi);
             }
         }
     }

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
+using System.Windows.Controls;
 using System.Windows.Media;
 using SPCode.Utils;
+using SPCode.Utils.Models;
 
 namespace SPCode.Interop
 {
@@ -75,6 +78,9 @@ namespace SPCode.Interop
 
         public bool UI_Animations = true;
         public bool UI_ShowToolBar;
+
+        public LinkedList<string> RecentFiles = new();
+
         public int Version = 11;
 
         public void FillNullToDefaults()
@@ -224,7 +230,6 @@ namespace SPCode.Interop
                 using var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Create, FileAccess.ReadWrite,
                     FileShare.None);
                 formatter.Serialize(fileStream, Program.OptionsObject);
-                var test = Program.OptionsObject;
             }
             catch (Exception)
             {

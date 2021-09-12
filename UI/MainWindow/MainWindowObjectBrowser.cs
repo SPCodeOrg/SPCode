@@ -559,12 +559,12 @@ namespace SPCode.UI
         }
 
         /// <summary>
-        /// Helper function to build an expanded item's contents. <br/>
-        /// It outs a TreeViewItem list to be used when using the Reload function to keep directories expanded after refreshing.
+        /// <para> Helper function to build an expanded item's contents. </para>
+        /// <para> It outs a TreeViewItem list to be used when using the Reload function to keep directories expanded after refreshing. </para>
         /// </summary>
         /// <param name="dir">Directory to fetch contents from.</param>
         /// <param name="itemsToExpand">List of items that were expanded before calling this function to reload the Object Browser items.</param>
-        /// <returns></returns>
+        /// <returns>List of Items build from the specified directory.</returns>
         private List<TreeViewItem> BuildDirectoryItems(string dir, out List<TreeViewItem> itemsToExpand)
         {
             itemsToExpand = new();
