@@ -572,12 +572,12 @@ namespace SPCode.UI
 
             // GetFiles() filter is not precise and doing new FileInfo(x).Extension is slower
             var directories = Directory.GetDirectories(dir, "*", SearchOption.TopDirectoryOnly);
-            var incFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".inc")).ToList();
-            var spFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".sp")).ToList();
-            var smxFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".smx")).ToList();
-            var txtFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".txt")).ToList();
-            var cfgFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".cfg")).ToList();
-            var iniFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".ini")).ToList();
+            var incFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".inc")).ToList();
+            var spFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".sp")).ToList();
+            var smxFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".smx")).ToList();
+            var txtFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".txt")).ToList();
+            var cfgFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".cfg")).ToList();
+            var iniFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".ini")).ToList();
 
             var itemsToAdd = new List<string>();
             itemsToAdd.AddRange(directories);
