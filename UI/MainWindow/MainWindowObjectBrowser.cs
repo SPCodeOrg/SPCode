@@ -285,7 +285,7 @@ namespace SPCode.UI
         /// <summary>
         /// Refreshes the object browser's items, remembering folding states.
         /// </summary>
-        private void RefreshObjectBrowser()
+        public void RefreshObjectBrowser()
         {
             // Delete context menu to prevent performing actions on potentially null elements
             ObjectBrowser.ContextMenu = null;
@@ -719,6 +719,9 @@ namespace SPCode.UI
             return source as TreeViewItem;
         }
 
+        /// <summary>
+        /// Disables the File tab button of the Object Browser if there's no file opened in the editor.
+        /// </summary>
         public void UpdateOBFileButton()
         {
             if (GetAllEditorElements() == null)
