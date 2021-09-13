@@ -11,6 +11,7 @@ namespace SPCode.Interop
             { "New", "Ctrl+N" },
             { "NewTemplate", "Ctrl+Shift+N" },
             { "Open", "Ctrl+O" },
+            { "ReopenLastClosedTab", "Ctrl+Shift+T" },
             { "Save", "Ctrl+S" },
             { "SaveAll", "Ctrl+Shift+S" },
             { "SaveAs", "Ctrl+Alt+S" },

@@ -98,8 +98,12 @@
       <Grid x:Name="MainWindowCommands">
         <Menu>
           <MenuItem x:Name="MenuI_File" Header="File" SubmenuOpened="FileMenu_Open">
+
             <MenuItem x:Name="MenuI_New" Header="New" Click="Menu_New"/>
             <MenuItem x:Name="MenuI_NewTemplate" Header="New From Template" Click="Menu_NewFromTemplate"/>
+
+            <Separator/>
+
             <MenuItem x:Name="MenuI_Open" Header="Open" Click="Menu_Open"/>
             <MenuItem x:Name="MenuI_Recent" Header="Recent files">
               <MenuItem.ContextMenu>
@@ -108,13 +112,19 @@
                 </ContextMenu>
               </MenuItem.ContextMenu>
             </MenuItem>
+            <MenuItem x:Name="MenuI_ReopenLastClosedTab" Header="Reopen last tab" Click="Menu_ReopenLastClosedTab"/>
+            
             <Separator />
+            
             <MenuItem x:Name="MenuI_Save" Header="Save" Click="Menu_Save"/>
             <MenuItem x:Name="MenuI_SaveAll" Header="Save All" Click="Menu_SaveAll"/>
             <MenuItem x:Name="MenuI_SaveAs" Header="Save As" Click="Menu_SaveAs"/>
+            
             <Separator />
+            
             <MenuItem x:Name="MenuI_Close" Header="Close" Click="Menu_Close"/>
             <MenuItem x:Name="MenuI_CloseAll" Header="Close All" Click="Menu_CloseAll"/>
+            
           </MenuItem>
 
           <MenuItem x:Name="MenuI_Edit" Header="Edit" SubmenuOpened="EditMenu_Open">

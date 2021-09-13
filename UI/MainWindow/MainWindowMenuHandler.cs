@@ -44,6 +44,11 @@ namespace SPCode.UI
             MenuI_Recent.IsEnabled = false;
         }
 
+        private void Menu_ReopenLastClosedTab(object sender, RoutedEventArgs e)
+        {
+            Command_ReopenLastClosedTab();
+        }
+
         private void Menu_New(object sender, RoutedEventArgs e)
         {
             Command_New();
@@ -411,6 +416,7 @@ namespace SPCode.UI
                 TryLoadSourceFile(fInfo.FullName, out _, true, false, true);
             };
 
+            // Return the MenuItem
             return mi;
         }
         #endregion

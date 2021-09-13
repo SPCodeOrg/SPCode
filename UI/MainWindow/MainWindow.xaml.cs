@@ -127,6 +127,8 @@ namespace SPCode.UI
             LoadCommandsDictionary();
             LoadRecentsList();
 
+            MenuI_ReopenLastClosedTab.IsEnabled = false;
+
             UpdateOBFileButton();
 
             SearchCooldownTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };

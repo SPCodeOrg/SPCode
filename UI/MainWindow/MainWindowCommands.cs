@@ -517,5 +517,17 @@ namespace SPCode.UI
             };
             spDefinitionWindow.ShowDialog();
         }
+        /// <summary>
+        /// Re-opens the last closed tab
+        /// </summary>
+        private void Command_ReopenLastClosedTab()
+        {
+            if (Program.RecentFilesStack.Count > 0)
+            {
+                TryLoadSourceFile(Program.RecentFilesStack.Pop(), out _, true, false, true);
+            }
+
+            MenuI_ReopenLastClosedTab.IsEnabled = Program.RecentFilesStack.Count > 0;
+        }
     }
 }

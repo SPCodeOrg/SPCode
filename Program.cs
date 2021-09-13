@@ -30,9 +30,8 @@ namespace SPCode
         public static Config[] Configs;
         public static int SelectedConfig;
         public static string SelectedTemplatePath;
-
+        public static Stack<string> RecentFilesStack = new();
         public static UpdateInfo UpdateStatus;
-
         public static bool RCCKMade;
         public static DiscordRpcClient DiscordClient = new(Constants.DiscordRPCAppID);
         public static Timestamps DiscordTime = Timestamps.Now;

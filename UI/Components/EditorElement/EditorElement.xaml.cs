@@ -747,30 +747,28 @@ namespace SPCode.UI.Components
                 fileWatcher = null;
             }
 
-            if (CheckSavings)
+            if (CheckSavings && _NeedsSave)
             {
-                if (_NeedsSave)
+                if (ForcedToSave)
                 {
-                    if (ForcedToSave)
+                    Save();
+                }
+                else
+                {
+                    var title = $"{Program.Translations.GetLanguage("SavingFile")} '" + Parent.Title.Trim('*') +
+                                "'";
+                    var Result = await Program.MainWindow.ShowMessageAsync(title, "",
+                        MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions);
+                    if (Result == MessageDialogResult.Affirmative)
                     {
                         Save();
-                    }
-                    else
-                    {
-                        var title = $"{Program.Translations.GetLanguage("SavingFile")} '" + Parent.Title.Trim('*') +
-                                    "'";
-                        var Result = await Program.MainWindow.ShowMessageAsync(title, "",
-                            MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions);
-                        if (Result == MessageDialogResult.Affirmative)
-                        {
-                            Save();
-                        }
                     }
                 }
             }
 
             Program.MainWindow.EditorsReferences.Remove(this);
-
+            Program.MainWindow.MenuI_ReopenLastClosedTab.IsEnabled = true;
+            Program.RecentFilesStack.Push(FullFilePath);
             Parent = null; //to prevent a ring depency which disables the GC from work
             Program.MainWindow.UpdateWindowTitle();
         }

@@ -65,6 +65,7 @@ namespace SPCode.UI
                 { "New", Command_New },
                 { "NewTemplate", Command_NewFromTemplate },
                 { "Open", Command_Open },
+                { "ReopenLastClosedTab", Command_ReopenLastClosedTab },
                 { "Save", Command_Save },
                 { "SaveAll", Command_SaveAll },
                 { "SaveAs", Command_SaveAs },

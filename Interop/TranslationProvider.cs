@@ -367,6 +367,7 @@ namespace SPCode.Interop
             language.Add("EnableRPCFile", "Show current file");
             language.Add("TemplateExists", "Template name already exists");
             language.Add("IllegalCharacters", "Illegal characters");
+            language.Add("ReopenLastClosedTab", "Reopen the last closed tab");
         }
     }
 }
