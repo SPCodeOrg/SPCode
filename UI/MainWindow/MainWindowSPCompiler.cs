@@ -496,30 +496,29 @@ namespace SPCode.UI
             try
             {
                 ServerProcess.Start();
+                ServerIsRunning = true;
+                Program.MainWindow.Dispatcher?.Invoke(() =>
+                {
+                    EnableServerAnim.Begin();
+                    UpdateWindowTitle();
+                });
+                ServerProcess.WaitForExit();
+                ServerProcess.Dispose();
+                ServerIsRunning = false;
+                Program.MainWindow.Dispatcher?.Invoke(() =>
+                {
+                    if (Program.MainWindow.IsLoaded)
+                    {
+                        DisableServerAnim.Begin();
+                        UpdateWindowTitle();
+                    }
+                    LoggingControl.LogAction("Server started.", 2);
+                });
             }
             catch (Exception)
             {
                 return;
             }
-
-            ServerIsRunning = true;
-            Program.MainWindow.Dispatcher?.Invoke(() =>
-            {
-                EnableServerAnim.Begin();
-                UpdateWindowTitle();
-            });
-            ServerProcess.WaitForExit();
-            ServerProcess.Dispose();
-            ServerIsRunning = false;
-            Program.MainWindow.Dispatcher?.Invoke(() =>
-            {
-                if (Program.MainWindow.IsLoaded)
-                {
-                    DisableServerAnim.Begin();
-                    UpdateWindowTitle();
-                }
-                LoggingControl.LogAction("Server started.", 2);
-            });
         }
 
         private string ShortenScriptFileName(string fileName)

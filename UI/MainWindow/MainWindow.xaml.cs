@@ -173,7 +173,11 @@ namespace SPCode.UI
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
-            ServerCheckThread?.Abort(); //a join would not work, so we have to be..forcefully...
+            if (ServerIsRunning)
+            {
+                ServerCheckThread.Abort();
+                ServerProcess.Kill();
+            }
             var lastOpenFiles = new List<string>();
             var editors = GetAllEditorElements();
             bool? SaveUnsaved = null;
@@ -447,7 +451,7 @@ namespace SPCode.UI
 
             if (ServerIsRunning)
             {
-                outString = $"{outString} | ({Program.Translations.GetLanguage("ServerRunning")})";
+                outString = $"{outString} | {Program.Translations.GetLanguage("ServerRunning")}";
             }
 
             Title = outString;
