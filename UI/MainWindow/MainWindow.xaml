@@ -140,8 +140,8 @@
               <MenuItem x:Name="MenuI_FoldingsCollapse" Header="Collapse All" Click="Menu_CollapseAll" />
             </MenuItem>
             <MenuItem x:Name="MenuI_GoToLine" Header="Jump To" Click="Menu_JumpTo"/>
-            <MenuItem x:Name="MenuI_CommentLine" Header="Comment selection (//)" Click="Menu_CommentLine"/>
-            <MenuItem x:Name="MenuI_UncommentLine" Header="Uncomment selection (//)" Click="Menu_UncommentLine"/>
+            <MenuItem x:Name="MenuI_CommentLine" Header="Comment selection" Click="Menu_CommentLine"/>
+            <MenuItem x:Name="MenuI_UncommentLine" Header="Uncomment selection" Click="Menu_UncommentLine"/>
             <MenuItem x:Name="MenuI_SelectAll" Header="Select All" Click="Menu_SelectAll"/>
             <Separator />
             <MenuItem x:Name="MenuI_SearchReplace" Header="Find &amp; Replace" Click="Menu_FindAndReplace"/>
