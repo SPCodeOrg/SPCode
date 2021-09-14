@@ -157,9 +157,14 @@ namespace SPCode.UI
             Command_GoToLine();
         }
 
-        private void Menu_ToggleCommentLine(object sender, RoutedEventArgs e)
+        private void Menu_CommentLine(object sender, RoutedEventArgs e)
         {
-            Command_ToggleCommentLine();
+            Command_ToggleCommentLine(true);
+        }
+
+        private void Menu_UncommentLine(object sender, RoutedEventArgs e)
+        {
+            Command_ToggleCommentLine(false);
         }
 
         private void Menu_SelectAll(object sender, RoutedEventArgs e)

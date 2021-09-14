@@ -164,7 +164,8 @@ namespace SPCode.Interop
             language.Add("Folding", "Foldings");
             language.Add("FoldingsExpand", "Expand all");
             language.Add("FoldingsCollapse", "Collapse all");
-            language.Add("CommentLine", "Toggle comment");
+            language.Add("CommentLine", "Comment selection");
+            language.Add("UncommentLine", "Uncomment selection");
             language.Add("SelectAll", "Select all");
             language.Add("SearchReplace", "Find & Replace");
             language.Add("Tools", "Tools");

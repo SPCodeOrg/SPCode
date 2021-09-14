@@ -740,6 +740,7 @@ namespace SPCode.UI.Components
         {
             regularyTimer.Stop();
             regularyTimer.Close();
+
             if (fileWatcher != null)
             {
                 fileWatcher.EnableRaisingEvents = false;
@@ -766,45 +767,73 @@ namespace SPCode.UI.Components
                 }
             }
 
+            Parent = null;
+
             Program.MainWindow.EditorsReferences.Remove(this);
             Program.MainWindow.MenuI_ReopenLastClosedTab.IsEnabled = true;
             Program.RecentFilesStack.Push(FullFilePath);
-            Parent = null; //to prevent a ring depency which disables the GC from work
             Program.MainWindow.UpdateWindowTitle();
         }
 
-        public void ToggleCommentOnLine()
+        public void ToggleComment(bool comment)
         {
-            var line = editor.Document.GetLineByOffset(editor.CaretOffset);
-            var lineText = editor.Document.GetText(line);
-            var leadingWhiteSpaces = 0;
-            foreach (var l in lineText)
-            {
-                if (char.IsWhiteSpace(l))
-                {
-                    leadingWhiteSpaces++;
-                }
-                else
-                {
-                    break;
-                }
-            }
+            // Get the selection segments
+            var selectionSegments = editor.TextArea.Selection.Segments;
 
-            lineText = lineText.Trim();
-            if (lineText.Length > 1)
+            var lineList = new List<DocumentLine>();
+            var document = editor.TextArea.Document;
+
+            // If there's no selection, add to lineList the line the caret is standing on
+            if (!selectionSegments.Any())
             {
-                if (lineText[0] == '/' && lineText[1] == '/')
-                {
-                    editor.Document.Remove(line.Offset + leadingWhiteSpaces, 2);
-                }
-                else
-                {
-                    editor.Document.Insert(line.Offset + leadingWhiteSpaces, "//");
-                }
+                lineList.Add(document.GetLineByOffset(editor.TextArea.Caret.Offset));
             }
             else
             {
-                editor.Document.Insert(line.Offset + leadingWhiteSpaces, "//");
+                // Get all the lines from that selection and store them in a list
+                foreach (var segment in selectionSegments)
+                {
+                    var lineStart = document.GetLineByOffset(segment.StartOffset).LineNumber;
+                    var lineEnd = document.GetLineByOffset(segment.EndOffset).LineNumber;
+                    for (var i = lineStart; i <= lineEnd; i++)
+                    {
+                        lineList.Add(editor.Document.GetLineByNumber(i));
+                    }
+                }
+            }
+
+            // For each line, apply comment logic
+            foreach (var line in lineList)
+            {
+                var lineText = editor.Document.GetText(line);
+                var leadingWhiteSpaces = 0;
+                foreach (var l in lineText)
+                {
+                    if (char.IsWhiteSpace(l))
+                    {
+                        leadingWhiteSpaces++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                lineText = lineText.Trim();
+                if (lineText.Length > 1)
+                {
+                    if (!comment && lineText[0] == '/' && lineText[1] == '/')
+                    {
+                        editor.Document.Remove(line.Offset + leadingWhiteSpaces, 3);
+                    }
+                    else if (comment && lineText[0] != '/' && lineText[1] != '/')
+                    {
+                        editor.Document.Insert(line.Offset + leadingWhiteSpaces, "// ");
+                    }
+                }
+                else if (comment)
+                {
+                    editor.Document.Insert(line.Offset + leadingWhiteSpaces, "// ");
+                }
             }
         }
 

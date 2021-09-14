@@ -23,6 +23,7 @@ namespace SPCode.Interop
             { "ReformatAll", "Ctrl+Shift+R" },
             { "GoToLine", "Ctrl+G" },
             { "CommentLine", "Ctrl+K" },
+            { "UncommentLine", "Ctrl+Shift+K" },
             { "TransformUppercase", "Ctrl+U" },
             { "TransformLowercase", "Ctrl+Shift+U" },
             { "DeleteLine", "Ctrl+D" },

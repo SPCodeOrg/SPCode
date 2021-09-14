@@ -425,12 +425,12 @@ namespace SPCode.UI
         /// <summary>
         /// Comment or uncomment the line the caret is in.
         /// </summary>
-        private void Command_ToggleCommentLine()
+        private void Command_ToggleCommentLine(bool comment)
         {
             var ee = GetCurrentEditorElement();
             if (ee != null && !ee.editor.IsReadOnly)
             {
-                ee.ToggleCommentOnLine();
+                ee.ToggleComment(comment);
             }
         }
 
