@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using SPCode.Interop;
 using SPCode.UI.Components;
@@ -41,7 +43,7 @@ namespace SPCode.UI
         {
             var name = (string)((MenuItem)sender).Header;
             ChangeConfig(name);
-            LoggingControl.LogAction($"Changed to config \"{name}\".");
+            LoggingControl.LogAction($"Changed to config \"{name}\".", 2);
         }
 
         /// <summary>
@@ -54,14 +56,30 @@ namespace SPCode.UI
             {
                 return;
             }
+
             Program.Configs[index].LoadSMDef();
+
+            if (Program.Configs[index].RejectedPaths.Any())
+            {
+                var sb = new StringBuilder();
+                sb.Append("SPCode was unauthorized to access the following directories to parse their includes: \n");
+                foreach (var path in Program.Configs[index].RejectedPaths)
+                {
+                    sb.Append($"  - {path}\n");
+                }
+
+                LoggingControl.LogAction(sb.ToString());
+            }
+
             var name = Program.Configs[index].Name;
             for (var i = 0; i < ConfigMenu.Items.Count - 2; ++i)
             {
                 ((MenuItem)ConfigMenu.Items[i]).IsChecked = name == (string)((MenuItem)ConfigMenu.Items[i]).Header;
             }
+
             Program.SelectedConfig = index;
             Program.OptionsObject.Program_SelectedConfig = Program.Configs[Program.SelectedConfig].Name;
+
             var editors = GetAllEditorElements();
             if (editors != null)
             {
@@ -72,6 +90,7 @@ namespace SPCode.UI
                     editor.InvalidateVisual();
                 }
             }
+
             OBDirList.ItemsSource = Program.Configs[index].SMDirectories;
             OBDirList.Items.Refresh();
             OBDirList.SelectedIndex = 0;

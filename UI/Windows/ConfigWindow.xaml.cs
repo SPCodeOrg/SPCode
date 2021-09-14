@@ -209,13 +209,27 @@ namespace SPCode.UI.Windows
             {
                 IsFolderPicker = true
             };
+
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 var c = Program.Configs[ConfigListBox.SelectedIndex];
+
                 if (c.SMDirectories.Contains(dialog.FileName))
                 {
                     return;
                 }
+
+                try
+                {
+                    Directory.GetAccessControl(dialog.FileName);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    this.ShowMessageAsync("Access error", 
+                        "The directory you just specified could not be accessed properly by SPCode. You might have trouble using the includes from this directory.", 
+                        MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                }
+
                 c.SMDirectories.Add(dialog.FileName);
                 C_SMDir.Items.Refresh();
                 NeedsSMDefInvalidation = true;

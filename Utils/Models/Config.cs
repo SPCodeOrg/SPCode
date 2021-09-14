@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using SourcepawnCondenser.SourcemodDefinition;
+using SPCode.Interop;
 
 namespace SPCode.Utils
 {
@@ -39,6 +42,7 @@ namespace SPCode.Utils
         private SMDefinition SMDef;
 
         public List<string> SMDirectories;
+        public List<string> RejectedPaths = new();
 
         public bool Standard;
         public int VerboseLevel = 1;
@@ -68,12 +72,18 @@ namespace SPCode.Utils
             try
             {
                 var def = new SMDefinition();
-                def.AppendFiles(SMDirectories);
+                def.AppendFiles(SMDirectories, out var rejectedPaths);
+
+                if (rejectedPaths.Any())
+                {
+                    rejectedPaths.ForEach(x => RejectedPaths.Add(x));
+                }
+
                 SMDef = def;
             }
             catch (Exception)
             {
-                SMDef = new SMDefinition(); //this could be dangerous...
+                SMDef = new SMDefinition();
             }
         }
     }
