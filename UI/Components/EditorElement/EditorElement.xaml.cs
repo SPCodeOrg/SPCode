@@ -783,6 +783,9 @@ namespace SPCode.UI.Components
             var lineList = new List<DocumentLine>();
             var document = editor.TextArea.Document;
 
+            // Start undo transaction so undoing this doesn't result in undoing every single comment manually
+            document.UndoStack.StartUndoGroup();
+
             // If there's no selection, add to lineList the line the caret is standing on
             if (!selectionSegments.Any())
             {
@@ -823,18 +826,21 @@ namespace SPCode.UI.Components
                 {
                     if (!comment && lineText[0] == '/' && lineText[1] == '/')
                     {
-                        editor.Document.Remove(line.Offset + leadingWhiteSpaces, 3);
+                        editor.Document.Remove(line.Offset + leadingWhiteSpaces, 2);
                     }
                     else if (comment && lineText[0] != '/' && lineText[1] != '/')
                     {
-                        editor.Document.Insert(line.Offset + leadingWhiteSpaces, "// ");
+                        editor.Document.Insert(line.Offset + leadingWhiteSpaces, "//");
                     }
                 }
                 else if (comment)
                 {
-                    editor.Document.Insert(line.Offset + leadingWhiteSpaces, "// ");
+                    editor.Document.Insert(line.Offset + leadingWhiteSpaces, "//");
                 }
             }
+
+            // End the undo transaction
+            document.UndoStack.EndUndoGroup();
         }
 
         public void ChangeCase(bool toUpper = true)
