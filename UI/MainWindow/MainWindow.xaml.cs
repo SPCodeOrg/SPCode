@@ -141,6 +141,12 @@ namespace SPCode.UI
         #region Events
         private void DockingManager_ActiveContentChanged(object sender, EventArgs e)
         {
+            if (OBTabFile.IsSelected)
+            {
+                ListViewOBItem_SelectFile(OBTabFile, null);
+                OBTabFile.IsSelected = true;
+            }
+
             UpdateWindowTitle();
             UpdateOBFileButton();
         }
