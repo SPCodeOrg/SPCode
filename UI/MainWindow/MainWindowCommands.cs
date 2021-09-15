@@ -425,12 +425,12 @@ namespace SPCode.UI
         /// <summary>
         /// Comment or uncomment the line the caret is in.
         /// </summary>
-        private void Command_ToggleCommentLine()
+        private void Command_ToggleCommentLine(bool comment)
         {
             var ee = GetCurrentEditorElement();
             if (ee != null && !ee.editor.IsReadOnly)
             {
-                ee.ToggleCommentOnLine();
+                ee.ToggleComment(comment);
             }
         }
 
@@ -516,6 +516,18 @@ namespace SPCode.UI
                 ShowInTaskbar = false
             };
             spDefinitionWindow.ShowDialog();
+        }
+        /// <summary>
+        /// Re-opens the last closed tab
+        /// </summary>
+        private void Command_ReopenLastClosedTab()
+        {
+            if (Program.RecentFilesStack.Count > 0)
+            {
+                TryLoadSourceFile(Program.RecentFilesStack.Pop(), out _, true, false, true);
+            }
+
+            MenuI_ReopenLastClosedTab.IsEnabled = Program.RecentFilesStack.Count > 0;
         }
     }
 }

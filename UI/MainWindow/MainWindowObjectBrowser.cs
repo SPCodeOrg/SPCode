@@ -285,7 +285,7 @@ namespace SPCode.UI
         /// <summary>
         /// Refreshes the object browser's items, remembering folding states.
         /// </summary>
-        private void RefreshObjectBrowser()
+        public void RefreshObjectBrowser()
         {
             // Delete context menu to prevent performing actions on potentially null elements
             ObjectBrowser.ContextMenu = null;
@@ -559,12 +559,12 @@ namespace SPCode.UI
         }
 
         /// <summary>
-        /// Helper function to build an expanded item's contents. <br/>
-        /// It outs a TreeViewItem list to be used when using the Reload function to keep directories expanded after refreshing.
+        /// <para> Helper function to build an expanded item's contents. </para>
+        /// <para> It outs a TreeViewItem list to be used when using the Reload function to keep directories expanded after refreshing. </para>
         /// </summary>
         /// <param name="dir">Directory to fetch contents from.</param>
         /// <param name="itemsToExpand">List of items that were expanded before calling this function to reload the Object Browser items.</param>
-        /// <returns></returns>
+        /// <returns>List of Items build from the specified directory.</returns>
         private List<TreeViewItem> BuildDirectoryItems(string dir, out List<TreeViewItem> itemsToExpand)
         {
             itemsToExpand = new();
@@ -572,12 +572,12 @@ namespace SPCode.UI
 
             // GetFiles() filter is not precise and doing new FileInfo(x).Extension is slower
             var directories = Directory.GetDirectories(dir, "*", SearchOption.TopDirectoryOnly);
-            var incFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".inc")).ToList();
-            var spFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".sp")).ToList();
-            var smxFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".smx")).ToList();
-            var txtFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".txt")).ToList();
-            var cfgFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".cfg")).ToList();
-            var iniFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".ini")).ToList();
+            var incFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".inc")).ToList();
+            var spFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".sp")).ToList();
+            var smxFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".smx")).ToList();
+            var txtFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".txt")).ToList();
+            var cfgFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".cfg")).ToList();
+            var iniFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".ini")).ToList();
 
             var itemsToAdd = new List<string>();
             itemsToAdd.AddRange(directories);
@@ -719,9 +719,12 @@ namespace SPCode.UI
             return source as TreeViewItem;
         }
 
+        /// <summary>
+        /// Disables the File tab button of the Object Browser if there's no file opened in the editor.
+        /// </summary>
         public void UpdateOBFileButton()
         {
-            if (GetAllEditorElements() == null)
+            if (GetAllEditorElements() == null && GetAllDASMElements() == null)
             {
                 OBTabFile.IsEnabled = false;
                 OBTabFile.IsSelected = false;

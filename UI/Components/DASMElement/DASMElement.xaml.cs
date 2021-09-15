@@ -923,6 +923,7 @@ namespace SPCode.UI.Components
         public void Close()
         {
             Program.MainWindow.DASMReferences.Remove(this);
+            Program.RecentFilesStack.Push(FilePath);
             Program.MainWindow.UpdateWindowTitle();
         }
 

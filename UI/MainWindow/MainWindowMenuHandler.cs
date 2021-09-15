@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using MahApps.Metro.Controls.Dialogs;
 using SPCode.Interop;
 using SPCode.Interop.Updater;
 using SPCode.UI.Windows;
 using SPCode.Utils;
+using SPCode.Utils.Models;
 
 namespace SPCode.UI
 {
     public partial class MainWindow
     {
+        #region Events
         private void FileMenu_Open(object sender, RoutedEventArgs e)
         {
             var editors = GetAllEditorElements();
@@ -23,11 +30,23 @@ namespace SPCode.UI
             }
 
             var EditorIsSelected = GetCurrentEditorElement() != null;
-            ((MenuItem)((MenuItem)sender).Items[4]).IsEnabled = EditorIsSelected;
-            ((MenuItem)((MenuItem)sender).Items[6]).IsEnabled = EditorIsSelected;
-            ((MenuItem)((MenuItem)sender).Items[8]).IsEnabled = EditorIsSelected;
-            ((MenuItem)((MenuItem)sender).Items[5]).IsEnabled = EditorsAreOpen;
-            ((MenuItem)((MenuItem)sender).Items[9]).IsEnabled = EditorsAreOpen;
+            MenuI_Save.IsEnabled = EditorIsSelected;
+            MenuI_SaveAs.IsEnabled = EditorIsSelected;
+            MenuI_Close.IsEnabled = EditorIsSelected;
+            MenuI_SaveAll.IsEnabled = EditorsAreOpen;
+            MenuI_CloseAll.IsEnabled = EditorsAreOpen;
+        }
+
+        private void Menu_ClearRecent(object sender, RoutedEventArgs e)
+        {
+            Program.OptionsObject.RecentFiles.Clear();
+            MenuI_Recent.Items.Clear();
+            MenuI_Recent.IsEnabled = false;
+        }
+
+        private void Menu_ReopenLastClosedTab(object sender, RoutedEventArgs e)
+        {
+            Command_ReopenLastClosedTab();
         }
 
         private void Menu_New(object sender, RoutedEventArgs e)
@@ -138,11 +157,15 @@ namespace SPCode.UI
             Command_GoToLine();
         }
 
-        private void Menu_ToggleCommentLine(object sender, RoutedEventArgs e)
+        private void Menu_CommentLine(object sender, RoutedEventArgs e)
         {
-            Command_ToggleCommentLine();
+            Command_ToggleCommentLine(true);
         }
 
+        private void Menu_UncommentLine(object sender, RoutedEventArgs e)
+        {
+            Command_ToggleCommentLine(false);
+        }
 
         private void Menu_SelectAll(object sender, RoutedEventArgs e)
         {
@@ -286,7 +309,9 @@ namespace SPCode.UI
                 case 2: Server_Start(); break;
             }
         }
+        #endregion
 
+        #region Methods
         /// <summary>
         /// Loads the input gesture texts to the menu items.
         /// </summary>
@@ -324,5 +349,81 @@ namespace SPCode.UI
                 }
             }
         }
+
+        private void AddNewRecentFile(string filePath)
+        {
+            if (!Program.OptionsObject.RecentFiles.Any(x => x.Equals(filePath)))
+            {
+                MenuI_Recent.Items.Insert(0, BuildRecentFileItem(filePath));
+                Program.OptionsObject.RecentFiles.AddFirst(filePath);
+            }
+        }
+
+        private void LoadRecentsList()
+        {
+            var recentsList = Program.OptionsObject.RecentFiles;
+
+            if (recentsList.Count == 0)
+            {
+                MenuI_Recent.IsEnabled = false;
+                return;
+            }
+
+            foreach (var file in recentsList)
+            {
+                MenuI_Recent.Items.Add(BuildRecentFileItem(file));
+            }
+        }
+
+        private MenuItem BuildRecentFileItem(string file)
+        {
+            // Create FileInfo to handle file
+            var fInfo = new FileInfo(file);
+
+            // Create the image for the file
+            var img = new Image()
+            {
+                Source = new BitmapImage(new Uri($"/SPCode;component/Resources/Icons/{FileIcons[fInfo.Extension]}", UriKind.Relative)),
+                Width = 15,
+                Height = 15
+            };
+
+            // Create the text that the MenuItem will display
+            var text = new TextBlock()
+            {
+                Margin = new Thickness(5.0, 0.0, 0.0, 0.0),
+            };
+            text.Inlines.Add($"{fInfo.Name}  ");
+            text.Inlines.Add(new Run(fInfo.FullName)
+            {
+                FontSize = FontSize - 2,
+                Foreground = new SolidColorBrush(Colors.DarkGray),
+                FontStyle = FontStyles.Italic
+            });
+
+            // Create the StackPanel where we will place image and text
+            var stack = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+            };
+            stack.Children.Add(img);
+            stack.Children.Add(text);
+
+            // Create the MenuItem and set the header to the created StackPanel
+            var mi = new MenuItem()
+            {
+                Header = stack
+            };
+
+            // Set the click callback to open the file
+            mi.Click += (sender, e) =>
+            {
+                TryLoadSourceFile(fInfo.FullName, out _, true, false, true);
+            };
+
+            // Return the MenuItem
+            return mi;
+        }
+        #endregion
     }
 }

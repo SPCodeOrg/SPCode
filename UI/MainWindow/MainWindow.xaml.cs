@@ -4,9 +4,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using DiscordRPC;
@@ -122,6 +125,9 @@ namespace SPCode.UI
 
             LoadInputGestureTexts();
             LoadCommandsDictionary();
+            LoadRecentsList();
+
+            MenuI_ReopenLastClosedTab.IsEnabled = false;
 
             UpdateOBFileButton();
 
@@ -135,6 +141,12 @@ namespace SPCode.UI
         #region Events
         private void DockingManager_ActiveContentChanged(object sender, EventArgs e)
         {
+            if (OBTabFile.IsSelected)
+            {
+                ListViewOBItem_SelectFile(OBTabFile, null);
+                OBTabFile.IsSelected = true;
+            }
+
             UpdateWindowTitle();
             UpdateOBFileButton();
         }
@@ -167,7 +179,11 @@ namespace SPCode.UI
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
-            ServerCheckThread?.Abort(); //a join would not work, so we have to be..forcefully...
+            if (ServerIsRunning)
+            {
+                ServerCheckThread.Abort();
+                ServerProcess.Kill();
+            }
             var lastOpenFiles = new List<string>();
             var editors = GetAllEditorElements();
             bool? SaveUnsaved = null;
@@ -339,12 +355,7 @@ namespace SPCode.UI
                             }
                         }
                     }
-                    var layoutDocument = new LayoutDocument { Title = "DASM: " + fileInfo.Name };
-                    var dasmElement = new DASMElement(fileInfo);
-                    layoutDocument.Content = dasmElement;
-                    DockingPane.Children.Add(layoutDocument);
-                    DockingPane.SelectedContentIndex = DockingPane.ChildrenCount - 1;
-                    DASMReferences.Add(dasmElement);
+                    AddDASMElement(fileInfo);
                 }
 
                 if (UseBlendoverEffect)
@@ -373,11 +384,26 @@ namespace SPCode.UI
             layoutDocument.Content = editor;
             EditorsReferences.Add(editor);
             DockingPane.Children.Add(layoutDocument);
+            AddNewRecentFile(filePath);
             if (SelectMe)
             {
                 layoutDocument.IsSelected = true;
                 editor.editor.TextArea.Caret.Show();
             }
+        }
+
+        /// <summary>
+        /// Adds a new DASM element associated with the file to the Docking Manager.
+        /// </summary>
+        private void AddDASMElement(FileInfo fileInfo)
+        {
+            var layoutDocument = new LayoutDocument { Title = "DASM: " + fileInfo.Name };
+            var dasmElement = new DASMElement(fileInfo);
+            DASMReferences.Add(dasmElement);
+            layoutDocument.Content = dasmElement;
+            DockingPane.Children.Add(layoutDocument);
+            DockingPane.SelectedContentIndex = DockingPane.ChildrenCount - 1;
+            AddNewRecentFile(fileInfo.FullName);
         }
 
         /// <summary>
@@ -431,7 +457,7 @@ namespace SPCode.UI
 
             if (ServerIsRunning)
             {
-                outString = $"{outString} | ({Program.Translations.GetLanguage("ServerRunning")})";
+                outString = $"{outString} | {Program.Translations.GetLanguage("ServerRunning")}";
             }
 
             Title = outString;

@@ -210,7 +210,7 @@ namespace SPCode.UI.Components
 
         private async void TextArea_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (!Keyboard.IsKeyDown(Key.LeftCtrl))
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl) || IsTemplateEditor)
             {
                 return;
             }
@@ -740,6 +740,7 @@ namespace SPCode.UI.Components
         {
             regularyTimer.Stop();
             regularyTimer.Close();
+
             if (fileWatcher != null)
             {
                 fileWatcher.EnableRaisingEvents = false;
@@ -747,67 +748,99 @@ namespace SPCode.UI.Components
                 fileWatcher = null;
             }
 
-            if (CheckSavings)
+            if (CheckSavings && _NeedsSave)
             {
-                if (_NeedsSave)
+                if (ForcedToSave)
                 {
-                    if (ForcedToSave)
+                    Save();
+                }
+                else
+                {
+                    var title = $"{Program.Translations.GetLanguage("SavingFile")} '" + Parent.Title.Trim('*') +
+                                "'";
+                    var Result = await Program.MainWindow.ShowMessageAsync(title, "",
+                        MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions);
+                    if (Result == MessageDialogResult.Affirmative)
                     {
                         Save();
                     }
-                    else
+                }
+            }
+
+            Parent = null;
+
+            Program.MainWindow.EditorsReferences.Remove(this);
+            Program.MainWindow.MenuI_ReopenLastClosedTab.IsEnabled = true;
+            Program.RecentFilesStack.Push(FullFilePath);
+            Program.MainWindow.UpdateWindowTitle();
+        }
+
+        public void ToggleComment(bool comment)
+        {
+            // Get the selection segments
+            var selectionSegments = editor.TextArea.Selection.Segments;
+
+            var lineList = new List<DocumentLine>();
+            var document = editor.TextArea.Document;
+
+            // Start undo transaction so undoing this doesn't result in undoing every single comment manually
+            document.UndoStack.StartUndoGroup();
+
+            // If there's no selection, add to lineList the line the caret is standing on
+            if (!selectionSegments.Any())
+            {
+                lineList.Add(document.GetLineByOffset(editor.TextArea.Caret.Offset));
+            }
+            else
+            {
+                // Get all the lines from that selection and store them in a list
+                foreach (var segment in selectionSegments)
+                {
+                    var lineStart = document.GetLineByOffset(segment.StartOffset).LineNumber;
+                    var lineEnd = document.GetLineByOffset(segment.EndOffset).LineNumber;
+                    for (var i = lineStart; i <= lineEnd; i++)
                     {
-                        var title = $"{Program.Translations.GetLanguage("SavingFile")} '" + Parent.Title.Trim('*') +
-                                    "'";
-                        var Result = await Program.MainWindow.ShowMessageAsync(title, "",
-                            MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions);
-                        if (Result == MessageDialogResult.Affirmative)
-                        {
-                            Save();
-                        }
+                        lineList.Add(editor.Document.GetLineByNumber(i));
                     }
                 }
             }
 
-            Program.MainWindow.EditorsReferences.Remove(this);
-
-            Parent = null; //to prevent a ring depency which disables the GC from work
-            Program.MainWindow.UpdateWindowTitle();
-        }
-
-        public void ToggleCommentOnLine()
-        {
-            var line = editor.Document.GetLineByOffset(editor.CaretOffset);
-            var lineText = editor.Document.GetText(line);
-            var leadingWhiteSpaces = 0;
-            foreach (var l in lineText)
+            // For each line, apply comment logic
+            foreach (var line in lineList)
             {
-                if (char.IsWhiteSpace(l))
+                var lineText = editor.Document.GetText(line);
+                var leadingWhiteSpaces = 0;
+                foreach (var l in lineText)
                 {
-                    leadingWhiteSpaces++;
+                    if (char.IsWhiteSpace(l))
+                    {
+                        leadingWhiteSpaces++;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
-                else
+                lineText = lineText.Trim();
+                if (lineText.Length > 1)
                 {
-                    break;
+                    if (!comment && lineText[0] == '/' && lineText[1] == '/')
+                    {
+                        editor.Document.Remove(line.Offset + leadingWhiteSpaces, 2);
+                    }
+                    else if (comment && lineText[0] != '/' && lineText[1] != '/')
+                    {
+                        editor.Document.Insert(line.Offset + leadingWhiteSpaces, "//");
+                    }
                 }
-            }
-
-            lineText = lineText.Trim();
-            if (lineText.Length > 1)
-            {
-                if (lineText[0] == '/' && lineText[1] == '/')
-                {
-                    editor.Document.Remove(line.Offset + leadingWhiteSpaces, 2);
-                }
-                else
+                else if (comment)
                 {
                     editor.Document.Insert(line.Offset + leadingWhiteSpaces, "//");
                 }
             }
-            else
-            {
-                editor.Document.Insert(line.Offset + leadingWhiteSpaces, "//");
-            }
+
+            // End the undo transaction
+            document.UndoStack.EndUndoGroup();
         }
 
         public void ChangeCase(bool toUpper = true)
@@ -903,6 +936,7 @@ namespace SPCode.UI.Components
                 {
                     using var fs = new FileStream(_FullFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
                     editor.Save(fs);
+                    Program.MainWindow.RefreshObjectBrowser();
                 }
                 catch (Exception e)
                 {
