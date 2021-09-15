@@ -124,6 +124,7 @@
     <Compile Include="UI\Components\DASMElement\DASMElementHighlighter.cs" />
     <Compile Include="UI\Components\EditorElement\EditorElementGoToDefinition.cs" />
     <Compile Include="UI\Components\EditorElement\EditorElementHighlighter.cs" />
+    <Compile Include="UI\Components\EditorElement\EditorElementLinter.cs" />
     <Compile Include="UI\Components\EditorElement\Foldings\EditorFoldingStrategy.cs" />
     <Compile Include="UI\Components\EditorElement\Highlighting\ColorizeSection.cs" />
     <Compile Include="UI\Components\EditorElement\Indentation\EditorIndentation.cs" />
@@ -131,7 +132,7 @@
     <Compile Include="UI\Components\HotkeyEditorControl\HotkeyEditorControl.xaml.cs">
       <DependentUpon>HotkeyEditorControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Interop\LanguageChooserWindow.xaml.cs">
+    <Compile Include="UI\MainWindow\Interop\LanguageChooserWindow.xaml.cs">
       <DependentUpon>LanguageChooserWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\MainWindow\MainWindowErrorResultGrid.cs" />
@@ -193,6 +194,8 @@
     <Compile Include="Utils\SPSyntaxTidy\SPSyntaxTidy.cs" />
     <Compile Include="Utils\SPSyntaxTidy\SPTokenizer.cs" />
     <Compile Include="Utils\Models\TemplateInfo.cs" />
+    <Compile Include="UI\Components\EditorElement\TextMarker\ITextMarker.cs" />
+    <Compile Include="UI\Components\EditorElement\TextMarker\TextMarkerService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Interop\Updater\UpdateWindow.xaml">
@@ -215,7 +218,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\Interop\LanguageChooserWindow.xaml">
+    <Page Include="UI\MainWindow\Interop\LanguageChooserWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

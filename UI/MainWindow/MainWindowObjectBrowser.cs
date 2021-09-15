@@ -712,7 +712,7 @@ namespace SPCode.UI
         /// <returns></returns>
         private static TreeViewItem VisualUpwardSearch(DependencyObject source)
         {
-            while (source != null && !(source is TreeViewItem))
+            while (source != null && source is not TreeViewItem)
             {
                 source = VisualTreeHelper.GetParent(source);
             }

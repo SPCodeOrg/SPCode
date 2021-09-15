@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -44,6 +45,8 @@ namespace SPCode.UI.Components
         private bool SelectionIsHighlited;
         private bool WantFoldingUpdate;
         public bool IsTemplateEditor = false;
+
+        ITextMarkerService textMarkerService;
 
         public string FullFilePath
         {
@@ -99,6 +102,7 @@ namespace SPCode.UI.Components
         public EditorElement(string filePath)
         {
             InitializeComponent();
+            InitializeTextMarkerService();
 
             if (string.IsNullOrEmpty(filePath))
             {
@@ -574,6 +578,20 @@ namespace SPCode.UI.Components
 
         private void TextArea_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            //if (e.Key == Key.Home)
+            //{
+            //    e.Handled = true;
+            //    AddMarkerFromSelectionClick();
+            //    return;
+            //}
+
+            //if (e.Key == Key.End)
+            //{
+            //    e.Handled = true;
+            //    RemoveMarker();
+            //    return;
+            //}
+
             e.Handled = ISAC_EvaluateKeyDownEvent(e.Key);
             if (!e.IsDown || e.Handled)
             {
@@ -991,6 +1009,19 @@ namespace SPCode.UI.Components
                 StatusLine_FontSize.Text =
                     editor.FontSize.ToString("n0") + $" {Program.Translations.GetLanguage("PtAbb")}";
             }
+        }
+
+        void InitializeTextMarkerService()
+        {
+            var textMarkerService = new TextMarkerService(editor.Document);
+            editor.TextArea.TextView.BackgroundRenderers.Add(textMarkerService);
+            editor.TextArea.TextView.LineTransformers.Add(textMarkerService);
+            IServiceContainer services = (IServiceContainer)editor.Document.ServiceProvider.GetService(typeof(IServiceContainer));
+            if (services != null)
+            {
+                services.AddService(typeof(ITextMarkerService), textMarkerService);
+            }
+            this.textMarkerService = textMarkerService;
         }
         #endregion
     }

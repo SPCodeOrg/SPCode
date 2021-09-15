@@ -10,7 +10,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public string ReturnType = string.Empty;
         public string[] Parameters = new string[0];
         public SMFunctionKind FunctionKind = SMFunctionKind.Unknown;
-        public List<SMVariable> FuncVariables = new List<SMVariable>();
+        public List<SMVariable> FuncVariables = new();
     }
 
     public enum SMFunctionKind
