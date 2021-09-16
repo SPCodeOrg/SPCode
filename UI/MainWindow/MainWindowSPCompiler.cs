@@ -89,12 +89,16 @@ namespace SPCode.UI
                     return;
                 }
 
-                foreach (var t in editors)
+                foreach (var editor in editors)
                 {
-                    var compileBoxIsChecked = t.CompileBox.IsChecked;
+                    var compileBoxIsChecked = editor.CompileBox.IsChecked;
                     if (compileBoxIsChecked != null && compileBoxIsChecked.Value)
                     {
-                        ScriptsCompiled.Add(t.FullFilePath);
+                        ScriptsCompiled.Add(editor.FullFilePath);
+                    }
+                    else
+                    {
+                        LoggingControl.LogAction($"{new FileInfo(editor.FullFilePath).FullName} (omitted)");
                     }
                 }
             }
