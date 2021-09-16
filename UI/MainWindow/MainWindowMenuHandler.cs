@@ -350,12 +350,18 @@ namespace SPCode.UI
             }
         }
 
-        private void AddNewRecentFile(string filePath)
+        private void AddNewRecentFile(FileInfo fInfo)
         {
-            if (!Program.OptionsObject.RecentFiles.Any(x => x.Equals(filePath)))
+            if (!Program.OptionsObject.RecentFiles.Any(x => x.Equals(fInfo.FullName)))
             {
-                MenuI_Recent.Items.Insert(0, BuildRecentFileItem(filePath));
-                Program.OptionsObject.RecentFiles.AddFirst(filePath);
+                MenuI_Recent.Items.Insert(0, BuildRecentFileItem(fInfo.FullName));
+                Program.OptionsObject.RecentFiles.AddFirst(fInfo.FullName);
+                MenuI_Recent.IsEnabled = true;
+                if (MenuI_Recent.Items.Count > 10)
+                {
+                    Program.OptionsObject.RecentFiles.RemoveLast();
+                    MenuI_Recent.Items.RemoveAt(10);
+                }
             }
         }
 

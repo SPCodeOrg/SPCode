@@ -98,7 +98,7 @@ namespace SPCode.UI
 
             File.Create(newFilePath).Close();
 
-            AddEditorElement(newFilePath, $"New Plugin ({newFileNum}).sp", true, out _);
+            AddEditorElement(new FileInfo(newFilePath), $"New Plugin ({newFileNum}).sp", true, out _);
             RefreshObjectBrowser();
         }
 

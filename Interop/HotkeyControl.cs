@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Xml;
 using SPCode.Utils;
 
@@ -52,18 +55,51 @@ namespace SPCode.Interop
         };
 
         /// <summary>
-        /// Buffers the hotkeys to an array in memory.
+        /// Checks if there are new Hotkeys that haven't been added to the Hotkeys file <br>
+        /// and buffers all Hotkeys to an array in memory.
         /// </summary>
-        public static void BufferHotkeys()
+        public static void CheckAndBufferHotkeys()
         {
-            // Buffer hotkeys in global HotkeyInfo list
-            Program.HotkeysList = new();
-            var document = new XmlDocument();
-            document.Load(Constants.HotkeysFile);
-
-            foreach (XmlNode node in document.ChildNodes[0].ChildNodes)
+            try
             {
-                Program.HotkeysList.Add(new HotkeyInfo(new Hotkey(node.InnerText), node.Name));
+                // Load the current Hotkeys file
+                Program.HotkeysList = new();
+                var document = new XmlDocument();
+                document.Load(Constants.HotkeysFile);
+
+                // Compare with the default hotkeys to check for new commands
+                var xmlNodes = document.ChildNodes[0].ChildNodes.Cast<XmlNode>().ToList();
+                var defaultHksCount = DefaultHotkeys.Count;
+
+                // If the count is not equal, there's a new hotkey to be added to the file
+                if (xmlNodes.Count != defaultHksCount)
+                {
+                    // Regular for to get the index
+                    for (var i = 0; i < defaultHksCount; i++)
+                    {
+                        var currentHk = DefaultHotkeys.ElementAt(i);
+                        if (!xmlNodes.Any(x => x.Name.Equals(DefaultHotkeys.ElementAt(i).Key)))
+                        {
+                            var element = document.CreateElement(string.Empty, currentHk.Key, string.Empty);
+                            var text = document.CreateTextNode(currentHk.Value);
+                            element.AppendChild(text);
+                            document.ChildNodes[0].InsertBefore(element, document.ChildNodes[0].ChildNodes[i]);
+                        }
+                    }
+                    document.Save(Constants.HotkeysFile);
+                    xmlNodes = document.ChildNodes[0].ChildNodes.Cast<XmlNode>().ToList();
+                }
+
+                xmlNodes.ForEach(x =>
+                {
+                    var hki = new HotkeyInfo(new Hotkey(x.InnerText), x.Name);
+                    Program.HotkeysList.Add(hki);
+                });
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while checking and buffering the hotkeys", ex);
             }
         }
 
@@ -72,29 +108,36 @@ namespace SPCode.Interop
         /// </summary>
         public static void CreateDefaultHotkeys()
         {
-            // Create the XML document
-            var document = new XmlDocument();
-
-            var rootElement = document.CreateElement(string.Empty, "Hotkeys", string.Empty);
-            document.AppendChild(rootElement);
-
-            // Fill it with the default hotkeys from the dictionary
-            foreach (var item in DefaultHotkeys)
+            try
             {
-                var element = document.CreateElement(string.Empty, item.Key, string.Empty);
-                var text = document.CreateTextNode(item.Value);
-                element.AppendChild(text);
-                rootElement.AppendChild(element);
-            }
+                // Create the XML document
+                var document = new XmlDocument();
 
-            // Buffer hotkeys in global HotkeyInfo list
-            Program.HotkeysList = new List<HotkeyInfo>();
-            foreach (XmlNode node in document.ChildNodes[0].ChildNodes)
+                var rootElement = document.CreateElement(string.Empty, "Hotkeys", string.Empty);
+                document.AppendChild(rootElement);
+
+                // Fill it with the default hotkeys from the dictionary
+                foreach (var item in DefaultHotkeys)
+                {
+                    var element = document.CreateElement(string.Empty, item.Key, string.Empty);
+                    var text = document.CreateTextNode(item.Value);
+                    element.AppendChild(text);
+                    rootElement.AppendChild(element);
+                }
+
+                // Buffer hotkeys in global HotkeyInfo list
+                Program.HotkeysList = new List<HotkeyInfo>();
+                foreach (XmlNode node in document.ChildNodes[0].ChildNodes)
+                {
+                    Program.HotkeysList.Add(new HotkeyInfo(new Hotkey(node.InnerText), node.Name));
+                }
+
+                document.Save(Constants.HotkeysFile);
+            }
+            catch (Exception ex)
             {
-                Program.HotkeysList.Add(new HotkeyInfo(new Hotkey(node.InnerText), node.Name));
+                throw new Exception("Error while creating the default hotkeys", ex);
             }
-
-            document.Save(Constants.HotkeysFile);
         }
     }
 }
