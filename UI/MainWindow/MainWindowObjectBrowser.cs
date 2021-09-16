@@ -23,7 +23,7 @@ namespace SPCode.UI
         private readonly DispatcherTimer SearchCooldownTimer;
         private readonly List<TreeViewItem> ExpandedItems = new();
         private List<TreeViewItem> ExpandedItemsBuffer = new();
-        private bool VisualsShown = false;
+        private bool SearchMode = false;
         private bool OBExpanded = false;
 
         public readonly Dictionary<string, string> FileIcons = new()
@@ -186,7 +186,7 @@ namespace SPCode.UI
             {
                 return;
             }
-            if (VisualsShown)
+            if (SearchMode)
             {
                 OBSearch.Clear();
                 HideSearchVisuals();
@@ -208,7 +208,7 @@ namespace SPCode.UI
             {
                 return;
             }
-            if (VisualsShown)
+            if (SearchMode)
             {
                 OBSearch.Clear();
                 HideSearchVisuals();
@@ -226,7 +226,7 @@ namespace SPCode.UI
         private void OBDirList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             OBSearch.Clear();
-            if (VisualsShown)
+            if (SearchMode)
             {
                 HideSearchVisuals();
             }
@@ -245,7 +245,7 @@ namespace SPCode.UI
                     ChangeObjectBrowserToDirectory(CurrentObjectBrowserDirectory);
                     break;
                 case Key.Enter:
-                    if (VisualsShown)
+                    if (SearchMode)
                     {
                         Search(OBSearch.Text);
                     }
@@ -400,7 +400,7 @@ namespace SPCode.UI
         /// </summary>
         private void ShowSearchVisuals()
         {
-            if (VisualsShown)
+            if (SearchMode)
             {
                 return;
             }
@@ -408,7 +408,7 @@ namespace SPCode.UI
             objMargin.Top += 30;
             ObjectBrowser.Margin = objMargin;
             TxtSearchResults.Visibility = Visibility.Visible;
-            VisualsShown = true;
+            SearchMode = true;
         }
 
         /// <summary>
@@ -416,7 +416,7 @@ namespace SPCode.UI
         /// </summary>
         private void HideSearchVisuals()
         {
-            if (!VisualsShown)
+            if (!SearchMode)
             {
                 return;
             }
@@ -424,7 +424,7 @@ namespace SPCode.UI
             objMargin.Top -= 30;
             ObjectBrowser.Margin = objMargin;
             TxtSearchResults.Visibility = Visibility.Hidden;
-            VisualsShown = false;
+            SearchMode = false;
         }
 
         /// <summary>
