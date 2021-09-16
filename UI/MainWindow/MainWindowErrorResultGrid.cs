@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using SPCode.Interop;
 using SPCode.UI.Components;
 using SPCode.Utils;
 
@@ -47,6 +48,7 @@ namespace SPCode.UI
 
                 if (!exists)
                 {
+                    LoggingControl.LogAction($"Failed to select {fInfo.Name}:{row.Line} - unable to find file.", 2);
                     return;
                 }
             }
