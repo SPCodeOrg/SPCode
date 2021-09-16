@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -81,7 +82,7 @@ namespace SPCode
                     }
                     else
                     {
-                        HotkeyControl.BufferHotkeys();
+                        HotkeyControl.CheckAndBufferHotkeys();
                     }
 
                     // Delete the default Ctrl+D hotkey to assign manually
@@ -275,6 +276,7 @@ namespace SPCode
                 ThemeManager.GetAppTheme("BaseDark")); // or appStyle.Item1
         }
 
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
         private static string BuildExceptionString(Exception e, string SectionName)
         {
             var outString = new StringBuilder();
