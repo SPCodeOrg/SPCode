@@ -309,7 +309,7 @@ namespace SPCode.UI
                         }
                     }
 
-                    AddEditorElement(finalPath, fileInfo.Name, SelectMe, out outEditor);
+                    AddEditorElement(fileInfo, fileInfo.Name, SelectMe, out outEditor);
                     if (TryOpenIncludes && Program.OptionsObject.Program_OpenCustomIncludes)
                     {
                         using var textReader = fileInfo.OpenText();
@@ -374,17 +374,17 @@ namespace SPCode.UI
         /// Adds a new editor element associated with the file to the Docking Manager.
         /// </summary>
         /// <param name="filePath">The path of the file</param>
-        /// <param name="name">The title of the tab</param>
+        /// <param name="editorTitle">The title of the tab</param>
         /// <param name="SelectMe">Whether to focus this editor element once created.</param>
-        private void AddEditorElement(string filePath, string name, bool SelectMe, out EditorElement editor)
+        private void AddEditorElement(FileInfo fInfo, string editorTitle, bool SelectMe, out EditorElement editor)
         {
-            var layoutDocument = new LayoutDocument { Title = name };
-            layoutDocument.ToolTip = filePath;
-            editor = new EditorElement(filePath) { Parent = layoutDocument };
+            var layoutDocument = new LayoutDocument { Title = editorTitle };
+            layoutDocument.ToolTip = fInfo.FullName;
+            editor = new EditorElement(fInfo.FullName) { Parent = layoutDocument };
             layoutDocument.Content = editor;
             EditorsReferences.Add(editor);
             DockingPane.Children.Add(layoutDocument);
-            AddNewRecentFile(filePath);
+            AddNewRecentFile(fInfo);
             if (SelectMe)
             {
                 layoutDocument.IsSelected = true;
@@ -403,7 +403,7 @@ namespace SPCode.UI
             layoutDocument.Content = dasmElement;
             DockingPane.Children.Add(layoutDocument);
             DockingPane.SelectedContentIndex = DockingPane.ChildrenCount - 1;
-            AddNewRecentFile(fileInfo.FullName);
+            AddNewRecentFile(fileInfo);
         }
 
         /// <summary>
