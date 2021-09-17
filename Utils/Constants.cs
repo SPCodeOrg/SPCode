@@ -6,6 +6,7 @@
         public const string GitHubNewIssueLink = "https://github.com/SPCodeOrg/SPCode/issues/new";
         public const string GitHubReleases = "https://github.com/SPCodeOrg/SPCode/releases";
         public const string GitHubLatestRelease = "https://github.com/SPCodeOrg/SPCode/releases/latest";
+        public const string ErrorFilterRegex = @"^(?<File>.+?)\((?<Line>[0-9]+(\s*--\s*[0-9]+)?)\)\s*:\s*(?<Type>[a-zA-Z]+\s+([a-zA-Z]+\s+)?[0-9]+)\s*:(?<Details>.+)";
         public const string GitHubRepositoryText = "GitHub Repository";
         public const string DiscordRPCAppID = "692110664948514836";
         public const string JavaDownloadSite64 = "https://api.adoptopenjdk.net/v3/installer/latest/15/ga/windows/x64/jdk/hotspot/normal/adoptopenjdk?project=jdk";

@@ -131,10 +131,8 @@ namespace SPCode.UI
                     false, MetroDialogOptions);
                 progressTask.SetProgress(0.0);
                 var stringOutput = new StringBuilder();
-                var errorFilterRegex =
-                    new Regex(
-                        @"^(?<File>.+?)\((?<Line>[0-9]+(\s*--\s*[0-9]+)?)\)\s*:\s*(?<Type>[a-zA-Z]+\s+([a-zA-Z]+\s+)?[0-9]+)\s*:(?<Details>.+)",
-                        RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
+                var errorFilterRegex = new Regex(Constants.ErrorFilterRegex, 
+                    RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
 
                 var compiledSuccess = 0;
 

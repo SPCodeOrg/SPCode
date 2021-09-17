@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Folding;
@@ -45,6 +46,8 @@ namespace SPCode.UI.Components
         private bool SelectionIsHighlited;
         private bool WantFoldingUpdate;
         public bool IsTemplateEditor = false;
+
+        private readonly DispatcherTimer LinterTimer;
 
         ITextMarkerService textMarkerService;
 
@@ -203,6 +206,10 @@ namespace SPCode.UI.Components
             StartAutoSaveTimer();
 
             CompileBox.IsChecked = filePath.EndsWith(".sp");
+
+            LinterTimer = new() { Interval = TimeSpan.FromMilliseconds(500) };
+            LinterTimer.Tick += Lint;
+
         }
         #endregion
 
@@ -338,6 +345,11 @@ namespace SPCode.UI.Components
         {
             WantFoldingUpdate = true;
             NeedsSave = true;
+            if (LinterTimer != null)
+            {
+                LinterTimer.Stop();
+                LinterTimer.Start();
+            }
         }
 
         private void Caret_PositionChanged(object sender, EventArgs e)
