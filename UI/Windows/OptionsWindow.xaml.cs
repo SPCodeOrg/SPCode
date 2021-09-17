@@ -48,7 +48,7 @@ namespace SPCode.UI.Windows
 
             AllowChanging = true;
 
-            SaveHotkeyTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
+            SaveHotkeyTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(20) };
             SaveHotkeyTimer.Tick += OnTimerTick;
         }
         #endregion

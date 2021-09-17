@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Navigation;
 using MahApps.Metro;
+using SPCode.Utils;
 
 namespace SPCode.UI.Windows
 {
@@ -30,7 +31,7 @@ namespace SPCode.UI.Windows
                 }
             }
             TitleBox.Text = $"SPCode ({Assembly.GetEntryAssembly()?.GetName().Version}) - {Program.Translations.GetLanguage("SPEditCap")}";
-            LicenseField.Text = File.ReadAllText(@"..\..\Resources\License.txt");
+            LicenseField.Text = File.ReadAllText(Constants.LicenseFile);
         }
 
         private void OpenLicenseFlyout(object sender, RoutedEventArgs e)

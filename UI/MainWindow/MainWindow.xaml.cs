@@ -141,7 +141,7 @@ namespace SPCode.UI
         #region Events
         private void DockingManager_ActiveContentChanged(object sender, EventArgs e)
         {
-            if (OBTabFile.IsSelected)
+            if (OBTabFile.IsSelected && !SearchMode)
             {
                 ListViewOBItem_SelectFile(OBTabFile, null);
                 OBTabFile.IsSelected = true;
