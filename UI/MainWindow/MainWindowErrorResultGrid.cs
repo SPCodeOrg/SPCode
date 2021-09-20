@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using SPCode.Interop;
 using SPCode.UI.Components;
 using SPCode.Utils;
@@ -69,6 +70,10 @@ namespace SPCode.UI
             }
         }
 
+        private void ErrorResultGrid_Click(object sender, MouseButtonEventArgs e)
+        {
+            ErrorResultGrid_SelectionChanged(null, null);
+        }
         private void CloseErrorResultGrid(object sender, RoutedEventArgs e)
         {
             CompileOutputRow.Height = new GridLength(8.0);

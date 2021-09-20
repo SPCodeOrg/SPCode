@@ -374,7 +374,14 @@
         </TextBox>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="5" Background="LightGray" />
         <DataGrid x:Name="ErrorResultGrid" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsReadOnly="True"
-                          SelectionMode="Single" AutoGenerateColumns="False" SelectionChanged="ErrorResultGrid_SelectionChanged">
+                          SelectionMode="Single" AutoGenerateColumns="true" SelectionChanged="ErrorResultGrid_SelectionChanged">
+
+          <DataGrid.ItemContainerStyle>
+            <Style TargetType="DataGridRow">
+              <EventSetter Event="MouseDown" Handler="ErrorResultGrid_Click"/>
+            </Style>
+          </DataGrid.ItemContainerStyle>
+
           <DataGrid.Columns>
             <DataGridTextColumn x:Name="MenuC_FileName" Header="File Name" Width="7*" Binding="{Binding File}" />
             <DataGridTextColumn x:Name="MenuC_Line" Header="Line" Width="1*" Binding="{Binding Line}" />

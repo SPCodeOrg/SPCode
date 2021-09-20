@@ -486,7 +486,7 @@ namespace SPCode.UI.Windows
                 },
                 Buttons = new Button[]
                 {
-                    new Button() { Label = Constants.GitHubRepositoryText, Url = Constants.GitHubRepository }
+                    new Button() { Label = Constants.GetSPCodeText, Url = Constants.GitHubRepository }
                 }
             });
             // Calling this to set State to the opened file
@@ -513,7 +513,7 @@ namespace SPCode.UI.Windows
                 },
                 Buttons = new Button[]
                 {
-                    new Button() { Label = Constants.GitHubRepositoryText, Url = Constants.GitHubRepository }
+                    new Button() { Label = Constants.GetSPCodeText, Url = Constants.GitHubRepository }
                 }
             });
             // Calling this to set State to the opened file

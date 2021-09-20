@@ -465,7 +465,7 @@ namespace SPCode.UI.Components
                             editor.Document.Replace(endOffset, length + 1, replaceString);
                             if (setCaret)
                             {
-                                editor.CaretOffset -= 1;
+                                editor.CaretOffset--;
                             }
 
                             return true;

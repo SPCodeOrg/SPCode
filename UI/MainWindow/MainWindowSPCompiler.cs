@@ -75,6 +75,7 @@ namespace SPCode.UI
                 await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"),
                     Program.Translations.GetLanguage("SPCompNotFound"), MessageDialogStyle.Affirmative,
                     MetroDialogOptions);
+                InCompiling = false;
                 return;
             }
 
@@ -98,7 +99,7 @@ namespace SPCode.UI
                     }
                     else
                     {
-                        LoggingControl.LogAction($"{new FileInfo(editor.FullFilePath).FullName} (omitted)");
+                        LoggingControl.LogAction($"{new FileInfo(editor.FullFilePath).Name} (omitted)");
                     }
                 }
             }
@@ -111,11 +112,6 @@ namespace SPCode.UI
                     return;
                 }
 
-                /*
-                ** I've struggled a bit here. Should i check, if the CompileBox is checked 
-                ** and only compile if it's checked or should it be ignored and compiled anyway?
-                ** I decided, to compile anyway but give me feedback/opinions.
-                */
                 if (ee.FullFilePath.EndsWith(".sp"))
                 {
                     ScriptsCompiled.Add(ee.FullFilePath);

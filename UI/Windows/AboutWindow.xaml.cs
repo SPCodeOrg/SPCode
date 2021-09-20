@@ -30,7 +30,7 @@ namespace SPCode.UI.Windows
                     g.Background = gridBrush;
                 }
             }
-            TitleBox.Text = $"SPCode ({Assembly.GetEntryAssembly()?.GetName().Version}) - {Program.Translations.GetLanguage("SPEditCap")}";
+            TitleBox.Text = $"SPCode ({Assembly.GetEntryAssembly()?.GetName().Version}-beta1) - {Program.Translations.GetLanguage("SPEditCap")}";
             LicenseField.Text = File.ReadAllText(Constants.LicenseFile);
         }
 
@@ -51,7 +51,7 @@ namespace SPCode.UI.Windows
             {
                 return;
             }
-            WrittenByBlock.Text = string.Format(Program.Translations.GetLanguage("WrittenBy"), "Julien Kluge(Julien.Kluge@gmail.com");
+            WrittenByBlock.Text = string.Format(Program.Translations.GetLanguage("WrittenBy"), "Julien Kluge (Julien.Kluge@gmail.com");
             LicenseBlock.Text = Program.Translations.GetLanguage("License");
             PeopleInvolvedBlock.Text = Program.Translations.GetLanguage("PeopleInv");
         }

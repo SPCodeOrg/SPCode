@@ -1,9 +1,17 @@
-﻿using ICSharpCode.AvalonEdit.Document;
+﻿using System.Collections.Generic;
+using ICSharpCode.AvalonEdit.Document;
 
 namespace SPCode.Utils
 {
     public static class BracketHelpers
     {
+        private static readonly Dictionary<string, string> BracketPairs = new()
+        {
+            { "}", "{" },
+            { "]", "[" },
+            { ")", "(" }
+        };
+
         public static int QuickSearchBracketBackward(IDocument document, int offset, char openBracket, char closingBracket)
         {
             var brackets = -1;
@@ -258,6 +266,31 @@ namespace SPCode.Utils
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Utility to determine whether to place a closing bracket if the editor has already done that automatically.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="offset"></param>
+        /// <param name="bracket"></param>
+        /// <returns></returns>
+        public static bool CheckForClosingBracket(IDocument document, int offset, string bracket)
+        {
+            //var a = offset + 1 < document.TextLength;
+            //var b = document.GetCharAt(offset).ToString() == bracket;
+            //var c = document.GetCharAt(offset - 1).ToString() == opBracket;
+
+            if (offset + 1 < document.TextLength)
+            {
+                return 
+                    document.GetCharAt(offset).ToString() == bracket &&
+                    document.GetCharAt(offset - 1).ToString() == BracketPairs[bracket];
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }

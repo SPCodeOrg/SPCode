@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using MahApps.Metro.Controls.Dialogs;
 using SPCode.UI.Windows;
 using SPCode.Utils;
 
@@ -136,37 +137,44 @@ namespace SPCode.UI
 
         private void OBItemRename_Click(object sender, RoutedEventArgs e)
         {
-            if (ObjectBrowser.SelectedItem is TreeViewItem file)
+            try
             {
-                // Open up the Rename Window and fetch the new name from there
-                var fileTag = file.Tag as ObjectBrowserTag;
-                var renameWindow = new RenameWindow(fileTag.Value);
-                renameWindow.ShowDialog();
-
-                ObjectBrowser.ContextMenu = null;
-
-                // If we didn't receive an empty name...
-                if (!string.IsNullOrEmpty(renameWindow.NewName))
+                if (ObjectBrowser.SelectedItem is TreeViewItem file)
                 {
-                    var oldFileInfo = new FileInfo(fileTag.Value);
-                    var newFileInfo = new FileInfo(oldFileInfo.DirectoryName + @"\" + renameWindow.NewName);
+                    // Open up the Rename Window and fetch the new name from there
+                    var fileTag = file.Tag as ObjectBrowserTag;
+                    var renameWindow = new RenameWindow(fileTag.Value);
+                    renameWindow.ShowDialog();
 
-                    // Rename file
-                    File.Move(oldFileInfo.FullName, newFileInfo.FullName);
+                    ObjectBrowser.ContextMenu = null;
 
-                    // If the new extension is not supported by SPCode, remove it from object browser
-                    // else, rename and update the item
-                    if (!FileIcons.ContainsKey(newFileInfo.Extension))
+                    // If we didn't receive an empty name...
+                    if (!string.IsNullOrEmpty(renameWindow.NewName))
                     {
-                        file.Visibility = Visibility.Collapsed;
-                        return;
-                    }
-                    else
-                    {
-                        fileTag.Value = newFileInfo.FullName;
-                        file.Header = BuildTreeViewItemContent(renameWindow.NewName, FileIcons[newFileInfo.Extension]);
+                        var oldFileInfo = new FileInfo(fileTag.Value);
+                        var newFileInfo = new FileInfo(oldFileInfo.DirectoryName + @"\" + renameWindow.NewName);
+
+                        // Rename file
+                        File.Move(oldFileInfo.FullName, newFileInfo.FullName);
+
+                        // If the new extension is not supported by SPCode, remove it from object browser
+                        // else, rename and update the item
+                        if (!FileIcons.ContainsKey(newFileInfo.Extension))
+                        {
+                            file.Visibility = Visibility.Collapsed;
+                            return;
+                        }
+                        else
+                        {
+                            fileTag.Value = newFileInfo.FullName;
+                            file.Header = BuildTreeViewItemContent(renameWindow.NewName, FileIcons[newFileInfo.Extension]);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message);
             }
         }
 

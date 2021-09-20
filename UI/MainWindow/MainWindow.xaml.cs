@@ -454,7 +454,7 @@ namespace SPCode.UI
                     },
                     Buttons = new Button[]
                     {
-                        new Button() { Label = Constants.GitHubRepositoryText, Url = Constants.GitHubRepository }
+                        new Button() { Label = Constants.GetSPCodeText, Url = Constants.GitHubRepository }
                     }
                 });
             }
