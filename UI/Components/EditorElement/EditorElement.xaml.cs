@@ -497,19 +497,13 @@ namespace SPCode.UI.Components
                 case "}":
                     if (Program.OptionsObject.Editor_AutoCloseBrackets)
                     {
-                        if (editor.TextArea.Caret.Offset + 1 < editor.Document.TextLength)
+                        if (editor.TextArea.Caret.Offset < editor.Document.TextLength &&
+                            BracketHelpers.CheckForClosingBracket(editor.Document, editor.TextArea.Caret.Offset, e.Text))
                         {
-                            if (BracketHelpers.CheckForClosingBracket(editor.Document, editor.TextArea.Caret.Offset, e.Text))
-                            {
-                                e.Handled = true;
-                                var newCaretPos = editor.TextArea.Caret.Offset + 1;
-                                var docLength = editor.Document.TextLength;
-                                editor.TextArea.Caret.Offset = newCaretPos > docLength ? docLength : newCaretPos;
-                            }
-                        }
-                        else
-                        {
-                            
+                            e.Handled = true;
+                            var newCaretPos = editor.TextArea.Caret.Offset + 1;
+                            var docLength = editor.Document.TextLength;
+                            editor.TextArea.Caret.Offset = newCaretPos > docLength ? docLength : newCaretPos;
                         }
                     }
 
