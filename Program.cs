@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -30,9 +31,8 @@ namespace SPCode
         public static Config[] Configs;
         public static int SelectedConfig;
         public static string SelectedTemplatePath;
-
+        public static Stack<string> RecentFilesStack = new();
         public static UpdateInfo UpdateStatus;
-
         public static bool RCCKMade;
         public static DiscordRpcClient DiscordClient = new(Constants.DiscordRPCAppID);
         public static Timestamps DiscordTime = Timestamps.Now;
@@ -82,7 +82,7 @@ namespace SPCode
                     }
                     else
                     {
-                        HotkeyControl.BufferHotkeys();
+                        HotkeyControl.CheckAndBufferHotkeys();
                     }
 
                     // Delete the default Ctrl+D hotkey to assign manually
@@ -157,8 +157,8 @@ namespace SPCode
                         }
 #endif
                     MainWindow = new MainWindow(splashScreen);
-                    var pipeServer = new PipeInteropServer(MainWindow);
-                    pipeServer.Start();
+                    //var pipeServer = new PipeInteropServer(MainWindow);
+                    //pipeServer.Start();
 #if !DEBUG
                     }
                     catch (Exception e)
@@ -229,10 +229,10 @@ namespace SPCode
                             }
                         }
 
-                        if (addedFiles)
-                        {
-                            PipeInteropClient.ConnectToMasterPipeAndSendData(sBuilder.ToString());
-                        }
+                        //if (addedFiles)
+                        //{
+                        //    PipeInteropClient.ConnectToMasterPipeAndSendData(sBuilder.ToString());
+                        //}
                     }
                     catch (Exception)
                     {
@@ -276,6 +276,7 @@ namespace SPCode
                 ThemeManager.GetAppTheme("BaseDark")); // or appStyle.Item1
         }
 
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
         private static string BuildExceptionString(Exception e, string SectionName)
         {
             var outString = new StringBuilder();

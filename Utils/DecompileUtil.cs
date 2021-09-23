@@ -13,12 +13,10 @@ namespace SPCode.Utils
     public class DecompileUtil
     {
         private readonly MainWindow _win;
-        private readonly MetroDialogSettings _metroDialogOptions;
 
         public DecompileUtil()
         {
             _win = Program.MainWindow;
-            _metroDialogOptions = _win.MetroDialogOptions;
         }
 
         public async Task DecompilePlugin()
@@ -31,7 +29,7 @@ namespace SPCode.Utils
             if (_win != null)
             {
                 checkingJavaDialog = await _win.ShowProgressAsync(Program.Translations.GetLanguage("JavaInstallCheck") + "...",
-                    "", false, _metroDialogOptions);
+                    "", false, _win.MetroDialogOptions);
                 MainWindow.ProcessUITasks();
             }
             switch (java.GetJavaStatus())
@@ -42,7 +40,7 @@ namespace SPCode.Utils
                         await checkingJavaDialog.CloseAsync();
                         if (await _win.ShowMessageAsync(Program.Translations.GetLanguage("JavaNotFoundTitle"),
                             Program.Translations.GetLanguage("JavaNotFoundMessage"),
-                            MessageDialogStyle.AffirmativeAndNegative, _metroDialogOptions) == MessageDialogResult.Affirmative)
+                            MessageDialogStyle.AffirmativeAndNegative, _win.MetroDialogOptions) == MessageDialogResult.Affirmative)
                         {
                             await java.InstallJava();
                         }
@@ -54,7 +52,7 @@ namespace SPCode.Utils
                         await checkingJavaDialog.CloseAsync();
                         if (await _win.ShowMessageAsync(Program.Translations.GetLanguage("JavaOutdatedTitle"),
                              Program.Translations.GetLanguage("JavaOutdatedMessage"),
-                             MessageDialogStyle.AffirmativeAndNegative, _metroDialogOptions) == MessageDialogResult.Affirmative)
+                             MessageDialogStyle.AffirmativeAndNegative, _win.MetroDialogOptions) == MessageDialogResult.Affirmative)
                         {
                             await java.InstallJava();
                         }
@@ -85,7 +83,7 @@ namespace SPCode.Utils
                     if (_win != null)
                     {
                         task = await _win.ShowProgressAsync(Program.Translations.GetLanguage("Decompiling") + "...",
-                            fInfo.FullName, false, _metroDialogOptions);
+                            fInfo.FullName, false, _win.MetroDialogOptions);
                         MainWindow.ProcessUITasks();
                     }
 
@@ -116,7 +114,7 @@ namespace SPCode.Utils
                     {
                         await _win.ShowMessageAsync($"{fInfo.Name} {Program.Translations.GetLanguage("FailedToDecompile")}",
                             $"{ex.Message}", MessageDialogStyle.Affirmative,
-                        _metroDialogOptions);
+                        _win.MetroDialogOptions);
                     }
 
                     // Load the decompiled file to SPCode

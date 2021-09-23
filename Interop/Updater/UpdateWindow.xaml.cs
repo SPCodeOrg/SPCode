@@ -34,8 +34,8 @@ namespace SPCode.Interop.Updater
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
 
-            PrepareUpdateWindow();
             updateInfo = info;
+            PrepareUpdateWindow();
 
         }
         #endregion

@@ -84,6 +84,11 @@ namespace SPCode.UI
         /// </summary>
         private void Command_New()
         {
+            var ee = GetCurrentEditorElement();
+            if (ee != null && ee.IsTemplateEditor)
+            {
+                return;
+            }
             string newFilePath;
             var newFileNum = 0;
             do
@@ -93,7 +98,7 @@ namespace SPCode.UI
 
             File.Create(newFilePath).Close();
 
-            AddEditorElement(newFilePath, $"New Plugin ({newFileNum}).sp", true, out _);
+            AddEditorElement(new FileInfo(newFilePath), $"New Plugin ({newFileNum}).sp", true, out _);
             RefreshObjectBrowser();
         }
 
@@ -116,6 +121,11 @@ namespace SPCode.UI
         /// </summary>
         private void Command_Open()
         {
+            var ee = GetCurrentEditorElement();
+            if (ee != null && ee.IsTemplateEditor)
+            {
+                return;
+            }
             var ofd = new OpenFileDialog
             {
                 AddExtension = true,
@@ -155,7 +165,7 @@ namespace SPCode.UI
         private void Command_Save()
         {
             var ee = GetCurrentEditorElement();
-            if (ee != null)
+            if (ee != null && !ee.IsTemplateEditor)
             {
                 ee.Save(true);
                 BlendOverEffect.Begin();
@@ -168,7 +178,7 @@ namespace SPCode.UI
         private void Command_SaveAs()
         {
             var ee = GetCurrentEditorElement();
-            if (ee != null)
+            if (ee != null && !ee.IsTemplateEditor)
             {
                 var sfd = new SaveFileDialog
                 {
@@ -193,12 +203,11 @@ namespace SPCode.UI
         /// </summary>
         private void Command_GoToLine()
         {
-            if (GetAllEditorElements() == null)
+            if (GetAllEditorElements() != null)
             {
-                return;
+                var goToLineWindow = new GoToLineWindow();
+                goToLineWindow.ShowDialog();
             }
-            var goToLineWindow = new GoToLineWindow();
-            goToLineWindow.ShowDialog();
         }
 
         /// <summary>
@@ -207,7 +216,7 @@ namespace SPCode.UI
         private void Command_DeleteLine()
         {
             var ee = GetCurrentEditorElement();
-            if (ee != null)
+            if (ee != null && !ee.editor.IsReadOnly)
             {
                 ee.DeleteLine();
             }
@@ -246,7 +255,7 @@ namespace SPCode.UI
         private void Command_SaveAll()
         {
             var editors = GetAllEditorElements();
-            if (editors == null)
+            if (editors == null || GetCurrentEditorElement().IsTemplateEditor)
             {
                 return;
             }
@@ -268,7 +277,7 @@ namespace SPCode.UI
         private void Command_Close()
         {
             var ee = GetCurrentEditorElement();
-            if (ee == null)
+            if (ee == null || ee.IsTemplateEditor)
             {
                 return;
             }
@@ -284,7 +293,7 @@ namespace SPCode.UI
         private async void Command_CloseAll()
         {
             var editors = GetAllEditorElements();
-            if (editors == null)
+            if (editors == null || GetCurrentEditorElement().IsTemplateEditor)
             {
                 return;
             }
@@ -416,9 +425,13 @@ namespace SPCode.UI
         /// <summary>
         /// Comment or uncomment the line the caret is in.
         /// </summary>
-        private void Command_ToggleCommentLine()
+        private void Command_ToggleCommentLine(bool comment)
         {
-            GetCurrentEditorElement()?.ToggleCommentOnLine();
+            var ee = GetCurrentEditorElement();
+            if (ee != null && !ee.editor.IsReadOnly)
+            {
+                ee.ToggleComment(comment);
+            }
         }
 
         /// <summary>
@@ -427,7 +440,11 @@ namespace SPCode.UI
         /// <param name="toUpper">Whether to transform to uppercase</param>
         public void Command_ChangeCase(bool toUpper)
         {
-            GetCurrentEditorElement()?.ChangeCase(toUpper);
+            var ee = GetCurrentEditorElement();
+            if (ee != null && !ee.editor.IsReadOnly)
+            {
+                ee.ChangeCase(toUpper);
+            }
         }
 
         /// <summary>
@@ -443,7 +460,7 @@ namespace SPCode.UI
             }
             foreach (var ee in editors)
             {
-                if (ee != null)
+                if (ee != null && !ee.editor.IsReadOnly)
                 {
                     int currentCaret = ee.editor.TextArea.Caret.Offset, numOfSpacesOrTabsBefore = 0;
                     var line = ee.editor.Document.GetLineByOffset(currentCaret);
@@ -499,6 +516,18 @@ namespace SPCode.UI
                 ShowInTaskbar = false
             };
             spDefinitionWindow.ShowDialog();
+        }
+        /// <summary>
+        /// Re-opens the last closed tab
+        /// </summary>
+        private void Command_ReopenLastClosedTab()
+        {
+            if (Program.RecentFilesStack.Count > 0)
+            {
+                TryLoadSourceFile(Program.RecentFilesStack.Pop(), out _, true, false, true);
+            }
+
+            MenuI_ReopenLastClosedTab.IsEnabled = Program.RecentFilesStack.Count > 0;
         }
     }
 }

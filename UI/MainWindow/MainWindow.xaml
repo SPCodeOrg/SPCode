@@ -22,9 +22,9 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
         <ResourceDictionary>
-          
+
           <!-- Button style with pressed effects -->
-          
+
           <Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{DynamicResource WhiteBrush}"/>
             <Setter Property="Template">
@@ -45,7 +45,7 @@
               </Trigger>
             </Style.Triggers>
           </Style>
-          
+
           <!--Button Images-->
 
           <Image x:Key="ImgReload" Source="/SPCode;component/Resources/Icons/icon-reload.png" Width="16"/>
@@ -53,7 +53,7 @@
           <Image x:Key="ImgExpand" Source="/SPCode;component/Resources/Icons/icon-expand.png" Width="16"/>
 
           <!--BlendOverEffect used on save and such-->
-          
+
           <Storyboard x:Key="BlendOverEffect" Duration="00:00:00.5" Storyboard.TargetName="BlendEffectPlane" Storyboard.TargetProperty="Opacity">
             <DoubleAnimationUsingKeyFrames>
               <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.00" />
@@ -61,7 +61,7 @@
               <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.50" />
             </DoubleAnimationUsingKeyFrames>
           </Storyboard>
-          
+
           <Storyboard x:Key="FadeFindReplaceGridIn" Duration="00:00:00.2" Storyboard.TargetName="FindReplaceGrid">
             <DoubleAnimation To="1" Duration="00:00:00.2" Storyboard.TargetProperty="Opacity" />
           </Storyboard>
@@ -92,22 +92,39 @@
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </controls:MetroWindow.Resources>
-  
+
   <controls:MetroWindow.LeftWindowCommands>
     <controls:WindowCommands>
       <Grid x:Name="MainWindowCommands">
         <Menu>
           <MenuItem x:Name="MenuI_File" Header="File" SubmenuOpened="FileMenu_Open">
+
             <MenuItem x:Name="MenuI_New" Header="New" Click="Menu_New"/>
             <MenuItem x:Name="MenuI_NewTemplate" Header="New From Template" Click="Menu_NewFromTemplate"/>
+
+            <Separator/>
+
             <MenuItem x:Name="MenuI_Open" Header="Open" Click="Menu_Open"/>
+            <MenuItem x:Name="MenuI_Recent" Header="Recent files">
+              <MenuItem.ContextMenu>
+                <ContextMenu>
+                  <MenuItem x:Name="MenuI_ClearRecent" Header="Clear recent" Click="Menu_ClearRecent"/>
+                </ContextMenu>
+              </MenuItem.ContextMenu>
+            </MenuItem>
+            <MenuItem x:Name="MenuI_ReopenLastClosedTab" Header="Reopen last tab" Click="Menu_ReopenLastClosedTab"/>
+            
             <Separator />
+            
             <MenuItem x:Name="MenuI_Save" Header="Save" Click="Menu_Save"/>
             <MenuItem x:Name="MenuI_SaveAll" Header="Save All" Click="Menu_SaveAll"/>
             <MenuItem x:Name="MenuI_SaveAs" Header="Save As" Click="Menu_SaveAs"/>
+            
             <Separator />
+            
             <MenuItem x:Name="MenuI_Close" Header="Close" Click="Menu_Close"/>
             <MenuItem x:Name="MenuI_CloseAll" Header="Close All" Click="Menu_CloseAll"/>
+            
           </MenuItem>
 
           <MenuItem x:Name="MenuI_Edit" Header="Edit" SubmenuOpened="EditMenu_Open">
@@ -123,7 +140,8 @@
               <MenuItem x:Name="MenuI_FoldingsCollapse" Header="Collapse All" Click="Menu_CollapseAll" />
             </MenuItem>
             <MenuItem x:Name="MenuI_GoToLine" Header="Jump To" Click="Menu_JumpTo"/>
-            <MenuItem x:Name="MenuI_CommentLine" Header="Toggle comment (//)" Click="Menu_ToggleCommentLine"/>
+            <MenuItem x:Name="MenuI_CommentLine" Header="Comment selection" Click="Menu_CommentLine"/>
+            <MenuItem x:Name="MenuI_UncommentLine" Header="Uncomment selection" Click="Menu_UncommentLine"/>
             <MenuItem x:Name="MenuI_SelectAll" Header="Select All" Click="Menu_SelectAll"/>
             <Separator />
             <MenuItem x:Name="MenuI_SearchReplace" Header="Find &amp; Replace" Click="Menu_FindAndReplace"/>
@@ -247,8 +265,8 @@
         </ToolBar>
       </ToolBarTray>
     </Grid>
-    <Grid Grid.Row="1" Background="{DynamicResource AccentColorBrush}" Grid.ColumnSpan="3" Margin="0,0,0,84" Grid.RowSpan="2">
-      <controls:MetroProgressBar x:Name="ServerProgressBar" HorizontalAlignment="Stretch" IsIndeterminate="False" Height="0" MinHeight="0" Foreground="White" />
+    <Grid Grid.Row="1" Grid.ColumnSpan="3" Background="{DynamicResource AccentColorBrush}">
+      <controls:MetroProgressBar x:Name="ServerProgressBar" HorizontalAlignment="Stretch" IsIndeterminate="True" Height="0" MinHeight="0" Foreground="White" />
     </Grid>
     <Grid Grid.Row="2" Grid.ColumnSpan="3">
       <Grid.RowDefinitions>
@@ -335,9 +353,9 @@
 
       </Grid>
       <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="5" Background="{DynamicResource GrayBrush5}" />
-      <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="30" Margin="0,5,0,0" Style="{DynamicResource MetroFlatButton}" Click="CloseErrorResultGrid">
+      <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="30" Margin="0,5,0,0" Style="{DynamicResource ButtonStyle}" Click="CloseErrorResultGrid">
         <Canvas Width="10" Height="10" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-          <Path Width="10" Height="10" Stretch="Fill" Fill="{DynamicResource BlackBrush}" Data="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z "/>
+          <Path Width="10" Height="10" Stretch="Fill" Fill="{DynamicResource AccentColorBrush}" Data="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z "/>
         </Canvas>
       </Button>
       <Grid Grid.Row="1" Margin="0,5,30,0">

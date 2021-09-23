@@ -164,7 +164,8 @@ namespace SPCode.Interop
             language.Add("Folding", "Foldings");
             language.Add("FoldingsExpand", "Expand all");
             language.Add("FoldingsCollapse", "Collapse all");
-            language.Add("CommentLine", "Toggle comment");
+            language.Add("CommentLine", "Comment selection");
+            language.Add("UncommentLine", "Uncomment selection");
             language.Add("SelectAll", "Select all");
             language.Add("SearchReplace", "Find & Replace");
             language.Add("Tools", "Tools");
@@ -367,6 +368,7 @@ namespace SPCode.Interop
             language.Add("EnableRPCFile", "Show current file");
             language.Add("TemplateExists", "Template name already exists");
             language.Add("IllegalCharacters", "Illegal characters");
+            language.Add("ReopenLastClosedTab", "Reopen the last closed tab");
         }
     }
 }

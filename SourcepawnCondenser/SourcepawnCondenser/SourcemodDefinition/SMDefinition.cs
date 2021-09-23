@@ -60,8 +60,9 @@ namespace SourcepawnCondenser.SourcemodDefinition
             } //racing condition on save when the thread closes first or not..
         }
 
-        public void AppendFiles(IEnumerable<string> paths)
+        public void AppendFiles(IEnumerable<string> paths, out List<string> rejectedPaths)
         {
+            rejectedPaths = new();
             foreach (var path in paths)
             {
                 if (Directory.Exists(path))
@@ -86,12 +87,10 @@ namespace SourcepawnCondenser.SourcemodDefinition
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        // ignored
+                        rejectedPaths.Add(path);
                     }
                 }
             }
-
-            // var editor = Program.MainWindow.GetCurrentEditorElement();
 
             Sort();
             ProduceStringArrays();

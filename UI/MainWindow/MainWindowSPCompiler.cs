@@ -49,15 +49,17 @@ namespace SPCode.UI
             NonUploadedFiles.Clear();
 
             // Grabs current config
-            var c = Program.Configs[Program.SelectedConfig];
+            var currentConfig = Program.Configs[Program.SelectedConfig];
 
             // Creates flags
             FileInfo spCompInfo = null;
             var SpCompFound = false;
             var PressedEscape = false;
+            var hadError = false;
+            var warnings = 0;
 
             // Searches for the spcomp.exe compiler
-            foreach (var dir in c.SMDirectories)
+            foreach (var dir in currentConfig.SMDirectories)
             {
                 spCompInfo = new FileInfo(Path.Combine(dir, "spcomp.exe"));
                 if (spCompInfo.Exists)
@@ -87,12 +89,16 @@ namespace SPCode.UI
                     return;
                 }
 
-                foreach (var t in editors)
+                foreach (var editor in editors)
                 {
-                    var compileBoxIsChecked = t.CompileBox.IsChecked;
+                    var compileBoxIsChecked = editor.CompileBox.IsChecked;
                     if (compileBoxIsChecked != null && compileBoxIsChecked.Value)
                     {
-                        ScriptsCompiled.Add(t.FullFilePath);
+                        ScriptsCompiled.Add(editor.FullFilePath);
+                    }
+                    else
+                    {
+                        LoggingControl.LogAction($"{new FileInfo(editor.FullFilePath).FullName} (omitted)");
                     }
                 }
             }
@@ -169,7 +175,7 @@ namespace SPCode.UI
                         }
 
                         var includeDirectories = new StringBuilder();
-                        foreach (var dir in c.SMDirectories)
+                        foreach (var dir in currentConfig.SMDirectories)
                         {
                             includeDirectories.Append(" -i=\"" + dir + "\"");
                         }
@@ -178,9 +184,9 @@ namespace SPCode.UI
 
                         process.StartInfo.Arguments =
                             "\"" + fileInfo.FullName + "\" -o=\"" + outFile + "\" -e=\"" + errorFile + "\"" +
-                            includeStr + " -O=" + c.OptimizeLevel + " -v=" + c.VerboseLevel;
+                            includeStr + " -O=" + currentConfig.OptimizeLevel + " -v=" + currentConfig.VerboseLevel;
                         progressTask.SetProgress((i + 1 - 0.5d) / compileCount);
-                        var execResult = ExecuteCommandLine(c.PreCmd, fileInfo.DirectoryName, c.CopyDirectory,
+                        var execResult = ExecuteCommandLine(currentConfig.PreCmd, fileInfo.DirectoryName, currentConfig.CopyDirectory,
                             fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
                         if (!string.IsNullOrWhiteSpace(execResult))
                         {
@@ -205,6 +211,8 @@ namespace SPCode.UI
 
                         if (File.Exists(errorFile))
                         {
+                            warnings = 0;
+                            hadError = false;
                             var errorStr = File.ReadAllText(errorFile);
                             stringOutput.AppendLine(errorStr.Trim('\n', '\r'));
                             var mc = errorFilterRegex.Matches(errorStr);
@@ -217,14 +225,25 @@ namespace SPCode.UI
                                     Type = mc[j].Groups["Type"].Value.Trim(),
                                     Details = mc[j].Groups["Details"].Value.Trim()
                                 });
+                                if (mc[j].Groups["Type"].Value.Contains("error"))
+                                {
+                                    hadError = true;
+                                }
+                                if (mc[j].Groups["Type"].Value.Contains("warning"))
+                                {
+                                    warnings++;
+                                }
                             }
-
-                            LoggingControl.LogAction(fileInfo.Name + " (error)");
                             File.Delete(errorFile);
+                        }
+
+                        if (hadError)
+                        {
+                            LoggingControl.LogAction(fileInfo.Name + " (error)");
                         }
                         else
                         {
-                            LoggingControl.LogAction(fileInfo.Name);
+                            LoggingControl.LogAction($"{fileInfo.Name}{(warnings > 0 ? $" ({warnings} warnings)" : "")}");
                             compiledSuccess++;
                         }
 
@@ -235,8 +254,8 @@ namespace SPCode.UI
                             CompiledFileNames.Add(destinationFileName);
                         }
 
-                        var execResult_Post = ExecuteCommandLine(c.PostCmd, fileInfo.DirectoryName,
-                            c.CopyDirectory, fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
+                        var execResult_Post = ExecuteCommandLine(currentConfig.PostCmd, fileInfo.DirectoryName,
+                            currentConfig.CopyDirectory, fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
                         if (!string.IsNullOrWhiteSpace(execResult_Post))
                         {
 
@@ -249,13 +268,13 @@ namespace SPCode.UI
 
                 if (compiledSuccess > 0)
                 {
-                    LoggingControl.LogAction($"Compiled {compiledSuccess} {(compileAll ? "plugins" : "plugin")}.", 2);
+                    LoggingControl.LogAction($"Compiled {compiledSuccess} {(compiledSuccess > 1 ? "plugins" : "plugin")}.", 2);
                 }
 
                 if (!PressedEscape)
                 {
                     progressTask.SetProgress(1.0);
-                    if (c.AutoCopy)
+                    if (currentConfig.AutoCopy)
                     {
                         progressTask.SetTitle(Program.Translations.GetLanguage("CopyingFiles"));
                         progressTask.SetIndeterminate();
@@ -263,7 +282,7 @@ namespace SPCode.UI
                         progressTask.SetProgress(1.0);
                     }
 
-                    if (c.AutoUpload)
+                    if (currentConfig.AutoUpload)
                     {
                         progressTask.SetTitle(Program.Translations.GetLanguage("FTPUploading"));
                         progressTask.SetIndeterminate();
@@ -271,7 +290,7 @@ namespace SPCode.UI
                         progressTask.SetProgress(1.0);
                     }
 
-                    if (c.AutoRCON)
+                    if (currentConfig.AutoRCON)
                     {
                         progressTask.SetTitle(Program.Translations.GetLanguage("RCONCommand"));
                         progressTask.SetIndeterminate();
@@ -481,30 +500,29 @@ namespace SPCode.UI
             try
             {
                 ServerProcess.Start();
+                ServerIsRunning = true;
+                Program.MainWindow.Dispatcher?.Invoke(() =>
+                {
+                    EnableServerAnim.Begin();
+                    UpdateWindowTitle();
+                });
+                ServerProcess.WaitForExit();
+                ServerProcess.Dispose();
+                ServerIsRunning = false;
+                Program.MainWindow.Dispatcher?.Invoke(() =>
+                {
+                    if (Program.MainWindow.IsLoaded)
+                    {
+                        DisableServerAnim.Begin();
+                        UpdateWindowTitle();
+                    }
+                    LoggingControl.LogAction("Server started.", 2);
+                });
             }
             catch (Exception)
             {
                 return;
             }
-
-            ServerIsRunning = true;
-            Program.MainWindow.Dispatcher?.Invoke(() =>
-            {
-                EnableServerAnim.Begin();
-                UpdateWindowTitle();
-            });
-            ServerProcess.WaitForExit();
-            ServerProcess.Dispose();
-            ServerIsRunning = false;
-            Program.MainWindow.Dispatcher?.Invoke(() =>
-            {
-                if (Program.MainWindow.IsLoaded)
-                {
-                    DisableServerAnim.Begin();
-                    UpdateWindowTitle();
-                }
-                LoggingControl.LogAction("Server started.", 2);
-            });
         }
 
         private string ShortenScriptFileName(string fileName)

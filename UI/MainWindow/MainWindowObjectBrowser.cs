@@ -23,7 +23,7 @@ namespace SPCode.UI
         private readonly DispatcherTimer SearchCooldownTimer;
         private readonly List<TreeViewItem> ExpandedItems = new();
         private List<TreeViewItem> ExpandedItemsBuffer = new();
-        private bool VisualsShown = false;
+        private bool SearchMode = false;
         private bool OBExpanded = false;
 
         public readonly Dictionary<string, string> FileIcons = new()
@@ -186,7 +186,7 @@ namespace SPCode.UI
             {
                 return;
             }
-            if (VisualsShown)
+            if (SearchMode)
             {
                 OBSearch.Clear();
                 HideSearchVisuals();
@@ -208,7 +208,7 @@ namespace SPCode.UI
             {
                 return;
             }
-            if (VisualsShown)
+            if (SearchMode)
             {
                 OBSearch.Clear();
                 HideSearchVisuals();
@@ -226,7 +226,7 @@ namespace SPCode.UI
         private void OBDirList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             OBSearch.Clear();
-            if (VisualsShown)
+            if (SearchMode)
             {
                 HideSearchVisuals();
             }
@@ -245,7 +245,7 @@ namespace SPCode.UI
                     ChangeObjectBrowserToDirectory(CurrentObjectBrowserDirectory);
                     break;
                 case Key.Enter:
-                    if (VisualsShown)
+                    if (SearchMode)
                     {
                         Search(OBSearch.Text);
                     }
@@ -285,7 +285,7 @@ namespace SPCode.UI
         /// <summary>
         /// Refreshes the object browser's items, remembering folding states.
         /// </summary>
-        private void RefreshObjectBrowser()
+        public void RefreshObjectBrowser()
         {
             // Delete context menu to prevent performing actions on potentially null elements
             ObjectBrowser.ContextMenu = null;
@@ -400,7 +400,7 @@ namespace SPCode.UI
         /// </summary>
         private void ShowSearchVisuals()
         {
-            if (VisualsShown)
+            if (SearchMode)
             {
                 return;
             }
@@ -408,7 +408,7 @@ namespace SPCode.UI
             objMargin.Top += 30;
             ObjectBrowser.Margin = objMargin;
             TxtSearchResults.Visibility = Visibility.Visible;
-            VisualsShown = true;
+            SearchMode = true;
         }
 
         /// <summary>
@@ -416,7 +416,7 @@ namespace SPCode.UI
         /// </summary>
         private void HideSearchVisuals()
         {
-            if (!VisualsShown)
+            if (!SearchMode)
             {
                 return;
             }
@@ -424,7 +424,7 @@ namespace SPCode.UI
             objMargin.Top -= 30;
             ObjectBrowser.Margin = objMargin;
             TxtSearchResults.Visibility = Visibility.Hidden;
-            VisualsShown = false;
+            SearchMode = false;
         }
 
         /// <summary>
@@ -559,12 +559,12 @@ namespace SPCode.UI
         }
 
         /// <summary>
-        /// Helper function to build an expanded item's contents. <br/>
-        /// It outs a TreeViewItem list to be used when using the Reload function to keep directories expanded after refreshing.
+        /// <para> Helper function to build an expanded item's contents. </para>
+        /// <para> It outs a TreeViewItem list to be used when using the Reload function to keep directories expanded after refreshing. </para>
         /// </summary>
         /// <param name="dir">Directory to fetch contents from.</param>
         /// <param name="itemsToExpand">List of items that were expanded before calling this function to reload the Object Browser items.</param>
-        /// <returns></returns>
+        /// <returns>List of Items build from the specified directory.</returns>
         private List<TreeViewItem> BuildDirectoryItems(string dir, out List<TreeViewItem> itemsToExpand)
         {
             itemsToExpand = new();
@@ -572,12 +572,12 @@ namespace SPCode.UI
 
             // GetFiles() filter is not precise and doing new FileInfo(x).Extension is slower
             var directories = Directory.GetDirectories(dir, "*", SearchOption.TopDirectoryOnly);
-            var incFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".inc")).ToList();
-            var spFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".sp")).ToList();
-            var smxFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".smx")).ToList();
-            var txtFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".txt")).ToList();
-            var cfgFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".cfg")).ToList();
-            var iniFiles = Directory.GetFiles(dir).Where(x => x.Substring(x.LastIndexOf('.')).Equals(".ini")).ToList();
+            var incFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".inc")).ToList();
+            var spFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".sp")).ToList();
+            var smxFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".smx")).ToList();
+            var txtFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".txt")).ToList();
+            var cfgFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".cfg")).ToList();
+            var iniFiles = Directory.GetFiles(dir).Where(x => x.Contains('.') && x.Substring(x.LastIndexOf('.')).Equals(".ini")).ToList();
 
             var itemsToAdd = new List<string>();
             itemsToAdd.AddRange(directories);
@@ -712,16 +712,19 @@ namespace SPCode.UI
         /// <returns></returns>
         private static TreeViewItem VisualUpwardSearch(DependencyObject source)
         {
-            while (source != null && !(source is TreeViewItem))
+            while (source != null && source is not TreeViewItem)
             {
                 source = VisualTreeHelper.GetParent(source);
             }
             return source as TreeViewItem;
         }
 
+        /// <summary>
+        /// Disables the File tab button of the Object Browser if there's no file opened in the editor.
+        /// </summary>
         public void UpdateOBFileButton()
         {
-            if (GetAllEditorElements() == null)
+            if (GetAllEditorElements() == null && GetAllDASMElements() == null)
             {
                 OBTabFile.IsEnabled = false;
                 OBTabFile.IsSelected = false;
