@@ -110,9 +110,7 @@ namespace SPCode.UI.Windows
 
         private void CheckExtension()
         {
-            try
-            {
-                if (!Program.MainWindow.FileIcons.ContainsKey(TxtName.Text.Substring(TxtName.Text.LastIndexOf('.'))))
+                if (!TxtName.Text.Contains(".") || !Program.MainWindow.FileIcons.ContainsKey(TxtName.Text.Substring(TxtName.Text.LastIndexOf('.'))))
                 {
                     lblError.Content = Program.Translations.GetLanguage("FileNotSupported");
                     lblError.ToolTip = Program.Translations.GetLanguage("FileWillBeExcluded");
@@ -122,11 +120,6 @@ namespace SPCode.UI.Windows
                     lblError.Content = "";
                     lblError.ToolTip = "";
                 }
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                // this is ugly and newbish but I'm lazy and it works
-            }
         }
 
         public void Language_Translate()
