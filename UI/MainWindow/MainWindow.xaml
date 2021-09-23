@@ -295,12 +295,18 @@
         <TreeView Grid.Column="1" x:Name="ObjectBrowser" TreeViewItem.Expanded="TreeViewOBItem_Expanded" TreeViewItem.Collapsed="TreeViewOBItem_Collapsed" PreviewMouseRightButtonDown="TreeViewOBItem_RightClicked" Margin="0,54,0,26">
           <TreeView.Resources>
             <ContextMenu x:Name="TVIContextMenu" x:Key="TVIContextMenu" StaysOpen="true">
-              <MenuItem x:Name="OpenFileLocation" Header="Open file location" Click="OBItemOpenFileLocation_Click"/>
-              <MenuItem x:Name="Rename" Header="Rename" Click="OBItemRename_Click"/>
-              <MenuItem x:Name="Delete" Header="Delete" Click="OBItemDelete_Click"/>
+              <MenuItem Header="Open file location" Click="OBItemOpenFileLocation_Click"/>
+              <MenuItem Header="Rename" Click="OBItemRename_Click"/>
+              <MenuItem Header="Delete" Click="OBItemDelete_Click"/>
+            </ContextMenu>
+            <ContextMenu x:Name="TVIContextMenuSmx" x:Key="TVIContextMenuSmx" StaysOpen="true">
+              <MenuItem Header="Open file location" Click="OBItemOpenFileLocation_Click"/>
+              <MenuItem Header="Decompile" Click="OBItemDecompile_Click"/>
+              <MenuItem Header="Rename" Click="OBItemRename_Click"/>
+              <MenuItem Header="Delete" Click="OBItemDelete_Click"/>
             </ContextMenu>
             <ContextMenu x:Name="TVIContextMenuDir" x:Key="TVIContextMenuDir" StaysOpen="true">
-              <MenuItem x:Name="OpenDirLocation" Header="Open directory location" Click="OBItemOpenFileLocation_Click"/>
+              <MenuItem Header="Open directory location" Click="OBItemOpenFileLocation_Click"/>
             </ContextMenu>
           </TreeView.Resources>
         </TreeView>

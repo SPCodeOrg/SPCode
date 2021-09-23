@@ -72,23 +72,24 @@ namespace SPCode.UI
                 switch (itemTag.Kind)
                 {
                     case ObjectBrowserItemKind.Directory:
-                        {
-                            treeViewItem.Focus();
-                            ObjectBrowser.ContextMenu = ObjectBrowser.Resources["TVIContextMenuDir"] as ContextMenu;
-                            break;
-                        }
+                        treeViewItem.Focus();
+                        ObjectBrowser.ContextMenu = ObjectBrowser.Resources["TVIContextMenuDir"] as ContextMenu;
+                        break;
+
+                    case ObjectBrowserItemKind.File when itemTag.Value.Substring(itemTag.Value.LastIndexOf('.')) == ".smx":
+                        treeViewItem.Focus();
+                        ObjectBrowser.ContextMenu = ObjectBrowser.Resources["TVIContextMenuSmx"] as ContextMenu;
+                        break;
+
                     case ObjectBrowserItemKind.File:
-                        {
-                            treeViewItem.Focus();
-                            ObjectBrowser.ContextMenu = ObjectBrowser.Resources["TVIContextMenu"] as ContextMenu;
-                            break;
-                        }
+                        treeViewItem.Focus();
+                        ObjectBrowser.ContextMenu = ObjectBrowser.Resources["TVIContextMenu"] as ContextMenu;
+                        break;
+
                     case ObjectBrowserItemKind.ParentDirectory:
                     case ObjectBrowserItemKind.Empty:
-                        {
-                            ObjectBrowser.ContextMenu = null;
-                            break;
-                        }
+                        ObjectBrowser.ContextMenu = null;
+                        break;
                 }
             }
             e.Handled = true;
@@ -132,6 +133,15 @@ namespace SPCode.UI
             if (selectedItemFile != null)
             {
                 Process.Start("explorer.exe", $"/select, \"{selectedItemFile}\"");
+            }
+        }
+
+        private async void OBItemDecompile_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItemFile = ((ObjectBrowser.SelectedItem as TreeViewItem)?.Tag as ObjectBrowserTag)?.Value;
+            if (selectedItemFile != null)
+            {
+                await new DecompileUtil().DecompilePlugin(selectedItemFile);
             }
         }
 
