@@ -11,11 +11,11 @@ namespace SourcepawnCondenser.SourcemodDefinition
 
         public readonly string FullName;
         public readonly string ReturnType;
-        public readonly List<string> Parameters;
+        public readonly IImmutableList<string> Parameters;
         public readonly SMFunctionKind FunctionKind;
-        public readonly List<SMVariable> FuncVariables;
+        public readonly IImmutableList<SMVariable> FuncVariables;
 
-        public SMFunction(IImmutableList<Token> tokens, int endToken, string file, string name, string commentString, string fullName, string returnType, List<string> parameters, SMFunctionKind functionKind, List<SMVariable> funcVariables) : base(tokens.First().Index, tokens[endToken].Index - tokens.First().Index, file, name, commentString)
+        public SMFunction(IImmutableList<Token> tokens, int endToken, string file, string name, string commentString, string fullName, string returnType, IImmutableList<string> parameters, SMFunctionKind functionKind, IImmutableList<SMVariable> funcVariables) : base(tokens, endToken, file, name, commentString)
         {
             FullName = fullName;
             ReturnType = returnType;

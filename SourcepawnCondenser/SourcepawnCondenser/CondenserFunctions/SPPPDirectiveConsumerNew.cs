@@ -29,7 +29,7 @@ namespace SourcepawnCondenser
                 return InvalidValue;
             }
 
-            var def = new SMDefine(tokens[0].Index, tokens[1].Index - tokens[0].Index + tokens[1].Length,
+            var def = new SMDefine(tokens, 1,
                 FileName, tokens[1].Value, "");
 
             var eof = tokens.FindIndex(token => token.Kind == TokenKind.EOF);

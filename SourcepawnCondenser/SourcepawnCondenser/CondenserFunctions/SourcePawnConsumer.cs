@@ -101,6 +101,67 @@ namespace SourcepawnCondenser
 
         }
 
+
+        protected static string TrimComments(string comment)
+        {
+            var outString = new StringBuilder();
+            var lines = comment.Split('\r', '\n');
+            string line;
+            for (var i = 0; i < lines.Length; ++i)
+            {
+                line = lines[i].Trim().TrimStart('/', '*', ' ', '\t');
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    if (i > 0)
+                    {
+                        outString.AppendLine();
+                    }
+
+                    if (line.StartsWith("@param"))
+                    {
+                        outString.Append(FormatParamLineString(line));
+                    }
+                    else
+                    {
+                        outString.Append(line);
+                    }
+                }
+            }
+
+            return outString.ToString().Trim();
+        }
+
+        protected static string TrimFullname(string name)
+        {
+            var outString = new StringBuilder();
+            var lines = name.Split('\r', '\n');
+            for (var i = 0; i < lines.Length; ++i)
+            {
+                if (!string.IsNullOrWhiteSpace(lines[i]))
+                {
+                    if (i > 0)
+                    {
+                        outString.Append(" ");
+                    }
+
+                    outString.Append(lines[i].Trim(' ', '\t'));
+                }
+            }
+
+            return outString.ToString();
+        }
+
+        protected static string FormatParamLineString(string line)
+        {
+            var split = line.Replace('\t', ' ').Split(new[] { ' ' }, 3);
+            if (split.Length > 2)
+            {
+                return ("@param " + split[1]).PadRight(24, ' ') + " " + split[2].Trim(' ', '\t');
+            }
+
+            return line;
+        }
+        
         // Returns true if the next to tokens represent an array declaration ( "[]" )
         protected bool IsArray(int position)
         {

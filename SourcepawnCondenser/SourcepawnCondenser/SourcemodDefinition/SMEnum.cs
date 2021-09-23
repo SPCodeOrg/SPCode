@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using SourcepawnCondenser.Tokenizer;
 
 namespace SourcepawnCondenser.SourcemodDefinition
 {
     public class SMEnum : SMBaseDefinition
     {
-        public List<string> Entries;
+        public readonly IImmutableList<string> Entries;
 
-        public SMEnum(int index, int length, string file, string name, string commentString, List<string> entries) : base(index, length, file, name, commentString)
+
+        public SMEnum(IImmutableList<Token> tokens, int endToken, string file, string name, string commentString, IImmutableList<string> entries) : base(tokens, endToken, file, name, commentString)
         {
             Entries = entries;
         }

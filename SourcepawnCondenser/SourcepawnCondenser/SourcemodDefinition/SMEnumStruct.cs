@@ -1,13 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
+using SourcepawnCondenser.Tokenizer;
 
 namespace SourcepawnCondenser.SourcemodDefinition
 {
     public class SMEnumStruct : SMBaseDefinition
     {
-        public readonly List<SMEnumStructField> Fields;
-        public readonly List<SMEnumStructMethod> Methods;
+        public readonly IImmutableList<SMEnumStructField> Fields;
+        public readonly IImmutableList<SMEnumStructMethod> Methods;
 
-        public SMEnumStruct(int index, int length, string file, string name, string commentString, List<SMEnumStructField> fields, List<SMEnumStructMethod> methods) : base(index, length, file, name, commentString)
+
+        public SMEnumStruct(IImmutableList<Token> tokens, int endToken, string file, string name, string commentString,
+            IImmutableList<SMEnumStructField> fields, IImmutableList<SMEnumStructMethod> methods) : base(tokens, endToken,
+            file, name, commentString)
         {
             Fields = fields;
             Methods = methods;
@@ -17,9 +22,13 @@ namespace SourcepawnCondenser.SourcemodDefinition
     public class SMEnumStructField : SMBaseDefinition
     {
         public readonly string MethodmapName;
+
         public readonly string FullName;
         //public string Type = string.Empty; not needed yet
-        public SMEnumStructField(int index, int length, string file, string name, string commentString, string methodmapName, string fullName) : base(index, length, file, name, commentString)
+
+        public SMEnumStructField(IImmutableList<Token> tokens, int endToken, string file, string name,
+            string commentString, string methodmapName, string fullName) : base(tokens, endToken, file, name,
+            commentString)
         {
             MethodmapName = methodmapName;
             FullName = fullName;
@@ -31,10 +40,14 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public readonly string MethodmapName;
         public readonly string FullName;
         public readonly string ReturnType;
-        public readonly List<string> Parameters;
-        public readonly List<string> MethodKind;
+        public readonly IImmutableList<string> Parameters;
+        public readonly IImmutableList<string> MethodKind;
 
-        public SMEnumStructMethod(int index, int length, string file, string name, string commentString, string methodmapName, string fullName, string returnType, List<string> parameters, List<string> methodKind) : base(index, length, file, name, commentString)
+
+        public SMEnumStructMethod(IImmutableList<Token> tokens, int endToken, string file, string name,
+            string commentString, string methodmapName, string fullName, string returnType,
+            IImmutableList<string> parameters, IImmutableList<string> methodKind) : base(tokens, endToken, file, name,
+            commentString)
         {
             MethodmapName = methodmapName;
             FullName = fullName;

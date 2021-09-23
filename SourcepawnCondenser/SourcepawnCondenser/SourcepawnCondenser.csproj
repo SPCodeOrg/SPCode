@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Condenser.cs" />
+    <Compile Include="CondenserFunctions\SmEnumConsumerNew.cs" />
     <Compile Include="CondenserFunctions\SourcePawnConsumer.cs" />
     <Compile Include="CondenserFunctions\SMEnumStructConsumer.cs" />
     <Compile Include="CondenserFunctions\SmFunctionConsumerNew.cs" />

@@ -336,11 +336,11 @@ namespace SourcepawnCondenser
                     var continueNext = false;
 
                     // Dynamic array: "char[] x = new char[64];"
-                    var result = ConsumeDynamicArray(t, position, length, startIndex, FileName, varType);
-                    if (result.count != -1)
+                    var (variable, count) = ConsumeDynamicArray(t, position, length, startIndex, FileName, varType);
+                    if (count != -1)
                     {
-                        variables.Add(result.variable);
-                        position += result.count;
+                        variables.Add(variable);
+                        position += count;
                         break;
                     } 
                     // All the other kind of declarations required the second token to be an identifier.

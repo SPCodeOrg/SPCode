@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
+using SourcepawnCondenser.Tokenizer;
 
 namespace SourcepawnCondenser.SourcemodDefinition
 {
@@ -6,10 +8,11 @@ namespace SourcepawnCondenser.SourcemodDefinition
     {
         public readonly string Type;
         public readonly string InheritedType;
-        public readonly List<SMMethodmapField> Fields;
-        public readonly List<SMMethodmapMethod> Methods;
+        public readonly IImmutableList<SMMethodmapField> Fields;
+        public readonly IImmutableList<SMMethodmapMethod> Methods;
 
-        public SMMethodmap(int index, int length, string file, string name, string commentString, string type, string inheritedType, List<SMMethodmapField> fields, List<SMMethodmapMethod> methods) : base(index, length, file, name, commentString)
+
+        public SMMethodmap(IImmutableList<Token> tokens, int endToken, string file, string name, string commentString, string type, string inheritedType, IImmutableList<SMMethodmapField> fields, IImmutableList<SMMethodmapMethod> methods) : base(tokens, endToken, file, name, commentString)
         {
             Type = type;
             InheritedType = inheritedType;
@@ -23,7 +26,8 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public readonly string MethodmapName;
         public readonly string FullName;
         //public string Type = string.Empty; not needed yet
-        public SMMethodmapField(int index, int length, string file, string name, string commentString, string methodmapName, string fullName) : base(index, length, file, name, commentString)
+
+        public SMMethodmapField(IImmutableList<Token> tokens, int endToken, string file, string name, string commentString, string methodmapName, string fullName) : base(tokens, endToken, file, name, commentString)
         {
             MethodmapName = methodmapName;
             FullName = fullName;
@@ -35,10 +39,11 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public readonly string MethodmapName;
         public readonly string FullName;
         public readonly string ReturnType;
-        public readonly List<string> Parameters;
-        public readonly List<string> MethodKind;
+        public readonly IImmutableList<string> Parameters;
+        public readonly IImmutableList<string> MethodKind;
 
-        public SMMethodmapMethod(int index, int length, string file, string name, string commentString, string methodmapName, string fullName, string returnType, List<string> parameters, List<string> methodKind) : base(index, length, file, name, commentString)
+
+        public SMMethodmapMethod(IImmutableList<Token> tokens, int endToken, string file, string name, string commentString, string methodmapName, string fullName, string returnType, IImmutableList<string> parameters, IImmutableList<string> methodKind) : base(tokens, endToken, file, name, commentString)
         {
             MethodmapName = methodmapName;
             FullName = fullName;

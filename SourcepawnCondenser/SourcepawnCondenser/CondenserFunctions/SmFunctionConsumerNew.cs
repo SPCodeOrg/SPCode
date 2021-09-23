@@ -15,6 +15,7 @@ namespace SourcepawnCondenser
         {
         }
 
+        // TODO: fullname should be updated.
         public override (SMBaseDefinition? def, int count) Consume(int position)
         {
             var tokens = Tokens.GetRange(position, Tokens.Count - position);
@@ -83,95 +84,57 @@ namespace SourcepawnCondenser
                     nameToken.Kind == TokenKind.Identifier && !string.IsNullOrWhiteSpace(nameToken.Value))
                 .Select(nameToken => nameToken.Value).ToList();
 
-
             index = endParamsIndex + 1;
+
+            // function declared as "native void function();", native functions are the only function type that allow that.
             if (tokens[index].Kind == TokenKind.Semicolon)
             {
                 // TODO: Complete `fullName` by adding the full function definition.
                 return (new SMFunction(
-                    tokens, index, FileName, funcName, commentString, funcName, returnType, parameters, kind,
-                    (new List<string>()).ToImmutableList()), index);
+                    tokens, index, FileName, funcName, commentString, funcName, returnType,
+                    functionParameters.ToImmutableList(), kind,
+                    (new List<SMVariable>()).ToImmutableList()), index);
             }
 
-            var localVars = new List<SMVariable>();
-
-            if (outTokenIndex + 1 < _length)
+            if (tokens[index].Kind != TokenKind.BraceOpen || tokens.Count < index + 1)
             {
-                if (_tokens[outTokenIndex + 1].Kind == TokenKind.Semicolon)
-                {
-                    _def.Functions.Add(new SMFunction
-                    {
-                        FunctionKind = kind,
-                        Index = _tokens[startPosition].Index,
-                        EndPos = parameterDeclIndexEnd,
-                        File = _fileName,
-                        Length = parameterDeclIndexEnd - _tokens[startPosition].Index + 1,
-                        Name = functionName,
-                        FullName = TrimFullname(_source.Substring(_tokens[startPosition].Index,
-                            parameterDeclIndexEnd - _tokens[startPosition].Index + 1)),
-                        ReturnType = functionReturnType,
-                        CommentString = TrimComments(functionCommentString),
-                        Parameters = functionParameters.ToArray(),
-                        FuncVariables = localVars
-                    });
-                    return outTokenIndex + 1;
-                }
+                //TODO: Maybe this should return an InvalidValue.
+                return (new SMFunction(
+                    tokens, index, FileName, funcName, commentString, funcName, returnType,
+                    functionParameters.ToImmutableList(), kind,
+                    (new List<SMVariable>()).ToImmutableList()), index);
+            }
 
-                var nextOpenBraceTokenIndex = FortraceTestForToken(outTokenIndex + 1, TokenKind.BraceOpen, true, false);
-                if (nextOpenBraceTokenIndex != -1)
+
+            var braceState = 0;
+
+            //TODO: Come back here to add local variables & scopes support.
+            for (var i = index; i < tokens.Count; ++i)
+            {
+                if (tokens[i].Kind == TokenKind.BraceOpen)
                 {
-                    braceState = 0;
-                    for (var i = nextOpenBraceTokenIndex; i < _length; ++i)
+                    ++braceState;
+                }
+                else if (tokens[i].Kind == TokenKind.BraceClose)
+                {
+                    --braceState;
+                    if (braceState == 0)
                     {
-                        if (_tokens[i].Kind == TokenKind.BraceOpen)
-                        {
-                            ++braceState;
-                        }
-                        else if (_tokens[i].Kind == TokenKind.BraceClose)
-                        {
-                            --braceState;
-                            if (braceState == 0)
-                            {
-                                localVars = LocalVars.ConsumeSMVariableLocal(
-                                    _tokens.GetRange(nextOpenBraceTokenIndex, i - nextOpenBraceTokenIndex), _fileName);
-                                _def.Functions.Add(new SMFunction
-                                {
-                                    EndPos = _tokens[nextOpenBraceTokenIndex + (i - nextOpenBraceTokenIndex) + 1].Index,
-                                    FunctionKind = kind,
-                                    Index = _tokens[startPosition].Index,
-                                    File = _fileName,
-                                    Length = parameterDeclIndexEnd - _tokens[startPosition].Index + 1,
-                                    Name = functionName,
-                                    FullName = TrimFullname(_source.Substring(_tokens[startPosition].Index,
-                                        parameterDeclIndexEnd - _tokens[startPosition].Index + 1)),
-                                    ReturnType = functionReturnType,
-                                    CommentString = TrimComments(functionCommentString),
-                                    Parameters = functionParameters.ToArray(),
-                                    FuncVariables = localVars
-                                });
-                                return i;
-                            }
-                        }
+                        return (new SMFunction(
+                            tokens, index, FileName, funcName, commentString, funcName, returnType,
+                            functionParameters.ToImmutableList(), kind,
+                            (new List<SMVariable>()).ToImmutableList()), i);
+                        // localVars = LocalVars.ConsumeSMVariableLocal(
+                            // _tokens.GetRange(nextOpenBraceTokenIndex, i - nextOpenBraceTokenIndex), _fileName);
                     }
                 }
             }
 
-            _def.Functions.Add(new SMFunction
-            {
-                EndPos = parameterDeclIndexEnd,
-                FunctionKind = kind,
-                Index = _tokens[startPosition].Index,
-                File = _fileName,
-                Length = parameterDeclIndexEnd - _tokens[startPosition].Index + 1,
-                Name = functionName,
-                FullName = TrimFullname(_source.Substring(_tokens[startPosition].Index,
-                    parameterDeclIndexEnd - _tokens[startPosition].Index + 1)),
-                ReturnType = functionReturnType,
-                CommentString = TrimComments(functionCommentString),
-                Parameters = functionParameters.ToArray(),
-                FuncVariables = localVars
-            });
-            return outTokenIndex;
+
+            return (new SMFunction(
+                tokens, index, FileName, funcName, commentString, funcName, returnType,
+                functionParameters.ToImmutableList(), kind,
+                (new List<SMVariable>()).ToImmutableList()), index);
         }
 
         private static SMFunctionKind _extractKind(IImmutableList<Token> tokens, int position)

@@ -1,8 +1,11 @@
-﻿namespace SourcepawnCondenser.SourcemodDefinition
+﻿using System.Collections.Immutable;
+using SourcepawnCondenser.Tokenizer;
+
+namespace SourcepawnCondenser.SourcemodDefinition
 {
     public class SMConstant : SMBaseDefinition
     {
-        public SMConstant(int index, int length, string file, string name, string commentString) : base(index, length, file, name, commentString)
+        public SMConstant(IImmutableList<Token> tokens, int endToken, string file, string name, string commentString) : base(tokens, endToken, file, name, commentString)
         {
         }
     }
