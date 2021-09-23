@@ -277,20 +277,9 @@ namespace SPCode.Utils
         /// <returns></returns>
         public static bool CheckForClosingBracket(IDocument document, int offset, string bracket)
         {
-            //var a = offset + 1 < document.TextLength;
-            //var b = document.GetCharAt(offset).ToString() == bracket;
-            //var c = document.GetCharAt(offset - 1).ToString() == opBracket;
-
-            if (offset + 1 < document.TextLength)
-            {
-                return 
-                    document.GetCharAt(offset).ToString() == bracket &&
-                    document.GetCharAt(offset - 1).ToString() == BracketPairs[bracket];
-            }
-            else
-            {
-                return true;
-            }
+            return
+                document.GetCharAt(offset).ToString() == bracket &&
+                document.GetCharAt(offset - 1).ToString() == BracketPairs[bracket];
         }
     }
 }
