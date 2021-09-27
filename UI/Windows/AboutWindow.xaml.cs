@@ -30,7 +30,7 @@ namespace SPCode.UI.Windows
                     g.Background = gridBrush;
                 }
             }
-            TitleBox.Text = $"SPCode ({Assembly.GetEntryAssembly()?.GetName().Version}-beta1) - {Program.Translations.GetLanguage("SPEditCap")}";
+            TitleBox.Text = $"SPCode ({Assembly.GetEntryAssembly()?.GetName().Version}) - {Program.Translations.GetLanguage("SPEditCap")}";
             LicenseField.Text = File.ReadAllText(Constants.LicenseFile);
         }
 
