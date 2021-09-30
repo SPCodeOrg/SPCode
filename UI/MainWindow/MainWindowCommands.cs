@@ -231,6 +231,9 @@ namespace SPCode.UI
             {
                 return;
             }
+
+            var selection = GetCurrentEditorElement().editor.TextArea.Selection.GetText();
+
             if (Program.IsSearchOpen)
             {
                 foreach (Window win in Application.Current.Windows)
@@ -238,12 +241,14 @@ namespace SPCode.UI
                     if (win is FindReplaceWindow findWin)
                     {
                         findWin.Activate();
+                        findWin.FindBox.Text = selection;
+                        findWin.FindBox.SelectAll();
                         findWin.FindBox.Focus();
                         return;
                     }
                 }
             }
-            var findWindow = new FindReplaceWindow();
+            var findWindow = new FindReplaceWindow(selection);
             Program.IsSearchOpen = true;
             findWindow.Show();
             findWindow.FindBox.Focus();
