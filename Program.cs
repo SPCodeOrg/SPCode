@@ -157,8 +157,8 @@ namespace SPCode
                         }
 #endif
                     MainWindow = new MainWindow(splashScreen);
-                    //var pipeServer = new PipeInteropServer(MainWindow);
-                    //pipeServer.Start();
+                    var pipeServer = new PipeInteropServer(MainWindow);
+                    pipeServer.Start();
 #if !DEBUG
                     }
                     catch (Exception e)
@@ -229,10 +229,10 @@ namespace SPCode
                             }
                         }
 
-                        //if (addedFiles)
-                        //{
-                        //    PipeInteropClient.ConnectToMasterPipeAndSendData(sBuilder.ToString());
-                        //}
+                        if (addedFiles)
+                        {
+                            PipeInteropClient.ConnectToMasterPipeAndSendData(sBuilder.ToString());
+                        }
                     }
                     catch (Exception)
                     {
