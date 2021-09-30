@@ -202,7 +202,7 @@ namespace SPCode.UI
                                 await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"),
                                     "The SourcePawn compiler has crashed.\n" +
                                     "Try again, or file an issue at the SourcePawn GitHub repository describing your steps that lead to this instance in detail.\n" +
-                                    $"Exit code: {process.ExitCode}", MessageDialogStyle.Affirmative,
+                                    $"Exit code: {process.ExitCode:X}", MessageDialogStyle.Affirmative,
                                     MetroDialogOptions);
                                 LoggingControl.LogAction($"Compiler crash detected, file: {fileInfo.Name}", 2);
                                 InCompiling = false;
