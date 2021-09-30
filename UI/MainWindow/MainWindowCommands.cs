@@ -297,6 +297,7 @@ namespace SPCode.UI
                 }
                 var findWindow = new FindReplaceWindow(selection);
                 Program.IsSearchOpen = true;
+                findWindow.Owner = this;
                 findWindow.Show();
                 findWindow.FindBox.Focus();
             }
