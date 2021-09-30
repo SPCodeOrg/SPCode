@@ -196,7 +196,7 @@ namespace SPCode.UI
                             process.Start();
                             process.WaitForExit();
 
-                            if (process.ExitCode is not 1 or 0)
+                            if (process.ExitCode != 1 && process.ExitCode != 0)
                             {
                                 await progressTask.CloseAsync();
                                 await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"),
