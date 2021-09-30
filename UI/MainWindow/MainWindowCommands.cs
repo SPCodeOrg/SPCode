@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -84,22 +85,30 @@ namespace SPCode.UI
         /// </summary>
         private void Command_New()
         {
-            var ee = GetCurrentEditorElement();
-            if (ee != null && ee.IsTemplateEditor)
+            try
             {
-                return;
+                var ee = GetCurrentEditorElement();
+                if (ee != null && ee.IsTemplateEditor)
+                {
+                    return;
+                }
+                string newFilePath;
+                var newFileNum = 0;
+                do
+                {
+                    newFilePath = Path.Combine(Program.Configs[Program.SelectedConfig].SMDirectories[0], $"New Plugin ({++newFileNum}).sp");
+                } while (File.Exists(newFilePath));
+
+                File.Create(newFilePath).Close();
+
+                AddEditorElement(new FileInfo(newFilePath), $"New Plugin ({newFileNum}).sp", true, out _);
+                RefreshObjectBrowser();
             }
-            string newFilePath;
-            var newFileNum = 0;
-            do
+            catch (Exception ex)
             {
-                newFilePath = Path.Combine(Program.Configs[Program.SelectedConfig].SMDirectories[0], $"New Plugin ({++newFileNum}).sp");
-            } while (File.Exists(newFilePath));
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            }
 
-            File.Create(newFilePath).Close();
-
-            AddEditorElement(new FileInfo(newFilePath), $"New Plugin ({newFileNum}).sp", true, out _);
-            RefreshObjectBrowser();
         }
 
         /// <summary>
@@ -107,13 +116,21 @@ namespace SPCode.UI
         /// </summary>
         private void Command_NewFromTemplate()
         {
-            var nfWindow = new NewFileWindow
+            try
             {
-                Owner = this,
-                ShowInTaskbar = false
-            };
-            nfWindow.ShowDialog();
-            UpdateWindowTitle();
+                var nfWindow = new NewFileWindow
+                {
+                    Owner = this,
+                    ShowInTaskbar = false
+                };
+                nfWindow.ShowDialog();
+                UpdateWindowTitle();
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            }
+
         }
 
         /// <summary>
@@ -121,42 +138,49 @@ namespace SPCode.UI
         /// </summary>
         private void Command_Open()
         {
-            var ee = GetCurrentEditorElement();
-            if (ee != null && ee.IsTemplateEditor)
+            try
             {
-                return;
-            }
-            var ofd = new OpenFileDialog
-            {
-                AddExtension = true,
-                CheckFileExists = true,
-                CheckPathExists = true,
-                Filter = Constants.FileOpenFilters,
-                Multiselect = true,
-                Title = Program.Translations.GetLanguage("OpenNewFile")
-            };
-            var result = ofd.ShowDialog(this);
-            if (result.Value)
-            {
-                var AnyFileLoaded = false;
-                if (ofd.FileNames.Length > 0)
+                var ee = GetCurrentEditorElement();
+                if (ee != null && ee.IsTemplateEditor)
                 {
-                    for (var i = 0; i < ofd.FileNames.Length; ++i)
+                    return;
+                }
+                var ofd = new OpenFileDialog
+                {
+                    AddExtension = true,
+                    CheckFileExists = true,
+                    CheckPathExists = true,
+                    Filter = Constants.FileOpenFilters,
+                    Multiselect = true,
+                    Title = Program.Translations.GetLanguage("OpenNewFile")
+                };
+                var result = ofd.ShowDialog(this);
+                if (result.Value)
+                {
+                    var AnyFileLoaded = false;
+                    if (ofd.FileNames.Length > 0)
                     {
-                        AnyFileLoaded |= TryLoadSourceFile(ofd.FileNames[i], out _, i == 0, true, i == 0);
-                    }
+                        for (var i = 0; i < ofd.FileNames.Length; ++i)
+                        {
+                            AnyFileLoaded |= TryLoadSourceFile(ofd.FileNames[i], out _, i == 0, true, i == 0);
+                        }
 
-                    if (!AnyFileLoaded)
-                    {
-                        MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
-                        this.ShowMessageAsync(Program.Translations.GetLanguage("NoFileOpened"),
-                            Program.Translations.GetLanguage("NoFileOpenedCap"), MessageDialogStyle.Affirmative,
-                            MetroDialogOptions);
+                        if (!AnyFileLoaded)
+                        {
+                            MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
+                            this.ShowMessageAsync(Program.Translations.GetLanguage("NoFileOpened"),
+                                Program.Translations.GetLanguage("NoFileOpenedCap"), MessageDialogStyle.Affirmative,
+                                MetroDialogOptions);
+                        }
                     }
                 }
-            }
 
-            Activate();
+                Activate();
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            }
         }
 
         /// <summary>
@@ -164,11 +188,18 @@ namespace SPCode.UI
         /// </summary>
         private void Command_Save()
         {
-            var ee = GetCurrentEditorElement();
-            if (ee != null && !ee.IsTemplateEditor)
+            try
             {
-                ee.Save(true);
-                BlendOverEffect.Begin();
+                var ee = GetCurrentEditorElement();
+                if (ee != null && !ee.IsTemplateEditor)
+                {
+                    ee.Save(true);
+                    BlendOverEffect.Begin();
+                }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -177,24 +208,24 @@ namespace SPCode.UI
         /// </summary>
         private void Command_SaveAs()
         {
-            var ee = GetCurrentEditorElement();
-            if (ee != null && !ee.IsTemplateEditor)
+            try
             {
-                var sfd = new SaveFileDialog
+                var ee = GetCurrentEditorElement();
+                if (ee != null && !ee.IsTemplateEditor)
                 {
-                    AddExtension = true,
-                    Filter = Constants.FileSaveFilters,
-                    OverwritePrompt = true,
-                    Title = Program.Translations.GetLanguage("SaveFileAs"),
-                    FileName = ee.Parent.Title.Trim('*')
-                };
-                var result = sfd.ShowDialog(this);
-                if (result.Value && !string.IsNullOrWhiteSpace(sfd.FileName))
-                {
-                    ee.FullFilePath = sfd.FileName;
-                    ee.Save(true);
-                    BlendOverEffect.Begin();
+                    var sfd = new SaveFileDialog { AddExtension = true, Filter = Constants.FileSaveFilters, OverwritePrompt = true, Title = Program.Translations.GetLanguage("SaveFileAs"), FileName = ee.Parent.Title.Trim('*') };
+                    var result = sfd.ShowDialog(this);
+                    if (result.Value && !string.IsNullOrWhiteSpace(sfd.FileName))
+                    {
+                        ee.FullFilePath = sfd.FileName;
+                        ee.Save(true);
+                        BlendOverEffect.Begin();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -203,10 +234,17 @@ namespace SPCode.UI
         /// </summary>
         private void Command_GoToLine()
         {
-            if (GetAllEditorElements() != null)
+            try
             {
-                var goToLineWindow = new GoToLineWindow();
-                goToLineWindow.ShowDialog();
+                if (GetAllEditorElements() != null)
+                {
+                    var goToLineWindow = new GoToLineWindow();
+                    goToLineWindow.ShowDialog();
+                }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -215,10 +253,17 @@ namespace SPCode.UI
         /// </summary>
         private void Command_DeleteLine()
         {
-            var ee = GetCurrentEditorElement();
-            if (ee != null && !ee.editor.IsReadOnly)
+            try
             {
-                ee.DeleteLine();
+                var ee = GetCurrentEditorElement();
+                if (ee != null && !ee.editor.IsReadOnly)
+                {
+                    ee.DeleteLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -227,31 +272,38 @@ namespace SPCode.UI
         /// </summary>
         private void Command_FindReplace()
         {
-            if (GetAllEditorElements() == null)
+            try
             {
-                return;
-            }
-
-            var selection = GetCurrentEditorElement().editor.TextArea.Selection.GetText();
-
-            if (Program.IsSearchOpen)
-            {
-                foreach (Window win in Application.Current.Windows)
+                if (GetAllEditorElements() == null)
                 {
-                    if (win is FindReplaceWindow findWin)
+                    return;
+                }
+
+                var selection = GetCurrentEditorElement().editor.TextArea.Selection.GetText();
+
+                if (Program.IsSearchOpen)
+                {
+                    foreach (Window win in Application.Current.Windows)
                     {
-                        findWin.Activate();
-                        findWin.FindBox.Text = selection;
-                        findWin.FindBox.SelectAll();
-                        findWin.FindBox.Focus();
-                        return;
+                        if (win is FindReplaceWindow findWin)
+                        {
+                            findWin.Activate();
+                            findWin.FindBox.Text = selection;
+                            findWin.FindBox.SelectAll();
+                            findWin.FindBox.Focus();
+                            return;
+                        }
                     }
                 }
+                var findWindow = new FindReplaceWindow(selection);
+                Program.IsSearchOpen = true;
+                findWindow.Show();
+                findWindow.FindBox.Focus();
             }
-            var findWindow = new FindReplaceWindow(selection);
-            Program.IsSearchOpen = true;
-            findWindow.Show();
-            findWindow.FindBox.Focus();
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            }
         }
 
         /// <summary>
@@ -259,20 +311,27 @@ namespace SPCode.UI
         /// </summary>
         private void Command_SaveAll()
         {
-            var editors = GetAllEditorElements();
-            if (editors == null || GetCurrentEditorElement().IsTemplateEditor)
+            try
             {
-                return;
-            }
-
-            if (editors.Length > 0)
-            {
-                foreach (var editor in editors)
+                var editors = GetAllEditorElements();
+                if (editors == null || GetCurrentEditorElement().IsTemplateEditor)
                 {
-                    editor.Save();
+                    return;
                 }
 
-                BlendOverEffect.Begin();
+                if (editors.Length > 0)
+                {
+                    foreach (var editor in editors)
+                    {
+                        editor.Save();
+                    }
+
+                    BlendOverEffect.Begin();
+                }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -281,15 +340,22 @@ namespace SPCode.UI
         /// </summary>
         private void Command_Close()
         {
-            var ee = GetCurrentEditorElement();
-            if (ee == null || ee.IsTemplateEditor)
+            try
             {
-                return;
-            }
+                var ee = GetCurrentEditorElement();
+                if (ee == null || ee.IsTemplateEditor)
+                {
+                    return;
+                }
 
-            DockingPane.RemoveChild(ee.Parent);
-            ee.Close();
-            UpdateOBFileButton();
+                DockingPane.RemoveChild(ee.Parent);
+                ee.Close();
+                UpdateOBFileButton();
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            }
         }
 
         /// <summary>
@@ -297,51 +363,58 @@ namespace SPCode.UI
         /// </summary>
         private async void Command_CloseAll()
         {
-            var editors = GetAllEditorElements();
-            if (editors == null || GetCurrentEditorElement().IsTemplateEditor)
+            try
             {
-                return;
-            }
-
-            if (editors.Length > 0)
-            {
-                var UnsavedEditorsExisting = false;
-                foreach (var editor in editors)
+                var editors = GetAllEditorElements();
+                if (editors == null || GetCurrentEditorElement().IsTemplateEditor)
                 {
-                    UnsavedEditorsExisting |= editor.NeedsSave;
+                    return;
                 }
 
-                var ForceSave = false;
-                if (UnsavedEditorsExisting)
+                if (editors.Length > 0)
                 {
-                    var str = new StringBuilder();
-                    for (var i = 0; i < editors.Length; ++i)
+                    var UnsavedEditorsExisting = false;
+                    foreach (var editor in editors)
                     {
-                        if (i == 0)
+                        UnsavedEditorsExisting |= editor.NeedsSave;
+                    }
+
+                    var ForceSave = false;
+                    if (UnsavedEditorsExisting)
+                    {
+                        var str = new StringBuilder();
+                        for (var i = 0; i < editors.Length; ++i)
                         {
-                            str.Append(editors[i].Parent.Title.Trim('*'));
+                            if (i == 0)
+                            {
+                                str.Append(editors[i].Parent.Title.Trim('*'));
+                            }
+                            else
+                            {
+                                str.AppendLine(editors[i].Parent.Title.Trim('*'));
+                            }
                         }
-                        else
+
+                        var result = await this.ShowMessageAsync(Program.Translations.GetLanguage("SaveFollow"),
+                            str.ToString(), MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions);
+                        if (result == MessageDialogResult.Affirmative)
                         {
-                            str.AppendLine(editors[i].Parent.Title.Trim('*'));
+                            ForceSave = true;
                         }
                     }
 
-                    var result = await this.ShowMessageAsync(Program.Translations.GetLanguage("SaveFollow"),
-                        str.ToString(), MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions);
-                    if (result == MessageDialogResult.Affirmative)
+                    foreach (var editor in editors)
                     {
-                        ForceSave = true;
+                        DockingPane.RemoveChild(editor.Parent);
+                        editor.Close(ForceSave, ForceSave);
                     }
                 }
-
-                foreach (var editor in editors)
-                {
-                    DockingPane.RemoveChild(editor.Parent);
-                    editor.Close(ForceSave, ForceSave);
-                }
+                UpdateOBFileButton();
             }
-            UpdateOBFileButton();
+            catch (Exception ex)
+            {
+                await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            }
         }
 
         /// <summary>
@@ -349,13 +422,20 @@ namespace SPCode.UI
         /// </summary>
         private void Command_Undo()
         {
-            var ee = GetCurrentEditorElement();
-            if (ee != null)
+            try
             {
-                if (ee.editor.CanUndo)
+                var ee = GetCurrentEditorElement();
+                if (ee != null)
                 {
-                    ee.editor.Undo();
+                    if (ee.editor.CanUndo)
+                    {
+                        ee.editor.Undo();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -364,13 +444,20 @@ namespace SPCode.UI
         /// </summary>
         private void Command_Redo()
         {
-            var ee = GetCurrentEditorElement();
-            if (ee != null)
+            try
             {
-                if (ee.editor.CanRedo)
+                var ee = GetCurrentEditorElement();
+                if (ee != null)
                 {
-                    ee.editor.Redo();
+                    if (ee.editor.CanRedo)
+                    {
+                        ee.editor.Redo();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -379,8 +466,15 @@ namespace SPCode.UI
         /// </summary>
         private void Command_Cut()
         {
-            var ee = GetCurrentEditorElement();
-            ee?.editor.Cut();
+            try
+            {
+                var ee = GetCurrentEditorElement();
+                ee?.editor.Cut();
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            }
         }
 
         /// <summary>
@@ -388,8 +482,15 @@ namespace SPCode.UI
         /// </summary>
         private void Command_Copy()
         {
-            var ee = GetCurrentEditorElement();
-            ee?.editor.Copy();
+            try
+            {
+                var ee = GetCurrentEditorElement();
+                ee?.editor.Copy();
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            }
         }
 
         /// <summary>
@@ -397,8 +498,15 @@ namespace SPCode.UI
         /// </summary>
         private void Command_Paste()
         {
-            var ee = GetCurrentEditorElement();
-            ee?.editor.Paste();
+            try
+            {
+                var ee = GetCurrentEditorElement();
+                ee?.editor.Paste();
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            }
         }
 
         /// <summary>
@@ -407,14 +515,21 @@ namespace SPCode.UI
         /// <param name="folded">Whether to fold all foldings (true to collapse all).</param>
         private void Command_FlushFoldingState(bool folded)
         {
-            var ee = GetCurrentEditorElement();
-            if (ee?.foldingManager != null)
+            try
             {
-                var foldings = ee.foldingManager.AllFoldings;
-                foreach (var folding in foldings)
+                var ee = GetCurrentEditorElement();
+                if (ee?.foldingManager != null)
                 {
-                    folding.IsFolded = folded;
+                    var foldings = ee.foldingManager.AllFoldings;
+                    foreach (var folding in foldings)
+                    {
+                        folding.IsFolded = folded;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -423,8 +538,15 @@ namespace SPCode.UI
         /// </summary>
         private void Command_SelectAll()
         {
-            var ee = GetCurrentEditorElement();
-            ee?.editor.SelectAll();
+            try
+            {
+                var ee = GetCurrentEditorElement();
+                ee?.editor.SelectAll();
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            }
         }
 
         /// <summary>
@@ -432,10 +554,17 @@ namespace SPCode.UI
         /// </summary>
         private void Command_ToggleCommentLine(bool comment)
         {
-            var ee = GetCurrentEditorElement();
-            if (ee != null && !ee.editor.IsReadOnly)
+            try
             {
-                ee.ToggleComment(comment);
+                var ee = GetCurrentEditorElement();
+                if (ee != null && !ee.editor.IsReadOnly)
+                {
+                    ee.ToggleComment(comment);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -445,10 +574,17 @@ namespace SPCode.UI
         /// <param name="toUpper">Whether to transform to uppercase</param>
         public void Command_ChangeCase(bool toUpper)
         {
-            var ee = GetCurrentEditorElement();
-            if (ee != null && !ee.editor.IsReadOnly)
+            try
             {
-                ee.ChangeCase(toUpper);
+                var ee = GetCurrentEditorElement();
+                if (ee != null && !ee.editor.IsReadOnly)
+                {
+                    ee.ChangeCase(toUpper);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -458,46 +594,53 @@ namespace SPCode.UI
         /// <param name="All"></param>
         private void Command_TidyCode(bool All)
         {
-            var editors = All ? GetAllEditorElements() : new[] { GetCurrentEditorElement() };
-            if (editors == null)
+            try
             {
-                return;
-            }
-            foreach (var ee in editors)
-            {
-                if (ee != null && !ee.editor.IsReadOnly)
+                var editors = All ? GetAllEditorElements() : new[] { GetCurrentEditorElement() };
+                if (editors == null)
                 {
-                    int currentCaret = ee.editor.TextArea.Caret.Offset, numOfSpacesOrTabsBefore = 0;
-                    var line = ee.editor.Document.GetLineByOffset(currentCaret);
-                    var lineNumber = line.LineNumber;
-                    // 0 - start | any other - middle | -1 - EOS
-                    var curserLinePos = currentCaret == line.Offset ? 0 : currentCaret == line.EndOffset ? -1 : currentCaret - line.Offset;
-
-                    if (curserLinePos > 0)
-                    {
-                        numOfSpacesOrTabsBefore = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
-                    }
-
-                    // Formatting Start //
-                    ee.editor.Document.BeginUpdate();
-                    var source = ee.editor.Text;
-                    ee.editor.Document.Replace(0, source.Length, SPSyntaxTidy.TidyUp(source));
-                    ee.editor.Document.EndUpdate();
-                    // Formatting End //
-
-                    line = ee.editor.Document.GetLineByNumber(lineNumber);
-                    var newCaretPos = line.Offset;
-                    if (curserLinePos == -1)
-                    {
-                        newCaretPos += line.Length;
-                    }
-                    else if (curserLinePos != 0)
-                    {
-                        var numOfSpacesOrTabsAfter = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
-                        newCaretPos += curserLinePos + (numOfSpacesOrTabsAfter - numOfSpacesOrTabsBefore);
-                    }
-                    ee.editor.TextArea.Caret.Offset = newCaretPos;
+                    return;
                 }
+                foreach (var ee in editors)
+                {
+                    if (ee != null && !ee.editor.IsReadOnly)
+                    {
+                        int currentCaret = ee.editor.TextArea.Caret.Offset, numOfSpacesOrTabsBefore = 0;
+                        var line = ee.editor.Document.GetLineByOffset(currentCaret);
+                        var lineNumber = line.LineNumber;
+                        // 0 - start | any other - middle | -1 - EOS
+                        var curserLinePos = currentCaret == line.Offset ? 0 : currentCaret == line.EndOffset ? -1 : currentCaret - line.Offset;
+
+                        if (curserLinePos > 0)
+                        {
+                            numOfSpacesOrTabsBefore = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
+                        }
+
+                        // Formatting Start //
+                        ee.editor.Document.BeginUpdate();
+                        var source = ee.editor.Text;
+                        ee.editor.Document.Replace(0, source.Length, SPSyntaxTidy.TidyUp(source));
+                        ee.editor.Document.EndUpdate();
+                        // Formatting End //
+
+                        line = ee.editor.Document.GetLineByNumber(lineNumber);
+                        var newCaretPos = line.Offset;
+                        if (curserLinePos == -1)
+                        {
+                            newCaretPos += line.Length;
+                        }
+                        else if (curserLinePos != 0)
+                        {
+                            var numOfSpacesOrTabsAfter = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
+                            newCaretPos += curserLinePos + (numOfSpacesOrTabsAfter - numOfSpacesOrTabsBefore);
+                        }
+                        ee.editor.TextArea.Caret.Offset = newCaretPos;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -506,8 +649,15 @@ namespace SPCode.UI
         /// </summary>
         private async void Command_Decompile()
         {
-            var decomp = new DecompileUtil();
-            await decomp.DecompilePlugin();
+            try
+            {
+                var decomp = new DecompileUtil();
+                await decomp.DecompilePlugin();
+            }
+            catch (Exception ex)
+            {
+                await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            }
         }
 
         /// <summary>
@@ -515,24 +665,38 @@ namespace SPCode.UI
         /// </summary>
         private void Command_OpenSPDef()
         {
-            var spDefinitionWindow = new SPDefinitionWindow
+            try
             {
-                Owner = this,
-                ShowInTaskbar = false
-            };
-            spDefinitionWindow.ShowDialog();
+                var spDefinitionWindow = new SPDefinitionWindow
+                {
+                    Owner = this,
+                    ShowInTaskbar = false
+                };
+                spDefinitionWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            }
         }
         /// <summary>
         /// Re-opens the last closed tab
         /// </summary>
         private void Command_ReopenLastClosedTab()
         {
-            if (Program.RecentFilesStack.Count > 0)
+            try
             {
-                TryLoadSourceFile(Program.RecentFilesStack.Pop(), out _, true, false, true);
-            }
+                if (Program.RecentFilesStack.Count > 0)
+                {
+                    TryLoadSourceFile(Program.RecentFilesStack.Pop(), out _, true, false, true);
+                }
 
-            MenuI_ReopenLastClosedTab.IsEnabled = Program.RecentFilesStack.Count > 0;
+                MenuI_ReopenLastClosedTab.IsEnabled = Program.RecentFilesStack.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            }
         }
     }
 }
