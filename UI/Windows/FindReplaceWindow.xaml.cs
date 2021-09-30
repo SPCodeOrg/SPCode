@@ -35,6 +35,9 @@ namespace SPCode.UI.Windows
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
 
+            Left = Program.MainWindow.Left + Program.MainWindow.Width - Program.MainWindow.ObjectBrowserColumn.Width.Value - (Width + 20);
+            Top = Program.MainWindow.Top + 40;
+
             ReplaceButton.ItemsSource = findReplaceButtonDict;
             ReplaceButton.SelectedIndex = 0;
             FindBox.Text = searchTerm;
