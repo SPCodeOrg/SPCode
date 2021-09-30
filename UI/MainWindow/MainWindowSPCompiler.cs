@@ -35,8 +35,8 @@ namespace SPCode.UI
         /// <param name="compileAll"></param>
         private async void Compile_SPScripts(bool compileAll = true)
         {
-            // Checks if the program is compiling to avoid doing it again
-            if (InCompiling)
+            // Checks if the program is compiling to avoid doing it again, and checks if the editor is from the templates window
+            if (InCompiling || GetCurrentEditorElement().IsTemplateEditor)
             {
                 return;
             }
