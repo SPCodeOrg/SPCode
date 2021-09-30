@@ -195,6 +195,19 @@ namespace SPCode.UI
                         {
                             process.Start();
                             process.WaitForExit();
+
+                            if (process.ExitCode is not 1 or 0)
+                            {
+                                await progressTask.CloseAsync();
+                                await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"),
+                                    "The SourcePawn compiler has crashed.\n" +
+                                    "Try again, or file an issue at the SourcePawn GitHub repository describing your steps that lead to this instance in detail.\n" +
+                                    $"Exit code: {process.ExitCode}", MessageDialogStyle.Affirmative,
+                                    MetroDialogOptions);
+                                LoggingControl.LogAction($"Compiler crash detected, file: {fileInfo.Name}", 2);
+                                InCompiling = false;
+                                return;
+                            }
                         }
                         catch (Exception)
                         {
@@ -202,6 +215,7 @@ namespace SPCode.UI
                             await this.ShowMessageAsync(Program.Translations.GetLanguage("SPCompNotStarted"),
                                 Program.Translations.GetLanguage("Error"), MessageDialogStyle.Affirmative,
                                 MetroDialogOptions);
+                            InCompiling = false;
                             return;
                         }
 
