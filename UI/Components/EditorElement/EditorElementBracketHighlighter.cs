@@ -55,8 +55,4 @@ namespace SPCode.UI.Components
             }
         }
     }
-
-
-
-
 }

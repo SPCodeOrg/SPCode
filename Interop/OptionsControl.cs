@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
-using System.Windows.Controls;
 using System.Windows.Media;
 using SPCode.Utils;
-using SPCode.Utils.Models;
 
-namespace SPCode.Interop
+namespace SPCode
 {
     [Serializable]
     public class OptionsControl

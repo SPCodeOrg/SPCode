@@ -12,24 +12,17 @@ namespace SPCode.Utils
 {
     public class DecompileUtil
     {
-        private readonly MainWindow _win;
-
-        public DecompileUtil()
-        {
-            _win = Program.MainWindow;
-        }
-
-        public async Task DecompilePlugin()
+        public async Task DecompilePlugin(string filePath = null)
         {
             var java = new JavaInstallation();
+            var fileToDecompile = "";
 
             // First we check the java version of the user, and act accordingly
-
             ProgressDialogController checkingJavaDialog = null;
-            if (_win != null)
+            if (Program.MainWindow != null)
             {
-                checkingJavaDialog = await _win.ShowProgressAsync(Program.Translations.GetLanguage("JavaInstallCheck") + "...",
-                    "", false, _win.MetroDialogOptions);
+                checkingJavaDialog = await Program.MainWindow.ShowProgressAsync(Program.Translations.GetLanguage("JavaInstallCheck") + "...",
+                    "", false, Program.MainWindow.MetroDialogOptions);
                 MainWindow.ProcessUITasks();
             }
             switch (java.GetJavaStatus())
@@ -38,9 +31,9 @@ namespace SPCode.Utils
                     {
                         // If java is not installed, offer to download it
                         await checkingJavaDialog.CloseAsync();
-                        if (await _win.ShowMessageAsync(Program.Translations.GetLanguage("JavaNotFoundTitle"),
+                        if (await Program.MainWindow.ShowMessageAsync(Program.Translations.GetLanguage("JavaNotFoundTitle"),
                             Program.Translations.GetLanguage("JavaNotFoundMessage"),
-                            MessageDialogStyle.AffirmativeAndNegative, _win.MetroDialogOptions) == MessageDialogResult.Affirmative)
+                            MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions) == MessageDialogResult.Affirmative)
                         {
                             await java.InstallJava();
                         }
@@ -50,9 +43,9 @@ namespace SPCode.Utils
                     {
                         // If java is outdated, offer to upgrade it
                         await checkingJavaDialog.CloseAsync();
-                        if (await _win.ShowMessageAsync(Program.Translations.GetLanguage("JavaOutdatedTitle"),
+                        if (await Program.MainWindow.ShowMessageAsync(Program.Translations.GetLanguage("JavaOutdatedTitle"),
                              Program.Translations.GetLanguage("JavaOutdatedMessage"),
-                             MessageDialogStyle.AffirmativeAndNegative, _win.MetroDialogOptions) == MessageDialogResult.Affirmative)
+                             MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions) == MessageDialogResult.Affirmative)
                         {
                             await java.InstallJava();
                         }
@@ -66,24 +59,31 @@ namespace SPCode.Utils
                     }
             }
 
-            // Pick file for decompiling
-            var ofd = new OpenFileDialog
+            if (filePath == null)
             {
-                Filter = "Sourcepawn Plugins (*.smx)|*.smx",
-                Title = Program.Translations.GetLanguage("ChDecomp")
-            };
-            var result = ofd.ShowDialog();
+                var ofd = new OpenFileDialog
+                {
+                    Filter = "Sourcepawn Plugins (*.smx)|*.smx",
+                    Title = Program.Translations.GetLanguage("ChDecomp")
+                };
+                var result = ofd.ShowDialog();
+                fileToDecompile = result.Value && !string.IsNullOrWhiteSpace(ofd.FileName) ? ofd.FileName : null;
+            }
+            else
+            {
+                fileToDecompile = filePath;
+            }
 
-            if (result.Value && !string.IsNullOrWhiteSpace(ofd.FileName))
+            if (!string.IsNullOrWhiteSpace(fileToDecompile))
             {
-                var fInfo = new FileInfo(ofd.FileName);
+                var fInfo = new FileInfo(fileToDecompile);
                 if (fInfo.Exists)
                 {
                     ProgressDialogController task = null;
-                    if (_win != null)
+                    if (Program.MainWindow != null)
                     {
-                        task = await _win.ShowProgressAsync(Program.Translations.GetLanguage("Decompiling") + "...",
-                            fInfo.FullName, false, _win.MetroDialogOptions);
+                        task = await Program.MainWindow.ShowProgressAsync(Program.Translations.GetLanguage("Decompiling") + "...",
+                            fInfo.FullName, false, Program.MainWindow.MetroDialogOptions);
                         MainWindow.ProcessUITasks();
                     }
 
@@ -112,13 +112,13 @@ namespace SPCode.Utils
                     }
                     catch (Exception ex)
                     {
-                        await _win.ShowMessageAsync($"{fInfo.Name} {Program.Translations.GetLanguage("FailedToDecompile")}",
+                        await Program.MainWindow.ShowMessageAsync($"{fInfo.Name} {Program.Translations.GetLanguage("FailedToDecompile")}",
                             $"{ex.Message}", MessageDialogStyle.Affirmative,
-                        _win.MetroDialogOptions);
+                        Program.MainWindow.MetroDialogOptions);
                     }
 
                     // Load the decompiled file to SPCode
-                    _win.TryLoadSourceFile(destFile, out _, true, false, true);
+                    Program.MainWindow.TryLoadSourceFile(destFile, out _, true, false, true);
                     if (task != null)
                     {
                         await task.CloseAsync();

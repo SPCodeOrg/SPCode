@@ -381,10 +381,8 @@ namespace SPCode.UI.Components
                         // TODO: Poor way to fix this but atm I have no idea on how to fix this properly
                         if (!text.Contains("for"))
                         {
-                            var leadingIndentation =
-                                editor.Document.GetText(TextUtilities.GetLeadingWhitespace(editor.Document, line));
-                            var newLineStr = leadingIndentation +
-                                             SPSyntaxTidy.TidyUp(text).Trim();
+                            var leadingIndentation = editor.Document.GetText(TextUtilities.GetLeadingWhitespace(editor.Document, line));
+                            var newLineStr = leadingIndentation + SPSyntaxTidy.TidyUp(text).Trim();
                             editor.Document.Replace(line, newLineStr);
                         }
                     }
@@ -399,7 +397,7 @@ namespace SPCode.UI.Components
                         break;
                     }
 
-                    editor.TextArea.Caret.Line -= 1;
+                    editor.TextArea.Caret.Line--;
                     editor.TextArea.Caret.Column += Program.Indentation.Length;
                     isBlock = false;
                     break;
@@ -432,7 +430,7 @@ namespace SPCode.UI.Components
                         editor.Document.Insert(editor.CaretOffset, closingBracket.ToString());
                         if (editor.SelectionLength == 0)
                         {
-                            editor.CaretOffset -= 1;
+                            editor.CaretOffset--;
                         }
 
                         // If it's a code block bracket we need to update the folding
@@ -454,7 +452,7 @@ namespace SPCode.UI.Components
                             editor.Document.Insert(editor.CaretOffset, e.Text);
                             if (editor.SelectionLength == 0)
                             {
-                                editor.CaretOffset -= 1;
+                                editor.CaretOffset--;
                             }
                         }
                     }
@@ -495,25 +493,20 @@ namespace SPCode.UI.Components
                     break;
 
                 case ")":
-                    if (Program.OptionsObject.Editor_AutoCloseBrackets && editor.TextArea.Document.GetCharAt(editor.TextArea.Caret.Offset - 1) == '(')
-                    {
-                        e.Handled = true;
-                        editor.TextArea.Caret.Offset += 1;
-                    }
-                    break;
                 case "]":
-                    if (Program.OptionsObject.Editor_AutoCloseBrackets && editor.TextArea.Document.GetCharAt(editor.TextArea.Caret.Offset - 1) == '[')
-                    {
-                        e.Handled = true;
-                        editor.TextArea.Caret.Offset += 1;
-                    }
-                    break;
                 case "}":
-                    if (Program.OptionsObject.Editor_AutoCloseBrackets && editor.TextArea.Document.GetCharAt(editor.TextArea.Caret.Offset - 1) == '{')
+                    if (Program.OptionsObject.Editor_AutoCloseBrackets)
                     {
-                        e.Handled = true;
-                        editor.TextArea.Caret.Offset += 1;
+                        if (editor.TextArea.Caret.Offset < editor.Document.TextLength &&
+                            BracketHelpers.CheckForClosingBracket(editor.Document, editor.TextArea.Caret.Offset, e.Text))
+                        {
+                            e.Handled = true;
+                            var newCaretPos = editor.TextArea.Caret.Offset + 1;
+                            var docLength = editor.Document.TextLength;
+                            editor.TextArea.Caret.Offset = newCaretPos > docLength ? docLength : newCaretPos;
+                        }
                     }
+
                     break;
 
                 case "\"":

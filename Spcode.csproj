@@ -439,6 +439,7 @@
     <ClInclude Include="Resources\Misc\Templates\Template_Generic.sp" />
     <ClInclude Include="Resources\Misc\Templates\Template_TF2.sp" />
     <Content Include="Deploy\nsis-plugins\DotNetChecker.dll" />
+    <Content Include="Resources\License.txt" />
     <Content Include="Resources\Misc\Configurations\sm_1_10_0_6509\include\admin.inc" />
     <Content Include="Resources\Misc\Configurations\sm_1_10_0_6509\include\adminmenu.inc" />
     <Content Include="Resources\Misc\Configurations\sm_1_10_0_6509\include\adt.inc" />
@@ -567,26 +568,25 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>
-      md ".\sourcepawn"
-      md ".\sourcepawn\templates"
-      md ".\sourcepawn\configs"
-      md ".\sourcepawn\temp"
-      md ".\sourcepawn\errorfiles"
-      md ".\nsis-plugins"
-      md ".\lysis"
-      C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Templates\*.*" ".\sourcepawn\templates\*.*" /e /y /q
-      C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Configurations" ".\sourcepawn\configs" /e /y /q /d
-      C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Lysis\*.*" ".\lysis" /e /y /q
-      copy ".\..\..\Resources\Translations\lang_0_spcode.xml" ".\lang_0_spcode.xml" /y
-      copy ".\..\..\Deploy\SPCode.nsi" ".\SPCode.nsi" /y
-      copy ".\..\..\Deploy\Compress.ps1" ".\Compress.ps1" /y
-      copy ".\..\..\Deploy\DotNetChecker.nsh" ".\DotNetChecker.nsh" /y
-      copy ".\..\..\Deploy\FileAssociation.nsh" ".\FileAssociation.nsh" /y
-      copy ".\..\..\Deploy\GPLv3.txt" ".\GPLv3.txt" /y
-      copy ".\..\..\Deploy\icon.ico" ".\icon.ico" /y
-      copy ".\..\..\Deploy\nsis-plugins\DotNetChecker.dll" ".\nsis-plugins\DotNetChecker.dll" /y
-    </PostBuildEvent>
+    <PostBuildEvent>md ".\sourcepawn"
+md ".\sourcepawn\templates"
+md ".\sourcepawn\configs"
+md ".\sourcepawn\temp"
+md ".\sourcepawn\errorfiles"
+md ".\nsis-plugins"
+md ".\lysis"
+C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Templates\*.*" ".\sourcepawn\templates\*.*" /e /y /q
+C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Configurations" ".\sourcepawn\configs" /e /y /q /d
+C:\Windows\system32\xcopy ".\..\..\Resources\Misc\Lysis\*.*" ".\lysis" /e /y /q
+copy ".\..\..\Resources\Translations\lang_0_spcode.xml" ".\lang_0_spcode.xml" /y
+copy ".\..\..\Resources\License.txt" ".\License.txt" /y
+copy ".\..\..\Deploy\SPCode.nsi" ".\SPCode.nsi" /y
+copy ".\..\..\Deploy\Compress.ps1" ".\Compress.ps1" /y
+copy ".\..\..\Deploy\DotNetChecker.nsh" ".\DotNetChecker.nsh" /y
+copy ".\..\..\Deploy\FileAssociation.nsh" ".\FileAssociation.nsh" /y
+copy ".\..\..\Deploy\GPLv3.txt" ".\GPLv3.txt" /y
+copy ".\..\..\Deploy\icon.ico" ".\icon.ico" /y
+copy ".\..\..\Deploy\nsis-plugins\DotNetChecker.dll" ".\nsis-plugins\DotNetChecker.dll" /y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
          Other similar extension points exist, see Microsoft.Common.targets.

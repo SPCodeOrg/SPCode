@@ -48,7 +48,7 @@ namespace SPCode.UI.Windows
 
             AllowChanging = true;
 
-            SaveHotkeyTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
+            SaveHotkeyTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(20) };
             SaveHotkeyTimer.Tick += OnTimerTick;
         }
         #endregion
@@ -486,7 +486,7 @@ namespace SPCode.UI.Windows
                 },
                 Buttons = new Button[]
                 {
-                    new Button() { Label = Constants.GitHubRepositoryText, Url = Constants.GitHubRepository }
+                    new Button() { Label = Constants.GetSPCodeText, Url = Constants.GitHubLatestRelease }
                 }
             });
             // Calling this to set State to the opened file
@@ -513,7 +513,7 @@ namespace SPCode.UI.Windows
                 },
                 Buttons = new Button[]
                 {
-                    new Button() { Label = Constants.GitHubRepositoryText, Url = Constants.GitHubRepository }
+                    new Button() { Label = Constants.GetSPCodeText, Url = Constants.GitHubLatestRelease }
                 }
             });
             // Calling this to set State to the opened file

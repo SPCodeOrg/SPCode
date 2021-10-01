@@ -1,10 +1,20 @@
-# SPCode
-### _SPCode - a lightweight SourcePawn editor._
+<p align="center">
+<img src="https://user-images.githubusercontent.com/20617661/135019003-62f544c4-9278-47a0-bfdd-f0eae5895ab9.png" alt="Roslyn logo">
+</p>
 
-[Visit the Thread in Alliedmodders](https://forums.alliedmods.net/showthread.php?p=2693577)  
-[Join our Discord Server!](https://discord.com/invite/Uf6hMqnkY4)
+<hr/>
 
-_This is an updated/improved fork of AeonOne's [SPEdit](https://forums.alliedmods.net/showthread.php?t=259917)!_
+<p align="center">
+ <img src="https://github.com/SPCodeOrg/SPCode/actions/workflows/compile.yaml/badge.svg">
+ <a href="https://discord.com/invite/Uf6hMqnkY4"><img src="https://discordapp.com/api/guilds/810629824884375582/widget.png" alt="Chat on Discord" style="max-width:100%;"></a> 
+<p>
+
+<h2>SPCode</h2>
+
+<img src="https://user-images.githubusercontent.com/20617661/135123265-98b3a7bf-606e-4cee-9839-810295f936cf.png">
+
+SPCode is an open source SourcePawn editor, with multiple tools and features designed to help you <b>develop and deploy your SourceMod plugins fast and easy</b>.
+It was born in 2015 under the name of SPEdit, and in early 2020, we took care of its development.
 
 ### List of features:
 * Compiling-config system (fully customizable)
@@ -29,8 +39,3 @@ _This is an updated/improved fork of AeonOne's [SPEdit](https://forums.alliedmod
 * Auto bracket-closing
 * Object browser
 * Translations in multiple languages
-
-![Screen of SPEdit](http://i.imgur.com/69M45hz.png)
-
-![Screen of SPEdit-Themes](http://i.imgur.com/HfkpVut.png)
- 

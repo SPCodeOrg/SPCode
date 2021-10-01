@@ -82,14 +82,14 @@ namespace SPCode.Interop.Updater
         /// <returns></returns>
         private static async Task<List<Release>> GetAllReleases()
         {
-            var client = new GitHubClient(new ProductHeaderValue("spcode-client"));
-            var allReleases = await client.Repository.Release.GetAll("SPCodeOrg", "SPCode");
-            var list = new List<Release>();
-            for (int i = 0; i <= 10; i++)
+            var apiOptions = new ApiOptions()
             {
-                list.Add(allReleases[i]);
-            }
-            return list;
+                PageCount = 1,
+                PageSize = 10
+            };
+
+            var client = new GitHubClient(new ProductHeaderValue("spcode-client"));
+            return (await client.Repository.Release.GetAll("SPCodeOrg", "SPCode", apiOptions)).ToList();
         }
     }
 }
