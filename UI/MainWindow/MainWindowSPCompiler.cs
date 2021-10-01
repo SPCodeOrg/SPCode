@@ -35,8 +35,8 @@ namespace SPCode.UI
         /// <param name="compileAll"></param>
         private async void Compile_SPScripts(bool compileAll = true)
         {
-            // Checks if the program is compiling to avoid doing it again
-            if (InCompiling)
+            // Checks if the program is compiling to avoid doing it again, and checks if the editor is from the templates window
+            if (InCompiling || GetCurrentEditorElement().IsTemplateEditor)
             {
                 return;
             }
@@ -75,6 +75,7 @@ namespace SPCode.UI
                 await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"),
                     Program.Translations.GetLanguage("SPCompNotFound"), MessageDialogStyle.Affirmative,
                     MetroDialogOptions);
+                InCompiling = false;
                 return;
             }
 
@@ -98,7 +99,7 @@ namespace SPCode.UI
                     }
                     else
                     {
-                        LoggingControl.LogAction($"{new FileInfo(editor.FullFilePath).FullName} (omitted)");
+                        LoggingControl.LogAction($"{new FileInfo(editor.FullFilePath).Name} (omitted)");
                     }
                 }
             }
@@ -111,11 +112,6 @@ namespace SPCode.UI
                     return;
                 }
 
-                /*
-                ** I've struggled a bit here. Should i check, if the CompileBox is checked 
-                ** and only compile if it's checked or should it be ignored and compiled anyway?
-                ** I decided, to compile anyway but give me feedback/opinions.
-                */
                 if (ee.FullFilePath.EndsWith(".sp"))
                 {
                     ScriptsCompiled.Add(ee.FullFilePath);
@@ -197,6 +193,19 @@ namespace SPCode.UI
                         {
                             process.Start();
                             process.WaitForExit();
+
+                            if (process.ExitCode != 1 && process.ExitCode != 0)
+                            {
+                                await progressTask.CloseAsync();
+                                await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"),
+                                    "The SourcePawn compiler has crashed.\n" +
+                                    "Try again, or file an issue at the SourcePawn GitHub repository describing your steps that lead to this instance in detail.\n" +
+                                    $"Exit code: {process.ExitCode:X}", MessageDialogStyle.Affirmative,
+                                    MetroDialogOptions);
+                                LoggingControl.LogAction($"Compiler crash detected, file: {fileInfo.Name}", 2);
+                                InCompiling = false;
+                                return;
+                            }
                         }
                         catch (Exception)
                         {
@@ -204,6 +213,7 @@ namespace SPCode.UI
                             await this.ShowMessageAsync(Program.Translations.GetLanguage("SPCompNotStarted"),
                                 Program.Translations.GetLanguage("Error"), MessageDialogStyle.Affirmative,
                                 MetroDialogOptions);
+                            InCompiling = false;
                             return;
                         }
 

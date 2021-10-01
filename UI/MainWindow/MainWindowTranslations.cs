@@ -84,14 +84,8 @@ namespace SPCode.UI
             TxtSearchFiles.Text = Program.Translations.GetLanguage("SearchFiles") + "...";
             TxtSearchResults.Text = Program.Translations.GetLanguage("SearchResults");
 
-            foreach (MenuItem item in (ObjectBrowser.Resources["TVIContextMenu"] as ContextMenu).Items)
-            {
-                item.Header = Program.Translations.GetLanguage(item.Name);
-            };
-
             BtExpandCollapse.ToolTip = Program.Translations.GetLanguage(OBExpanded ? "ExpandAllDirs" : "CollapseAllDirs");
             BtRefreshDir.ToolTip = Program.Translations.GetLanguage("RefreshOB");
-
         }
     }
 }

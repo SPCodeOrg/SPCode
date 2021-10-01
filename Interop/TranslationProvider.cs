@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Xml;
+using SPCode.Utils;
 
 namespace SPCode.Interop
 {
@@ -40,7 +41,7 @@ namespace SPCode.Interop
             languageIDList.Add("");
             lang = lang.Trim().ToLowerInvariant();
             IsDefault = (string.IsNullOrEmpty(lang) || lang.ToLowerInvariant() == "en") && Initial;
-            if (File.Exists("lang_0_spcode.xml"))
+            if (File.Exists(Constants.LanguagesFile))
             {
                 try
                 {
@@ -205,7 +206,7 @@ namespace SPCode.Interop
             language.Add("ColAbb", "Col");
             language.Add("LnAbb", "Ln");
             language.Add("LenAbb", "Len");
-            language.Add("SPEditCap", "a lightweight sourcepawn editor");
+            language.Add("SPEditCap", "a lightweight SourcePawn editor");
             language.Add("WrittenBy", "written by: {0}");
             language.Add("License", "License");
             language.Add("PeopleInv", "People involved");

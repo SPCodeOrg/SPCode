@@ -26,7 +26,7 @@ namespace SPCode.UI.Windows
         #endregion
 
         #region Constructors
-        public FindReplaceWindow()
+        public FindReplaceWindow(string searchTerm = "")
         {
             InitializeComponent();
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
@@ -35,8 +35,13 @@ namespace SPCode.UI.Windows
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
 
+            Left = Program.MainWindow.Left + Program.MainWindow.Width - Program.MainWindow.ObjectBrowserColumn.Width.Value - (Width + 20);
+            Top = Program.MainWindow.Top + 40;
+
             ReplaceButton.ItemsSource = findReplaceButtonDict;
             ReplaceButton.SelectedIndex = 0;
+            FindBox.Text = searchTerm;
+            FindBox.SelectAll();
 
             LoadEditorsInfo();
             Language_Translate();

@@ -74,6 +74,8 @@ namespace SPCode.Utils
                 var def = new SMDefinition();
                 def.AppendFiles(SMDirectories, out var rejectedPaths);
 
+                RejectedPaths.Clear();
+
                 if (rejectedPaths.Any())
                 {
                     rejectedPaths.ForEach(x => RejectedPaths.Add(x));

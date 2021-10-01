@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using SPCode.Interop;
 using SPCode.UI.Components;
 using SPCode.Utils;
@@ -10,7 +12,7 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
-        private void ErrorResultGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ErrorResultGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var row = (ErrorDataGridRow)ErrorResultGrid.SelectedItem;
             if (row == null)
@@ -58,6 +60,7 @@ namespace SPCode.UI
             {
                 if (ed.FullFilePath == fInfo.FullName)
                 {
+                    await Task.Delay(50);
                     GoToErrorLine(ed, row);
                 }
             }
@@ -65,10 +68,15 @@ namespace SPCode.UI
             // If it's not opened, open it and go to the error line
             if (TryLoadSourceFile(fInfo.FullName, out var editor, true, false, true) && editor != null)
             {
+                await Task.Delay(50);
                 GoToErrorLine(editor, row);
             }
         }
 
+        private void ErrorResultGrid_Click(object sender, MouseButtonEventArgs e)
+        {
+            ErrorResultGrid_SelectionChanged(null, null);
+        }
         private void CloseErrorResultGrid(object sender, RoutedEventArgs e)
         {
             CompileOutputRow.Height = new GridLength(8.0);

@@ -55,6 +55,7 @@ File Microsoft.WindowsAPICodePack.dll
 File Microsoft.WindowsAPICodePack.Shell.dll
 
 File lang_0_spcode.xml
+File License.txt
 File GPLv3.txt
 
 CreateDirectory "$APPDATA\spcode\crashlogs"
@@ -79,8 +80,8 @@ WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "D
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "UninstallString" "$INSTDIR\uninstall.exe"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "InstallLocation" "$INSTDIR"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayIcon" "$INSTDIR\SPCode.exe"
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "Publisher" "Hexah"
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayVersion" "1.7"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "Publisher" "SPCode Organization"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayVersion" "1.8.0.0"
 WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "NoModify" 1
 WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "NoRepair" 1
 
@@ -90,21 +91,21 @@ SectionEnd
 
 Section "File Association (.sp)" prog02
 SectionIn 1
-${registerExtension} "$INSTDIR\SPCode.exe" ".sp" "Sourcepawn Script"
+${registerExtension} "$INSTDIR\SPCode.exe" ".sp" "SourcePawn Script"
 System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
 SectionEnd
 
 
 Section "File Association (.inc)" prog03
 SectionIn 1
-${registerExtension} "$INSTDIR\SPCode.exe" ".inc" "Sourcepawn Include-File"
+${registerExtension} "$INSTDIR\SPCode.exe" ".inc" "SourcePawn Include"
 System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
 SectionEnd
 
 
 Section "File Association (.smx)" prog04
 SectionIn 1
-${registerExtension} "$INSTDIR\SPCode.exe" ".smx" "Sourcemod Plugin"
+${registerExtension} "$INSTDIR\SPCode.exe" ".smx" "SourceMod Plugin"
 System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
 SectionEnd
 
@@ -144,6 +145,7 @@ Delete $INSTDIR\Microsoft.WindowsAPICodePack.dll
 Delete $INSTDIR\Microsoft.WindowsAPICodePack.Shell.dll
 
 Delete $INSTDIR\lang_0_spcode.xml
+Delete $INSTDIR\License.txt
 Delete $INSTDIR\GPLv3.txt
 Delete $INSTDIR\*.dat
 RMDir /r $APPDATA\spcode

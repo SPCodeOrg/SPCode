@@ -32,7 +32,7 @@ namespace SPCode.UI.Components
             var newFoldings = new List<NewFolding>();
             var startOffsets = new Stack<int>();
             var lastNewLineOffset = 0;
-            var CommentMode = 0; // 0 = None, 1 = Single, 2 = Multi, 3 = String
+            var CommentMode = 0; // 0 = None, 1 = Single, 2 = Multi, 3 = String, 4 = Char
             for (var i = 0; i < document.TextLength; ++i)
             {
                 var c = document.GetCharAt(i);
@@ -91,6 +91,11 @@ namespace SPCode.UI.Components
                                             CommentMode = 3;
                                             break;
                                         }
+                                    case '\'':
+                                        {
+                                            CommentMode = 4;
+                                            break;
+                                        }
                                 }
                                 break;
                             }
@@ -116,6 +121,14 @@ namespace SPCode.UI.Components
                         case 3:
                             {
                                 if (c == '\"')
+                                {
+                                    CommentMode = 0;
+                                }
+                                break;
+                            }
+                        case 4:
+                            {
+                                if (c == '\'')
                                 {
                                     CommentMode = 0;
                                 }
