@@ -10,6 +10,7 @@
         public const string DiscordRPCAppID = "692110664948514836";
         public const string JavaDownloadSite64 = "https://api.adoptopenjdk.net/v3/installer/latest/15/ga/windows/x64/jdk/hotspot/normal/adoptopenjdk?project=jdk";
         public const string JavaDownloadSite32 = "https://api.adoptopenjdk.net/v3/installer/latest/15/ga/windows/x32/jdk/hotspot/normal/adoptopenjdk?project=jdk";
+        public const string ErrorFilterRegex = @"^(?<File>.+?)\((?<Line>[0-9]+(\s*--\s*[0-9]+)?)\)\s*:\s*(?<Type>[a-zA-Z]+\s+([a-zA-Z]+\s+)?[0-9]+)\s*:(?<Details>.+)";
         public const string JavaDownloadFile = @"%userprofile%\Downloads\adoptopenjdk-java-15-spcode.msi";
         public const string HotkeysFile = "Hotkeys.xml";
         public const string LicenseFile = "License.txt";

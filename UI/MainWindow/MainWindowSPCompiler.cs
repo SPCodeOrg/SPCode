@@ -36,7 +36,8 @@ namespace SPCode.UI
         private async void Compile_SPScripts(bool compileAll = true)
         {
             // Checks if the program is compiling to avoid doing it again, and checks if the editor is from the templates window
-            if (InCompiling || GetCurrentEditorElement().IsTemplateEditor)
+            var ee = GetCurrentEditorElement();
+            if (InCompiling || (ee != null && ee.IsTemplateEditor))
             {
                 return;
             }
@@ -105,7 +106,6 @@ namespace SPCode.UI
             }
             else
             {
-                var ee = GetCurrentEditorElement();
                 if (ee == null)
                 {
                     InCompiling = false;
@@ -128,8 +128,7 @@ namespace SPCode.UI
                 progressTask.SetProgress(0.0);
                 var stringOutput = new StringBuilder();
                 var errorFilterRegex =
-                    new Regex(
-                        @"^(?<File>.+?)\((?<Line>[0-9]+(\s*--\s*[0-9]+)?)\)\s*:\s*(?<Type>[a-zA-Z]+\s+([a-zA-Z]+\s+)?[0-9]+)\s*:(?<Details>.+)",
+                    new Regex(Constants.ErrorFilterRegex,
                         RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
 
                 var compiledSuccess = 0;
