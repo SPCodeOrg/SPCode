@@ -313,7 +313,6 @@ namespace SPCode.UI
                     }
                 }
 
-                RefreshObjectBrowser();
                 await progressTask.CloseAsync();
             }
             InCompiling = false;
@@ -383,7 +382,6 @@ namespace SPCode.UI
                     {
                         CompileOutputRow.Height = new GridLength(200.0);
                     }
-                    RefreshObjectBrowser();
                 });
             }
         }

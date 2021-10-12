@@ -929,7 +929,6 @@ namespace SPCode.UI.Components
                 {
                     using var fs = new FileStream(_FullFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
                     editor.Save(fs);
-                    Program.MainWindow.RefreshObjectBrowser();
                 }
                 catch (Exception e)
                 {

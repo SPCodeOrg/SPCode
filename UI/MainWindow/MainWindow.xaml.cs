@@ -363,11 +363,6 @@ namespace SPCode.UI
                     BlendOverEffect.Begin();
                 }
 
-                if (!SearchMode)
-                {
-                    RefreshObjectBrowser();
-                }
-
                 return true;
             }
 
