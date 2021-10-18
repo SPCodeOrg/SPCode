@@ -11,7 +11,7 @@ namespace SPCode
     [Serializable]
     public class OptionsControl
     {
-        public static int SVersion = 11;
+        public static int SVersion = 12;
         public bool Editor_AgressiveIndentation = true;
         public bool Editor_AutoCloseBrackets = true;
         public bool Editor_AutoCloseStringChars = true;
@@ -25,6 +25,7 @@ namespace SPCode
         public double Editor_ScrollLines = 4.0;
         public bool Editor_ShowSpaces;
         public bool Editor_ShowTabs;
+        public bool Editor_TabToAutocomplete;
 
         public bool Editor_WordWrap = false;
 
@@ -151,6 +152,10 @@ namespace SPCode
                     {
                         Program_AccentColor = "Blue";
                     }
+                }
+                if (Version < 12)
+                {
+                    Editor_TabToAutocomplete = false;
                 }
 
                 //new Optionsversion - reset new fields to default

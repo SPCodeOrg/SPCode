@@ -63,6 +63,7 @@
             <CheckBox Name="AutoCloseStringChars" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,160,0,0" Content="Auto close Strings, Chars &quot;&quot;, ''" Checked="AutoCloseStringChars_Changed" Unchecked="AutoCloseStringChars_Changed" />
             <CheckBox Name="ShowSpaces" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,180,0,0" Content="Show Spaces" Checked="ShowSpaces_Changed" Unchecked="ShowSpaces_Changed" />
             <CheckBox Name="ShowTabs" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,200,0,0" Content="Show Tabs" Checked="ShowTabs_Changed" Unchecked="ShowTabs_Changed" />
+            <CheckBox Name="UseTabToAutocomplete" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,220,0,0" Content="Use Tab to Autocomplete" Checked="TabToAutocomplete_Changed" Unchecked="TabToAutocomplete_Changed" />
 
             <TextBlock Name="IndentationSizeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,165,0,0" Text="Indentation Size:" IsHitTestVisible="False" />
             <Slider Name="IndentationSize" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,185,0,0" Width="280" Minimum="1" Maximum="10" AutoToolTipPlacement="TopLeft" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" ValueChanged="IndentationSize_Changed" />
@@ -101,7 +102,6 @@
               <ComboBoxItem Content="10" />
               <ComboBoxItem Content="15" />
             </ComboBox>
-            <TextBlock Name="SyntaxHighBlock" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,238,0,0" Text="Syntax highlighting:" IsHitTestVisible="False" />
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,255,0,5">
 
               <CheckBox Name="HighlightDeprecateds" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Content="Highlight Deprecated (&lt;1.7) Syntax" Checked="HighlightDeprecateds_Changed" Unchecked="HighlightDeprecateds_Changed" />

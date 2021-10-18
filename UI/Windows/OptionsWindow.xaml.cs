@@ -572,6 +572,18 @@ namespace SPCode.UI.Windows
                 }
             }
         }
+
+        private void TabToAutocomplete_Changed(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChanging)
+            {
+                return;
+            }
+
+            Debug.Assert(ShowTabs.IsChecked != null, "TabToAutocomplete.IsChecked != null");
+            Program.OptionsObject.Editor_TabToAutocomplete = UseTabToAutocomplete.IsChecked.Value;
+        }
+
         #endregion
 
         #region Methods
@@ -654,8 +666,8 @@ namespace SPCode.UI.Windows
             AutoCloseStringChars.IsChecked = Program.OptionsObject.Editor_AutoCloseStringChars;
             ShowSpaces.IsChecked = Program.OptionsObject.Editor_ShowSpaces;
             ShowTabs.IsChecked = Program.OptionsObject.Editor_ShowTabs;
-            FontFamilyTB.Text =
-                $"{Program.Translations.GetLanguage("FontFamily")} ({Program.OptionsObject.Editor_FontFamily}):";
+            UseTabToAutocomplete.IsChecked = Program.OptionsObject.Editor_TabToAutocomplete;
+            FontFamilyTB.Text = $"{Program.Translations.GetLanguage("FontFamily")} ({Program.OptionsObject.Editor_FontFamily}):";
             FontFamilyCB.SelectedValue = new FontFamily(Program.OptionsObject.Editor_FontFamily);
             IndentationSize.Value = Program.OptionsObject.Editor_IndentationSize;
             HardwareSalts.IsChecked = Program.OptionsObject.Program_UseHardwareSalts;
@@ -760,7 +772,6 @@ namespace SPCode.UI.Windows
             ShowSpaces.Content = Program.Translations.GetLanguage("ShowSpaces");
             ShowTabs.Content = Program.Translations.GetLanguage("ShowTabs");
             IndentationSizeBlock.Text = Program.Translations.GetLanguage("IndentationSize");
-            SyntaxHighBlock.Text = Program.Translations.GetLanguage("SyntaxHigh");
             HighlightDeprecateds.Content = Program.Translations.GetLanguage("HighDeprecat");
             AutoSaveBlock.Text = Program.Translations.GetLanguage("AutoSaveMin");
             DefaultButton.Content = Program.Translations.GetLanguage("DefaultValues");

@@ -427,7 +427,14 @@ namespace SPCode.UI.Components
                 switch (k)
                 {
                     case Key.Enter:
+                    case Key.Tab:
                         {
+                            var tabToAutoc = Program.OptionsObject.Editor_TabToAutocomplete;
+                            if ((k == Key.Tab && !tabToAutoc) || (k == Key.Enter && tabToAutoc))
+                            {
+                                return false;
+                            }
+
                             var startOffset = editor.CaretOffset - 1;
                             var endOffset = startOffset;
                             for (var i = startOffset; i >= 0; --i)
