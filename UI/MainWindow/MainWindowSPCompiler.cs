@@ -324,66 +324,68 @@ namespace SPCode.UI
         private void Copy_Plugins()
         {
             var output = new List<string>();
-            if (CompiledFiles.Count > 0)
+            if (CompiledFiles.Count <= 0)
             {
-                var copyCount = 0;
-                var c = Program.Configs[Program.SelectedConfig];
-                if (string.IsNullOrWhiteSpace(c.CopyDirectory))
+                LoggingControl.LogAction("No plugins found to copy.", 2);
+                return;
+            }
+            var copyCount = 0;
+            var c = Program.Configs[Program.SelectedConfig];
+            if (string.IsNullOrWhiteSpace(c.CopyDirectory))
+            {
+                output.Add($"Copy directory is empty.");
+                goto Dispatcher;
+            }
+            if (!Directory.Exists(c.CopyDirectory))
+            {
+                output.Add("The specified Copy Directory was not found.");
+                goto Dispatcher;
+            }
+            output.Add($"Copying plugin(s)...");
+            NonUploadedFiles.Clear();
+            var stringOutput = new StringBuilder();
+            foreach (var file in CompiledFiles)
+            {
+                var destFile = new FileInfo(file);
+                try
                 {
-                    output.Add($"Copy directory is empty.");
-                    goto Dispatcher;
-                }
-                if (!Directory.Exists(c.CopyDirectory))
-                {
-                    output.Add("The specified Copy Directory was not found.");
-                    goto Dispatcher;
-                }
-                output.Add($"Copying plugin(s)...");
-                NonUploadedFiles.Clear();
-                var stringOutput = new StringBuilder();
-                foreach (var file in CompiledFiles)
-                {
-                    var destFile = new FileInfo(file);
-                    try
+                    if (destFile.Exists)
                     {
-                        if (destFile.Exists)
+                        var destinationFileName = destFile.Name;
+                        var copyFileDestination = Path.Combine(c.CopyDirectory, destinationFileName);
+                        File.Copy(file, copyFileDestination, true);
+                        NonUploadedFiles.Add(copyFileDestination);
+                        output.Add($"{Program.Translations.GetLanguage("Copied")}: {copyFileDestination}");
+                        ++copyCount;
+                        if (c.DeleteAfterCopy)
                         {
-                            var destinationFileName = destFile.Name;
-                            var copyFileDestination = Path.Combine(c.CopyDirectory, destinationFileName);
-                            File.Copy(file, copyFileDestination, true);
-                            NonUploadedFiles.Add(copyFileDestination);
-                            output.Add($"{Program.Translations.GetLanguage("Copied")}: {copyFileDestination}");
-                            ++copyCount;
-                            if (c.DeleteAfterCopy)
-                            {
-                                File.Delete(file);
-                                output.Add($"{Program.Translations.GetLanguage("Deleted")}: {copyFileDestination}");
-                            }
+                            File.Delete(file);
+                            output.Add($"{Program.Translations.GetLanguage("Deleted")}: {copyFileDestination}");
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        output.Add($"{Program.Translations.GetLanguage("FailCopy")}: {destFile.Name}");
-                        output.Add(ex.Message);
-                    }
                 }
-
-                if (copyCount == 0)
+                catch (Exception ex)
                 {
-                    output.Add($"{Program.Translations.GetLanguage("NoFilesCopy")}");
+                    output.Add($"{Program.Translations.GetLanguage("FailCopy")}: {destFile.Name}");
+                    output.Add(ex.Message);
                 }
-
-            Dispatcher:
-
-                Dispatcher.Invoke(() =>
-                {
-                    output.ForEach(x => LoggingControl.LogAction(x));
-                    if (CompileOutputRow.Height.Value < 11.0)
-                    {
-                        CompileOutputRow.Height = new GridLength(200.0);
-                    }
-                });
             }
+
+            if (copyCount == 0)
+            {
+                output.Add($"{Program.Translations.GetLanguage("NoFilesCopy")}");
+            }
+
+        Dispatcher:
+
+            Dispatcher.Invoke(() =>
+            {
+                output.ForEach(x => LoggingControl.LogAction(x));
+                if (CompileOutputRow.Height.Value < 11.0)
+                {
+                    CompileOutputRow.Height = new GridLength(200.0);
+                }
+            });
         }
 
         /// <summary>
@@ -394,6 +396,7 @@ namespace SPCode.UI
             var output = new List<string>();
             if (NonUploadedFiles.Count <= 0)
             {
+                LoggingControl.LogAction("No plugins found to upload.", 2);
                 return;
             }
 
@@ -463,6 +466,7 @@ namespace SPCode.UI
         {
             if (ServerIsRunning)
             {
+                LoggingControl.LogAction("The server is already running!", 2);
                 return;
             }
             var c = Program.Configs[Program.SelectedConfig];
