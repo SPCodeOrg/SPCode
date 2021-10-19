@@ -720,6 +720,7 @@ namespace SPCode.UI.Windows
                     FontStyle = hkInfo.Hotkey == null || hkInfo.Hotkey.ToString() == "None" ? FontStyles.Italic : FontStyles.Normal
                 };
                 hotkeyEditor.PreviewKeyDown += Hotkey_PreviewKeyDown;
+                hotkeyEditor.PreviewMouseDown += Hotkey_PreviewMouseDown;
                 Grid.SetColumn(hotkeyEditor, 1);
                 var separator = new Separator()
                 {

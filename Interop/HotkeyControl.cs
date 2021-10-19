@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 using SPCode.Utils;
@@ -126,7 +125,7 @@ namespace SPCode.Interop
                 }
 
                 // Buffer hotkeys in global HotkeyInfo list
-                Program.HotkeysList = new List<HotkeyInfo>();
+                Program.HotkeysList = new();
                 foreach (XmlNode node in document.ChildNodes[0].ChildNodes)
                 {
                     Program.HotkeysList.Add(new HotkeyInfo(new Hotkey(node.InnerText), node.Name));

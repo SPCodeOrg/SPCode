@@ -43,6 +43,40 @@ namespace SPCode.UI.Windows
             }
         }
 
+        private void Hotkey_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.RightButton != MouseButtonState.Pressed || sender is not HotkeyEditorControl hkControl)
+            {
+                return;
+            }
+
+            _ctrl = hkControl;
+            _currentControlHotkey = _ctrl.Hotkey;
+
+            var mi = new MenuItem();
+            mi.Header = "Reset to default";
+            var cm = new ContextMenu();
+            cm.Items.Add(mi);
+            hkControl.HotkeyTextBox.ContextMenu = cm;
+
+            mi.Click += (sender, e) =>
+            {
+                foreach (var hk in Program.HotkeysList)
+                {
+                    if (hk.Hotkey.ToString() == HotkeyControl.DefaultHotkeys[hkControl.Name.Substring(2)])
+                    {
+                        ShowLabel("Default taken!");
+                        return;
+                    }
+                }
+
+                HideLabel();
+                hkControl.Hotkey = new Hotkey(HotkeyControl.DefaultHotkeys[hkControl.Name.Substring(2)]);
+                Program.HotkeysList.FirstOrDefault(x => x.Command == hkControl.Name.Substring(2)).Hotkey = hkControl.Hotkey;
+            };
+
+        }
+
         private void OnTimerTick(object sender, EventArgs e)
         {
             SaveHotkeyTimer.Stop();
