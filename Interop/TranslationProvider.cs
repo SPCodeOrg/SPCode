@@ -370,6 +370,7 @@ namespace SPCode.Interop
             language.Add("TemplateExists", "Template name already exists");
             language.Add("IllegalCharacters", "Illegal characters");
             language.Add("ReopenLastClosedTab", "Reopen the last closed tab");
+            language.Add("DefaultTaken", "Default taken!");
         }
     }
 }

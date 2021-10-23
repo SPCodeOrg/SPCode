@@ -53,8 +53,10 @@ namespace SPCode.UI.Windows
             _ctrl = hkControl;
             _currentControlHotkey = _ctrl.Hotkey;
 
-            var mi = new MenuItem();
-            mi.Header = "Reset to default";
+            var mi = new MenuItem
+            {
+                Header = "Reset to default"
+            };
             var cm = new ContextMenu();
             cm.Items.Add(mi);
             hkControl.HotkeyTextBox.ContextMenu = cm;
@@ -63,16 +65,16 @@ namespace SPCode.UI.Windows
             {
                 foreach (var hk in Program.HotkeysList)
                 {
-                    if (hk.Hotkey.ToString() == HotkeyControl.DefaultHotkeys[hkControl.Name.Substring(2)])
+                    var hkStr = hk.Hotkey.ToString();
+                    if (hkStr == HotkeyControl.DefaultHotkeys[hkControl.Name.Substring(2)] && hkStr != hkControl.Hotkey.ToString())
                     {
-                        ShowLabel("Default taken!");
+                        ShowLabel(Program.Translations.GetLanguage("DefaultTaken"));
                         return;
                     }
                 }
 
                 HideLabel();
-                hkControl.Hotkey = new Hotkey(HotkeyControl.DefaultHotkeys[hkControl.Name.Substring(2)]);
-                Program.HotkeysList.FirstOrDefault(x => x.Command == hkControl.Name.Substring(2)).Hotkey = hkControl.Hotkey;
+                SaveHotkey(true);
             };
 
         }
@@ -88,7 +90,7 @@ namespace SPCode.UI.Windows
         /// <summary>
         /// Saves the input hotkey to the Hotkeys file, and caches it.
         /// </summary>
-        private void SaveHotkey()
+        private void SaveHotkey(bool toDefault = false)
         {
             // Create the hotkeys file if it doesn't exist for some reason
             if (!File.Exists(Constants.HotkeysFile))
@@ -98,6 +100,13 @@ namespace SPCode.UI.Windows
 
             // Get the control name by separating it from its x:Name suffix
             var ctrlName = _ctrl.Name.Substring(2);
+
+            // We skip checks if we're setting a default hotkey
+            if (toDefault)
+            {
+                _ctrl.Hotkey = new Hotkey(HotkeyControl.DefaultHotkeys[_ctrl.Name.Substring(2)]);
+                goto SaveDirectly;
+            }
 
             foreach (var hkInfo in Program.HotkeysList)
             {
@@ -130,6 +139,8 @@ namespace SPCode.UI.Windows
                     HideLabel();
                 }
             }
+
+            SaveDirectly:
 
             // Modify the XML document to update hotkey
             var document = new XmlDocument();
