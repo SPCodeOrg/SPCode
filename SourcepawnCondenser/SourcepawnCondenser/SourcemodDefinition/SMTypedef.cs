@@ -1,7 +1,6 @@
-﻿namespace SourcepawnCondenser.SourcemodDefinition
+﻿namespace SourcepawnCondenser.SourcemodDefinition;
+
+public class SMTypedef : SMBaseDefinition
 {
-    public class SMTypedef : SMBaseDefinition
-    {
-        public string FullName = string.Empty;
-    }
+    public string FullName = string.Empty;
 }

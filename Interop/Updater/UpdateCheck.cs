@@ -5,91 +5,90 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Octokit;
 
-namespace SPCode.Interop.Updater
-{
-    public static class UpdateCheck
-    {
-        /// <summary>
-        /// Calls the CheckInternal function to set the IsAvailable flag.
-        /// </summary>
-        /// <returns></returns>
-        public static async Task Check()
-        {
-            if (Program.UpdateStatus != null)
-            {
-                if (Program.UpdateStatus.IsAvailable)
-                {
-                    return;
-                }
-            }
+namespace SPCode.Interop.Updater;
 
-            await CheckInternal();
+public static class UpdateCheck
+{
+    /// <summary>
+    /// Calls the CheckInternal function to set the IsAvailable flag.
+    /// </summary>
+    /// <returns></returns>
+    public static async Task Check()
+    {
+        if (Program.UpdateStatus != null)
+        {
+            if (Program.UpdateStatus.IsAvailable)
+            {
+                return;
+            }
         }
 
-        /// <summary>
-        /// Compares versions by getting all releases to see if there's an update available or not.
-        /// </summary>
-        /// <returns></returns>
-        private static async Task CheckInternal()
+        await CheckInternal();
+    }
+
+    /// <summary>
+    /// Compares versions by getting all releases to see if there's an update available or not.
+    /// </summary>
+    /// <returns></returns>
+    private static async Task CheckInternal()
+    {
+        var info = new UpdateInfo();
+        try
         {
-            var info = new UpdateInfo();
-            try
+            info.AllReleases = await GetAllReleases();
+            if (!IsUpToDate(Assembly.GetEntryAssembly()?.GetName().Version, Version.Parse(info.AllReleases[0].TagName)))
             {
-                info.AllReleases = await GetAllReleases();
-                if (!IsUpToDate(Assembly.GetEntryAssembly()?.GetName().Version, Version.Parse(info.AllReleases[0].TagName)))
+                if (info.Asset == null)
                 {
-                    if (info.Asset == null)
-                    {
-                        throw new Exception("Unable to find a valid asset!");
-                    }
-                    info.IsAvailable = true;
+                    throw new Exception("Unable to find a valid asset!");
                 }
-                else
-                {
-                    info.IsAvailable = false;
-                }
+                info.IsAvailable = true;
             }
-            catch (Exception e)
+            else
             {
                 info.IsAvailable = false;
-                info.GotException = true;
-                info.ExceptionMessage = e.Message;
-            }
-
-            lock (Program.UpdateStatus)
-            {
-                if (Program.UpdateStatus.WriteAble)
-                {
-                    Program.UpdateStatus = info;
-                }
             }
         }
-
-        /// <summary>
-        /// Compares versions.
-        /// </summary>
-        /// <param name="currentVer"></param>
-        /// <param name="latestVer"></param>
-        /// <returns></returns>
-        private static bool IsUpToDate(Version currentVer, Version latestVer)
+        catch (Exception e)
         {
-            return currentVer.CompareTo(latestVer) >= 0;
+            info.IsAvailable = false;
+            info.GotException = true;
+            info.ExceptionMessage = e.Message;
         }
 
-        /// <summary>
-        /// Calls the GitHub API to get all releases.
-        /// </summary>
-        /// <returns></returns>
-        private static async Task<List<Release>> GetAllReleases()
+        lock (Program.UpdateStatus)
         {
-            var apiOptions = new ApiOptions()
+            if (Program.UpdateStatus.WriteAble)
             {
-                PageCount = 1,
-                PageSize = 10
-            };
-
-            var client = new GitHubClient(new ProductHeaderValue("spcode-client"));
-            return (await client.Repository.Release.GetAll("SPCodeOrg", "SPCode", apiOptions)).ToList();
+                Program.UpdateStatus = info;
+            }
         }
+    }
+
+    /// <summary>
+    /// Compares versions.
+    /// </summary>
+    /// <param name="currentVer"></param>
+    /// <param name="latestVer"></param>
+    /// <returns></returns>
+    private static bool IsUpToDate(Version currentVer, Version latestVer)
+    {
+        return currentVer.CompareTo(latestVer) >= 0;
+    }
+
+    /// <summary>
+    /// Calls the GitHub API to get all releases.
+    /// </summary>
+    /// <returns></returns>
+    private static async Task<List<Release>> GetAllReleases()
+    {
+        var apiOptions = new ApiOptions()
+        {
+            PageCount = 1,
+            PageSize = 10
+        };
+
+        var client = new GitHubClient(new ProductHeaderValue("spcode-client"));
+        return (await client.Repository.Release.GetAll("SPCodeOrg", "SPCode", apiOptions)).ToList();
     }
 }

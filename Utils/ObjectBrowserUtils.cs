@@ -1,16 +1,15 @@
-﻿namespace SPCode.Utils
-{
-    public class ObjectBrowserTag
-    {
-        public ObjectBrowserItemKind Kind;
-        public string? Value;
-    }
+﻿namespace SPCode.Utils;
 
-    public enum ObjectBrowserItemKind
-    {
-        ParentDirectory,
-        Directory,
-        File,
-        Empty
-    }
+public class ObjectBrowserTag
+{
+    public ObjectBrowserItemKind Kind;
+    public string? Value;
+}
+
+public enum ObjectBrowserItemKind
+{
+    ParentDirectory,
+    Directory,
+    File,
+    Empty
 }

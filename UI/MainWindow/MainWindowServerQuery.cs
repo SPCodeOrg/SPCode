@@ -6,138 +6,137 @@ using System.Windows;
 using QueryMaster;
 using SPCode.Interop;
 
-namespace SPCode.UI
+namespace SPCode.UI;
+
+public partial class MainWindow
 {
-    public partial class MainWindow
+    /// <summary>
+    /// Queries the server with the specified command in the command box of the config.
+    /// </summary>
+    private void Server_Query()
     {
-        /// <summary>
-        /// Queries the server with the specified command in the command box of the config.
-        /// </summary>
-        private void Server_Query()
+        var output = new List<string>();
+        var c = Program.Configs[Program.SelectedConfig];
+        if (string.IsNullOrWhiteSpace(c.RConIP) || string.IsNullOrWhiteSpace(c.RConCommands))
         {
-            var output = new List<string>();
-            var c = Program.Configs[Program.SelectedConfig];
-            if (string.IsNullOrWhiteSpace(c.RConIP) || string.IsNullOrWhiteSpace(c.RConCommands))
-            {
-                output.Add("The RCON IP or the Commands fields are empty.");
-                goto Dispatcher;
-            }
-
-            output.Add("Sending commands...");
-
-            try
-            {
-                var type = EngineType.GoldSource;
-                if (c.RConUseSourceEngine)
-                {
-                    type = EngineType.Source;
-                }
-
-                using (var server = ServerQuery.GetServerInstance(type, c.RConIP, c.RConPort, null))
-                {
-                    var serverInfo = server.GetInfo();
-                    output.Add(serverInfo.Name);
-                    using var rcon = server.GetControl(c.RConPassword);
-                    var cmds = ReplaceRconCMDVariables(c.RConCommands).Split('\n');
-                    foreach (var cmd in cmds)
-                    {
-                        var t = Task.Run(() =>
-                        {
-                            var command = cmd.Trim('\r').Trim();
-                            if (!string.IsNullOrWhiteSpace(command))
-                            {
-                                output.Add(rcon.SendCommand(command));
-                            }
-                        });
-                        t.Wait();
-                    }
-                }
-                output.Add("Commands sent.");
-            }
-            catch (Exception e)
-            {
-                output.Add("Error: " + e.Message);
-            }
-
-        Dispatcher:
-
-            Dispatcher.Invoke(() =>
-            {
-                output.ForEach(x => LoggingControl.LogAction(x));
-                if (CompileOutputRow.Height.Value < 11.0)
-                {
-                    CompileOutputRow.Height = new GridLength(200.0);
-                }
-            });
+            output.Add("The RCON IP or the Commands fields are empty.");
+            goto Dispatcher;
         }
 
-        /// <summary>
-        /// Replaces the placeholders from the commands box with the corresponding content.
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        private string ReplaceRconCMDVariables(string input)
+        output.Add("Sending commands...");
+
+        try
         {
-            if (CompiledFileNames.Count < 1)
+            var type = EngineType.GoldSource;
+            if (c.RConUseSourceEngine)
             {
-                return input;
+                type = EngineType.Source;
             }
 
-            if (input.IndexOf("{plugins_reload}", StringComparison.Ordinal) >= 0)
+            using (var server = ServerQuery.GetServerInstance(type, c.RConIP, c.RConPort, null))
             {
-                var replacement = new StringBuilder();
-                replacement.AppendLine();
-                foreach (var fileName in CompiledFileNames)
+                var serverInfo = server.GetInfo();
+                output.Add(serverInfo.Name);
+                using var rcon = server.GetControl(c.RConPassword);
+                var cmds = ReplaceRconCMDVariables(c.RConCommands).Split('\n');
+                foreach (var cmd in cmds)
                 {
-                    replacement.Append("sm plugins reload " + StripSMXPostFix(fileName) + ";");
+                    var t = Task.Run(() =>
+                    {
+                        var command = cmd.Trim('\r').Trim();
+                        if (!string.IsNullOrWhiteSpace(command))
+                        {
+                            output.Add(rcon.SendCommand(command));
+                        }
+                    });
+                    t.Wait();
                 }
-
-                replacement.AppendLine();
-                input = input.Replace("{plugins_reload}", replacement.ToString());
             }
+            output.Add("Commands sent.");
+        }
+        catch (Exception e)
+        {
+            output.Add("Error: " + e.Message);
+        }
 
-            if (input.IndexOf("{plugins_load}", StringComparison.Ordinal) >= 0)
+    Dispatcher:
+
+        Dispatcher.Invoke(() =>
+        {
+            output.ForEach(x => LoggingControl.LogAction(x));
+            if (CompileOutputRow.Height.Value < 11.0)
             {
-                var replacement = new StringBuilder();
-                replacement.AppendLine();
-                foreach (var fileName in CompiledFileNames)
-                {
-                    replacement.Append("sm plugins load " + StripSMXPostFix(fileName) + ";");
-                }
-
-                replacement.AppendLine();
-                input = input.Replace("{plugins_load}", replacement.ToString());
+                CompileOutputRow.Height = new GridLength(200.0);
             }
+        });
+    }
 
-            if (input.IndexOf("{plugins_unload}", StringComparison.Ordinal) >= 0)
-            {
-                var replacement = new StringBuilder();
-                replacement.AppendLine();
-                foreach (var fileName in CompiledFileNames)
-                {
-                    replacement.Append("sm plugins unload " + StripSMXPostFix(fileName) + ";");
-                }
-
-                replacement.AppendLine();
-                input = input.Replace("{plugins_unload}", replacement.ToString());
-            }
-
+    /// <summary>
+    /// Replaces the placeholders from the commands box with the corresponding content.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    private string ReplaceRconCMDVariables(string input)
+    {
+        if (CompiledFileNames.Count < 1)
+        {
             return input;
         }
 
-        /// <summary>
-        /// Strips the '.smx' from the specified string
-        /// </summary>
-        /// <param name="fileName">File name to strip the extension from.</param>
-        /// <returns></returns>
-        private string StripSMXPostFix(string fileName)
+        if (input.IndexOf("{plugins_reload}", StringComparison.Ordinal) >= 0)
         {
-            if (fileName.EndsWith(".smx"))
+            var replacement = new StringBuilder();
+            replacement.AppendLine();
+            foreach (var fileName in CompiledFileNames)
             {
-                return fileName.Substring(0, fileName.Length - 4);
+                replacement.Append("sm plugins reload " + StripSMXPostFix(fileName) + ";");
             }
 
-            return fileName;
+            replacement.AppendLine();
+            input = input.Replace("{plugins_reload}", replacement.ToString());
         }
+
+        if (input.IndexOf("{plugins_load}", StringComparison.Ordinal) >= 0)
+        {
+            var replacement = new StringBuilder();
+            replacement.AppendLine();
+            foreach (var fileName in CompiledFileNames)
+            {
+                replacement.Append("sm plugins load " + StripSMXPostFix(fileName) + ";");
+            }
+
+            replacement.AppendLine();
+            input = input.Replace("{plugins_load}", replacement.ToString());
+        }
+
+        if (input.IndexOf("{plugins_unload}", StringComparison.Ordinal) >= 0)
+        {
+            var replacement = new StringBuilder();
+            replacement.AppendLine();
+            foreach (var fileName in CompiledFileNames)
+            {
+                replacement.Append("sm plugins unload " + StripSMXPostFix(fileName) + ";");
+            }
+
+            replacement.AppendLine();
+            input = input.Replace("{plugins_unload}", replacement.ToString());
+        }
+
+        return input;
+    }
+
+    /// <summary>
+    /// Strips the '.smx' from the specified string
+    /// </summary>
+    /// <param name="fileName">File name to strip the extension from.</param>
+    /// <returns></returns>
+    private string StripSMXPostFix(string fileName)
+    {
+        if (fileName.EndsWith(".smx"))
+        {
+            return fileName.Substring(0, fileName.Length - 4);
+        }
+
+        return fileName;
     }
 }

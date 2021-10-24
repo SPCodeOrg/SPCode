@@ -1,6 +1,5 @@
-﻿namespace SourcepawnCondenser.SourcemodDefinition
+﻿namespace SourcepawnCondenser.SourcemodDefinition;
+
+public class SMConstant : SMBaseDefinition
 {
-    public class SMConstant : SMBaseDefinition
-    {
-    }
 }

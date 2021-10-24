@@ -3,67 +3,66 @@ using System.Windows;
 using System.Windows.Input;
 using SPCode.Utils;
 
-namespace SPCode.UI.Components
+namespace SPCode.UI.Components;
+
+public partial class HotkeyEditorControl
 {
-    public partial class HotkeyEditorControl
+    public static readonly DependencyProperty HotkeyProperty =
+        DependencyProperty.Register(nameof(Hotkey), typeof(Hotkey),
+            typeof(HotkeyEditorControl),
+            new FrameworkPropertyMetadata(default(Hotkey),
+                FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+    private bool InputEnabled = true;
+
+    public Hotkey Hotkey
     {
-        public static readonly DependencyProperty HotkeyProperty =
-            DependencyProperty.Register(nameof(Hotkey), typeof(Hotkey),
-                typeof(HotkeyEditorControl),
-                new FrameworkPropertyMetadata(default(Hotkey),
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        get => (Hotkey)GetValue(HotkeyProperty);
+        set => SetValue(HotkeyProperty, value);
+    }
 
-        private bool InputEnabled = true;
+    public HotkeyEditorControl()
+    {
+        InitializeComponent();
+    }
 
-        public Hotkey Hotkey
+    private async void HotkeyTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        // Don't let the event pass further
+        // because we don't want standard textbox shortcuts working
+        e.Handled = true;
+
+        // Get modifiers and key data
+        var key = e.Key;
+        var modifiers = Keyboard.Modifiers;
+
+        // When Alt is pressed, SystemKey is used instead
+        if (key == Key.System)
         {
-            get => (Hotkey)GetValue(HotkeyProperty);
-            set => SetValue(HotkeyProperty, value);
+            key = e.SystemKey;
         }
 
-        public HotkeyEditorControl()
+        // Pressing delete, backspace or escape without modifiers clears the current value
+        if (modifiers == ModifierKeys.None &&
+            (key == Key.Delete || key == Key.Back || key == Key.Escape))
         {
-            InitializeComponent();
+            Hotkey = null;
+            return;
         }
 
-        private async void HotkeyTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        if (HotkeyUtils.IsKeyModifier(key) || !InputEnabled)
         {
-            // Don't let the event pass further
-            // because we don't want standard textbox shortcuts working
-            e.Handled = true;
-
-            // Get modifiers and key data
-            var key = e.Key;
-            var modifiers = Keyboard.Modifiers;
-
-            // When Alt is pressed, SystemKey is used instead
-            if (key == Key.System)
-            {
-                key = e.SystemKey;
-            }
-
-            // Pressing delete, backspace or escape without modifiers clears the current value
-            if (modifiers == ModifierKeys.None &&
-                (key == Key.Delete || key == Key.Back || key == Key.Escape))
-            {
-                Hotkey = null;
-                return;
-            }
-
-            if (HotkeyUtils.IsKeyModifier(key) || !InputEnabled)
-            {
-                return;
-            }
-
-            InputEnabled = false;
-
-            // Update the value if it's not spamming the key
-            if (!e.IsRepeat)
-            {
-                Hotkey = new Hotkey(key, modifiers);
-            }
-            await Task.Delay(500);
-            InputEnabled = true;
+            return;
         }
+
+        InputEnabled = false;
+
+        // Update the value if it's not spamming the key
+        if (!e.IsRepeat)
+        {
+            Hotkey = new Hotkey(key, modifiers);
+        }
+        await Task.Delay(500);
+        InputEnabled = true;
     }
 }

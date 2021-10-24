@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Windows.Controls;
 
-namespace SPCode.Interop
+namespace SPCode.Interop;
+
+public static class LoggingControl
 {
-    public static class LoggingControl
+    public static TextBox LogBox;
+    public static void LogAction(string message, int newLines = 1)
     {
-        public static TextBox LogBox;
-        public static void LogAction(string message, int newLines = 1)
-        {
-            LogBox.Text += $"[{DateTime.Now:HH:mm:ss}] {message} {new string('\n', newLines)}";
-            LogBox.CaretIndex = LogBox.Text.Length;
-            LogBox.ScrollToEnd();
-        }
+        LogBox.Text += $"[{DateTime.Now:HH:mm:ss}] {message} {new string('\n', newLines)}";
+        LogBox.CaretIndex = LogBox.Text.Length;
+        LogBox.ScrollToEnd();
     }
 }

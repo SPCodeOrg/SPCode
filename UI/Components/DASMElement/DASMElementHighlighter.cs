@@ -3,92 +3,92 @@ using System.Text.RegularExpressions;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
 
-namespace SPCode.UI.Components
+namespace SPCode.UI.Components;
+
+public class DASMHighlighting : IHighlightingDefinition
 {
-    public class DASMHighlighting : IHighlightingDefinition
+    public string Name => "SM";
+
+    public HighlightingRuleSet MainRuleSet
     {
-        public string Name => "SM";
-
-        public HighlightingRuleSet MainRuleSet
+        get
         {
-            get
+            var commentMarkerSet = new HighlightingRuleSet
             {
-                var commentMarkerSet = new HighlightingRuleSet
+                Name = "CommentMarkerSet"
+            };
+            var excludeInnerSingleLineComment = new HighlightingRuleSet();
+            excludeInnerSingleLineComment.Spans.Add(new HighlightingSpan() { StartExpression = new Regex(@"\;"), EndExpression = new Regex(@".") });
+            var rs = new HighlightingRuleSet();
+            var commentBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Comments);
+            rs.Spans.Add(new HighlightingSpan() //singleline comments
+            {
+                StartExpression = new Regex(@"\;", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
+                EndExpression = new Regex(@"$", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
+                SpanColor = new HighlightingColor() { Foreground = commentBrush },
+                StartColor = new HighlightingColor() { Foreground = commentBrush },
+                EndColor = new HighlightingColor() { Foreground = commentBrush },
+                RuleSet = commentMarkerSet
+            });
+            var stringBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Strings);
+            rs.Spans.Add(new HighlightingSpan() //strings
+            {
+                StartExpression = new Regex(@"(?<!')""", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
+                EndExpression = new Regex(@"""", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
+                SpanColor = new HighlightingColor() { Foreground = stringBrush },
+                StartColor = new HighlightingColor() { Foreground = stringBrush },
+                EndColor = new HighlightingColor() { Foreground = stringBrush },
+                RuleSet = excludeInnerSingleLineComment
+            });
+            rs.Rules.Add(new HighlightingRule() //opcodes
+            {
+                Regex = RegexKeywordsHelper.GetRegexFromKeywords(OpCodeStrings, true),
+                Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_CommentsMarker) }
+            });
+            rs.Rules.Add(new HighlightingRule() //hexnumbers
+            {
+                Regex = new Regex(@"\b0[xX][0-9a-fA-F]+", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
+                Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Numbers) }
+            });
+            var def = Program.Configs[Program.SelectedConfig].GetSMDef();
+            if (def.TypeStrings.Length > 0)
+            {
+                rs.Rules.Add(new HighlightingRule() //Types
                 {
-                    Name = "CommentMarkerSet"
-                };
-                var excludeInnerSingleLineComment = new HighlightingRuleSet();
-                excludeInnerSingleLineComment.Spans.Add(new HighlightingSpan() { StartExpression = new Regex(@"\;"), EndExpression = new Regex(@".") });
-                var rs = new HighlightingRuleSet();
-                var commentBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Comments);
-                rs.Spans.Add(new HighlightingSpan() //singleline comments
-                {
-                    StartExpression = new Regex(@"\;", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
-                    EndExpression = new Regex(@"$", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
-                    SpanColor = new HighlightingColor() { Foreground = commentBrush },
-                    StartColor = new HighlightingColor() { Foreground = commentBrush },
-                    EndColor = new HighlightingColor() { Foreground = commentBrush },
-                    RuleSet = commentMarkerSet
+                    Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.TypeStrings, true),
+                    Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
                 });
-                var stringBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Strings);
-                rs.Spans.Add(new HighlightingSpan() //strings
-                {
-                    StartExpression = new Regex(@"(?<!')""", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
-                    EndExpression = new Regex(@"""", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
-                    SpanColor = new HighlightingColor() { Foreground = stringBrush },
-                    StartColor = new HighlightingColor() { Foreground = stringBrush },
-                    EndColor = new HighlightingColor() { Foreground = stringBrush },
-                    RuleSet = excludeInnerSingleLineComment
-                });
-                rs.Rules.Add(new HighlightingRule() //opcodes
-                {
-                    Regex = RegexKeywordsHelper.GetRegexFromKeywords(OpCodeStrings, true),
-                    Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_CommentsMarker) }
-                });
-                rs.Rules.Add(new HighlightingRule() //hexnumbers
-                {
-                    Regex = new Regex(@"\b0[xX][0-9a-fA-F]+", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
-                    Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Numbers) }
-                });
-                var def = Program.Configs[Program.SelectedConfig].GetSMDef();
-                if (def.TypeStrings.Length > 0)
-                {
-                    rs.Rules.Add(new HighlightingRule() //Types
-                    {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.TypeStrings, true),
-                        Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
-                    });
-                }
-                if (def.ConstantsStrings.Length > 0)
-                {
-                    rs.Rules.Add(new HighlightingRule() //constants
-                    {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.ConstantsStrings, true),
-                        Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
-                    });
-                }
-                if (def.FunctionStrings.Length > 0)
-                {
-                    rs.Rules.Add(new HighlightingRule() //Functions
-                    {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.FunctionStrings, true),
-                        Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
-                    });
-                }
-                if (def.MethodsStrings.Length > 0)
-                {
-                    rs.Rules.Add(new HighlightingRule() //Methods
-                    {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.MethodsStrings, true),
-                        Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
-                    });
-                }
-                rs.Name = "MainRule";
-                return rs;
             }
+            if (def.ConstantsStrings.Length > 0)
+            {
+                rs.Rules.Add(new HighlightingRule() //constants
+                {
+                    Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.ConstantsStrings, true),
+                    Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
+                });
+            }
+            if (def.FunctionStrings.Length > 0)
+            {
+                rs.Rules.Add(new HighlightingRule() //Functions
+                {
+                    Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.FunctionStrings, true),
+                    Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
+                });
+            }
+            if (def.MethodsStrings.Length > 0)
+            {
+                rs.Rules.Add(new HighlightingRule() //Methods
+                {
+                    Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.MethodsStrings, true),
+                    Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
+                });
+            }
+            rs.Name = "MainRule";
+            return rs;
         }
+    }
 
-        public static string[] OpCodeStrings = new string[] { "none", "load.pri", "load.alt", "load.s.pri", "load.s.alt", "lref.pri", "lref.alt", "lref.s.pri",
+    public static string[] OpCodeStrings = new string[] { "none", "load.pri", "load.alt", "load.s.pri", "load.s.alt", "lref.pri", "lref.alt", "lref.s.pri",
             "lref.s.alt", "load.i", "lodb.i", "const.pri", "const.alt", "addr.pri", "addr.alt", "stor.pri", "stor.alt", "stor.s.pri", "stor.s.alt", "sref.pri",
             "sref.alt", "sref.s.pri", "sref.s.alt", "stor.i", "strb.i", "lidx", "lidx.b", "idxaddr", "idxaddr.b", "align.pri", "align.alt", "lctrl", "sctrl",
             "move.pri", "move.alt", "xchg", "push.pri", "push.alt", "push.r", "push.c", "push", "push.s", "pop.pri", "pop.alt", "stack", "heap", "proc", "ret",
@@ -103,20 +103,19 @@ namespace SPCode.UI.Components
             "fabs", "float", "float.add", "float.sub", "float.mul", "float.div", "round", "floor", "ceil", "rndtozero", "float.cmp", "float.gt", "float.ge",
             "float.lt", "float.le", "float.ne", "float.eq", "float.not" };
 
-        public HighlightingRuleSet GetNamedRuleSet(string name) { return null; }
-        public HighlightingColor GetNamedColor(string name) { return null; }
-        public IEnumerable<HighlightingColor> NamedHighlightingColors { get; set; }
+    public HighlightingRuleSet GetNamedRuleSet(string name) { return null; }
+    public HighlightingColor GetNamedColor(string name) { return null; }
+    public IEnumerable<HighlightingColor> NamedHighlightingColors { get; set; }
 
-        public IDictionary<string, string> Properties
+    public IDictionary<string, string> Properties
+    {
+        get
         {
-            get
-            {
-                var propertiesDictionary = new Dictionary<string, string>
+            var propertiesDictionary = new Dictionary<string, string>
                 {
                     { "DocCommentMarker", "///" }
                 };
-                return propertiesDictionary;
-            }
+            return propertiesDictionary;
         }
     }
 }

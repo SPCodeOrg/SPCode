@@ -6,271 +6,270 @@ using System.Security.Cryptography;
 using System.Windows.Media;
 using SPCode.Utils;
 
-namespace SPCode
+namespace SPCode;
+
+[Serializable]
+public class OptionsControl
 {
-    [Serializable]
-    public class OptionsControl
+    public static int SVersion = 12;
+    public bool Editor_AgressiveIndentation = true;
+    public bool Editor_AutoCloseBrackets = true;
+    public bool Editor_AutoCloseStringChars = true;
+    public bool Editor_AutoSave;
+    public int Editor_AutoSaveInterval = 5 * 60;
+    public string Editor_FontFamily = "Consolas";
+    public double Editor_FontSize = 16.0;
+    public int Editor_IndentationSize = 4;
+    public bool Editor_ReformatLineAfterSemicolon = true;
+    public bool Editor_ReplaceTabsToWhitespace;
+    public double Editor_ScrollLines = 4.0;
+    public bool Editor_ShowSpaces;
+    public bool Editor_ShowTabs;
+    public bool Editor_TabToAutocomplete;
+
+    public bool Editor_WordWrap = false;
+
+    public string Language = string.Empty;
+
+    public string[] LastOpenFiles = new string[0];
+
+    public string Program_AccentColor = "Red";
+
+    public bool Program_CheckForUpdates = true;
+
+    public byte[] Program_CryptoKey;
+    public bool Program_DiscordPresence = true;
+    public bool Program_DiscordPresenceTime = true;
+    public bool Program_DiscordPresenceFile = true;
+
+    public bool Program_DynamicISAC = true;
+
+    public string Program_ObjectBrowserDirectory = string.Empty;
+    public double Program_ObjectbrowserWidth = 300.0;
+
+    public bool Program_OpenCustomIncludes = false;
+    public bool Program_OpenIncludesRecursively = false;
+
+    public string Program_SelectedConfig = string.Empty;
+    public string Program_Theme = "BaseDark";
+
+    public bool Program_UseHardwareAcceleration = true;
+    public bool Program_UseHardwareSalts = true;
+    public SerializableColor SH_Chars = new(0xFF, 0xD6, 0x9C, 0x85);
+
+    public SerializableColor SH_Comments = new(0xFF, 0x57, 0xA6, 0x49);
+    public SerializableColor SH_CommentsMarker = new(0xFF, 0xFF, 0x20, 0x20);
+    public SerializableColor SH_Constants = new(0xFF, 0xBC, 0x62, 0xC5);
+    public SerializableColor SH_ContextKeywords = new(0xFF, 0x56, 0x9C, 0xD5);
+    public SerializableColor SH_Deprecated = new(0xFF, 0xFF, 0x00, 0x00);
+    public SerializableColor SH_Functions = new(0xFF, 0x56, 0x9C, 0xD5);
+
+    public bool SH_HighlightDeprecateds = true;
+    public SerializableColor SH_Keywords = new(0xFF, 0x56, 0x9C, 0xD5);
+    public SerializableColor SH_Methods = new(0xFF, 0x3B, 0xC6, 0x7E);
+    public SerializableColor SH_Numbers = new(0xFF, 0x97, 0x97, 0x97);
+    public SerializableColor SH_PreProcessor = new(0xFF, 0x7E, 0x7E, 0x7E);
+    public SerializableColor SH_SpecialCharacters = new(0xFF, 0x8F, 0x8F, 0x8F);
+    public SerializableColor SH_Strings = new(0xFF, 0xF4, 0x6B, 0x6C);
+    public SerializableColor SH_Types = new(0xFF, 0x28, 0x90, 0xB0); //56 9C D5
+    public SerializableColor SH_TypesValues = new(0xFF, 0x56, 0x9C, 0xD5);
+    public SerializableColor SH_UnkownFunctions = new(0xFF, 0x45, 0x85, 0xC5);
+
+    public bool UI_Animations = true;
+    public bool UI_ShowToolBar;
+
+    public LinkedList<string> RecentFiles = new();
+
+    public int Version = 11;
+
+    public void FillNullToDefaults()
     {
-        public static int SVersion = 12;
-        public bool Editor_AgressiveIndentation = true;
-        public bool Editor_AutoCloseBrackets = true;
-        public bool Editor_AutoCloseStringChars = true;
-        public bool Editor_AutoSave;
-        public int Editor_AutoSaveInterval = 5 * 60;
-        public string Editor_FontFamily = "Consolas";
-        public double Editor_FontSize = 16.0;
-        public int Editor_IndentationSize = 4;
-        public bool Editor_ReformatLineAfterSemicolon = true;
-        public bool Editor_ReplaceTabsToWhitespace;
-        public double Editor_ScrollLines = 4.0;
-        public bool Editor_ShowSpaces;
-        public bool Editor_ShowTabs;
-        public bool Editor_TabToAutocomplete;
-
-        public bool Editor_WordWrap = false;
-
-        public string Language = string.Empty;
-
-        public string[] LastOpenFiles = new string[0];
-
-        public string Program_AccentColor = "Red";
-
-        public bool Program_CheckForUpdates = true;
-
-        public byte[] Program_CryptoKey;
-        public bool Program_DiscordPresence = true;
-        public bool Program_DiscordPresenceTime = true;
-        public bool Program_DiscordPresenceFile = true;
-
-        public bool Program_DynamicISAC = true;
-
-        public string Program_ObjectBrowserDirectory = string.Empty;
-        public double Program_ObjectbrowserWidth = 300.0;
-
-        public bool Program_OpenCustomIncludes = false;
-        public bool Program_OpenIncludesRecursively = false;
-
-        public string Program_SelectedConfig = string.Empty;
-        public string Program_Theme = "BaseDark";
-
-        public bool Program_UseHardwareAcceleration = true;
-        public bool Program_UseHardwareSalts = true;
-        public SerializableColor SH_Chars = new(0xFF, 0xD6, 0x9C, 0x85);
-
-        public SerializableColor SH_Comments = new(0xFF, 0x57, 0xA6, 0x49);
-        public SerializableColor SH_CommentsMarker = new(0xFF, 0xFF, 0x20, 0x20);
-        public SerializableColor SH_Constants = new(0xFF, 0xBC, 0x62, 0xC5);
-        public SerializableColor SH_ContextKeywords = new(0xFF, 0x56, 0x9C, 0xD5);
-        public SerializableColor SH_Deprecated = new(0xFF, 0xFF, 0x00, 0x00);
-        public SerializableColor SH_Functions = new(0xFF, 0x56, 0x9C, 0xD5);
-
-        public bool SH_HighlightDeprecateds = true;
-        public SerializableColor SH_Keywords = new(0xFF, 0x56, 0x9C, 0xD5);
-        public SerializableColor SH_Methods = new(0xFF, 0x3B, 0xC6, 0x7E);
-        public SerializableColor SH_Numbers = new(0xFF, 0x97, 0x97, 0x97);
-        public SerializableColor SH_PreProcessor = new(0xFF, 0x7E, 0x7E, 0x7E);
-        public SerializableColor SH_SpecialCharacters = new(0xFF, 0x8F, 0x8F, 0x8F);
-        public SerializableColor SH_Strings = new(0xFF, 0xF4, 0x6B, 0x6C);
-        public SerializableColor SH_Types = new(0xFF, 0x28, 0x90, 0xB0); //56 9C D5
-        public SerializableColor SH_TypesValues = new(0xFF, 0x56, 0x9C, 0xD5);
-        public SerializableColor SH_UnkownFunctions = new(0xFF, 0x45, 0x85, 0xC5);
-
-        public bool UI_Animations = true;
-        public bool UI_ShowToolBar;
-
-        public LinkedList<string> RecentFiles = new();
-
-        public int Version = 11;
-
-        public void FillNullToDefaults()
+        if (Program_CryptoKey == null)
         {
-            if (Program_CryptoKey == null)
+            ReCreateCryptoKey();
+        }
+
+        if (SVersion > Version)
+        {
+            Program.ClearUpdateFiles();
+            if (Version < 2)
             {
+                UI_ShowToolBar = false;
+            }
+
+            if (Version < 3)
+            {
+                Editor_ReformatLineAfterSemicolon = true;
+                Editor_ScrollLines = 4.0;
+                Program_CheckForUpdates = true;
+            }
+
+            if (Version < 4)
+            {
+                Editor_ReplaceTabsToWhitespace = false;
+            }
+
+            if (Version < 5)
+            {
+                Program_DynamicISAC = true;
+            }
+
+            if (Version < 7)
+            {
+                Program_AccentColor = "Red";
+                Program_Theme = "BaseDark";
+                NormalizeSHColors();
+            }
+
+            if (Version < 8)
+            {
+                Editor_AutoCloseBrackets = true;
+            }
+
+            if (Version < 9)
+            {
+                Editor_AutoCloseStringChars = true;
+                Editor_ShowSpaces = false;
+                Editor_ShowTabs = false;
+                Editor_IndentationSize = 4;
+                Language = "";
+                Program_ObjectBrowserDirectory = string.Empty;
+                Program_ObjectbrowserWidth = 300.0;
+                Editor_AutoSave = false;
+                Editor_AutoSaveInterval = 5 * 60;
                 ReCreateCryptoKey();
+                Program.MakeRCCKAlert();
             }
 
-            if (SVersion > Version)
+            if (Version < 10)
             {
-                Program.ClearUpdateFiles();
-                if (Version < 2)
-                {
-                    UI_ShowToolBar = false;
-                }
-
-                if (Version < 3)
-                {
-                    Editor_ReformatLineAfterSemicolon = true;
-                    Editor_ScrollLines = 4.0;
-                    Program_CheckForUpdates = true;
-                }
-
-                if (Version < 4)
-                {
-                    Editor_ReplaceTabsToWhitespace = false;
-                }
-
-                if (Version < 5)
-                {
-                    Program_DynamicISAC = true;
-                }
-
-                if (Version < 7)
-                {
-                    Program_AccentColor = "Red";
-                    Program_Theme = "BaseDark";
-                    NormalizeSHColors();
-                }
-
-                if (Version < 8)
-                {
-                    Editor_AutoCloseBrackets = true;
-                }
-
-                if (Version < 9)
-                {
-                    Editor_AutoCloseStringChars = true;
-                    Editor_ShowSpaces = false;
-                    Editor_ShowTabs = false;
-                    Editor_IndentationSize = 4;
-                    Language = "";
-                    Program_ObjectBrowserDirectory = string.Empty;
-                    Program_ObjectbrowserWidth = 300.0;
-                    Editor_AutoSave = false;
-                    Editor_AutoSaveInterval = 5 * 60;
-                    ReCreateCryptoKey();
-                    Program.MakeRCCKAlert();
-                }
-
-                if (Version < 10)
-                {
-                    Program_UseHardwareSalts = true;
-                }
-
-                if (Version < 11)
-                {
-                    if (Program_AccentColor == "Cyan")
-                    {
-                        Program_AccentColor = "Blue";
-                    }
-                }
-                if (Version < 12)
-                {
-                    Editor_TabToAutocomplete = false;
-                }
-
-                //new Optionsversion - reset new fields to default
-                Version = SVersion; //then Update Version afterwars
+                Program_UseHardwareSalts = true;
             }
-        }
 
-        public void ReCreateCryptoKey()
-        {
-            var buffer = new byte[16];
-            using (var cryptoRandomProvider = new RNGCryptoServiceProvider()
-            ) //generate global unique cryptokey
+            if (Version < 11)
             {
-                cryptoRandomProvider.GetBytes(buffer);
+                if (Program_AccentColor == "Cyan")
+                {
+                    Program_AccentColor = "Blue";
+                }
+            }
+            if (Version < 12)
+            {
+                Editor_TabToAutocomplete = false;
             }
 
-            Program_CryptoKey = buffer;
-        }
-
-        public void NormalizeSHColors()
-        {
-            SH_Comments = new SerializableColor(0xFF, 0x57, 0xA6, 0x49);
-            SH_CommentsMarker = new SerializableColor(0xFF, 0xFF, 0x20, 0x20);
-            SH_Strings = new SerializableColor(0xFF, 0xF4, 0x6B, 0x6C);
-            SH_PreProcessor = new SerializableColor(0xFF, 0x7E, 0x7E, 0x7E);
-            SH_Types = new SerializableColor(0xFF, 0x28, 0x90, 0xB0); //56 9C D5
-            SH_TypesValues = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
-            SH_Keywords = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
-            SH_ContextKeywords = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
-            SH_Chars = new SerializableColor(0xFF, 0xD6, 0x9C, 0x85);
-            SH_UnkownFunctions = new SerializableColor(0xFF, 0x45, 0x85, 0xC5);
-            SH_Numbers = new SerializableColor(0xFF, 0x97, 0x97, 0x97);
-            SH_SpecialCharacters = new SerializableColor(0xFF, 0x8F, 0x8F, 0x8F);
-            SH_Deprecated = new SerializableColor(0xFF, 0xFF, 0x00, 0x00);
-            SH_Constants = new SerializableColor(0xFF, 0xBC, 0x62, 0xC5);
-            SH_Functions = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
-            SH_Methods = new SerializableColor(0xFF, 0x3B, 0xC6, 0x7E);
+            //new Optionsversion - reset new fields to default
+            Version = SVersion; //then Update Version afterwars
         }
     }
 
-    [Serializable]
-    public class SerializableColor
+    public void ReCreateCryptoKey()
     {
-        public byte A;
-        public byte B;
-        public byte G;
-        public byte R;
-
-        public SerializableColor(byte _A, byte _R, byte _G, byte _B)
+        var buffer = new byte[16];
+        using (var cryptoRandomProvider = new RNGCryptoServiceProvider()
+        ) //generate global unique cryptokey
         {
-            A = _A;
-            R = _R;
-            G = _G;
-            B = _B;
+            cryptoRandomProvider.GetBytes(buffer);
         }
 
-        public static implicit operator SerializableColor(Color c)
-        {
-            return new SerializableColor(c.A, c.R, c.G, c.B);
-        }
+        Program_CryptoKey = buffer;
+    }
 
-        public static implicit operator Color(SerializableColor c)
+    public void NormalizeSHColors()
+    {
+        SH_Comments = new SerializableColor(0xFF, 0x57, 0xA6, 0x49);
+        SH_CommentsMarker = new SerializableColor(0xFF, 0xFF, 0x20, 0x20);
+        SH_Strings = new SerializableColor(0xFF, 0xF4, 0x6B, 0x6C);
+        SH_PreProcessor = new SerializableColor(0xFF, 0x7E, 0x7E, 0x7E);
+        SH_Types = new SerializableColor(0xFF, 0x28, 0x90, 0xB0); //56 9C D5
+        SH_TypesValues = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
+        SH_Keywords = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
+        SH_ContextKeywords = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
+        SH_Chars = new SerializableColor(0xFF, 0xD6, 0x9C, 0x85);
+        SH_UnkownFunctions = new SerializableColor(0xFF, 0x45, 0x85, 0xC5);
+        SH_Numbers = new SerializableColor(0xFF, 0x97, 0x97, 0x97);
+        SH_SpecialCharacters = new SerializableColor(0xFF, 0x8F, 0x8F, 0x8F);
+        SH_Deprecated = new SerializableColor(0xFF, 0xFF, 0x00, 0x00);
+        SH_Constants = new SerializableColor(0xFF, 0xBC, 0x62, 0xC5);
+        SH_Functions = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
+        SH_Methods = new SerializableColor(0xFF, 0x3B, 0xC6, 0x7E);
+    }
+}
+
+[Serializable]
+public class SerializableColor
+{
+    public byte A;
+    public byte B;
+    public byte G;
+    public byte R;
+
+    public SerializableColor(byte _A, byte _R, byte _G, byte _B)
+    {
+        A = _A;
+        R = _R;
+        G = _G;
+        B = _B;
+    }
+
+    public static implicit operator SerializableColor(Color c)
+    {
+        return new SerializableColor(c.A, c.R, c.G, c.B);
+    }
+
+    public static implicit operator Color(SerializableColor c)
+    {
+        return Color.FromArgb(c.A, c.R, c.G, c.B);
+    }
+}
+
+public static class OptionsControlIOObject
+{
+    public static void Save()
+    {
+        try
         {
-            return Color.FromArgb(c.A, c.R, c.G, c.B);
+            var formatter = new BinaryFormatter();
+            using var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Create, FileAccess.ReadWrite,
+                FileShare.None);
+            formatter.Serialize(fileStream, Program.OptionsObject);
+        }
+        catch (Exception)
+        {
         }
     }
 
-    public static class OptionsControlIOObject
+    public static OptionsControl Load(out bool ProgramIsNew)
     {
-        public static void Save()
+        try
         {
-            try
+            if (File.Exists(Paths.GetOptionsFilePath()))
             {
+                object deserializedOptionsObj;
                 var formatter = new BinaryFormatter();
-                using var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Create, FileAccess.ReadWrite,
-                    FileShare.None);
-                formatter.Serialize(fileStream, Program.OptionsObject);
-            }
-            catch (Exception)
-            {
+                using (var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Open, FileAccess.Read,
+                    FileShare.ReadWrite))
+                {
+                    deserializedOptionsObj = formatter.Deserialize(fileStream);
+                }
+
+                var oc = (OptionsControl)deserializedOptionsObj;
+                oc.FillNullToDefaults();
+                ProgramIsNew = false;
+                return oc;
             }
         }
-
-        public static OptionsControl Load(out bool ProgramIsNew)
+        catch (Exception)
         {
-            try
-            {
-                if (File.Exists(Paths.GetOptionsFilePath()))
-                {
-                    object deserializedOptionsObj;
-                    var formatter = new BinaryFormatter();
-                    using (var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Open, FileAccess.Read,
-                        FileShare.ReadWrite))
-                    {
-                        deserializedOptionsObj = formatter.Deserialize(fileStream);
-                    }
+        }
 
-                    var oc = (OptionsControl)deserializedOptionsObj;
-                    oc.FillNullToDefaults();
-                    ProgramIsNew = false;
-                    return oc;
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-            var oco = new OptionsControl();
-            oco.ReCreateCryptoKey();
+        var oco = new OptionsControl();
+        oco.ReCreateCryptoKey();
 #if DEBUG
-            ProgramIsNew = false;
+        ProgramIsNew = false;
 #else
             ProgramIsNew = true;
 #endif
-            return oco;
-        }
+        return oco;
     }
 }
