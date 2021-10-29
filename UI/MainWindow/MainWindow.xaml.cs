@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +15,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using DiscordRPC;
 using MahApps.Metro;
+using MahApps.Metro.Controls.Dialogs;
 using SPCode.Interop;
 using SPCode.Interop.Updater;
 using SPCode.UI.Components;
@@ -34,6 +36,7 @@ public partial class MainWindow
     private readonly Storyboard EnableServerAnim;
     public readonly List<MenuItem> MenuItems;
 
+    private bool ClosingBuffer;
     private readonly bool FullyInitialized;
 
     private ObservableCollection<string> ActionButtonDict = new()
@@ -177,60 +180,60 @@ public partial class MainWindow
         }
     }
 
-    private void MetroWindow_Closing(object sender, CancelEventArgs e)
+    private async void MetroWindow_Closing(object sender, CancelEventArgs e)
     {
-        if (ServerIsRunning)
+        if (!ClosingBuffer)
         {
-            ServerCheckThread.Abort();
-            ServerProcess.Kill();
-        }
-        var lastOpenFiles = new List<string>();
-        var editors = GetAllEditorElements();
-        bool? SaveUnsaved = null;
-        if (editors != null)
-        {
-            foreach (var editor in editors)
-            {
-                if (File.Exists(editor.FullFilePath))
-                {
-                    lastOpenFiles.Add(editor.FullFilePath);
-                    if (editor.NeedsSave)
-                    {
-                        if (SaveUnsaved == null)
-                        {
-                            var result = MessageBox.Show(this, Program.Translations.GetLanguage("SavingUFiles"),
-                                Program.Translations.GetLanguage("Saving"), MessageBoxButton.YesNo,
-                                MessageBoxImage.Question);
-                            SaveUnsaved = result == MessageBoxResult.Yes;
-                        }
+            // Close directly if no files need to be saved
+            var editors = GetAllEditorElements()?.ToList();
 
-                        if (SaveUnsaved.Value)
-                        {
-                            editor.Close(true);
-                        }
-                        else
-                        {
-                            editor.Close(false, false);
-                        }
-                    }
-                    else
-                    {
-                        editor.Close(false, false);
-                    }
+            if (editors == null || (editors != null && !editors.Any(x => x.NeedsSave)))
+            {
+                ClosingBuffer = true;
+                CloseProgram(true);
+            }
+            else
+            {
+                // Cancel closing to handle it manually
+                e.Cancel = true;
+
+                // Build dialog buttons
+                var closeMetroDialogOptions = new MetroDialogSettings()
+                {
+                    AffirmativeButtonText = Program.Translations.GetLanguage("Yes"),
+                    NegativeButtonText = Program.Translations.GetLanguage("No"),
+                    FirstAuxiliaryButtonText = Program.Translations.GetLanguage("Cancel"),
+                    AnimateHide = false,
+                    AnimateShow = false,
+                    DefaultButtonFocus = MessageDialogResult.SecondAuxiliary
+                };
+
+                // Build list of unsaved files to show
+                var sb = new StringBuilder();
+                editors.Where(x => x.NeedsSave).ToList().ForEach(y => sb.AppendLine($"  - {y.Parent.Title.Substring(1)}"));
+
+                var result = await this.ShowMessageAsync("Save all files?", $"Unsaved files:\n{sb}",
+                    MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, closeMetroDialogOptions);
+
+                switch (result)
+                {
+                    case MessageDialogResult.Affirmative:
+                        ClosingBuffer = true;
+                        CloseProgram(true);
+                        Close();
+                        break;
+
+                    case MessageDialogResult.Negative:
+                        ClosingBuffer = true;
+                        CloseProgram(false);
+                        Close();
+                        break;
+
+                    case MessageDialogResult.FirstAuxiliary:
+                        return;
                 }
             }
         }
-
-        Program.OptionsObject.LastOpenFiles = lastOpenFiles.ToArray();
-
-        Program.DiscordClient.Dispose();
-#if !DEBUG
-            if (Program.UpdateStatus.IsAvailable)
-            {
-                var updateWin = new UpdateWindow(Program.UpdateStatus) { Owner = this };
-                updateWin.ShowDialog();
-            }
-#endif
     }
 
     private void MetroWindow_Drop(object sender, DragEventArgs e)
@@ -256,6 +259,7 @@ public partial class MainWindow
         {
             Program.OptionsObject.Program_ObjectbrowserWidth = ObjectBrowserColumn.Width.Value;
         }
+
     }
     #endregion
 
@@ -460,6 +464,48 @@ public partial class MainWindow
         }
 
         Title = outString;
+    }
+
+    private void CloseProgram(bool saveAll)
+    {
+        // Save all the last open files
+        var lastOpenFiles = new List<string>();
+        var editors = GetAllEditorElements()?.ToList();
+
+        editors?.ForEach(x =>
+        {
+            if (File.Exists(x.FullFilePath))
+            {
+                lastOpenFiles.Add(x.FullFilePath);
+            }
+        });
+        Program.OptionsObject.LastOpenFiles = lastOpenFiles.ToArray();
+
+        if (saveAll)
+        {
+            editors?.ForEach(x => x.Close(true));
+        }
+        else
+        {
+            editors?.ForEach(x => x.Close(false, false));
+        }
+
+        // Kill children process from "Server Start" feature
+        if (ServerIsRunning)
+        {
+            ServerCheckThread.Abort();
+            ServerProcess.Kill();
+        }
+
+        // Kill Discord RPC
+        Program.DiscordClient.Dispose();
+
+        // Check for updates in production
+        if (!Debugger.IsAttached && Program.UpdateStatus.IsAvailable)
+        {
+            var updateWin = new UpdateWindow(Program.UpdateStatus) { Owner = this };
+            updateWin.ShowDialog();
+        }
     }
     #endregion
 }

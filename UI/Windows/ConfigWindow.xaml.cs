@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -473,7 +474,7 @@ public partial class ConfigWindow
         Program.Configs[ConfigListBox.SelectedIndex].RConCommands = C_RConCmds.Text;
     }
 
-    private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    private void MetroWindow_Closing(object sender, CancelEventArgs e)
     {
         // TODO: find out what is this for
         if (NeedsSMDefInvalidation)

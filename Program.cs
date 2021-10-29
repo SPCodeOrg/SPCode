@@ -293,7 +293,7 @@ public static class Program
         outString.AppendLine("Current Culture: " + CultureInfo.CurrentCulture);
         outString.AppendLine();
         var eNumber = 1;
-        for (; ; )
+        while (true)
         {
             if (e == null)
             {
