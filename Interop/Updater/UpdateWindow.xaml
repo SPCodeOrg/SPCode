@@ -5,7 +5,8 @@
              Width="650" Height="700" TitleCaps="False" ShowInTaskbar="False"
              Background="{DynamicResource WhiteBrush}"
              GlowBrush="{DynamicResource AccentColorBrush}" 
-             WindowStartupLocation="CenterOwner" WindowStyle="None" >
+             WindowStartupLocation="CenterOwner" WindowStyle="None" 
+             KeyDown="MetroWindow_KeyDown">
   <controls:MetroWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

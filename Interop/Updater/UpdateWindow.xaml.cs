@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Input;
 using MahApps.Metro;
 using MdXaml;
 using SPCode.Utils;
@@ -25,7 +26,7 @@ public partial class UpdateWindow
         InitializeComponent();
     }
 
-    public UpdateWindow(UpdateInfo info) : this()
+    public UpdateWindow(UpdateInfo info, bool OnlyChangelog = false) : this()
     {
 
         if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
@@ -35,7 +36,7 @@ public partial class UpdateWindow
         }
 
         updateInfo = info;
-        PrepareUpdateWindow();
+        PrepareUpdateWindow(OnlyChangelog);
 
     }
     #endregion
@@ -54,19 +55,39 @@ public partial class UpdateWindow
     {
         Process.Start(new ProcessStartInfo(Constants.GitHubLatestRelease));
     }
+    private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Escape)
+        {
+            Close();
+        }
+    }
     #endregion
 
     #region Methods
     /// <summary>
     /// Prepares the update window with all the necessary info.
     /// </summary>
-    public void PrepareUpdateWindow()
+    public void PrepareUpdateWindow(bool OnlyChangelog = false)
     {
-        Title = string.Format(Program.Translations.GetLanguage("VersionAvailable"), updateInfo.AllReleases[0].TagName);
-        MainLine.Text = Program.Translations.GetLanguage("WantToUpdate");
-        ActionYesButton.Content = Program.Translations.GetLanguage("Yes");
-        ActionNoButton.Content = Program.Translations.GetLanguage("No");
-        ActionGithubButton.Content = Program.Translations.GetLanguage("ViewGithub");
+        if (OnlyChangelog)
+        {
+            Title = "SPCode Changelog";
+            MainLine.Visibility = Visibility.Hidden;
+            ActionYesButton.Visibility = Visibility.Hidden;
+            ActionNoButton.Visibility = Visibility.Hidden;
+            ActionGithubButton.Visibility = Visibility.Hidden;
+            Icon.Visibility = Visibility.Hidden;
+            DescriptionBox.Margin = new Thickness(0, 0, 0, 0);
+        }
+        else
+        {
+            Title = string.Format(Program.Translations.GetLanguage("VersionAvailable"), updateInfo.AllReleases[0].TagName);
+            MainLine.Text = Program.Translations.GetLanguage("WantToUpdate");
+            ActionYesButton.Content = Program.Translations.GetLanguage("Yes");
+            ActionNoButton.Content = Program.Translations.GetLanguage("No");
+            ActionGithubButton.Content = Program.Translations.GetLanguage("ViewGithub");
+        }
 
         var releasesBody = new StringBuilder();
 

@@ -219,6 +219,11 @@ public partial class MainWindow
         aboutWindow.ShowDialog();
     }
 
+    private void Menu_Help(object sender, RoutedEventArgs e)
+    {
+        Process.Start(new ProcessStartInfo(Constants.GitHubWiki));
+    }
+
     private void Menu_OpenSPDef(object sender, RoutedEventArgs e)
     {
         var spDefinitionWindow = new SPDefinitionWindow { Owner = this, ShowInTaskbar = false };
@@ -293,6 +298,19 @@ public partial class MainWindow
                     , MessageDialogStyle.Affirmative, MetroDialogOptions);
             }
         }
+    }
+
+    private async void Changelog_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = await this.ShowProgressAsync("Retrieving changelog...", "Please wait...");
+        dialog.SetIndeterminate();
+
+        await UpdateCheck.Check();
+        var status = Program.UpdateStatus;
+
+        await dialog.CloseAsync();
+        var uw = new UpdateWindow(status, true) { Owner = this };
+        uw.ShowDialog();
     }
 
     private void MenuButton_Compile(object sender, RoutedEventArgs e)

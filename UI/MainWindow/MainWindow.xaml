@@ -175,7 +175,10 @@
             <MenuItem x:Name="MenuI_Decompile" Header="Decompile .smx (Lysis)" Click="Menu_DecompileLysis" />
             <Separator />
             <MenuItem x:Name="MenuI_ReportBugGit" Header="Report a Bug on GitHub" Click="ReportBug_Click" />
+            <MenuItem x:Name="MenuI_Changelog" Header="See Changelog" Click="Changelog_Click" />
             <MenuItem x:Name="UpdateCheckItem" Header="Check for Updates" Click="UpdateCheck_Click" />
+            <Separator/>
+            <MenuItem x:Name="MenuI_Help" Header="Help" Click="Menu_Help" />
             <MenuItem x:Name="MenuI_About" Header="About" Click="Menu_About" />
           </MenuItem>
         </Menu>
