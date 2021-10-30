@@ -516,6 +516,7 @@ public partial class MainWindow
             {
                 EnableServerAnim.Begin();
                 UpdateWindowTitle();
+                LoggingControl.LogAction("Server started.", 2);
             });
             ServerProcess.WaitForExit();
             ServerProcess.Dispose();
@@ -526,8 +527,8 @@ public partial class MainWindow
                 {
                     DisableServerAnim.Begin();
                     UpdateWindowTitle();
+                    LoggingControl.LogAction("Server stopped.", 2);
                 }
-                LoggingControl.LogAction("Server started.", 2);
             });
         }
         catch (Exception)

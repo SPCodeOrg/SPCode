@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using QueryMaster;
+using ValveQuery.GameServer;
 using SPCode.Interop;
 
 namespace SPCode.UI;
@@ -23,34 +23,40 @@ public partial class MainWindow
             goto Dispatcher;
         }
 
-        output.Add("Sending commands...");
-
         try
         {
-            var type = EngineType.GoldSource;
-            if (c.RConUseSourceEngine)
+            using var server = ServerQuery.GetServerInstance(c.RConIP, c.RConPort, throwExceptions: true);
+            var serverInfo = server.GetInfo();
+
+            if (serverInfo == null)
             {
-                type = EngineType.Source;
+                output.Add("No server found to send commands to.");
+                goto Dispatcher;
             }
 
-            using (var server = ServerQuery.GetServerInstance(type, c.RConIP, c.RConPort, null))
+            output.Add(serverInfo.Name);
+
+            if (!server.GetControl(c.RConPassword, false))
             {
-                var serverInfo = server.GetInfo();
-                output.Add(serverInfo.Name);
-                using var rcon = server.GetControl(c.RConPassword);
-                var cmds = ReplaceRconCMDVariables(c.RConCommands).Split('\n');
-                foreach (var cmd in cmds)
+                output.Add("Incorrect RCON password.");
+                goto Dispatcher;
+            }
+
+            output.Add("Sending commands...");
+
+            var cmds = ReplaceRconCMDVariables(c.RConCommands).Split('\n');
+
+            foreach (var cmd in cmds)
+            {
+                var t = Task.Run(() =>
                 {
-                    var t = Task.Run(() =>
+                    var command = cmd.Trim('\r').Trim();
+                    if (!string.IsNullOrWhiteSpace(command))
                     {
-                        var command = cmd.Trim('\r').Trim();
-                        if (!string.IsNullOrWhiteSpace(command))
-                        {
-                            output.Add(rcon.SendCommand(command));
-                        }
-                    });
-                    t.Wait();
-                }
+                        server.Rcon.SendCommand(command);
+                    }
+                });
+                t.Wait();
             }
             output.Add("Commands sent.");
         }
