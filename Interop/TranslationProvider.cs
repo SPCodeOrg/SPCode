@@ -296,7 +296,7 @@ public class TranslationProvider
         language.Add("OBTextConfig", "Config Directory");
         language.Add("CopyingFiles", "Copying files");
         language.Add("FTPUploading", "Uploading files");
-        language.Add("RCONCommand", "Seconding RCON Commands");
+        language.Add("RCONCommand", "Sending RCON Commands");
         language.Add("JavaInstallCheck", "Checking for Java installation");
         language.Add("JavaNotFoundTitle", "Java was not found");
         language.Add("JavaNotFoundMessage",

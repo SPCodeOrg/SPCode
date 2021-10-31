@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using ValveQuery.GameServer;
 using SPCode.Interop;
+using System.Net.Sockets;
+using System.Linq;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace SPCode.UI;
 
@@ -13,9 +16,25 @@ public partial class MainWindow
     /// <summary>
     /// Queries the server with the specified command in the command box of the config.
     /// </summary>
-    private void Server_Query()
+
+    private ServerInfo ServerInfoGlobal;
+
+    private async void Server_Query()
     {
+        if (ProgressTask == null)
+        {
+            ProgressTask = await this.ShowProgressAsync(Program.Translations.GetLanguage("RCONCommand") + "...", "", false, MetroDialogOptions);
+            ProgressTask.SetIndeterminate();
+        }
+
         var output = new List<string>();
+
+        if (!ServerIsRunning)
+        {
+            output.Add("No server running to send commands to.");
+            goto Dispatcher;
+        }
+
         var c = Program.Configs[Program.SelectedConfig];
         if (string.IsNullOrWhiteSpace(c.RConIP) || string.IsNullOrWhiteSpace(c.RConCommands))
         {
@@ -25,7 +44,7 @@ public partial class MainWindow
 
         try
         {
-            using var server = ServerQuery.GetServerInstance(c.RConIP, c.RConPort, throwExceptions: true);
+            using var server = ServerQuery.GetServerInstance(c.RConIP, c.RConPort, false, 500, 500, 2, true);
             var serverInfo = server.GetInfo();
 
             if (serverInfo == null)
@@ -34,17 +53,20 @@ public partial class MainWindow
                 goto Dispatcher;
             }
 
-            output.Add(serverInfo.Name);
+            ServerInfoGlobal = serverInfo;
 
-            if (!server.GetControl(c.RConPassword, false))
-            {
-                output.Add("Incorrect RCON password.");
-                goto Dispatcher;
-            }
+            server.GetControl(c.RConPassword, false);
 
+            output.Add($"Server: {serverInfo.Name}");
             output.Add("Sending commands...");
 
             var cmds = ReplaceRconCMDVariables(c.RConCommands).Split('\n');
+
+            if (cmds.Any(x => x.Contains("{plugin")))
+            {
+                output.Add("No plugins available to replace placeholders commands with. Removing them...");
+                cmds = cmds.Where(x => !x.Contains("{plugin")).ToArray();
+            }
 
             foreach (var cmd in cmds)
             {
@@ -53,16 +75,37 @@ public partial class MainWindow
                     var command = cmd.Trim('\r').Trim();
                     if (!string.IsNullOrWhiteSpace(command))
                     {
-                        server.Rcon.SendCommand(command);
+                        output.Add(server.Rcon.SendCommand(command));
                     }
                 });
                 t.Wait();
             }
             output.Add("Commands sent.");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            output.Add("Error: " + e.Message);
+            if (ex.Message.Contains("Not authorized"))
+            {
+                output.Add("Incorrect RCON password.");
+                goto Dispatcher;
+            }
+            if (ex is SocketException socketEx)
+            {
+                switch ((SocketError)socketEx.ErrorCode)
+                {
+                    case SocketError.ConnectionReset:
+                        output.Add("The connection was reset. You were probably IP banned for rcon hacking attempts.");
+                        goto Dispatcher;
+                    case SocketError.NotConnected:
+                    case SocketError.TimedOut:
+                        output.Add("Connection to the server timed out. Make sure you've set it up correctly.\n" +
+                            "Your data:\n" +
+                            $"  - IP: { c.RConIP}\n" +
+                            $"  - Port: {c.RConPort}");
+                        goto Dispatcher;
+                }
+            }
+            output.Add($"SPCode unhandled error: {ex.Message}");
         }
 
     Dispatcher:
@@ -75,6 +118,12 @@ public partial class MainWindow
                 CompileOutputRow.Height = new GridLength(200.0);
             }
         });
+
+        if (ProgressTask.IsOpen)
+        {
+            await ProgressTask.CloseAsync();
+            ProgressTask = null;
+        }
     }
 
     /// <summary>
