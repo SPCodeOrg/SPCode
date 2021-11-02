@@ -125,13 +125,14 @@ public partial class MainWindow
         {
             // Shows the 'Compiling...' window
             ErrorResultGrid.Items.Clear();
+
             ProgressTask = await this.ShowProgressAsync(Program.Translations.GetLanguage("Compiling"), "",
                 false, MetroDialogOptions);
             ProgressTask.SetProgress(0.0);
+
             var stringOutput = new StringBuilder();
-            var errorFilterRegex =
-                new Regex(Constants.ErrorFilterRegex,
-                    RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
+            var regexOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline;
+            var errorFilterRegex = new Regex(Constants.ErrorFilterRegex, regexOptions);
 
             var compiledSuccess = 0;
 

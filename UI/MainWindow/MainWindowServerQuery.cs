@@ -17,16 +17,8 @@ public partial class MainWindow
     /// Queries the server with the specified command in the command box of the config.
     /// </summary>
 
-    private ServerInfo ServerInfoGlobal;
-
-    private async void Server_Query()
+    private void Server_Query()
     {
-        if (ProgressTask == null)
-        {
-            ProgressTask = await this.ShowProgressAsync(Program.Translations.GetLanguage("RCONCommand") + "...", "", false, MetroDialogOptions);
-            ProgressTask.SetIndeterminate();
-        }
-
         var output = new List<string>();
 
         if (!ServerIsRunning)
@@ -53,8 +45,6 @@ public partial class MainWindow
                 goto Dispatcher;
             }
 
-            ServerInfoGlobal = serverInfo;
-
             server.GetControl(c.RConPassword, false);
 
             output.Add($"Server: {serverInfo.Name}");
@@ -66,6 +56,11 @@ public partial class MainWindow
             {
                 output.Add("No plugins available to replace placeholders commands with. Removing them...");
                 cmds = cmds.Where(x => !x.Contains("{plugin")).ToArray();
+                if (cmds.Length == 0)
+                {
+                    output.Add("No commands sent.");
+                    goto Dispatcher;
+                }
             }
 
             foreach (var cmd in cmds)
@@ -118,12 +113,6 @@ public partial class MainWindow
                 CompileOutputRow.Height = new GridLength(200.0);
             }
         });
-
-        if (ProgressTask.IsOpen)
-        {
-            await ProgressTask.CloseAsync();
-            ProgressTask = null;
-        }
     }
 
     /// <summary>
