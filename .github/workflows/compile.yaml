@@ -15,7 +15,7 @@ jobs:
       - name: Install .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6.0.0
+          dotnet-version: 6.0.100
 
       # Nuget
       - uses: nuget/setup-nuget@v1
