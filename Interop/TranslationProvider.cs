@@ -22,7 +22,7 @@ public class TranslationProvider
     /// </summary>
     /// <param name="phrase">The phrase to return translated</param>
     /// <returns></returns>
-    public string GetLanguage(string phrase)
+    public string Get(string phrase)
     {
         return language.ContainsKey(phrase) ? language[phrase] : string.Empty;
     }

@@ -239,9 +239,9 @@ public partial class EditorElement : UserControl
             if (_NeedsSave)
             {
                 var result = MessageBox.Show(
-                    string.Format(Program.Translations.GetLanguage("DFileChanged"), _FullFilePath) +
-                    Environment.NewLine + Program.Translations.GetLanguage("FileTryReload"),
-                    Program.Translations.GetLanguage("FileChanged"), MessageBoxButton.YesNo,
+                    string.Format(Program.Translations.Get("DFileChanged"), _FullFilePath) +
+                    Environment.NewLine + Program.Translations.Get("FileTryReload"),
+                    Program.Translations.Get("FileChanged"), MessageBoxButton.YesNo,
                     MessageBoxImage.Asterisk);
                 reloadFile = result == MessageBoxResult.Yes;
             }
@@ -338,8 +338,8 @@ public partial class EditorElement : UserControl
 
     private void Caret_PositionChanged(object sender, EventArgs e)
     {
-        StatusLine_Column.Text = $"{Program.Translations.GetLanguage("ColAbb")} {editor.TextArea.Caret.Column}";
-        StatusLine_Line.Text = $"{Program.Translations.GetLanguage("LnAbb")} {editor.TextArea.Caret.Line}";
+        StatusLine_Column.Text = $"{Program.Translations.Get("ColAbb")} {editor.TextArea.Caret.Column}";
+        StatusLine_Line.Text = $"{Program.Translations.Get("LnAbb")} {editor.TextArea.Caret.Line}";
 #if DEBUG
         StatusLine_Offset.Text = $"Off {editor.TextArea.Caret.Offset}";
 #endif
@@ -533,7 +533,7 @@ public partial class EditorElement : UserControl
 
     private void TextArea_SelectionChanged(object sender, EventArgs e)
     {
-        StatusLine_SelectionLength.Text = $"{Program.Translations.GetLanguage("LenAbb")} {editor.SelectionLength}";
+        StatusLine_SelectionLength.Text = $"{Program.Translations.Get("LenAbb")} {editor.SelectionLength}";
     }
 
     private void PrevMouseWheel(object sender, MouseWheelEventArgs e)
@@ -719,7 +719,7 @@ public partial class EditorElement : UserControl
         if (size > 2 && size < 31)
         {
             editor.FontSize = size;
-            StatusLine_FontSize.Text = size.ToString("n0") + $" {Program.Translations.GetLanguage("PtAbb")}";
+            StatusLine_FontSize.Text = size.ToString("n0") + $" {Program.Translations.Get("PtAbb")}";
         }
 
         if (updateLineHeight)
@@ -749,7 +749,7 @@ public partial class EditorElement : UserControl
             }
             else
             {
-                var title = $"{Program.Translations.GetLanguage("SavingFile")} '" + Parent.Title.Trim('*') +
+                var title = $"{Program.Translations.Get("SavingFile")} '" + Parent.Title.Trim('*') +
                             "'";
                 var Result = await Program.MainWindow.ShowMessageAsync(title, "",
                     MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions);
@@ -933,8 +933,8 @@ public partial class EditorElement : UserControl
             catch (Exception e)
             {
                 MessageBox.Show(Program.MainWindow,
-                    Program.Translations.GetLanguage("DSaveError") + Environment.NewLine + "(" + e.Message + ")",
-                    Program.Translations.GetLanguage("SaveError"),
+                    Program.Translations.Get("DSaveError") + Environment.NewLine + "(" + e.Message + ")",
+                    Program.Translations.Get("SaveError"),
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
@@ -968,20 +968,20 @@ public partial class EditorElement : UserControl
             return;
         }
 
-        MenuC_Undo.Header = Program.Translations.GetLanguage("Undo");
-        MenuC_Redo.Header = Program.Translations.GetLanguage("Redo");
-        MenuC_Cut.Header = Program.Translations.GetLanguage("Cut");
-        MenuC_Copy.Header = Program.Translations.GetLanguage("Copy");
-        MenuC_Paste.Header = Program.Translations.GetLanguage("Paste");
-        MenuC_SelectAll.Header = Program.Translations.GetLanguage("SelectAll");
-        CompileBox.Content = Program.Translations.GetLanguage("Compile");
+        MenuC_Undo.Header = Program.Translations.Get("Undo");
+        MenuC_Redo.Header = Program.Translations.Get("Redo");
+        MenuC_Cut.Header = Program.Translations.Get("Cut");
+        MenuC_Copy.Header = Program.Translations.Get("Copy");
+        MenuC_Paste.Header = Program.Translations.Get("Paste");
+        MenuC_SelectAll.Header = Program.Translations.Get("SelectAll");
+        CompileBox.Content = Program.Translations.Get("Compile");
         if (!Initial)
         {
             StatusLine_Column.Text =
-                $"{Program.Translations.GetLanguage("ColAbb")} {editor.TextArea.Caret.Column}";
-            StatusLine_Line.Text = $"{Program.Translations.GetLanguage("LnAbb")} {editor.TextArea.Caret.Line}";
+                $"{Program.Translations.Get("ColAbb")} {editor.TextArea.Caret.Column}";
+            StatusLine_Line.Text = $"{Program.Translations.Get("LnAbb")} {editor.TextArea.Caret.Line}";
             StatusLine_FontSize.Text =
-                editor.FontSize.ToString("n0") + $" {Program.Translations.GetLanguage("PtAbb")}";
+                editor.FontSize.ToString("n0") + $" {Program.Translations.Get("PtAbb")}";
         }
     }
     #endregion

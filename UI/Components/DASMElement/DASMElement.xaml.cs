@@ -45,7 +45,7 @@ public partial class DASMElement : UserControl
         }
         catch (Exception e)
         {
-            detailbox_.Text = Program.Translations.GetLanguage("ErrorFileLoadProc") + Environment.NewLine + Environment.NewLine + $"{Program.Translations.GetLanguage("Details")}: " + e.Message;
+            detailbox_.Text = Program.Translations.Get("ErrorFileLoadProc") + Environment.NewLine + Environment.NewLine + $"{Program.Translations.Get("Details")}: " + e.Message;
             return;
         }
         RenderFile();
@@ -308,7 +308,7 @@ public partial class DASMElement : UserControl
         }
         catch (Exception e)
         {
-            AddDetailLine(Program.Translations.GetLanguage("NotDissMethod"), name, e.Message);
+            AddDetailLine(Program.Translations.Get("NotDissMethod"), name, e.Message);
             EndDetailUpdate();
             return;
         }

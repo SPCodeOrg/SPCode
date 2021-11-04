@@ -28,7 +28,7 @@ public partial class MainWindow
             ConfigMenu.Items.Add(item);
         }
         ConfigMenu.Items.Add(new Separator());
-        var editItem = new MenuItem() { Header = Program.Translations.GetLanguage("EditConfig") };
+        var editItem = new MenuItem() { Header = Program.Translations.Get("EditConfig") };
         editItem.Click += EditItem_Click;
         ConfigMenu.Items.Add(editItem);
     }

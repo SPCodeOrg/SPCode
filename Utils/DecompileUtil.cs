@@ -21,7 +21,7 @@ public class DecompileUtil
         ProgressDialogController checkingJavaDialog = null;
         if (Program.MainWindow != null)
         {
-            checkingJavaDialog = await Program.MainWindow.ShowProgressAsync(Program.Translations.GetLanguage("JavaInstallCheck") + "...",
+            checkingJavaDialog = await Program.MainWindow.ShowProgressAsync(Program.Translations.Get("JavaInstallCheck") + "...",
                 "", false, Program.MainWindow.MetroDialogOptions);
             MainWindow.ProcessUITasks();
         }
@@ -31,8 +31,8 @@ public class DecompileUtil
                 {
                     // If java is not installed, offer to download it
                     await checkingJavaDialog.CloseAsync();
-                    if (await Program.MainWindow.ShowMessageAsync(Program.Translations.GetLanguage("JavaNotFoundTitle"),
-                        Program.Translations.GetLanguage("JavaNotFoundMessage"),
+                    if (await Program.MainWindow.ShowMessageAsync(Program.Translations.Get("JavaNotFoundTitle"),
+                        Program.Translations.Get("JavaNotFoundMessage"),
                         MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions) == MessageDialogResult.Affirmative)
                     {
                         await java.InstallJava();
@@ -43,8 +43,8 @@ public class DecompileUtil
                 {
                     // If java is outdated, offer to upgrade it
                     await checkingJavaDialog.CloseAsync();
-                    if (await Program.MainWindow.ShowMessageAsync(Program.Translations.GetLanguage("JavaOutdatedTitle"),
-                         Program.Translations.GetLanguage("JavaOutdatedMessage"),
+                    if (await Program.MainWindow.ShowMessageAsync(Program.Translations.Get("JavaOutdatedTitle"),
+                         Program.Translations.Get("JavaOutdatedMessage"),
                          MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions) == MessageDialogResult.Affirmative)
                     {
                         await java.InstallJava();
@@ -64,7 +64,7 @@ public class DecompileUtil
             var ofd = new OpenFileDialog
             {
                 Filter = "Sourcepawn Plugins (*.smx)|*.smx",
-                Title = Program.Translations.GetLanguage("ChDecomp")
+                Title = Program.Translations.Get("ChDecomp")
             };
             var result = ofd.ShowDialog();
             fileToDecompile = result.Value && !string.IsNullOrWhiteSpace(ofd.FileName) ? ofd.FileName : null;
@@ -82,7 +82,7 @@ public class DecompileUtil
                 ProgressDialogController task = null;
                 if (Program.MainWindow != null)
                 {
-                    task = await Program.MainWindow.ShowProgressAsync(Program.Translations.GetLanguage("Decompiling") + "...",
+                    task = await Program.MainWindow.ShowProgressAsync(Program.Translations.Get("Decompiling") + "...",
                         fInfo.FullName, false, Program.MainWindow.MetroDialogOptions);
                     MainWindow.ProcessUITasks();
                 }
@@ -112,7 +112,7 @@ public class DecompileUtil
                 }
                 catch (Exception ex)
                 {
-                    await Program.MainWindow.ShowMessageAsync($"{fInfo.Name} {Program.Translations.GetLanguage("FailedToDecompile")}",
+                    await Program.MainWindow.ShowMessageAsync($"{fInfo.Name} {Program.Translations.Get("FailedToDecompile")}",
                         $"{ex.Message}", MessageDialogStyle.Affirmative,
                     Program.MainWindow.MetroDialogOptions);
                 }

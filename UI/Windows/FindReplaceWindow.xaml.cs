@@ -20,8 +20,8 @@ public partial class FindReplaceWindow
     private bool IsSearchFieldOpen;
     private readonly ObservableCollection<string> findReplaceButtonDict = new()
     {
-        Program.Translations.GetLanguage("Replace"),
-        Program.Translations.GetLanguage("ReplaceAll")
+        Program.Translations.Get("Replace"),
+        Program.Translations.Get("ReplaceAll")
     };
     #endregion
 
@@ -219,14 +219,14 @@ public partial class FindReplaceWindow
                     var location = editors[index].editor.Document.GetLocation(m.Index + addToOffset);
                     editors[index].editor.ScrollTo(location.Line, location.Column);
                     FindResultBlock.Text = "Found in offset " + (m.Index + addToOffset).ToString() + " with length " + m.Length.ToString();
-                    FindResultBlock.Text = string.Format(Program.Translations.GetLanguage("FoundInOff"), m.Index + addToOffset, m.Length);
+                    FindResultBlock.Text = string.Format(Program.Translations.Get("FoundInOff"), m.Index + addToOffset, m.Length);
                     break;
                 }
             }
         }
         if (!foundOccurence)
         {
-            FindResultBlock.Text = Program.Translations.GetLanguage("FoundNothing");
+            FindResultBlock.Text = Program.Translations.Get("FoundNothing");
         }
     }
 
@@ -278,14 +278,14 @@ public partial class FindReplaceWindow
                     editors[index].editor.Select(m.Index + addToOffset, result.Length);
                     var location = editors[index].editor.Document.GetLocation(m.Index + addToOffset);
                     editors[index].editor.ScrollTo(location.Line, location.Column);
-                    FindResultBlock.Text = string.Format(Program.Translations.GetLanguage("ReplacedOff"), MinHeight + addToOffset);
+                    FindResultBlock.Text = string.Format(Program.Translations.Get("ReplacedOff"), MinHeight + addToOffset);
                     break;
                 }
             }
         }
         if (!foundOccurence)
         {
-            FindResultBlock.Text = Program.Translations.GetLanguage("FoundNothing");
+            FindResultBlock.Text = Program.Translations.Get("FoundNothing");
         }
     }
 
@@ -321,7 +321,7 @@ public partial class FindReplaceWindow
             }
         }
         FindResultBlock.Text = "Replaced " + count.ToString() + " occurences in " + fileCount.ToString() + " documents";
-        FindResultBlock.Text = string.Format(Program.Translations.GetLanguage("ReplacedOcc"), count, fileCount);
+        FindResultBlock.Text = string.Format(Program.Translations.Get("ReplacedOcc"), count, fileCount);
     }
 
     private void Count()
@@ -339,7 +339,7 @@ public partial class FindReplaceWindow
             var mc = regex.Matches(editor.editor.Text);
             count += mc.Count;
         }
-        FindResultBlock.Text = count.ToString() + " " + Program.Translations.GetLanguage("OccFound");
+        FindResultBlock.Text = count.ToString() + " " + Program.Translations.Get("OccFound");
     }
 
     private Regex GetSearchRegex()
@@ -347,7 +347,7 @@ public partial class FindReplaceWindow
         var findString = FindBox.Text;
         if (string.IsNullOrEmpty(findString))
         {
-            FindResultBlock.Text = Program.Translations.GetLanguage("EmptyPatt");
+            FindResultBlock.Text = Program.Translations.Get("EmptyPatt");
             return null;
         }
         Regex regex = new(string.Empty);
@@ -394,7 +394,7 @@ public partial class FindReplaceWindow
                     }
                     catch (Exception)
                     {
-                        FindResultBlock.Text = Program.Translations.GetLanguage("NoValidRegex"); return null;
+                        FindResultBlock.Text = Program.Translations.Get("NoValidRegex"); return null;
                     }
                 }
             }
@@ -447,17 +447,17 @@ public partial class FindReplaceWindow
 
     public void Language_Translate()
     {
-        NSearch_RButton.Content = Program.Translations.GetLanguage("NormalSearch");
-        WSearch_RButton.Content = Program.Translations.GetLanguage("MatchWholeWords");
-        ASearch_RButton.Content = $"{Program.Translations.GetLanguage("AdvancSearch")} (\\r, \\n, \\t, ...)";
-        RSearch_RButton.Content = Program.Translations.GetLanguage("RegexSearch");
-        MenuFR_CurrDoc.Content = Program.Translations.GetLanguage("CurrDoc");
-        MenuFR_AllDoc.Content = Program.Translations.GetLanguage("AllDoc");
+        NSearch_RButton.Content = Program.Translations.Get("NormalSearch");
+        WSearch_RButton.Content = Program.Translations.Get("MatchWholeWords");
+        ASearch_RButton.Content = $"{Program.Translations.Get("AdvancSearch")} (\\r, \\n, \\t, ...)";
+        RSearch_RButton.Content = Program.Translations.Get("RegexSearch");
+        MenuFR_CurrDoc.Content = Program.Translations.Get("CurrDoc");
+        MenuFR_AllDoc.Content = Program.Translations.Get("AllDoc");
 
-        Find_Button.Content = $"{Program.Translations.GetLanguage("Find")} (F3)";
-        Count_Button.Content = Program.Translations.GetLanguage("Count");
-        CCBox.Content = Program.Translations.GetLanguage("CaseSen");
-        MLRBox.Content = Program.Translations.GetLanguage("MultilineRegex");
+        Find_Button.Content = $"{Program.Translations.Get("Find")} (F3)";
+        Count_Button.Content = Program.Translations.Get("Count");
+        CCBox.Content = Program.Translations.Get("CaseSen");
+        MLRBox.Content = Program.Translations.Get("MultilineRegex");
     }
     #endregion
 }

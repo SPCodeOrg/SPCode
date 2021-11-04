@@ -30,7 +30,7 @@ public partial class AboutWindow
                 g.Background = gridBrush;
             }
         }
-        TitleBox.Text = $"SPCode ({Assembly.GetEntryAssembly()?.GetName().Version}) - {Program.Translations.GetLanguage("SPEditCap")}";
+        TitleBox.Text = $"SPCode ({Assembly.GetEntryAssembly()?.GetName().Version}) - {Program.Translations.Get("SPEditCap")}";
         LicenseField.Text = File.ReadAllText(Constants.LicenseFile);
     }
 
@@ -51,8 +51,8 @@ public partial class AboutWindow
         {
             return;
         }
-        WrittenByBlock.Text = string.Format(Program.Translations.GetLanguage("WrittenBy"), "Julien Kluge (Julien.Kluge@gmail.com");
-        LicenseBlock.Text = Program.Translations.GetLanguage("License");
-        PeopleInvolvedBlock.Text = Program.Translations.GetLanguage("PeopleInv");
+        WrittenByBlock.Text = string.Format(Program.Translations.Get("WrittenBy"), "Julien Kluge (Julien.Kluge@gmail.com");
+        LicenseBlock.Text = Program.Translations.Get("License");
+        PeopleInvolvedBlock.Text = Program.Translations.Get("PeopleInv");
     }
 }

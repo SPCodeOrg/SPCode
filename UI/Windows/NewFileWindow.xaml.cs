@@ -45,7 +45,7 @@ public partial class NewFileWindow
                                 AddExtension = true,
                                 Filter = "Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|All Files (*.*)|*.*",
                                 OverwritePrompt = true,
-                                Title = Program.Translations.GetLanguage("New")
+                                Title = Program.Translations.Get("New")
                             };
                             var result = dialog.ShowDialog();
 
@@ -342,8 +342,8 @@ public partial class NewFileWindow
         {
             return;
         }
-        PreviewBlock.Text = $"{Program.Translations.GetLanguage("Preview")}:";
-        SaveButton.Content = Program.Translations.GetLanguage("Save");
+        PreviewBlock.Text = $"{Program.Translations.Get("Preview")}:";
+        SaveButton.Content = Program.Translations.Get("Save");
     }
 
     private void GoToSelectedTemplate()
@@ -359,7 +359,7 @@ public partial class NewFileWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
         }
     }
 
@@ -471,7 +471,7 @@ public partial class NewFileWindow
 
     private void ShowVisuals(bool isNewTemplate)
     {
-        PreviewBlock.Text = $"{Program.Translations.GetLanguage("Name")}:";
+        PreviewBlock.Text = $"{Program.Translations.Get("Name")}:";
         TbxRenameTemplate.Text = isNewTemplate ? "" : (TemplateListBox.SelectedItem as ListBoxItem).Content.ToString();
         TbxRenameTemplate.Visibility = Visibility.Visible;
         var mg = PreviewBox.Margin;
@@ -485,7 +485,7 @@ public partial class NewFileWindow
 
     private void HideVisuals()
     {
-        PreviewBlock.Text = $"{Program.Translations.GetLanguage("Preview")}:";
+        PreviewBlock.Text = $"{Program.Translations.Get("Preview")}:";
         TbxRenameTemplate.Visibility = Visibility.Collapsed;
         LblError.Visibility = Visibility.Collapsed;
         var mg = PreviewBox.Margin;
@@ -504,13 +504,13 @@ public partial class NewFileWindow
 
         if (tempName != (TemplateListBox.SelectedItem as ListBoxItem).Content.ToString() && TemplateListBox.Items.Cast<ListBoxItem>().ToList().Any(x => x.Content.ToString().ToLower() == tempName.ToLower()))
         {
-            message = Program.Translations.GetLanguage("TemplateExists");
+            message = Program.Translations.Get("TemplateExists");
             return false;
         }
 
         if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
         {
-            message = Program.Translations.GetLanguage("EmptyName");
+            message = Program.Translations.Get("EmptyName");
             return false;
         }
 
@@ -519,7 +519,7 @@ public partial class NewFileWindow
 
         if (arr.Length == 0)
         {
-            message = Program.Translations.GetLanguage("IllegalCharacters");
+            message = Program.Translations.Get("IllegalCharacters");
             return false;
         }
 

@@ -105,7 +105,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
 
     }
@@ -127,7 +127,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
 
     }
@@ -151,7 +151,7 @@ public partial class MainWindow
                 CheckPathExists = true,
                 Filter = Constants.FileOpenFilters,
                 Multiselect = true,
-                Title = Program.Translations.GetLanguage("OpenNewFile")
+                Title = Program.Translations.Get("OpenNewFile")
             };
             var result = ofd.ShowDialog(this);
             if (result.Value)
@@ -167,8 +167,8 @@ public partial class MainWindow
                     if (!AnyFileLoaded)
                     {
                         MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
-                        this.ShowMessageAsync(Program.Translations.GetLanguage("NoFileOpened"),
-                            Program.Translations.GetLanguage("NoFileOpenedCap"), MessageDialogStyle.Affirmative,
+                        this.ShowMessageAsync(Program.Translations.Get("NoFileOpened"),
+                            Program.Translations.Get("NoFileOpenedCap"), MessageDialogStyle.Affirmative,
                             MetroDialogOptions);
                     }
                 }
@@ -178,7 +178,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -198,7 +198,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -212,7 +212,7 @@ public partial class MainWindow
             var ee = GetCurrentEditorElement();
             if (ee != null && !ee.IsTemplateEditor)
             {
-                var sfd = new SaveFileDialog { AddExtension = true, Filter = Constants.FileSaveFilters, OverwritePrompt = true, Title = Program.Translations.GetLanguage("SaveFileAs"), FileName = ee.Parent.Title.Trim('*') };
+                var sfd = new SaveFileDialog { AddExtension = true, Filter = Constants.FileSaveFilters, OverwritePrompt = true, Title = Program.Translations.Get("SaveFileAs"), FileName = ee.Parent.Title.Trim('*') };
                 var result = sfd.ShowDialog(this);
                 if (result.Value && !string.IsNullOrWhiteSpace(sfd.FileName))
                 {
@@ -224,7 +224,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -243,7 +243,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -262,7 +262,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -302,7 +302,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -331,7 +331,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -354,7 +354,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -395,7 +395,7 @@ public partial class MainWindow
                         }
                     }
 
-                    var result = await this.ShowMessageAsync(Program.Translations.GetLanguage("SaveFollow"),
+                    var result = await this.ShowMessageAsync(Program.Translations.Get("SaveFollow"),
                         str.ToString(), MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions);
                     if (result == MessageDialogResult.Affirmative)
                     {
@@ -413,7 +413,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            await this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -435,7 +435,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -457,7 +457,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -473,7 +473,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -489,7 +489,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -505,7 +505,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -529,7 +529,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -545,7 +545,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -564,7 +564,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -584,7 +584,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -640,7 +640,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -656,7 +656,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            await this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 
@@ -676,7 +676,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
     /// <summary>
@@ -695,7 +695,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
         }
     }
 }

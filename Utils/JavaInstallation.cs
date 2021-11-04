@@ -34,8 +34,8 @@ public class JavaInstallation
     public async Task InstallJava()
     {
         // Spawn progress dialog when downloading Java
-        dwJavaInCourse = await _win.ShowProgressAsync(Program.Translations.GetLanguage("DownloadingJava") + "...",
-            Program.Translations.GetLanguage("FetchingJava"), false, _metroDialogOptions);
+        dwJavaInCourse = await _win.ShowProgressAsync(Program.Translations.Get("DownloadingJava") + "...",
+            Program.Translations.Get("FetchingJava"), false, _metroDialogOptions);
         dwJavaInCourse.SetProgress(0.0);
         MainWindow.ProcessUITasks();
 
@@ -50,8 +50,8 @@ public class JavaInstallation
     {
         // Handles percentage and MB downloaded/left
         dwJavaInCourse.SetMessage(
-            $"{e.ProgressPercentage}% {Program.Translations.GetLanguage("AmountCompleted")}, " +
-            $"{Program.Translations.GetLanguage("AmountDownloaded")} {Math.Round(ByteSize.FromBytes(e.BytesReceived).MegaBytes),0} MB / " +
+            $"{e.ProgressPercentage}% {Program.Translations.Get("AmountCompleted")}, " +
+            $"{Program.Translations.Get("AmountDownloaded")} {Math.Round(ByteSize.FromBytes(e.BytesReceived).MegaBytes),0} MB / " +
             $"{Math.Round(ByteSize.FromBytes(e.TotalBytesToReceive).MegaBytes),0} MB");
 
         // Handles progress bar
@@ -66,16 +66,16 @@ public class JavaInstallation
             // If file downloaded properly, it should open
             Process.Start(OutFile);
             await _win.ShowMessageAsync(
-                Program.Translations.GetLanguage("JavaOpened"),
-                Program.Translations.GetLanguage("JavaSuggestRestart"),
+                Program.Translations.Get("JavaOpened"),
+                Program.Translations.Get("JavaSuggestRestart"),
                 MessageDialogStyle.Affirmative);
         }
         else
         {
             // Otherwise, just offer a manual download
             if (await _win.ShowMessageAsync(
-                Program.Translations.GetLanguage("JavaDownErrorTitle"),
-                Program.Translations.GetLanguage("JavaDownErrorMessage"),
+                Program.Translations.Get("JavaDownErrorTitle"),
+                Program.Translations.Get("JavaDownErrorMessage"),
                 MessageDialogStyle.AffirmativeAndNegative, _metroDialogOptions) == MessageDialogResult.Affirmative)
             {
                 Process.Start(new ProcessStartInfo
@@ -84,8 +84,8 @@ public class JavaInstallation
                     UseShellExecute = true
                 });
                 await _win.ShowMessageAsync(
-                Program.Translations.GetLanguage("JavaOpenedBrowser"),
-                Program.Translations.GetLanguage("JavaSuggestRestart"),
+                Program.Translations.Get("JavaOpenedBrowser"),
+                Program.Translations.Get("JavaSuggestRestart"),
                 MessageDialogStyle.Affirmative);
             }
         }

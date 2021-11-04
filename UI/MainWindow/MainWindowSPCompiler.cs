@@ -75,8 +75,8 @@ public partial class MainWindow
         if (!SpCompFound)
         {
             LoggingControl.LogAction($"No compiler found, aborting.");
-            await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"),
-                Program.Translations.GetLanguage("SPCompNotFound"), MessageDialogStyle.Affirmative,
+            await this.ShowMessageAsync(Program.Translations.Get("Error"),
+                Program.Translations.Get("SPCompNotFound"), MessageDialogStyle.Affirmative,
                 MetroDialogOptions);
             InCompiling = false;
             return;
@@ -126,7 +126,7 @@ public partial class MainWindow
             // Shows the 'Compiling...' window
             ErrorResultGrid.Items.Clear();
 
-            ProgressTask = await this.ShowProgressAsync(Program.Translations.GetLanguage("Compiling"), "",
+            ProgressTask = await this.ShowProgressAsync(Program.Translations.Get("Compiling"), "",
                 false, MetroDialogOptions);
             ProgressTask.SetProgress(0.0);
 
@@ -186,10 +186,6 @@ public partial class MainWindow
                     ProgressTask.SetProgress((i + 1 - 0.5d) / compileCount);
                     var execResult = ExecuteCommandLine(currentConfig.PreCmd, fileInfo.DirectoryName, currentConfig.CopyDirectory,
                         fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
-                    if (!string.IsNullOrWhiteSpace(execResult))
-                    {
-
-                    }
 
                     ProcessUITasks();
 
@@ -201,7 +197,7 @@ public partial class MainWindow
                         if (process.ExitCode != 1 && process.ExitCode != 0)
                         {
                             await ProgressTask.CloseAsync();
-                            await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"),
+                            await this.ShowMessageAsync(Program.Translations.Get("Error"),
                                 "The SourcePawn compiler has crashed.\n" +
                                 "Try again, or file an issue at the SourcePawn GitHub repository describing your steps that lead to this instance in detail.\n" +
                                 $"Exit code: {process.ExitCode:X}", MessageDialogStyle.Affirmative,
@@ -214,8 +210,8 @@ public partial class MainWindow
                     catch (Exception)
                     {
                         await ProgressTask.CloseAsync();
-                        await this.ShowMessageAsync(Program.Translations.GetLanguage("SPCompNotStarted"),
-                            Program.Translations.GetLanguage("Error"), MessageDialogStyle.Affirmative,
+                        await this.ShowMessageAsync(Program.Translations.Get("SPCompNotStarted"),
+                            Program.Translations.Get("Error"), MessageDialogStyle.Affirmative,
                             MetroDialogOptions);
                         InCompiling = false;
                         return;
@@ -268,10 +264,6 @@ public partial class MainWindow
 
                     var execResult_Post = ExecuteCommandLine(currentConfig.PostCmd, fileInfo.DirectoryName,
                         currentConfig.CopyDirectory, fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
-                    if (!string.IsNullOrWhiteSpace(execResult_Post))
-                    {
-
-                    }
 
                     ProgressTask.SetProgress((double)(i + 1) / compileCount);
                     ProcessUITasks();
@@ -288,7 +280,7 @@ public partial class MainWindow
                 ProgressTask.SetProgress(1.0);
                 if (currentConfig.AutoCopy)
                 {
-                    ProgressTask.SetTitle(Program.Translations.GetLanguage("CopyingFiles") + "...");
+                    ProgressTask.SetTitle(Program.Translations.Get("CopyingFiles") + "...");
                     ProgressTask.SetIndeterminate();
                     await Task.Run(() => Copy_Plugins());
                     ProgressTask.SetProgress(1.0);
@@ -296,7 +288,7 @@ public partial class MainWindow
 
                 if (currentConfig.AutoUpload)
                 {
-                    ProgressTask.SetTitle(Program.Translations.GetLanguage("FTPUploading") + "...");
+                    ProgressTask.SetTitle(Program.Translations.Get("FTPUploading") + "...");
                     ProgressTask.SetIndeterminate();
                     await Task.Run(FTPUpload_Plugins);
                     ProgressTask.SetProgress(1.0);
@@ -304,7 +296,7 @@ public partial class MainWindow
 
                 if (currentConfig.AutoRCON)
                 {
-                    ProgressTask.SetTitle(Program.Translations.GetLanguage("RCONCommand") + "...");
+                    ProgressTask.SetTitle(Program.Translations.Get("RCONCommand") + "...");
                     ProgressTask.SetIndeterminate();
                     await Task.Run(Server_Query);
                     ProgressTask.SetProgress(1.0);
@@ -358,25 +350,25 @@ public partial class MainWindow
                     var copyFileDestination = Path.Combine(c.CopyDirectory, destinationFileName);
                     File.Copy(file, copyFileDestination, true);
                     NonUploadedFiles.Add(copyFileDestination);
-                    output.Add($"{Program.Translations.GetLanguage("Copied")}: {copyFileDestination}");
+                    output.Add($"{Program.Translations.Get("Copied")}: {copyFileDestination}");
                     ++copyCount;
                     if (c.DeleteAfterCopy)
                     {
                         File.Delete(file);
-                        output.Add($"{Program.Translations.GetLanguage("Deleted")}: {copyFileDestination}");
+                        output.Add($"{Program.Translations.Get("Deleted")}: {copyFileDestination}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                output.Add($"{Program.Translations.GetLanguage("FailCopy")}: {destFile.Name}");
+                output.Add($"{Program.Translations.Get("FailCopy")}: {destFile.Name}");
                 output.Add(ex.Message);
             }
         }
 
         if (copyCount == 0)
         {
-            output.Add($"{Program.Translations.GetLanguage("NoFilesCopy")}");
+            output.Add($"{Program.Translations.Get("NoFilesCopy")}");
         }
 
     Dispatcher:
@@ -433,21 +425,21 @@ public partial class MainWindow
                     try
                     {
                         ftp.Upload(uploadDir, file);
-                        output.Add($"{Program.Translations.GetLanguage("Uploaded")}: {fileInfo.Name}");
+                        output.Add($"{Program.Translations.Get("Uploaded")}: {fileInfo.Name}");
                     }
                     catch (Exception e)
                     {
-                        output.Add(string.Format(Program.Translations.GetLanguage("ErrorUploadFile"),
+                        output.Add(string.Format(Program.Translations.Get("ErrorUploadFile"),
                             fileInfo.Name, uploadDir));
-                        output.Add($"{Program.Translations.GetLanguage("Details")}: {e.Message}");
+                        output.Add($"{Program.Translations.Get("Details")}: {e.Message}");
                     }
                 }
             }
         }
         catch (Exception e)
         {
-            output.Add(Program.Translations.GetLanguage("ErrorUpload"));
-            output.Add($"{Program.Translations.GetLanguage("Details")}: " + e.Message);
+            output.Add(Program.Translations.Get("ErrorUpload"));
+            output.Add($"{Program.Translations.Get("Details")}: " + e.Message);
         }
 
     Dispatcher:

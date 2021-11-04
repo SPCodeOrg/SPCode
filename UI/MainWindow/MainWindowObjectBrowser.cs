@@ -184,7 +184,7 @@ public partial class MainWindow
         }
         catch (Exception ex)
         {
-            this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message);
+            this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message);
         }
     }
 
@@ -288,7 +288,7 @@ public partial class MainWindow
         OBExpanded = !OBExpanded;
         MoveSubContainers(ObjectBrowser, OBExpanded);
         BtExpandCollapse.Content = (Image)FindResource(OBExpanded ? "ImgCollapse" : "ImgExpand");
-        BtExpandCollapse.ToolTip = Program.Translations.GetLanguage(OBExpanded ? "CollapseAllDirs" : "ExpandAllDirs");
+        BtExpandCollapse.ToolTip = Program.Translations.Get(OBExpanded ? "CollapseAllDirs" : "ExpandAllDirs");
     }
 
     private void BtRefreshDir_Click(object sender, RoutedEventArgs e)
@@ -362,7 +362,7 @@ public partial class MainWindow
             {
                 ObjectBrowser.Items.Add(new TreeViewItem()
                 {
-                    Header = BuildTreeViewItemContent($"{Program.Translations.GetLanguage("NoResultsThisDir")}", Constants.EmptyIcon),
+                    Header = BuildTreeViewItemContent($"{Program.Translations.Get("NoResultsThisDir")}", Constants.EmptyIcon),
                     FontStyle = FontStyles.Italic,
                     Foreground = new SolidColorBrush(Colors.Gray),
                     Tag = new ObjectBrowserTag()
@@ -611,7 +611,7 @@ public partial class MainWindow
         {
             var tvi = new TreeViewItem()
             {
-                Header = BuildTreeViewItemContent($"({Program.Translations.GetLanguage("Empty").ToLower()})", Constants.EmptyIcon),
+                Header = BuildTreeViewItemContent($"({Program.Translations.Get("Empty").ToLower()})", Constants.EmptyIcon),
                 FontStyle = FontStyles.Italic,
                 Foreground = new SolidColorBrush(Colors.Gray),
                 Tag = new ObjectBrowserTag()

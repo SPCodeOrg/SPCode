@@ -258,7 +258,7 @@ public partial class MainWindow
 
     private async void UpdateCheck_Click(object sender, RoutedEventArgs e)
     {
-        var updatingWindow = await this.ShowProgressAsync(Program.Translations.GetLanguage("CheckingUpdates") + "...", "", false, MetroDialogOptions);
+        var updatingWindow = await this.ShowProgressAsync(Program.Translations.Get("CheckingUpdates") + "...", "", false, MetroDialogOptions);
         updatingWindow.SetIndeterminate();
 
         await UpdateCheck.Check();
@@ -285,15 +285,15 @@ public partial class MainWindow
             await updatingWindow.CloseAsync();
             if (status.GotException)
             {
-                await this.ShowMessageAsync(Program.Translations.GetLanguage("FailedCheck"),
-                    Program.Translations.GetLanguage("ErrorUpdate") + Environment.NewLine +
-                    $"{Program.Translations.GetLanguage("Details")}: " + status.ExceptionMessage
+                await this.ShowMessageAsync(Program.Translations.Get("FailedCheck"),
+                    Program.Translations.Get("ErrorUpdate") + Environment.NewLine +
+                    $"{Program.Translations.Get("Details")}: " + status.ExceptionMessage
                     , MessageDialogStyle.Affirmative, MetroDialogOptions);
             }
             else
             {
-                await this.ShowMessageAsync(Program.Translations.GetLanguage("VersUpToDate"),
-                    string.Format(Program.Translations.GetLanguage("VersionYour"),
+                await this.ShowMessageAsync(Program.Translations.Get("VersUpToDate"),
+                    string.Format(Program.Translations.Get("VersionYour"),
                         Assembly.GetEntryAssembly()?.GetName().Version)
                     , MessageDialogStyle.Affirmative, MetroDialogOptions);
             }

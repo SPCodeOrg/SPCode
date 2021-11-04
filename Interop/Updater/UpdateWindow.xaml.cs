@@ -82,11 +82,11 @@ public partial class UpdateWindow
         }
         else
         {
-            Title = string.Format(Program.Translations.GetLanguage("VersionAvailable"), updateInfo.AllReleases[0].TagName);
-            MainLine.Text = Program.Translations.GetLanguage("WantToUpdate");
-            ActionYesButton.Content = Program.Translations.GetLanguage("Yes");
-            ActionNoButton.Content = Program.Translations.GetLanguage("No");
-            ActionGithubButton.Content = Program.Translations.GetLanguage("ViewGithub");
+            Title = string.Format(Program.Translations.Get("VersionAvailable"), updateInfo.AllReleases[0].TagName);
+            MainLine.Text = Program.Translations.Get("WantToUpdate");
+            ActionYesButton.Content = Program.Translations.Get("Yes");
+            ActionNoButton.Content = Program.Translations.Get("No");
+            ActionGithubButton.Content = Program.Translations.Get("ViewGithub");
         }
 
         var releasesBody = new StringBuilder();
@@ -126,8 +126,8 @@ public partial class UpdateWindow
         ActionNoButton.Visibility = Visibility.Hidden;
         ActionGithubButton.Visibility = Visibility.Hidden;
         Icon.Visibility = Visibility.Hidden;
-        MainLine.Text = string.Format(Program.Translations.GetLanguage("UpdatingTo"), updateInfo.AllReleases[0].TagName);
-        SubLine.Text = Program.Translations.GetLanguage("DownloadingUpdater");
+        MainLine.Text = string.Format(Program.Translations.Get("UpdatingTo"), updateInfo.AllReleases[0].TagName);
+        SubLine.Text = Program.Translations.Get("DownloadingUpdater");
         var t = new Thread(UpdateDownloadWorker);
         t.Start();
     }
@@ -166,7 +166,7 @@ public partial class UpdateWindow
     /// </summary>
     private void FinalizeUpdate()
     {
-        SubLine.Text = Program.Translations.GetLanguage("StartingUpdater");
+        SubLine.Text = Program.Translations.Get("StartingUpdater");
         UpdateLayout();
         try
         {

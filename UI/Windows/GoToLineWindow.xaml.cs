@@ -149,9 +149,9 @@ public partial class GoToLineWindow
 
     public void Language_Translate()
     {
-        rbLineJump.Content = Program.Translations.GetLanguage("GoToLine");
-        rbOffsetJump.Content = Program.Translations.GetLanguage("GoToOffset");
-        btJump.Content = Program.Translations.GetLanguage("Go");
+        rbLineJump.Content = Program.Translations.Get("GoToLine");
+        rbOffsetJump.Content = Program.Translations.Get("GoToOffset");
+        btJump.Content = Program.Translations.Get("Go");
     }
     #endregion
 }

@@ -68,7 +68,7 @@ public partial class OptionsWindow
                 var hkStr = hk.Hotkey.ToString();
                 if (hkStr == HotkeyControl.DefaultHotkeys[hkControl.Name.Substring(2)] && hkStr != hkControl.Hotkey.ToString())
                 {
-                    ShowLabel(Program.Translations.GetLanguage("DefaultTaken"));
+                    ShowLabel(Program.Translations.Get("DefaultTaken"));
                     return;
                 }
             }
@@ -122,7 +122,7 @@ public partial class OptionsWindow
             {
                 _ctrl.Hotkey = _currentControlHotkey;
                 _ctrl.FontStyle = _currentFontStyle;
-                ShowLabel(Program.Translations.GetLanguage("InUse"));
+                ShowLabel(Program.Translations.Get("InUse"));
                 return;
             }
             // Check if the attempted hotkey is not restricted
@@ -130,7 +130,7 @@ public partial class OptionsWindow
             {
                 _ctrl.Hotkey = _currentControlHotkey;
                 _ctrl.FontStyle = _currentFontStyle;
-                ShowLabel(Program.Translations.GetLanguage("Reserved"));
+                ShowLabel(Program.Translations.Get("Reserved"));
                 return;
             }
             else

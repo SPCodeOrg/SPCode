@@ -41,15 +41,15 @@ public partial class MainWindow
 
     private ObservableCollection<string> ActionButtonDict = new()
     {
-        Program.Translations.GetLanguage("Copy"),
-        Program.Translations.GetLanguage("UploadFTP"),
-        Program.Translations.GetLanguage("StartServer")
+        Program.Translations.Get("Copy"),
+        Program.Translations.Get("UploadFTP"),
+        Program.Translations.Get("StartServer")
     };
 
     private ObservableCollection<string> CompileButtonDict = new()
     {
-        Program.Translations.GetLanguage("CompileAll"),
-        Program.Translations.GetLanguage("CompileCurrent")
+        Program.Translations.Get("CompileAll"),
+        Program.Translations.Get("CompileCurrent")
     };
     #endregion
 
@@ -200,9 +200,9 @@ public partial class MainWindow
                 // Build dialog buttons
                 var closeMetroDialogOptions = new MetroDialogSettings()
                 {
-                    AffirmativeButtonText = Program.Translations.GetLanguage("Yes"),
-                    NegativeButtonText = Program.Translations.GetLanguage("No"),
-                    FirstAuxiliaryButtonText = Program.Translations.GetLanguage("Cancel"),
+                    AffirmativeButtonText = Program.Translations.Get("Yes"),
+                    NegativeButtonText = Program.Translations.Get("No"),
+                    FirstAuxiliaryButtonText = Program.Translations.Get("Cancel"),
                     AnimateHide = false,
                     AnimateShow = false,
                     DefaultButtonFocus = MessageDialogResult.SecondAuxiliary
@@ -460,7 +460,7 @@ public partial class MainWindow
 
         if (ServerIsRunning)
         {
-            outString = $"{outString} | {Program.Translations.GetLanguage("ServerRunning")}";
+            outString = $"{outString} | {Program.Translations.Get("ServerRunning")}";
         }
 
         Title = outString;
