@@ -23,6 +23,11 @@ public partial class MainWindow
         var key = e.Key;
         var modifiers = Keyboard.Modifiers;
 
+        if (key == Key.Escape && CompileOutputRow.Height.Value > 8.0)
+        {
+            CloseErrorResultGrid(null, null);
+        }
+
         if (key == Key.System)
         {
             key = e.SystemKey;
