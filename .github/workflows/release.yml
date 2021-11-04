@@ -18,7 +18,7 @@ jobs:
       - name: Install .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.100
+          dotnet-version: 6.0.100-rc.2.21505.57
 
       # Nuget
       - uses: nuget/setup-nuget@v1
@@ -28,12 +28,11 @@ jobs:
 
       # Setup MSBuild
       - name: Setup MSBuild.exe
-        uses: microsoft/setup-msbuild@v1.0.2
-
+        uses: microsoft/setup-msbuild@v1.1
 
       # Build Spcode
       - name: Build Spcode
-        run: msbuild Spcode.csproj /p:Configuration=Release
+        run: msbuild Spcode.csproj /p:Configuration=Release /p:langversion=latest
 
       # Build Installer
       - name: Build Installer (NSIS)
@@ -48,7 +47,7 @@ jobs:
 
       # Build Updater
       - name: Build Updater
-        run: msbuild Deploy\SPCodeUpdater\SPCodeUpdater.csproj /p:Configuration=Release
+        run: msbuild Deploy\SPCodeUpdater\SPCodeUpdater.csproj /p:Configuration=Release /property:langversion=latest
 
       - name: Create Release
         id: create_release
