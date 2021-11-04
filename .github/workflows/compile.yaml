@@ -1,4 +1,4 @@
-﻿name: Compile Solution
+name: Compile Solution
 
 on: [push, pull_request]
 
@@ -30,7 +30,7 @@ jobs:
         run: msbuild Spcode.csproj /p:Configuration=Release /p:langversion=latest
 
       # Build Installer
-      - name: Build Installer (NSIS)
+      - name: Build Installer (NSIS) 
         uses: joncloud/makensis-action@v1
         with:
           script-file: .\bin\Release\SPCode.nsi
@@ -40,6 +40,7 @@ jobs:
         with:
           name: SPCode.Installer.exe
           path: .\bin\Release\SPCode.Installer.exe
+
 
       # Compress Portable Version
       - name: Compress Portable Version
@@ -54,7 +55,7 @@ jobs:
 
       # Build Updater
       - name: Build Updater
-        run: msbuild Deploy\SpcodeUpdater\SpcodeUpdater.csproj /p:Configuration=Release
+        run: msbuild Deploy\SpcodeUpdater\SpcodeUpdater.csproj /p:Configuration=Release /p:langversion=latest
 
       - name: Artifact Updater
         uses: actions/upload-artifact@v1
