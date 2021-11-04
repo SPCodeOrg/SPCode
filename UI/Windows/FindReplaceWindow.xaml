@@ -8,15 +8,14 @@
              Background="{DynamicResource WhiteBrush}" 
              ResizeMode="NoResize" 
              ShowTitleBar="True"
-             ShowInTaskbar="True" 
+             ShowInTaskbar="False" 
              Height="263" 
              Width="536"
              HorizontalAlignment="Center" 
              VerticalAlignment="Center" 
              UseNoneWindowStyle="False" 
              TitlebarHeight="20" 
-             KeyDown="MetroWindow_KeyDown" 
-             Closed="MetroWindow_Closed">
+             KeyDown="MetroWindow_KeyDown">
   
   <controls:MetroWindow.Resources>
     <ResourceDictionary>

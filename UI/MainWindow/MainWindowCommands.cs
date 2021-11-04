@@ -280,23 +280,18 @@ public partial class MainWindow
 
             var selection = GetCurrentEditorElement().editor.TextArea.Selection.GetText();
 
-            if (Program.IsSearchOpen)
+            foreach (Window win in Application.Current.Windows)
             {
-                foreach (Window win in Application.Current.Windows)
+                if (win is FindReplaceWindow findWin)
                 {
-                    if (win is FindReplaceWindow findWin)
-                    {
-                        findWin.Activate();
-                        findWin.FindBox.Text = selection;
-                        findWin.FindBox.SelectAll();
-                        findWin.FindBox.Focus();
-                        return;
-                    }
+                    findWin.Activate();
+                    findWin.FindBox.Text = selection;
+                    findWin.FindBox.SelectAll();
+                    findWin.FindBox.Focus();
+                    return;
                 }
             }
-            var findWindow = new FindReplaceWindow(selection);
-            Program.IsSearchOpen = true;
-            findWindow.Owner = this;
+            var findWindow = new FindReplaceWindow(selection) { Owner = this };
             findWindow.Show();
             findWindow.FindBox.Focus();
         }

@@ -43,8 +43,6 @@ public static class Program
 
     public static bool _IsLocalInstallation;
 
-    public static bool IsSearchOpen = false;
-
     [STAThread]
     public static void Main(string[] args)
     {

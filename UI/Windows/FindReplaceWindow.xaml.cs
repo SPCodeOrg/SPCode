@@ -121,11 +121,6 @@ public partial class FindReplaceWindow
                 }
         }
     }
-
-    private void MetroWindow_Closed(object sender, EventArgs e)
-    {
-        Program.IsSearchOpen = false;
-    }
     #endregion
 
     #region Methods
