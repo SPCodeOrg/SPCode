@@ -27,7 +27,7 @@ jobs:
 
       # Build Spcode
       - name: Build Spcode
-        run: msbuild Spcode.csproj /p:Configuration=Release /p:langversion=10.0
+        run: msbuild Spcode.csproj /p:Configuration=Release /p:langversion=10
 
       # Build Installer
       - name: Build Installer (NSIS) 
