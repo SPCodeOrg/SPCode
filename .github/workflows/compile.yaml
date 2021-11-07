@@ -15,7 +15,7 @@ jobs:
       - name: Install .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6.0.100-rc.2.21505.57
+          dotnet-version: 5.0.402
 
       # Nuget
       - uses: nuget/setup-nuget@v1
@@ -27,7 +27,7 @@ jobs:
 
       # Build Spcode
       - name: Build Spcode
-        run: msbuild Spcode.csproj /p:Configuration=Release /p:langversion=10.0
+        run: msbuild Spcode.csproj /p:Configuration=Release /p:langversion=latest
 
       # Build Installer
       - name: Build Installer (NSIS) 
@@ -55,7 +55,7 @@ jobs:
 
       # Build Updater
       - name: Build Updater
-        run: msbuild Deploy\SpcodeUpdater\SpcodeUpdater.csproj /p:Configuration=Release /p:langversion=10.0
+        run: msbuild Deploy\SpcodeUpdater\SpcodeUpdater.csproj /p:Configuration=Release /p:langversion=latest
 
       - name: Artifact Updater
         uses: actions/upload-artifact@v1
