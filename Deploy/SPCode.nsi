@@ -41,8 +41,7 @@ File System.Windows.Interactivity.dll
 File Xceed.Wpf.AvalonDock.dll
 File Xceed.Wpf.AvalonDock.Themes.Metro.dll
 File smxdasm.dll
-File QueryMaster.dll
-File Ionic.BZip2.dll
+File ValveQuery.dll
 File MdXaml.dll
 File SourcepawnCondenser.dll
 File ByteSize.dll
@@ -134,8 +133,7 @@ Delete $INSTDIR\Xceed.Wpf.AvalonDock.dll
 Delete $INSTDIR\Xceed.Wpf.AvalonDock.Themes.Metro.dll
 Delete $INSTDIR\smxdasm.dll
 Delete $INSTDIR\LysisForSpedit.dll
-Delete $INSTDIR\QueryMaster.dll
-Delete $INSTDIR\Ionic.BZip2.dll
+Delete $INSTDIR\ValveQuery.dll
 Delete $INSTDIR\SourcepawnCondenser.dll
 Delete $INSTDIR\Renci.SshNet.dll
 Delete $INSTDIR\Newtonsoft.Json.dll

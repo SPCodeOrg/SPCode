@@ -71,9 +71,6 @@
     <Reference Include="netstandard" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="QueryMaster">
-      <HintPath>QueryMaster\QueryMaster.dll</HintPath>
-    </Reference>
     <Reference Include="smxdasm">
       <HintPath>App\smxdasm.dll</HintPath>
     </Reference>

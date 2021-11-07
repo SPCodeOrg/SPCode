@@ -89,7 +89,7 @@ namespace SPCode.UI
                     switch ((SocketError)socketEx.ErrorCode)
                     {
                         case SocketError.ConnectionReset:
-                            output.Add("The connection was reset. You were probably IP banned for rcon hacking attempts.");
+                            output.Add("The connection was reset. Check your connection data and try again. You also could've been RCON banned for hacking attempts.");
                             goto Dispatcher;
                         case SocketError.NotConnected:
                         case SocketError.TimedOut:
