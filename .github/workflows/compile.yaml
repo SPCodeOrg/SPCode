@@ -27,7 +27,7 @@ jobs:
 
       # Build Spcode
       - name: Build Spcode
-        run: msbuild Spcode.csproj /p:Configuration=Release /p:langversion=10
+        run: msbuild Spcode.csproj /p:Configuration=Release /p:langversion=default
 
       # Build Installer
       - name: Build Installer (NSIS) 
@@ -55,7 +55,7 @@ jobs:
 
       # Build Updater
       - name: Build Updater
-        run: msbuild Deploy\SpcodeUpdater\SpcodeUpdater.csproj /p:Configuration=Release /p:langversion=10.0
+        run: msbuild Deploy\SpcodeUpdater\SpcodeUpdater.csproj /p:Configuration=Release /p:langversion=default
 
       - name: Artifact Updater
         uses: actions/upload-artifact@v1
