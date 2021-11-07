@@ -25,11 +25,11 @@ jobs:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v1.1
         with:
-          vs-version: '[16.4,17.0)'
+          vs-version: '[17.0.0.51503, 17.0.0.51503)'
 
       # Build Spcode
       - name: Build Spcode
-        run: msbuild Spcode.csproj /p:Configuration=Release /p:langversion=?
+        run: msbuild Spcode.csproj /p:Configuration=Release /property:langversion=latest
 
       # Build Installer
       - name: Build Installer (NSIS) 
@@ -57,7 +57,7 @@ jobs:
 
       # Build Updater
       - name: Build Updater
-        run: msbuild Deploy\SpcodeUpdater\SpcodeUpdater.csproj /p:Configuration=Release /p:langversion=latest
+        run: msbuild Deploy\SpcodeUpdater\SpcodeUpdater.csproj /p:Configuration=Release /property:langversion=latest
 
       - name: Artifact Updater
         uses: actions/upload-artifact@v1
