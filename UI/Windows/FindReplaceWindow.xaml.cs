@@ -9,450 +9,451 @@ using MahApps.Metro;
 using SPCode.UI.Components;
 using Xceed.Wpf.AvalonDock.Layout;
 
-namespace SPCode.UI.Windows;
-
-public partial class FindReplaceWindow
+namespace SPCode.UI.Windows
 {
-    #region Variables
-    private EditorElement _editor;
-    private EditorElement[] _allEditors;
-    private LayoutDocumentPane _dockingPane;
-    private bool IsSearchFieldOpen;
-    private readonly ObservableCollection<string> findReplaceButtonDict = new()
+    public partial class FindReplaceWindow
     {
-        Program.Translations.Get("Replace"),
-        Program.Translations.Get("ReplaceAll")
-    };
-    #endregion
-
-    #region Constructors
-    public FindReplaceWindow(string searchTerm = "")
-    {
-        InitializeComponent();
-        if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
+        #region Variables
+        private EditorElement _editor;
+        private EditorElement[] _allEditors;
+        private LayoutDocumentPane _dockingPane;
+        private bool IsSearchFieldOpen;
+        private readonly ObservableCollection<string> findReplaceButtonDict = new()
         {
-            ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
-                ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
-        }
+            Program.Translations.Get("Replace"),
+            Program.Translations.Get("ReplaceAll")
+        };
+        #endregion
 
-        Left = Program.MainWindow.Left + Program.MainWindow.Width - Program.MainWindow.ObjectBrowserColumn.Width.Value - (Width + 20);
-        Top = Program.MainWindow.Top + 40;
-
-        ReplaceButton.ItemsSource = findReplaceButtonDict;
-        ReplaceButton.SelectedIndex = 0;
-        FindBox.Text = searchTerm;
-        FindBox.SelectAll();
-
-        LoadEditorsInfo();
-        Language_Translate();
-    }
-    #endregion
-
-    #region Events
-    private void CloseFindReplaceGrid(object sender, RoutedEventArgs e)
-    {
-        ToggleSearchField();
-    }
-
-    private void SearchButtonClicked(object sender, RoutedEventArgs e)
-    {
-        Search();
-    }
-
-    private void ReplaceButtonClicked(object sender, RoutedEventArgs e)
-    {
-        if (ReplaceButton.SelectedIndex == 1)
+        #region Constructors
+        public FindReplaceWindow(string searchTerm = "")
         {
-            ReplaceAll();
+            InitializeComponent();
+            if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
+            {
+                ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
+                    ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
+            }
+
+            Left = Program.MainWindow.Left + Program.MainWindow.Width - Program.MainWindow.ObjectBrowserColumn.Width.Value - (Width + 20);
+            Top = Program.MainWindow.Top + 40;
+
+            ReplaceButton.ItemsSource = findReplaceButtonDict;
+            ReplaceButton.SelectedIndex = 0;
+            FindBox.Text = searchTerm;
+            FindBox.SelectAll();
+
+            LoadEditorsInfo();
+            Language_Translate();
         }
-        else
-        {
-            Replace();
-        }
-    }
+        #endregion
 
-    private void CountButtonClicked(object sender, RoutedEventArgs e)
-    {
-        Count();
-    }
-
-    private void SearchBoxTextChanged(object sender, RoutedEventArgs e)
-    {
-        FindResultBlock.Text = string.Empty;
-    }
-
-    private void SearchBoxKeyUp(object sender, KeyEventArgs e)
-    {
-        if (e.Key == Key.Enter)
-        {
-            Search();
-        }
-    }
-
-    private void ReplaceBoxKeyUp(object sender, KeyEventArgs e)
-    {
-        if (e.Key == Key.Enter)
-        {
-            Replace();
-        }
-    }
-
-    private void FindReplaceGrid_KeyDown(object sender, KeyEventArgs e)
-    {
-        if (e.Key == Key.Escape)
+        #region Events
+        private void CloseFindReplaceGrid(object sender, RoutedEventArgs e)
         {
             ToggleSearchField();
         }
-    }
 
-    private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
-    {
-        switch (e.Key)
+        private void SearchButtonClicked(object sender, RoutedEventArgs e)
         {
-            case Key.Escape:
-                {
-                    Close();
-                    break;
-                }
-            case Key.F3:
-                {
-                    Search();
-                    break;
-                }
+            Search();
         }
-    }
-    #endregion
 
-    #region Methods
-    private void ToggleSearchField()
-    {
-        LoadEditorsInfo();
-        if (IsSearchFieldOpen)
+        private void ReplaceButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (_editor != null)
+            if (ReplaceButton.SelectedIndex == 1)
             {
-                if (_editor.IsKeyboardFocusWithin)
-                {
-                    if (_editor.editor.SelectionLength > 0)
+                ReplaceAll();
+            }
+            else
+            {
+                Replace();
+            }
+        }
+
+        private void CountButtonClicked(object sender, RoutedEventArgs e)
+        {
+            Count();
+        }
+
+        private void SearchBoxTextChanged(object sender, RoutedEventArgs e)
+        {
+            FindResultBlock.Text = string.Empty;
+        }
+
+        private void SearchBoxKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Search();
+            }
+        }
+
+        private void ReplaceBoxKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Replace();
+            }
+        }
+
+        private void FindReplaceGrid_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                ToggleSearchField();
+            }
+        }
+
+        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Escape:
                     {
-                        FindBox.Text = _editor.editor.SelectedText;
+                        Close();
+                        break;
                     }
-                    FindBox.SelectAll();
-                    FindBox.Focus();
+                case Key.F3:
+                    {
+                        Search();
+                        break;
+                    }
+            }
+        }
+        #endregion
+
+        #region Methods
+        private void ToggleSearchField()
+        {
+            LoadEditorsInfo();
+            if (IsSearchFieldOpen)
+            {
+                if (_editor != null)
+                {
+                    if (_editor.IsKeyboardFocusWithin)
+                    {
+                        if (_editor.editor.SelectionLength > 0)
+                        {
+                            FindBox.Text = _editor.editor.SelectedText;
+                        }
+                        FindBox.SelectAll();
+                        FindBox.Focus();
+                        return;
+                    }
+                }
+                IsSearchFieldOpen = false;
+                FindReplaceGrid.IsHitTestVisible = false;
+                if (_editor == null)
+                {
                     return;
                 }
-            }
-            IsSearchFieldOpen = false;
-            FindReplaceGrid.IsHitTestVisible = false;
-            if (_editor == null)
-            {
-                return;
-            }
-            _editor.editor.Focus();
-        }
-        else
-        {
-            IsSearchFieldOpen = true;
-            FindReplaceGrid.IsHitTestVisible = true;
-            if (_editor == null)
-            {
-                return;
-            }
-            if (_editor.editor.SelectionLength > 0)
-            {
-                FindBox.Text = _editor.editor.SelectedText;
-            }
-            FindBox.Focus();
-            FindBox.SelectAll();
-        }
-    }
-
-    private void Search()
-    {
-        LoadEditorsInfo();
-        var editors = GetEditorElementsForFraction(out var editorIndex);
-        var regex = GetSearchRegex();
-        if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
-        {
-            return;
-        }
-
-        var startFileCaretOffset = 0;
-        var foundOccurence = false;
-
-        for (var i = editorIndex; i < (editors.Length + editorIndex + 1); ++i)
-        {
-            var index = ValueUnderMap(i, editors.Length);
-            string searchText;
-            var addToOffset = 0;
-            if (i == editorIndex)
-            {
-                startFileCaretOffset = editors[index].editor.CaretOffset;
-                addToOffset = startFileCaretOffset;
-                if (startFileCaretOffset < 0) { startFileCaretOffset = 0; }
-                searchText = editors[index].editor.Text.Substring(startFileCaretOffset);
-            }
-            else if (i == (editors.Length + editorIndex))
-            {
-                searchText = startFileCaretOffset == 0 ?
-                    string.Empty :
-                    editors[index].editor.Text.Substring(0, startFileCaretOffset);
+                _editor.editor.Focus();
             }
             else
             {
-                searchText = editors[index].editor.Text;
-            }
-            if (!string.IsNullOrWhiteSpace(searchText))
-            {
-                var m = regex.Match(searchText);
-                if (m.Success) // can this happen ?
+                IsSearchFieldOpen = true;
+                FindReplaceGrid.IsHitTestVisible = true;
+                if (_editor == null)
                 {
-                    foundOccurence = true;
-                    editors[index].Parent.IsSelected = true;
-                    editors[index].editor.CaretOffset = m.Index + addToOffset + m.Length;
-                    editors[index].editor.Select(m.Index + addToOffset, m.Length);
-                    var location = editors[index].editor.Document.GetLocation(m.Index + addToOffset);
-                    editors[index].editor.ScrollTo(location.Line, location.Column);
-                    FindResultBlock.Text = "Found in offset " + (m.Index + addToOffset).ToString() + " with length " + m.Length.ToString();
-                    FindResultBlock.Text = string.Format(Program.Translations.Get("FoundInOff"), m.Index + addToOffset, m.Length);
-                    break;
+                    return;
+                }
+                if (_editor.editor.SelectionLength > 0)
+                {
+                    FindBox.Text = _editor.editor.SelectedText;
+                }
+                FindBox.Focus();
+                FindBox.SelectAll();
+            }
+        }
+
+        private void Search()
+        {
+            LoadEditorsInfo();
+            var editors = GetEditorElementsForFraction(out var editorIndex);
+            var regex = GetSearchRegex();
+            if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
+            {
+                return;
+            }
+
+            var startFileCaretOffset = 0;
+            var foundOccurence = false;
+
+            for (var i = editorIndex; i < (editors.Length + editorIndex + 1); ++i)
+            {
+                var index = ValueUnderMap(i, editors.Length);
+                string searchText;
+                var addToOffset = 0;
+                if (i == editorIndex)
+                {
+                    startFileCaretOffset = editors[index].editor.CaretOffset;
+                    addToOffset = startFileCaretOffset;
+                    if (startFileCaretOffset < 0) { startFileCaretOffset = 0; }
+                    searchText = editors[index].editor.Text.Substring(startFileCaretOffset);
+                }
+                else if (i == (editors.Length + editorIndex))
+                {
+                    searchText = startFileCaretOffset == 0 ?
+                        string.Empty :
+                        editors[index].editor.Text.Substring(0, startFileCaretOffset);
+                }
+                else
+                {
+                    searchText = editors[index].editor.Text;
+                }
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    var m = regex.Match(searchText);
+                    if (m.Success) // can this happen ?
+                    {
+                        foundOccurence = true;
+                        editors[index].Parent.IsSelected = true;
+                        editors[index].editor.CaretOffset = m.Index + addToOffset + m.Length;
+                        editors[index].editor.Select(m.Index + addToOffset, m.Length);
+                        var location = editors[index].editor.Document.GetLocation(m.Index + addToOffset);
+                        editors[index].editor.ScrollTo(location.Line, location.Column);
+                        FindResultBlock.Text = "Found in offset " + (m.Index + addToOffset).ToString() + " with length " + m.Length.ToString();
+                        FindResultBlock.Text = string.Format(Program.Translations.Get("FoundInOff"), m.Index + addToOffset, m.Length);
+                        break;
+                    }
                 }
             }
-        }
-        if (!foundOccurence)
-        {
-            FindResultBlock.Text = Program.Translations.Get("FoundNothing");
-        }
-    }
-
-    private void Replace()
-    {
-        LoadEditorsInfo();
-        var editors = GetEditorElementsForFraction(out var editorIndex);
-        var regex = GetSearchRegex();
-        if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
-        {
-            return;
+            if (!foundOccurence)
+            {
+                FindResultBlock.Text = Program.Translations.Get("FoundNothing");
+            }
         }
 
-        var replaceString = ReplaceBox.Text;
-        var startFileCaretOffset = 0;
-        var foundOccurence = false;
-        for (var i = editorIndex; i < (editors.Length + editorIndex + 1); ++i)
+        private void Replace()
         {
-            var index = ValueUnderMap(i, editors.Length);
-            string searchText;
-            var addToOffset = 0;
-            if (i == editorIndex)
+            LoadEditorsInfo();
+            var editors = GetEditorElementsForFraction(out var editorIndex);
+            var regex = GetSearchRegex();
+            if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
             {
-                startFileCaretOffset = editors[index].editor.CaretOffset;
-                addToOffset = startFileCaretOffset;
-                if (startFileCaretOffset < 0) { startFileCaretOffset = 0; }
-                searchText = editors[index].editor.Text.Substring(startFileCaretOffset);
+                return;
             }
-            else if (i == (editors.Length + editorIndex))
+
+            var replaceString = ReplaceBox.Text;
+            var startFileCaretOffset = 0;
+            var foundOccurence = false;
+            for (var i = editorIndex; i < (editors.Length + editorIndex + 1); ++i)
             {
-                searchText = startFileCaretOffset == 0 ?
-                    string.Empty :
-                    editors[index].editor.Text.Substring(0, startFileCaretOffset);
-            }
-            else
-            {
-                searchText = editors[index].editor.Text;
-            }
-            if (!string.IsNullOrWhiteSpace(searchText))
-            {
-                var m = regex.Match(searchText);
-                if (m.Success)
+                var index = ValueUnderMap(i, editors.Length);
+                string searchText;
+                var addToOffset = 0;
+                if (i == editorIndex)
                 {
-                    foundOccurence = true;
-                    editors[index].Parent.IsSelected = true;
-                    var result = m.Result(replaceString);
-                    editors[index].editor.Document.Replace(m.Index + addToOffset, m.Length, result);
-                    editors[index].editor.CaretOffset = m.Index + addToOffset + result.Length;
-                    editors[index].editor.Select(m.Index + addToOffset, result.Length);
-                    var location = editors[index].editor.Document.GetLocation(m.Index + addToOffset);
-                    editors[index].editor.ScrollTo(location.Line, location.Column);
-                    FindResultBlock.Text = string.Format(Program.Translations.Get("ReplacedOff"), MinHeight + addToOffset);
-                    break;
+                    startFileCaretOffset = editors[index].editor.CaretOffset;
+                    addToOffset = startFileCaretOffset;
+                    if (startFileCaretOffset < 0) { startFileCaretOffset = 0; }
+                    searchText = editors[index].editor.Text.Substring(startFileCaretOffset);
+                }
+                else if (i == (editors.Length + editorIndex))
+                {
+                    searchText = startFileCaretOffset == 0 ?
+                        string.Empty :
+                        editors[index].editor.Text.Substring(0, startFileCaretOffset);
+                }
+                else
+                {
+                    searchText = editors[index].editor.Text;
+                }
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    var m = regex.Match(searchText);
+                    if (m.Success)
+                    {
+                        foundOccurence = true;
+                        editors[index].Parent.IsSelected = true;
+                        var result = m.Result(replaceString);
+                        editors[index].editor.Document.Replace(m.Index + addToOffset, m.Length, result);
+                        editors[index].editor.CaretOffset = m.Index + addToOffset + result.Length;
+                        editors[index].editor.Select(m.Index + addToOffset, result.Length);
+                        var location = editors[index].editor.Document.GetLocation(m.Index + addToOffset);
+                        editors[index].editor.ScrollTo(location.Line, location.Column);
+                        FindResultBlock.Text = string.Format(Program.Translations.Get("ReplacedOff"), MinHeight + addToOffset);
+                        break;
+                    }
                 }
             }
-        }
-        if (!foundOccurence)
-        {
-            FindResultBlock.Text = Program.Translations.Get("FoundNothing");
-        }
-    }
-
-    private void ReplaceAll()
-    {
-        LoadEditorsInfo();
-        var editors = GetEditorElementsForFraction(out _);
-        var regex = GetSearchRegex();
-        if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
-        {
-            return;
-        }
-
-        var count = 0;
-        var fileCount = 0;
-
-        var replaceString = ReplaceBox.Text;
-        foreach (var editor in editors)
-        {
-            var mc = regex.Matches(editor.editor.Text);
-            if (mc.Count > 0)
+            if (!foundOccurence)
             {
-                fileCount++;
+                FindResultBlock.Text = Program.Translations.Get("FoundNothing");
+            }
+        }
+
+        private void ReplaceAll()
+        {
+            LoadEditorsInfo();
+            var editors = GetEditorElementsForFraction(out _);
+            var regex = GetSearchRegex();
+            if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
+            {
+                return;
+            }
+
+            var count = 0;
+            var fileCount = 0;
+
+            var replaceString = ReplaceBox.Text;
+            foreach (var editor in editors)
+            {
+                var mc = regex.Matches(editor.editor.Text);
+                if (mc.Count > 0)
+                {
+                    fileCount++;
+                    count += mc.Count;
+                    editor.editor.BeginChange();
+                    for (var j = mc.Count - 1; j >= 0; --j)
+                    {
+                        var replace = mc[j].Result(replaceString);
+                        editor.editor.Document.Replace(mc[j].Index, mc[j].Length, replace);
+                    }
+                    editor.editor.EndChange();
+                    editor.NeedsSave = true;
+                }
+            }
+            FindResultBlock.Text = "Replaced " + count.ToString() + " occurences in " + fileCount.ToString() + " documents";
+            FindResultBlock.Text = string.Format(Program.Translations.Get("ReplacedOcc"), count, fileCount);
+        }
+
+        private void Count()
+        {
+            LoadEditorsInfo();
+            var editors = GetEditorElementsForFraction(out _);
+            if (editors == null) { return; }
+            if (editors.Length < 1) { return; }
+            if (editors[0] == null) { return; }
+            var regex = GetSearchRegex();
+            if (regex == null) { return; }
+            var count = 0;
+            foreach (var editor in editors)
+            {
+                var mc = regex.Matches(editor.editor.Text);
                 count += mc.Count;
-                editor.editor.BeginChange();
-                for (var j = mc.Count - 1; j >= 0; --j)
-                {
-                    var replace = mc[j].Result(replaceString);
-                    editor.editor.Document.Replace(mc[j].Index, mc[j].Length, replace);
-                }
-                editor.editor.EndChange();
-                editor.NeedsSave = true;
             }
+            FindResultBlock.Text = count.ToString() + " " + Program.Translations.Get("OccFound");
         }
-        FindResultBlock.Text = "Replaced " + count.ToString() + " occurences in " + fileCount.ToString() + " documents";
-        FindResultBlock.Text = string.Format(Program.Translations.Get("ReplacedOcc"), count, fileCount);
-    }
 
-    private void Count()
-    {
-        LoadEditorsInfo();
-        var editors = GetEditorElementsForFraction(out _);
-        if (editors == null) { return; }
-        if (editors.Length < 1) { return; }
-        if (editors[0] == null) { return; }
-        var regex = GetSearchRegex();
-        if (regex == null) { return; }
-        var count = 0;
-        foreach (var editor in editors)
+        private Regex GetSearchRegex()
         {
-            var mc = regex.Matches(editor.editor.Text);
-            count += mc.Count;
-        }
-        FindResultBlock.Text = count.ToString() + " " + Program.Translations.Get("OccFound");
-    }
-
-    private Regex GetSearchRegex()
-    {
-        var findString = FindBox.Text;
-        if (string.IsNullOrEmpty(findString))
-        {
-            FindResultBlock.Text = Program.Translations.Get("EmptyPatt");
-            return null;
-        }
-        Regex regex = new(string.Empty);
-        var regexOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant;
-        Debug.Assert(CCBox.IsChecked != null, "CCBox.IsChecked != null");
-        Debug.Assert(NSearch_RButton.IsChecked != null, "NSearch_RButton.IsChecked != null");
-
-
-        if (!CCBox.IsChecked.Value)
-        { regexOptions |= RegexOptions.IgnoreCase; }
-
-        if (NSearch_RButton.IsChecked.Value)
-        {
-            regex = new Regex(Regex.Escape(findString), regexOptions);
-        }
-        else
-        {
-            Debug.Assert(WSearch_RButton.IsChecked != null, "WSearch_RButton.IsChecked != null");
-            if (WSearch_RButton.IsChecked.Value)
+            var findString = FindBox.Text;
+            if (string.IsNullOrEmpty(findString))
             {
-                regex = new Regex("\\b" + Regex.Escape(findString) + "\\b", regexOptions);
+                FindResultBlock.Text = Program.Translations.Get("EmptyPatt");
+                return null;
+            }
+            Regex regex = new(string.Empty);
+            var regexOptions = RegexOptions.Compiled | RegexOptions.CultureInvariant;
+            Debug.Assert(CCBox.IsChecked != null, "CCBox.IsChecked != null");
+            Debug.Assert(NSearch_RButton.IsChecked != null, "NSearch_RButton.IsChecked != null");
+
+
+            if (!CCBox.IsChecked.Value)
+            { regexOptions |= RegexOptions.IgnoreCase; }
+
+            if (NSearch_RButton.IsChecked.Value)
+            {
+                regex = new Regex(Regex.Escape(findString), regexOptions);
             }
             else
             {
-                Debug.Assert(ASearch_RButton.IsChecked != null, "ASearch_RButton.IsChecked != null");
-                if (ASearch_RButton.IsChecked.Value)
+                Debug.Assert(WSearch_RButton.IsChecked != null, "WSearch_RButton.IsChecked != null");
+                if (WSearch_RButton.IsChecked.Value)
                 {
-                    findString = findString.Replace("\\t", "\t").Replace("\\r", "\r").Replace("\\n", "\n");
-                    var rx = new Regex(@"\\[uUxX]([0-9A-F]{4})");
-                    findString = rx.Replace(findString,
-                        match => ((char)int.Parse(match.Value.Substring(2), NumberStyles.HexNumber)).ToString());
-                    regex = new Regex(Regex.Escape(findString), regexOptions);
+                    regex = new Regex("\\b" + Regex.Escape(findString) + "\\b", regexOptions);
                 }
-                else if (RSearch_RButton.IsChecked.Value)
+                else
                 {
-                    regexOptions |= RegexOptions.Multiline;
-                    Debug.Assert(MLRBox.IsChecked != null, "MLRBox.IsChecked != null");
-                    if (MLRBox.IsChecked.Value)
-                    { regexOptions |= RegexOptions.Singleline; }
-                    // paradox, isn't it? ^^
-                    try
+                    Debug.Assert(ASearch_RButton.IsChecked != null, "ASearch_RButton.IsChecked != null");
+                    if (ASearch_RButton.IsChecked.Value)
                     {
-                        regex = new Regex(findString, regexOptions);
+                        findString = findString.Replace("\\t", "\t").Replace("\\r", "\r").Replace("\\n", "\n");
+                        var rx = new Regex(@"\\[uUxX]([0-9A-F]{4})");
+                        findString = rx.Replace(findString,
+                            match => ((char)int.Parse(match.Value.Substring(2), NumberStyles.HexNumber)).ToString());
+                        regex = new Regex(Regex.Escape(findString), regexOptions);
                     }
-                    catch (Exception)
+                    else if (RSearch_RButton.IsChecked.Value)
                     {
-                        FindResultBlock.Text = Program.Translations.Get("NoValidRegex"); return null;
+                        regexOptions |= RegexOptions.Multiline;
+                        Debug.Assert(MLRBox.IsChecked != null, "MLRBox.IsChecked != null");
+                        if (MLRBox.IsChecked.Value)
+                        { regexOptions |= RegexOptions.Singleline; }
+                        // paradox, isn't it? ^^
+                        try
+                        {
+                            regex = new Regex(findString, regexOptions);
+                        }
+                        catch (Exception)
+                        {
+                            FindResultBlock.Text = Program.Translations.Get("NoValidRegex"); return null;
+                        }
                     }
                 }
             }
+
+            return regex;
         }
 
-        return regex;
-    }
-
-    private EditorElement[] GetEditorElementsForFraction(out int editorIndex)
-    {
-        LoadEditorsInfo();
-        var editorStartIndex = 0;
-        EditorElement[] editors;
-        if (FindDestinies.SelectedIndex == 0)
-        { editors = new[] { _editor }; }
-        else
+        private EditorElement[] GetEditorElementsForFraction(out int editorIndex)
         {
-            editors = _allEditors;
-            var checkElement = _dockingPane.SelectedContent?.Content;
-            if (checkElement is EditorElement)
+            LoadEditorsInfo();
+            var editorStartIndex = 0;
+            EditorElement[] editors;
+            if (FindDestinies.SelectedIndex == 0)
+            { editors = new[] { _editor }; }
+            else
             {
-                for (var i = 0; i < editors.Length; ++i)
+                editors = _allEditors;
+                var checkElement = _dockingPane.SelectedContent?.Content;
+                if (checkElement is EditorElement)
                 {
-                    if (editors[i] == checkElement)
+                    for (var i = 0; i < editors.Length; ++i)
                     {
-                        editorStartIndex = i;
+                        if (editors[i] == checkElement)
+                        {
+                            editorStartIndex = i;
+                        }
                     }
                 }
             }
+            editorIndex = editorStartIndex;
+            return editors;
         }
-        editorIndex = editorStartIndex;
-        return editors;
-    }
 
-    private int ValueUnderMap(int value, int map)
-    {
-        while (value >= map)
+        private int ValueUnderMap(int value, int map)
         {
-            value -= map;
+            while (value >= map)
+            {
+                value -= map;
+            }
+            return value;
         }
-        return value;
-    }
 
-    private void LoadEditorsInfo()
-    {
-        _editor = Program.MainWindow.GetCurrentEditorElement();
-        _allEditors = Program.MainWindow.GetAllEditorElements();
-        _dockingPane = Program.MainWindow.DockingPane;
-    }
+        private void LoadEditorsInfo()
+        {
+            _editor = Program.MainWindow.GetCurrentEditorElement();
+            _allEditors = Program.MainWindow.GetAllEditorElements();
+            _dockingPane = Program.MainWindow.DockingPane;
+        }
 
-    public void Language_Translate()
-    {
-        NSearch_RButton.Content = Program.Translations.Get("NormalSearch");
-        WSearch_RButton.Content = Program.Translations.Get("MatchWholeWords");
-        ASearch_RButton.Content = $"{Program.Translations.Get("AdvancSearch")} (\\r, \\n, \\t, ...)";
-        RSearch_RButton.Content = Program.Translations.Get("RegexSearch");
-        MenuFR_CurrDoc.Content = Program.Translations.Get("CurrDoc");
-        MenuFR_AllDoc.Content = Program.Translations.Get("AllDoc");
+        public void Language_Translate()
+        {
+            NSearch_RButton.Content = Program.Translations.Get("NormalSearch");
+            WSearch_RButton.Content = Program.Translations.Get("MatchWholeWords");
+            ASearch_RButton.Content = $"{Program.Translations.Get("AdvancSearch")} (\\r, \\n, \\t, ...)";
+            RSearch_RButton.Content = Program.Translations.Get("RegexSearch");
+            MenuFR_CurrDoc.Content = Program.Translations.Get("CurrDoc");
+            MenuFR_AllDoc.Content = Program.Translations.Get("AllDoc");
 
-        Find_Button.Content = $"{Program.Translations.Get("Find")} (F3)";
-        Count_Button.Content = Program.Translations.Get("Count");
-        CCBox.Content = Program.Translations.Get("CaseSen");
-        MLRBox.Content = Program.Translations.Get("MultilineRegex");
+            Find_Button.Content = $"{Program.Translations.Get("Find")} (F3)";
+            Count_Button.Content = Program.Translations.Get("Count");
+            CCBox.Content = Program.Translations.Get("CaseSen");
+            MLRBox.Content = Program.Translations.Get("MultilineRegex");
+        }
+        #endregion
     }
-    #endregion
 }

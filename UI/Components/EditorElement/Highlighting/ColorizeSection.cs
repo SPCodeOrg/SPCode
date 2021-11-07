@@ -3,33 +3,34 @@ using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
 
-namespace SPCode.UI.Components;
-
-public class ColorizeSelection : DocumentColorizingTransformer
+namespace SPCode.UI.Components
 {
-    public bool HighlightSelection;
-    public string SelectionString = string.Empty;
-
-    protected override void ColorizeLine(DocumentLine line)
+    public class ColorizeSelection : DocumentColorizingTransformer
     {
-        if (HighlightSelection)
-        {
-            if (string.IsNullOrWhiteSpace(SelectionString))
-            {
-                return;
-            }
+        public bool HighlightSelection;
+        public string SelectionString = string.Empty;
 
-            var lineStartOffset = line.Offset;
-            var text = CurrentContext.Document.GetText(line);
-            var start = 0;
-            int index;
-            while ((index = text.IndexOf(SelectionString, start, StringComparison.Ordinal)) >= 0)
+        protected override void ColorizeLine(DocumentLine line)
+        {
+            if (HighlightSelection)
             {
-                ChangeLinePart(
-                    lineStartOffset + index,
-                    lineStartOffset + index + SelectionString.Length,
-                    element => { element.BackgroundBrush = Brushes.LightGray; });
-                start = index + 1;
+                if (string.IsNullOrWhiteSpace(SelectionString))
+                {
+                    return;
+                }
+
+                var lineStartOffset = line.Offset;
+                var text = CurrentContext.Document.GetText(line);
+                var start = 0;
+                int index;
+                while ((index = text.IndexOf(SelectionString, start, StringComparison.Ordinal)) >= 0)
+                {
+                    ChangeLinePart(
+                        lineStartOffset + index,
+                        lineStartOffset + index + SelectionString.Length,
+                        element => { element.BackgroundBrush = Brushes.LightGray; });
+                    start = index + 1;
+                }
             }
         }
     }

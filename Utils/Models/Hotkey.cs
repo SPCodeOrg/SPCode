@@ -2,61 +2,62 @@
 using System.Text;
 using System.Windows.Input;
 
-namespace SPCode.Utils;
-
-public class Hotkey
+namespace SPCode.Utils
 {
-    public Key Key { get; }
-    public ModifierKeys Modifiers { get; }
-
-    public Hotkey(Key key, ModifierKeys modifiers)
+    public class Hotkey
     {
-        Key = key;
-        Modifiers = modifiers;
-    }
+        public Key Key { get; }
+        public ModifierKeys Modifiers { get; }
 
-    public Hotkey(string keys)
-    {
-        foreach (var key in keys.Split('+'))
+        public Hotkey(Key key, ModifierKeys modifiers)
         {
-            if (Enum.TryParse(key, out Key parsedKey))
+            Key = key;
+            Modifiers = modifiers;
+        }
+
+        public Hotkey(string keys)
+        {
+            foreach (var key in keys.Split('+'))
             {
-                Key = parsedKey;
+                if (Enum.TryParse(key, out Key parsedKey))
+                {
+                    Key = parsedKey;
+                }
+                var newKey = key == "Ctrl" ? "Control" : key;
+                if (Enum.TryParse(newKey, out ModifierKeys parsedModifiers))
+                {
+                    Modifiers |= parsedModifiers;
+                }
             }
-            var newKey = key == "Ctrl" ? "Control" : key;
-            if (Enum.TryParse(newKey, out ModifierKeys parsedModifiers))
+        }
+
+        public override string ToString()
+        {
+            var str = new StringBuilder();
+
+            if (Modifiers.HasFlag(ModifierKeys.Control))
             {
-                Modifiers |= parsedModifiers;
+                str.Append("Ctrl+");
             }
+
+            if (Modifiers.HasFlag(ModifierKeys.Shift))
+            {
+                str.Append("Shift+");
+            }
+
+            if (Modifiers.HasFlag(ModifierKeys.Alt))
+            {
+                str.Append("Alt+");
+            }
+
+            if (Modifiers.HasFlag(ModifierKeys.Windows))
+            {
+                str.Append("Win+");
+            }
+
+            str.Append(Key);
+
+            return str.ToString();
         }
-    }
-
-    public override string ToString()
-    {
-        var str = new StringBuilder();
-
-        if (Modifiers.HasFlag(ModifierKeys.Control))
-        {
-            str.Append("Ctrl+");
-        }
-
-        if (Modifiers.HasFlag(ModifierKeys.Shift))
-        {
-            str.Append("Shift+");
-        }
-
-        if (Modifiers.HasFlag(ModifierKeys.Alt))
-        {
-            str.Append("Alt+");
-        }
-
-        if (Modifiers.HasFlag(ModifierKeys.Windows))
-        {
-            str.Append("Win+");
-        }
-
-        str.Append(Key);
-
-        return str.ToString();
     }
 }

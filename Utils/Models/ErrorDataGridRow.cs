@@ -1,9 +1,10 @@
-﻿namespace SPCode.Utils;
-
-public class ErrorDataGridRow
+﻿namespace SPCode.Utils
 {
-    public string File { set; get; }
-    public string Line { set; get; }
-    public string Type { set; get; }
-    public string Details { set; get; }
+    public class ErrorDataGridRow
+    {
+        public string File { set; get; }
+        public string Line { set; get; }
+        public string Type { set; get; }
+        public string Details { set; get; }
+    }
 }

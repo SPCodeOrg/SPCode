@@ -2,74 +2,75 @@
 using SourcepawnCondenser.SourcemodDefinition;
 using SourcepawnCondenser.Tokenizer;
 
-namespace SourcepawnCondenser;
-
-public partial class Condenser
+namespace SourcepawnCondenser
 {
-    private int ConsumeSMEnum()
+    public partial class Condenser
     {
-        var startIndex = t[position].Index;
-        if ((position + 1) < length)
+        private int ConsumeSMEnum()
         {
-            var iteratePosition = position;
-            var enumName = string.Empty;
-            while ((iteratePosition + 1) < length && t[iteratePosition].Kind != TokenKind.BraceOpen)
+            var startIndex = t[position].Index;
+            if ((position + 1) < length)
             {
-                if (t[iteratePosition].Kind == TokenKind.Identifier)
+                var iteratePosition = position;
+                var enumName = string.Empty;
+                while ((iteratePosition + 1) < length && t[iteratePosition].Kind != TokenKind.BraceOpen)
                 {
-                    enumName = t[iteratePosition].Value;
-                }
-                ++iteratePosition;
-            }
-            var braceState = 0;
-            var inIgnoreMode = false;
-            var endTokenIndex = -1;
-            var entries = new List<string>();
-            for (; iteratePosition < length; ++iteratePosition)
-            {
-                if (t[iteratePosition].Kind == TokenKind.BraceOpen)
-                {
-                    ++braceState;
-                    continue;
-                }
-                if (t[iteratePosition].Kind == TokenKind.BraceClose)
-                {
-                    --braceState;
-                    if (braceState == 0)
+                    if (t[iteratePosition].Kind == TokenKind.Identifier)
                     {
-                        endTokenIndex = iteratePosition;
-                        break;
+                        enumName = t[iteratePosition].Value;
                     }
-                    continue;
+                    ++iteratePosition;
                 }
-                if (inIgnoreMode)
+                var braceState = 0;
+                var inIgnoreMode = false;
+                var endTokenIndex = -1;
+                var entries = new List<string>();
+                for (; iteratePosition < length; ++iteratePosition)
                 {
-                    if (t[iteratePosition].Kind == TokenKind.Comma)
+                    if (t[iteratePosition].Kind == TokenKind.BraceOpen)
                     {
-                        inIgnoreMode = false;
+                        ++braceState;
+                        continue;
                     }
-                    continue;
+                    if (t[iteratePosition].Kind == TokenKind.BraceClose)
+                    {
+                        --braceState;
+                        if (braceState == 0)
+                        {
+                            endTokenIndex = iteratePosition;
+                            break;
+                        }
+                        continue;
+                    }
+                    if (inIgnoreMode)
+                    {
+                        if (t[iteratePosition].Kind == TokenKind.Comma)
+                        {
+                            inIgnoreMode = false;
+                        }
+                        continue;
+                    }
+                    if (t[iteratePosition].Kind == TokenKind.Identifier)
+                    {
+                        entries.Add(t[iteratePosition].Value);
+                        inIgnoreMode = true;
+                    }
                 }
-                if (t[iteratePosition].Kind == TokenKind.Identifier)
+                if (endTokenIndex == -1)
                 {
-                    entries.Add(t[iteratePosition].Value);
-                    inIgnoreMode = true;
+                    return -1;
                 }
+                def.Enums.Add(new SMEnum()
+                {
+                    Index = startIndex,
+                    Length = t[endTokenIndex].Index - startIndex + 1,
+                    File = FileName,
+                    Entries = entries.ToArray(),
+                    Name = enumName
+                });
+                return endTokenIndex;
             }
-            if (endTokenIndex == -1)
-            {
-                return -1;
-            }
-            def.Enums.Add(new SMEnum()
-            {
-                Index = startIndex,
-                Length = t[endTokenIndex].Index - startIndex + 1,
-                File = FileName,
-                Entries = entries.ToArray(),
-                Name = enumName
-            });
-            return endTokenIndex;
+            return -1;
         }
-        return -1;
     }
 }

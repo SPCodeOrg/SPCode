@@ -1,9 +1,10 @@
-﻿namespace SPCode.Utils;
-
-public class TemplateInfo
+﻿namespace SPCode.Utils
 {
-    public string FileName;
-    public string Name;
-    public string NewName;
-    public string Path;
+    public class TemplateInfo
+    {
+        public string FileName;
+        public string Name;
+        public string NewName;
+        public string Path;
+    }
 }

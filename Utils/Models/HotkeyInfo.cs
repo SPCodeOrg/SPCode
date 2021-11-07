@@ -1,13 +1,14 @@
-﻿namespace SPCode.Utils;
-
-public class HotkeyInfo
+﻿namespace SPCode.Utils
 {
-    public Hotkey Hotkey { get; set; }
-    public string Command { get; set; }
-
-    public HotkeyInfo(Hotkey hk, string command)
+    public class HotkeyInfo
     {
-        Hotkey = hk;
-        Command = command;
+        public Hotkey Hotkey { get; set; }
+        public string Command { get; set; }
+
+        public HotkeyInfo(Hotkey hk, string command)
+        {
+            Hotkey = hk;
+            Command = command;
+        }
     }
 }

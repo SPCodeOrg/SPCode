@@ -20,119 +20,119 @@ using SPCode.UI;
 using SPCode.UI.Interop;
 using SPCode.Utils;
 
-namespace SPCode;
-
-public static class Program
+namespace SPCode
 {
-    public static MainWindow MainWindow;
-    public static OptionsControl OptionsObject;
-    public static TranslationProvider Translations;
-    public static List<HotkeyInfo> HotkeysList;
-    public static Config[] Configs;
-    public static int SelectedConfig;
-    public static string SelectedTemplatePath;
-    public static Stack<string> RecentFilesStack = new();
-    public static UpdateInfo UpdateStatus;
-    public static bool RCCKMade;
-    public static DiscordRpcClient DiscordClient = new(Constants.DiscordRPCAppID);
-    public static Timestamps DiscordTime = Timestamps.Now;
-
-    public static string Indentation => OptionsObject.Editor_ReplaceTabsToWhitespace
-        ? new string(' ', OptionsObject.Editor_IndentationSize)
-        : "\t";
-
-    public static bool _IsLocalInstallation;
-
-    [STAThread]
-    public static void Main(string[] args)
+    public static class Program
     {
+        public static MainWindow MainWindow;
+        public static OptionsControl OptionsObject;
+        public static TranslationProvider Translations;
+        public static List<HotkeyInfo> HotkeysList;
+        public static Config[] Configs;
+        public static int SelectedConfig;
+        public static string SelectedTemplatePath;
+        public static Stack<string> RecentFilesStack = new();
+        public static UpdateInfo UpdateStatus;
+        public static bool RCCKMade;
+        public static DiscordRpcClient DiscordClient = new(Constants.DiscordRPCAppID);
+        public static Timestamps DiscordTime = Timestamps.Now;
+
+        public static string Indentation => OptionsObject.Editor_ReplaceTabsToWhitespace
+            ? new string(' ', OptionsObject.Editor_IndentationSize)
+            : "\t";
+
+        public static bool _IsLocalInstallation;
+
+        [STAThread]
+        public static void Main(string[] args)
+        {
 #if DEBUG
         System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level =
             System.Diagnostics.SourceLevels.Critical;
 
 #endif
 
-        using (new Mutex(true, "SPCodeGlobalMutex", out var mutexReserved))
-        {
-            if (mutexReserved)
+            using (new Mutex(true, "SPCodeGlobalMutex", out var mutexReserved))
             {
+                if (mutexReserved)
+                {
 #if !DEBUG
                     try
                     {
 #endif
 
-                var splashScreen = new SplashScreen("Resources/Icons/icon256x.png");
-                splashScreen.Show(false, true);
-                Environment.CurrentDirectory =
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
-                    throw new NullReferenceException();
+                        var splashScreen = new SplashScreen("Resources/Icons/icon256x.png");
+                        splashScreen.Show(false, true);
+                        Environment.CurrentDirectory =
+                            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
+                            throw new NullReferenceException();
 #if !DEBUG
                         ProfileOptimization.SetProfileRoot(Environment.CurrentDirectory);
                         ProfileOptimization.StartProfile("Startup.Profile");
 #endif
-                _IsLocalInstallation = Paths.IsLocalInstallation();
-                UpdateStatus = new UpdateInfo();
-                OptionsObject = OptionsControlIOObject.Load(out var ProgramIsNew);
+                        _IsLocalInstallation = Paths.IsLocalInstallation();
+                        UpdateStatus = new UpdateInfo();
+                        OptionsObject = OptionsControlIOObject.Load(out var ProgramIsNew);
 
-                if (!File.Exists(Constants.HotkeysFile))
-                {
-                    HotkeyControl.CreateDefaultHotkeys();
-                }
-                else
-                {
-                    HotkeyControl.CheckAndBufferHotkeys();
-                }
-
-                // Delete the default Ctrl+D hotkey to assign manually
-                AvalonEditCommands.DeleteLine.InputGestures.Clear();
-
-                if (OptionsObject.Program_DiscordPresence)
-                {
-                    // Init Discord RPC
-                    DiscordClient.Initialize();
-
-                    // Set default presence
-                    DiscordClient.SetPresence(new RichPresence
-                    {
-                        State = "Idle",
-                        Timestamps = DiscordTime,
-                        Assets = new Assets
+                        if (!File.Exists(Constants.HotkeysFile))
                         {
-                            LargeImageKey = "immagine"
-                        },
-                        Buttons = new Button[]
-                        {
-                                new Button() { Label = Constants.GetSPCodeText, Url = Constants.GitHubLatestRelease }
+                            HotkeyControl.CreateDefaultHotkeys();
                         }
-                    });
-                }
+                        else
+                        {
+                            HotkeyControl.CheckAndBufferHotkeys();
+                        }
+
+                        // Delete the default Ctrl+D hotkey to assign manually
+                        AvalonEditCommands.DeleteLine.InputGestures.Clear();
+
+                        if (OptionsObject.Program_DiscordPresence)
+                        {
+                            // Init Discord RPC
+                            DiscordClient.Initialize();
+
+                            // Set default presence
+                            DiscordClient.SetPresence(new RichPresence
+                            {
+                                State = "Idle",
+                                Timestamps = DiscordTime,
+                                Assets = new Assets
+                                {
+                                    LargeImageKey = "immagine"
+                                },
+                                Buttons = new Button[]
+                                {
+                                new Button() { Label = Constants.GetSPCodeText, Url = Constants.GitHubLatestRelease }
+                                }
+                            });
+                        }
 
 
-                Translations = new TranslationProvider();
-                Translations.LoadLanguage(OptionsObject.Language, true);
-                foreach (var arg in args)
-                {
-                    if (arg.ToLowerInvariant() == "-rcck") //ReCreateCryptoKey
-                    {
-                        OptionsObject.ReCreateCryptoKey();
-                        MakeRCCKAlert();
-                    }
-                }
+                        Translations = new TranslationProvider();
+                        Translations.LoadLanguage(OptionsObject.Language, true);
+                        foreach (var arg in args)
+                        {
+                            if (arg.ToLowerInvariant() == "-rcck") //ReCreateCryptoKey
+                            {
+                                OptionsObject.ReCreateCryptoKey();
+                                MakeRCCKAlert();
+                            }
+                        }
 
-                Configs = ConfigLoader.Load();
-                for (var i = 0; i < Configs.Length; ++i)
-                {
-                    if (Configs[i].Name == OptionsObject.Program_SelectedConfig)
-                    {
-                        SelectedConfig = i;
-                        break;
-                    }
-                }
+                        Configs = ConfigLoader.Load();
+                        for (var i = 0; i < Configs.Length; ++i)
+                        {
+                            if (Configs[i].Name == OptionsObject.Program_SelectedConfig)
+                            {
+                                SelectedConfig = i;
+                                break;
+                            }
+                        }
 
-                if (!OptionsObject.Program_UseHardwareAcceleration)
-                {
-                    RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
-                }
+                        if (!OptionsObject.Program_UseHardwareAcceleration)
+                        {
+                            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+                        }
 #if !DEBUG
                         if (ProgramIsNew)
                         {
@@ -154,9 +154,9 @@ public static class Program
                             }
                         }
 #endif
-                MainWindow = new MainWindow(splashScreen);
-                var pipeServer = new PipeInteropServer(MainWindow);
-                pipeServer.Start();
+                        MainWindow = new MainWindow(splashScreen);
+                        var pipeServer = new PipeInteropServer(MainWindow);
+                        pipeServer.Start();
 #if !DEBUG
                     }
                     catch (Exception e)
@@ -172,7 +172,7 @@ public static class Program
                         Environment.Exit(Environment.ExitCode);
                     }
 #endif
-                var app = new Application();
+                    var app = new Application();
 #if !DEBUG
                     try
                     {
@@ -181,9 +181,9 @@ public static class Program
                             Task.Run(UpdateCheck.Check);
                         }
 #endif
-                app.Startup += App_Startup;
-                app.Run(MainWindow);
-                OptionsControlIOObject.Save();
+                        app.Startup += App_Startup;
+                        app.Run(MainWindow);
+                        OptionsControlIOObject.Save();
 #if !DEBUG
                     }
                     catch (Exception e)
@@ -199,126 +199,127 @@ public static class Program
                         Environment.Exit(Environment.ExitCode);
                     }
 #endif
-            }
-            else
-            {
-                try
+                }
+                else
                 {
-                    var sBuilder = new StringBuilder();
-                    var addedFiles = false;
-                    for (var i = 0; i < args.Length; ++i)
+                    try
                     {
-                        if (!string.IsNullOrWhiteSpace(args[i]))
+                        var sBuilder = new StringBuilder();
+                        var addedFiles = false;
+                        for (var i = 0; i < args.Length; ++i)
                         {
-                            var fInfo = new FileInfo(args[i]);
-                            if (fInfo.Exists)
+                            if (!string.IsNullOrWhiteSpace(args[i]))
                             {
-                                var ext = fInfo.Extension.ToLowerInvariant().Trim('.', ' ');
-                                if (ext == "sp" || ext == "inc" || ext == "txt" || ext == "smx")
+                                var fInfo = new FileInfo(args[i]);
+                                if (fInfo.Exists)
                                 {
-                                    addedFiles = true;
-                                    sBuilder.Append(fInfo.FullName);
-                                    if (i + 1 != args.Length)
+                                    var ext = fInfo.Extension.ToLowerInvariant().Trim('.', ' ');
+                                    if (ext == "sp" || ext == "inc" || ext == "txt" || ext == "smx")
                                     {
-                                        sBuilder.Append("|");
+                                        addedFiles = true;
+                                        sBuilder.Append(fInfo.FullName);
+                                        if (i + 1 != args.Length)
+                                        {
+                                            sBuilder.Append("|");
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    if (addedFiles)
+                        if (addedFiles)
+                        {
+                            PipeInteropClient.ConnectToMasterPipeAndSendData(sBuilder.ToString());
+                        }
+                    }
+                    catch (Exception)
                     {
-                        PipeInteropClient.ConnectToMasterPipeAndSendData(sBuilder.ToString());
-                    }
+                        // ignored
+                    } //dont fuck the user up with irrelevant data
                 }
-                catch (Exception)
+            }
+        }
+
+        public static void MakeRCCKAlert()
+        {
+            if (RCCKMade)
+            {
+                return;
+            }
+
+            RCCKMade = true;
+            MessageBox.Show(
+                "All FTP/RCon passwords are now encrypted wrong!" + Environment.NewLine + "You have to replace them!",
+                "Created new crypto key", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        public static void ClearUpdateFiles()
+        {
+            var files = Directory.GetFiles(Environment.CurrentDirectory, "*.exe", SearchOption.TopDirectoryOnly);
+            for (var i = 0; i < files.Length; ++i)
+            {
+                var fInfo = new FileInfo(files[i]);
+                if (fInfo.Name.StartsWith("updater_", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    // ignored
-                } //dont fuck the user up with irrelevant data
+                    fInfo.Delete();
+                }
             }
         }
-    }
 
-    public static void MakeRCCKAlert()
-    {
-        if (RCCKMade)
+        private static void App_Startup(object sender, StartupEventArgs e)
         {
-            return;
+            ThemeManager.DetectAppStyle(Application.Current);
+            ThemeManager.ChangeAppStyle(Application.Current,
+                ThemeManager.GetAccent("Green"),
+                ThemeManager.GetAppTheme("BaseDark")); // or appStyle.Item1
         }
 
-        RCCKMade = true;
-        MessageBox.Show(
-            "All FTP/RCon passwords are now encrypted wrong!" + Environment.NewLine + "You have to replace them!",
-            "Created new crypto key", MessageBoxButton.OK, MessageBoxImage.Information);
-    }
-
-    public static void ClearUpdateFiles()
-    {
-        var files = Directory.GetFiles(Environment.CurrentDirectory, "*.exe", SearchOption.TopDirectoryOnly);
-        for (var i = 0; i < files.Length; ++i)
+        [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
+        private static string BuildExceptionString(Exception e, string SectionName)
         {
-            var fInfo = new FileInfo(files[i]);
-            if (fInfo.Name.StartsWith("updater_", StringComparison.CurrentCultureIgnoreCase))
+            var outString = new StringBuilder();
+            outString.AppendLine("Section: " + SectionName);
+            outString.AppendLine(".NET Version: " + Environment.Version);
+            outString.AppendLine("Is local installation?: " + _IsLocalInstallation);
+            outString.AppendLine("OS: " + Environment.OSVersion.VersionString);
+            outString.AppendLine("64 bit OS: " + (Environment.Is64BitOperatingSystem ? "TRUE" : "FALSE"));
+            outString.AppendLine("64 bit mode: " + (Environment.Is64BitProcess ? "TRUE" : "FALSE"));
+            outString.AppendLine("Dir: " + Environment.CurrentDirectory);
+            outString.AppendLine("Working Set: " + (Environment.WorkingSet / 1024) + " kb");
+            outString.AppendLine("Installed UI Culture: " + CultureInfo.InstalledUICulture);
+            outString.AppendLine("Current UI Culture: " + CultureInfo.CurrentUICulture);
+            outString.AppendLine("Current Culture: " + CultureInfo.CurrentCulture);
+            outString.AppendLine();
+            var eNumber = 1;
+            while (true)
             {
-                fInfo.Delete();
+                if (e == null)
+                {
+                    break;
+                }
+
+                outString.AppendLine("Exception " + eNumber);
+                outString.AppendLine("Message:");
+                outString.AppendLine(e.Message);
+                outString.AppendLine("Stacktrace:");
+                outString.AppendLine(e.StackTrace);
+                outString.AppendLine("Source:");
+                outString.AppendLine(e.Source ?? "null");
+                outString.AppendLine("HResult Code:");
+                outString.AppendLine(e.HResult.ToString());
+                outString.AppendLine("Helplink:");
+                outString.AppendLine(e.HelpLink ?? "null");
+                if (e.TargetSite != null)
+                {
+                    outString.AppendLine("Targetsite Name:");
+                    outString.AppendLine(e.TargetSite.Name);
+                }
+
+                e = e.InnerException;
+                eNumber++;
             }
+
+            return eNumber - 1 + Environment.NewLine + outString;
         }
-    }
-
-    private static void App_Startup(object sender, StartupEventArgs e)
-    {
-        ThemeManager.DetectAppStyle(Application.Current);
-        ThemeManager.ChangeAppStyle(Application.Current,
-            ThemeManager.GetAccent("Green"),
-            ThemeManager.GetAppTheme("BaseDark")); // or appStyle.Item1
-    }
-
-    [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members")]
-    private static string BuildExceptionString(Exception e, string SectionName)
-    {
-        var outString = new StringBuilder();
-        outString.AppendLine("Section: " + SectionName);
-        outString.AppendLine(".NET Version: " + Environment.Version);
-        outString.AppendLine("Is local installation?: " + _IsLocalInstallation);
-        outString.AppendLine("OS: " + Environment.OSVersion.VersionString);
-        outString.AppendLine("64 bit OS: " + (Environment.Is64BitOperatingSystem ? "TRUE" : "FALSE"));
-        outString.AppendLine("64 bit mode: " + (Environment.Is64BitProcess ? "TRUE" : "FALSE"));
-        outString.AppendLine("Dir: " + Environment.CurrentDirectory);
-        outString.AppendLine("Working Set: " + (Environment.WorkingSet / 1024) + " kb");
-        outString.AppendLine("Installed UI Culture: " + CultureInfo.InstalledUICulture);
-        outString.AppendLine("Current UI Culture: " + CultureInfo.CurrentUICulture);
-        outString.AppendLine("Current Culture: " + CultureInfo.CurrentCulture);
-        outString.AppendLine();
-        var eNumber = 1;
-        while (true)
-        {
-            if (e == null)
-            {
-                break;
-            }
-
-            outString.AppendLine("Exception " + eNumber);
-            outString.AppendLine("Message:");
-            outString.AppendLine(e.Message);
-            outString.AppendLine("Stacktrace:");
-            outString.AppendLine(e.StackTrace);
-            outString.AppendLine("Source:");
-            outString.AppendLine(e.Source ?? "null");
-            outString.AppendLine("HResult Code:");
-            outString.AppendLine(e.HResult.ToString());
-            outString.AppendLine("Helplink:");
-            outString.AppendLine(e.HelpLink ?? "null");
-            if (e.TargetSite != null)
-            {
-                outString.AppendLine("Targetsite Name:");
-                outString.AppendLine(e.TargetSite.Name);
-            }
-
-            e = e.InnerException;
-            eNumber++;
-        }
-
-        return eNumber - 1 + Environment.NewLine + outString;
     }
 }

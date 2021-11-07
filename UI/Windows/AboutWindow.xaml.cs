@@ -8,51 +8,52 @@ using System.Windows.Navigation;
 using MahApps.Metro;
 using SPCode.Utils;
 
-namespace SPCode.UI.Windows;
-
-public partial class AboutWindow
+namespace SPCode.UI.Windows
 {
-    public AboutWindow()
+    public partial class AboutWindow
     {
-        InitializeComponent();
-        Language_Translate();
-        if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
-        { ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor), ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme)); }
-
-        Brush gridBrush = Program.OptionsObject.Program_Theme == "BaseDark" ?
-          new SolidColorBrush(Color.FromArgb(0xC0, 0x10, 0x10, 0x10)) :
-          new SolidColorBrush(Color.FromArgb(0xC0, 0xE0, 0xE0, 0xE0));
-        gridBrush.Freeze();
-        foreach (var c in ContentStackPanel.Children)
+        public AboutWindow()
         {
-            if (c is Grid g)
+            InitializeComponent();
+            Language_Translate();
+            if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
+            { ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor), ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme)); }
+
+            Brush gridBrush = Program.OptionsObject.Program_Theme == "BaseDark" ?
+              new SolidColorBrush(Color.FromArgb(0xC0, 0x10, 0x10, 0x10)) :
+              new SolidColorBrush(Color.FromArgb(0xC0, 0xE0, 0xE0, 0xE0));
+            gridBrush.Freeze();
+            foreach (var c in ContentStackPanel.Children)
             {
-                g.Background = gridBrush;
+                if (c is Grid g)
+                {
+                    g.Background = gridBrush;
+                }
             }
+            TitleBox.Text = $"SPCode ({Assembly.GetEntryAssembly()?.GetName().Version}) - {Program.Translations.Get("SPEditCap")}";
+            LicenseField.Text = File.ReadAllText(Constants.LicenseFile);
         }
-        TitleBox.Text = $"SPCode ({Assembly.GetEntryAssembly()?.GetName().Version}) - {Program.Translations.Get("SPEditCap")}";
-        LicenseField.Text = File.ReadAllText(Constants.LicenseFile);
-    }
 
-    private void OpenLicenseFlyout(object sender, RoutedEventArgs e)
-    {
-        LicenseFlyout.IsOpen = true;
-    }
-
-    private void HyperlinkRequestNavigate(object sender, RequestNavigateEventArgs e)
-    {
-        Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-        e.Handled = true;
-    }
-
-    private void Language_Translate()
-    {
-        if (Program.Translations.IsDefault)
+        private void OpenLicenseFlyout(object sender, RoutedEventArgs e)
         {
-            return;
+            LicenseFlyout.IsOpen = true;
         }
-        WrittenByBlock.Text = string.Format(Program.Translations.Get("WrittenBy"), "Julien Kluge (Julien.Kluge@gmail.com");
-        LicenseBlock.Text = Program.Translations.Get("License");
-        PeopleInvolvedBlock.Text = Program.Translations.Get("PeopleInv");
+
+        private void HyperlinkRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+        }
+
+        private void Language_Translate()
+        {
+            if (Program.Translations.IsDefault)
+            {
+                return;
+            }
+            WrittenByBlock.Text = string.Format(Program.Translations.Get("WrittenBy"), "Julien Kluge (Julien.Kluge@gmail.com");
+            LicenseBlock.Text = Program.Translations.Get("License");
+            PeopleInvolvedBlock.Text = Program.Translations.Get("PeopleInv");
+        }
     }
 }

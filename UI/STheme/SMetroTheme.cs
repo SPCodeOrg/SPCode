@@ -17,14 +17,15 @@
 using System;
 using Xceed.Wpf.AvalonDock.Themes;
 
-namespace SPCode.UI.STheme;
-
-public class SMetroTheme : Theme
+namespace SPCode.UI.STheme
 {
-    public override Uri GetResourceUri()
+    public class SMetroTheme : Theme
     {
-        return new Uri(
-            "/SPCode;component/ui/stheme/stheme.xaml",
-            UriKind.Relative);
+        public override Uri GetResourceUri()
+        {
+            return new Uri(
+                "/SPCode;component/ui/stheme/stheme.xaml",
+                UriKind.Relative);
+        }
     }
 }

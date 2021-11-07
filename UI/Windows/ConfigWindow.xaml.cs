@@ -17,631 +17,632 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using SPCode.Interop;
 using SPCode.Utils;
 
-namespace SPCode.UI.Windows;
-
-public partial class ConfigWindow
+namespace SPCode.UI.Windows
 {
-    private bool AllowChange;
-    private bool NeedsSMDefInvalidation;
-
-    private ICommand textBoxButtonFileCmd;
-
-    private ICommand textBoxButtonFolderCmd;
-
-    public ConfigWindow()
+    public partial class ConfigWindow
     {
-        InitializeComponent();
-        Language_Translate();
-        if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
-        {
-            ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
-                ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
-        }
+        private bool AllowChange;
+        private bool NeedsSMDefInvalidation;
 
-        foreach (var config in Program.Configs)
-        {
-            ConfigListBox.Items.Add(new ListBoxItem { Content = config.Name });
-        }
+        private ICommand textBoxButtonFileCmd;
 
-        ConfigListBox.SelectedIndex = Program.SelectedConfig;
-    }
+        private ICommand textBoxButtonFolderCmd;
 
-    public ICommand TextBoxButtonFolderCmd
-    {
-        set { }
-        get
+        public ConfigWindow()
         {
-            if (textBoxButtonFolderCmd == null)
+            InitializeComponent();
+            Language_Translate();
+            if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
             {
-                var cmd = new SimpleCommand
-                {
-                    CanExecutePredicate = o => true,
-                    ExecuteAction = o =>
-                    {
-                        if (o is TextBox box)
-                        {
-                            var dialog = new CommonOpenFileDialog
-                            {
-                                IsFolderPicker = true
-                            };
-                            var result = dialog.ShowDialog();
-
-                            if (result == CommonFileDialogResult.Ok)
-                            {
-                                box.Text = dialog.FileName;
-                            }
-                        }
-                    }
-                };
-                textBoxButtonFolderCmd = cmd;
-                return cmd;
+                ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
+                    ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
 
-            return textBoxButtonFolderCmd;
-        }
-    }
-
-    public ICommand TextBoxButtonFileCmd
-    {
-        set { }
-        get
-        {
-            if (textBoxButtonFileCmd == null)
+            foreach (var config in Program.Configs)
             {
-                var cmd = new SimpleCommand
-                {
-                    CanExecutePredicate = o => true,
-                    ExecuteAction = o =>
-                    {
-                        if (o is TextBox box)
-                        {
-                            var dialog = new OpenFileDialog
-                            {
-                                Filter = "Executables *.exe|*.exe|All Files *.*|*.*",
-                                Multiselect = false,
-                                CheckFileExists = true,
-                                CheckPathExists = true,
-                                Title = Program.Translations.Get("SelectExe")
-                            };
-                            var result = dialog.ShowDialog();
+                ConfigListBox.Items.Add(new ListBoxItem { Content = config.Name });
+            }
 
-                            Debug.Assert(result != null, nameof(result) + " != null");
-                            if (result.Value)
+            ConfigListBox.SelectedIndex = Program.SelectedConfig;
+        }
+
+        public ICommand TextBoxButtonFolderCmd
+        {
+            set { }
+            get
+            {
+                if (textBoxButtonFolderCmd == null)
+                {
+                    var cmd = new SimpleCommand
+                    {
+                        CanExecutePredicate = o => true,
+                        ExecuteAction = o =>
+                        {
+                            if (o is TextBox box)
                             {
-                                var fInfo = new FileInfo(dialog.FileName);
-                                if (fInfo.Exists)
+                                var dialog = new CommonOpenFileDialog
                                 {
-                                    box.Text = fInfo.FullName;
+                                    IsFolderPicker = true
+                                };
+                                var result = dialog.ShowDialog();
+
+                                if (result == CommonFileDialogResult.Ok)
+                                {
+                                    box.Text = dialog.FileName;
                                 }
                             }
                         }
-                    }
-                };
-                textBoxButtonFileCmd = cmd;
-                return cmd;
+                    };
+                    textBoxButtonFolderCmd = cmd;
+                    return cmd;
+                }
+
+                return textBoxButtonFolderCmd;
             }
-
-            return textBoxButtonFileCmd;
-        }
-    }
-
-    private void ConfigListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        LoadConfigToUI(ConfigListBox.SelectedIndex);
-    }
-
-    private void LoadConfigToUI(int index)
-    {
-        if (index < 0 || index >= Program.Configs.Length)
-        {
-            return;
         }
 
-        AllowChange = false;
-        var c = Program.Configs[index];
-
-        C_Name.Text = c.Name;
-        C_SMDir.ItemsSource = c.SMDirectories;
-        C_AutoCopy.IsChecked = c.AutoCopy;
-        C_AutoUpload.IsChecked = c.AutoUpload;
-        C_AutoRCON.IsChecked = c.AutoRCON;
-        C_CopyDir.Text = c.CopyDirectory;
-        C_ServerFile.Text = c.ServerFile;
-        C_ServerArgs.Text = c.ServerArgs;
-        C_PreBuildCmd.Text = c.PreCmd;
-        C_PostBuildCmd.Text = c.PostCmd;
-        C_OptimizationLevel.Value = c.OptimizeLevel;
-        C_VerboseLevel.Value = c.VerboseLevel;
-        C_DeleteAfterCopy.IsChecked = c.DeleteAfterCopy;
-        C_FTPHost.Text = c.FTPHost;
-        C_FTPUser.Text = c.FTPUser;
-        C_FTPPW.Password = c.FTPPassword;
-        C_FTPDir.Text = c.FTPDir;
-        C_RConEngine.SelectedIndex = c.RConUseSourceEngine ? 0 : 1;
-        C_RConIP.Text = c.RConIP;
-        C_RConPort.Text = c.RConPort.ToString();
-        C_RConPW.Password = c.RConPassword;
-        C_RConCmds.Text = c.RConCommands;
-        AllowChange = true;
-    }
-
-    private void NewButton_Clicked(object sender, RoutedEventArgs e)
-    {
-        var c = new Config
+        public ICommand TextBoxButtonFileCmd
         {
-            Name = "New Config",
-            Standard = false,
-            OptimizeLevel = 2,
-            VerboseLevel = 1,
-            SMDirectories = new List<string>()
-        };
-        var configList = new List<Config>(Program.Configs) { c };
-        Program.Configs = configList.ToArray();
-        ConfigListBox.Items.Add(new ListBoxItem { Content = Program.Translations.Get("NewConfig") });
-    }
+            set { }
+            get
+            {
+                if (textBoxButtonFileCmd == null)
+                {
+                    var cmd = new SimpleCommand
+                    {
+                        CanExecutePredicate = o => true,
+                        ExecuteAction = o =>
+                        {
+                            if (o is TextBox box)
+                            {
+                                var dialog = new OpenFileDialog
+                                {
+                                    Filter = "Executables *.exe|*.exe|All Files *.*|*.*",
+                                    Multiselect = false,
+                                    CheckFileExists = true,
+                                    CheckPathExists = true,
+                                    Title = Program.Translations.Get("SelectExe")
+                                };
+                                var result = dialog.ShowDialog();
 
-    private void DeleteButton_Clicked(object sender, RoutedEventArgs e)
-    {
-        var index = ConfigListBox.SelectedIndex;
-        var c = Program.Configs[index];
-        if (c.Standard)
-        {
-            this.ShowMessageAsync(Program.Translations.Get("CannotDelConf"),
-                Program.Translations.Get("YCannotDelConf"), MessageDialogStyle.Affirmative,
-                Program.MainWindow.MetroDialogOptions);
-            return;
+                                Debug.Assert(result != null, nameof(result) + " != null");
+                                if (result.Value)
+                                {
+                                    var fInfo = new FileInfo(dialog.FileName);
+                                    if (fInfo.Exists)
+                                    {
+                                        box.Text = fInfo.FullName;
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    textBoxButtonFileCmd = cmd;
+                    return cmd;
+                }
+
+                return textBoxButtonFileCmd;
+            }
         }
 
-        var configList = new List<Config>(Program.Configs);
-        configList.RemoveAt(index);
-        Program.Configs = configList.ToArray();
-        ConfigListBox.Items.RemoveAt(index);
-        if (index == Program.SelectedConfig)
+        private void ConfigListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Program.SelectedConfig = 0;
+            LoadConfigToUI(ConfigListBox.SelectedIndex);
         }
 
-        ConfigListBox.SelectedIndex = 0;
-    }
-
-    private void AddSMDirButton_Click(object sender, RoutedEventArgs e)
-    {
-        var dialog = new CommonOpenFileDialog
+        private void LoadConfigToUI(int index)
         {
-            IsFolderPicker = true
-        };
-
-        if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-        {
-            var c = Program.Configs[ConfigListBox.SelectedIndex];
-
-            if (c.SMDirectories.Contains(dialog.FileName))
+            if (index < 0 || index >= Program.Configs.Length)
             {
                 return;
             }
 
-            try
+            AllowChange = false;
+            var c = Program.Configs[index];
+
+            C_Name.Text = c.Name;
+            C_SMDir.ItemsSource = c.SMDirectories;
+            C_AutoCopy.IsChecked = c.AutoCopy;
+            C_AutoUpload.IsChecked = c.AutoUpload;
+            C_AutoRCON.IsChecked = c.AutoRCON;
+            C_CopyDir.Text = c.CopyDirectory;
+            C_ServerFile.Text = c.ServerFile;
+            C_ServerArgs.Text = c.ServerArgs;
+            C_PreBuildCmd.Text = c.PreCmd;
+            C_PostBuildCmd.Text = c.PostCmd;
+            C_OptimizationLevel.Value = c.OptimizeLevel;
+            C_VerboseLevel.Value = c.VerboseLevel;
+            C_DeleteAfterCopy.IsChecked = c.DeleteAfterCopy;
+            C_FTPHost.Text = c.FTPHost;
+            C_FTPUser.Text = c.FTPUser;
+            C_FTPPW.Password = c.FTPPassword;
+            C_FTPDir.Text = c.FTPDir;
+            C_RConEngine.SelectedIndex = c.RConUseSourceEngine ? 0 : 1;
+            C_RConIP.Text = c.RConIP;
+            C_RConPort.Text = c.RConPort.ToString();
+            C_RConPW.Password = c.RConPassword;
+            C_RConCmds.Text = c.RConCommands;
+            AllowChange = true;
+        }
+
+        private void NewButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            var c = new Config
             {
-                Directory.GetAccessControl(dialog.FileName);
-            }
-            catch (UnauthorizedAccessException)
+                Name = "New Config",
+                Standard = false,
+                OptimizeLevel = 2,
+                VerboseLevel = 1,
+                SMDirectories = new List<string>()
+            };
+            var configList = new List<Config>(Program.Configs) { c };
+            Program.Configs = configList.ToArray();
+            ConfigListBox.Items.Add(new ListBoxItem { Content = Program.Translations.Get("NewConfig") });
+        }
+
+        private void DeleteButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            var index = ConfigListBox.SelectedIndex;
+            var c = Program.Configs[index];
+            if (c.Standard)
             {
-                this.ShowMessageAsync("Access error",
-                    "The directory you just specified could not be accessed properly by SPCode. You might have trouble using the includes from this directory.",
-                    MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
-            }
-
-            c.SMDirectories.Add(dialog.FileName);
-            C_SMDir.Items.Refresh();
-            NeedsSMDefInvalidation = true;
-        }
-    }
-
-    private void RemoveSMDirButton_Click(object sender, RoutedEventArgs e)
-    {
-        var c = Program.Configs[ConfigListBox.SelectedIndex];
-        if (C_SMDir.SelectedItem == null)
-        {
-            return;
-        }
-        c.SMDirectories.Remove(C_SMDir.SelectedItem.ToString());
-        C_SMDir.Items.Refresh();
-        NeedsSMDefInvalidation = true;
-    }
-
-    private void C_Name_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        var Name = C_Name.Text;
-        Program.Configs[ConfigListBox.SelectedIndex].Name = Name;
-        ((ListBoxItem)ConfigListBox.SelectedItem).Content = Name;
-    }
-
-    private void C_CopyDir_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].CopyDirectory = C_CopyDir.Text;
-    }
-
-    private void C_ServerFile_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].ServerFile = C_ServerFile.Text;
-    }
-
-    private void C_ServerArgs_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].ServerArgs = C_ServerArgs.Text;
-    }
-
-    private void C_PostBuildCmd_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].PostCmd = C_PostBuildCmd.Text;
-    }
-
-    private void C_PreBuildCmd_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].PreCmd = C_PreBuildCmd.Text;
-    }
-
-    private void C_OptimizationLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].OptimizeLevel = (int)C_OptimizationLevel.Value;
-    }
-
-    private void C_VerboseLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].VerboseLevel = (int)C_VerboseLevel.Value;
-    }
-
-    private void C_AutoCopy_Changed(object sender, RoutedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Debug.Assert(C_AutoCopy.IsChecked != null, "C_AutoCopy.IsChecked != null");
-        Program.Configs[ConfigListBox.SelectedIndex].AutoCopy = C_AutoCopy.IsChecked.Value;
-    }
-
-    public void C_AutoUpload_Changed(object sender, RoutedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Debug.Assert(C_AutoUpload.IsChecked != null, "C_AutoUpload.IsChecked != null");
-        Program.Configs[ConfigListBox.SelectedIndex].AutoUpload = C_AutoUpload.IsChecked.Value;
-    }
-
-    public void C_AutoRCON_Changed(object sender, RoutedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Debug.Assert(C_AutoUpload.IsChecked != null, "C_AutoUpload.IsChecked != null");
-        Program.Configs[ConfigListBox.SelectedIndex].AutoRCON = C_AutoRCON.IsChecked.Value;
-    }
-
-    private void C_DeleteAfterCopy_Changed(object sender, RoutedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Debug.Assert(C_DeleteAfterCopy.IsChecked != null, "C_DeleteAfterCopy.IsChecked != null");
-        Program.Configs[ConfigListBox.SelectedIndex].DeleteAfterCopy = C_DeleteAfterCopy.IsChecked.Value;
-    }
-
-    private void C_FTPHost_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].FTPHost = C_FTPHost.Text;
-    }
-
-    private void C_FTPUser_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].FTPUser = C_FTPUser.Text;
-    }
-
-    private void C_FTPPW_TextChanged(object sender, RoutedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].FTPPassword = C_FTPPW.Password;
-    }
-
-    private void C_FTPDir_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].FTPDir = C_FTPDir.Text;
-    }
-
-    private void C_RConEngine_Changed(object sender, RoutedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        if (ConfigListBox.SelectedIndex >= 0)
-        {
-            Program.Configs[ConfigListBox.SelectedIndex].RConUseSourceEngine = C_RConEngine.SelectedIndex == 0;
-        }
-    }
-
-    private void C_RConIP_TextChanged(object sender, RoutedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].RConIP = C_RConIP.Text;
-    }
-
-    private void C_RConPort_TextChanged(object sender, RoutedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        if (!ushort.TryParse(C_RConPort.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out var newPort))
-        {
-            newPort = 27015;
-            C_RConPort.Text = "27015";
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].RConPort = newPort;
-    }
-
-    private void C_RConPW_TextChanged(object sender, RoutedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].RConPassword = C_RConPW.Password;
-    }
-
-    private void C_RConCmds_TextChanged(object sender, RoutedEventArgs e)
-    {
-        if (!AllowChange)
-        {
-            return;
-        }
-
-        Program.Configs[ConfigListBox.SelectedIndex].RConCommands = C_RConCmds.Text;
-    }
-
-    private void MetroWindow_Closing(object sender, CancelEventArgs e)
-    {
-        // TODO: find out what is this for
-        if (NeedsSMDefInvalidation)
-        {
-            foreach (var config in Program.Configs)
-            {
-                config.InvalidateSMDef();
-            }
-        }
-
-        // Fill a list with all configs from the ListBox
-
-        var configsList = new List<string>();
-
-        foreach (ListBoxItem item in ConfigListBox.Items)
-        {
-            configsList.Add(item.Content.ToString());
-        }
-
-        // Check for empty named configs and disallow saving configs
-
-        foreach (var cfg in configsList)
-        {
-            if (cfg == string.Empty)
-            {
-                e.Cancel = true;
-                this.ShowMessageAsync(Program.Translations.Get("ErrorSavingConfigs"),
-                    Program.Translations.Get("EmptyConfigNames"), MessageDialogStyle.Affirmative,
+                this.ShowMessageAsync(Program.Translations.Get("CannotDelConf"),
+                    Program.Translations.Get("YCannotDelConf"), MessageDialogStyle.Affirmative,
                     Program.MainWindow.MetroDialogOptions);
                 return;
             }
-        }
 
-        // Check for duplicate names in the config list and disallow saving configs
-
-        if (configsList.Count != configsList.Distinct().Count())
-        {
-            e.Cancel = true;
-            this.ShowMessageAsync(Program.Translations.Get("ErrorSavingConfigs"),
-                Program.Translations.Get("DuplicateConfigNames"), MessageDialogStyle.Affirmative,
-                Program.MainWindow.MetroDialogOptions);
-            return;
-        }
-
-        Program.MainWindow.FillConfigMenu();
-        Program.MainWindow.ChangeConfig(Program.SelectedConfig);
-        var outString = new StringBuilder();
-        var settings = new XmlWriterSettings
-        {
-            Indent = true,
-            IndentChars = "\t",
-            NewLineOnAttributes = false,
-            OmitXmlDeclaration = true
-        };
-        using (var writer = XmlWriter.Create(outString, settings))
-        {
-            writer.WriteStartElement("Configurations");
-            foreach (var c in Program.Configs)
+            var configList = new List<Config>(Program.Configs);
+            configList.RemoveAt(index);
+            Program.Configs = configList.ToArray();
+            ConfigListBox.Items.RemoveAt(index);
+            if (index == Program.SelectedConfig)
             {
-                writer.WriteStartElement("Config");
-                writer.WriteAttributeString("Name", c.Name);
-                var SMDirOut = new StringBuilder();
-                foreach (var dir in c.SMDirectories)
-                {
-                    SMDirOut.Append(dir.Trim() + ";");
-                }
-
-                writer.WriteAttributeString("SMDirectory", SMDirOut.ToString());
-                writer.WriteAttributeString("Standard", c.Standard ? "1" : "0");
-                writer.WriteAttributeString("CopyDirectory", c.CopyDirectory);
-                writer.WriteAttributeString("AutoCopy", c.AutoCopy ? "1" : "0");
-                writer.WriteAttributeString("AutoUpload", c.AutoUpload ? "1" : "0");
-                writer.WriteAttributeString("AutoRCON", c.AutoRCON ? "1" : "0");
-                writer.WriteAttributeString("ServerFile", c.ServerFile);
-                writer.WriteAttributeString("ServerArgs", c.ServerArgs);
-                writer.WriteAttributeString("PostCmd", c.PostCmd);
-                writer.WriteAttributeString("PreCmd", c.PreCmd);
-                writer.WriteAttributeString("OptimizationLevel", c.OptimizeLevel.ToString());
-                writer.WriteAttributeString("VerboseLevel", c.VerboseLevel.ToString());
-                writer.WriteAttributeString("DeleteAfterCopy", c.DeleteAfterCopy ? "1" : "0");
-                writer.WriteAttributeString("FTPHost", c.FTPHost);
-                writer.WriteAttributeString("FTPUser", c.FTPUser);
-                writer.WriteAttributeString("FTPPassword", ManagedAES.Encrypt(c.FTPPassword));
-                writer.WriteAttributeString("FTPDir", c.FTPDir);
-                writer.WriteAttributeString("RConSourceEngine", c.RConUseSourceEngine ? "1" : "0");
-                writer.WriteAttributeString("RConIP", c.RConIP);
-                writer.WriteAttributeString("RConPort", c.RConPort.ToString());
-                writer.WriteAttributeString("RConPassword", ManagedAES.Encrypt(c.RConPassword));
-                writer.WriteAttributeString("RConCommands", c.RConCommands);
-                writer.WriteEndElement();
+                Program.SelectedConfig = 0;
             }
 
-            writer.WriteEndElement();
-            writer.Flush();
+            ConfigListBox.SelectedIndex = 0;
         }
 
-        File.WriteAllText(Paths.GetConfigFilePath(), outString.ToString());
-        LoggingControl.LogAction($"Configs saved.", 2);
-    }
-
-    private void Language_Translate()
-    {
-        if (Program.Translations.IsDefault)
+        private void AddSMDirButton_Click(object sender, RoutedEventArgs e)
         {
-            return;
+            var dialog = new CommonOpenFileDialog
+            {
+                IsFolderPicker = true
+            };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                var c = Program.Configs[ConfigListBox.SelectedIndex];
+
+                if (c.SMDirectories.Contains(dialog.FileName))
+                {
+                    return;
+                }
+
+                try
+                {
+                    Directory.GetAccessControl(dialog.FileName);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    this.ShowMessageAsync("Access error",
+                        "The directory you just specified could not be accessed properly by SPCode. You might have trouble using the includes from this directory.",
+                        MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                }
+
+                c.SMDirectories.Add(dialog.FileName);
+                C_SMDir.Items.Refresh();
+                NeedsSMDefInvalidation = true;
+            }
         }
 
-        AddSMDirButton.Content = Program.Translations.Get("Add");
-        RemoveSMDirButton.Content = Program.Translations.Get("Remove");
-        NewButton.Content = Program.Translations.Get("New");
-        DeleteButton.Content = Program.Translations.Get("Delete");
-        NameBlock.Text = Program.Translations.Get("Name");
-        ScriptingDirBlock.Text = Program.Translations.Get("ScriptDir");
-        CopyDirBlock.Text = Program.Translations.Get("CopyDir");
-        ServerExeBlock.Text = Program.Translations.Get("ServerExe");
-        ServerStartArgBlock.Text = Program.Translations.Get("serverStartArgs");
-        PreBuildBlock.Text = Program.Translations.Get("PreBuildCom");
-        PostBuildBlock.Text = Program.Translations.Get("PostBuildCom");
-        OptimizeBlock.Text = Program.Translations.Get("OptimizeLvl");
-        VerboseBlock.Text = Program.Translations.Get("VerboseLvl");
-        C_AutoCopy.Content = Program.Translations.Get("AutoCopy");
-        C_AutoUpload.Content = Program.Translations.Get("AutoUpload");
-        C_AutoRCON.Content = Program.Translations.Get("AutoRCON");
-        C_DeleteAfterCopy.Content = Program.Translations.Get("DeleteOldSMX");
-        FTPHostBlock.Text = Program.Translations.Get("FTPHost");
-        FTPUserBlock.Text = Program.Translations.Get("FTPUser");
-        FTPPWBlock.Text = Program.Translations.Get("FTPPw");
-        FTPDirBlock.Text = Program.Translations.Get("FTPDir");
-        CMD_ItemC.Text = Program.Translations.Get("CMDLineCom");
-        ItemC_EditorDir.Content = "{editordir} - " + Program.Translations.Get("ComEditorDir");
-        ItemC_ScriptDir.Content = "{scriptdir} - " + Program.Translations.Get("ComScriptDir");
-        ItemC_CopyDir.Content = "{copydir} - " + Program.Translations.Get("ComCopyDir");
-        ItemC_ScriptFile.Content = "{scriptfile} - " + Program.Translations.Get("ComScriptFile");
-        ItemC_ScriptName.Content = "{scriptname} - " + Program.Translations.Get("ComScriptName");
-        ItemC_PluginFile.Content = "{pluginfile} - " + Program.Translations.Get("ComPluginFile");
-        ItemC_PluginName.Content = "{pluginname} - " + Program.Translations.Get("ComPluginName");
-        RConEngineBlock.Text = Program.Translations.Get("RConEngine");
-        RConIPBlock.Text = Program.Translations.Get("RConIP");
-        RConPortBlock.Text = Program.Translations.Get("RconPort");
-        RConPWBlock.Text = Program.Translations.Get("RconPw");
-        RConComBlock.Text = Program.Translations.Get("RconCom");
-        Rcon_MenuC.Text = Program.Translations.Get("RConCMDLineCom");
-        MenuC_PluginsReload.Content = "{plugins_reload} - " + Program.Translations.Get("ComPluginsReload");
-        MenuC_PluginsLoad.Content = "{plugins_load} - " + Program.Translations.Get("ComPluginsLoad");
-        MenuC_PluginsUnload.Content = "{plugins_unload} - " + Program.Translations.Get("ComPluginsUnload");
-    }
-
-
-    private class SimpleCommand : ICommand
-    {
-        public Predicate<object> CanExecutePredicate { get; set; }
-        public Action<object> ExecuteAction { get; set; }
-
-        public bool CanExecute(object parameter)
+        private void RemoveSMDirButton_Click(object sender, RoutedEventArgs e)
         {
-            return true;
+            var c = Program.Configs[ConfigListBox.SelectedIndex];
+            if (C_SMDir.SelectedItem == null)
+            {
+                return;
+            }
+            c.SMDirectories.Remove(C_SMDir.SelectedItem.ToString());
+            C_SMDir.Items.Refresh();
+            NeedsSMDefInvalidation = true;
         }
 
-        public event EventHandler CanExecuteChanged
+        private void C_Name_TextChanged(object sender, TextChangedEventArgs e)
         {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            var Name = C_Name.Text;
+            Program.Configs[ConfigListBox.SelectedIndex].Name = Name;
+            ((ListBoxItem)ConfigListBox.SelectedItem).Content = Name;
         }
 
-        public void Execute(object parameter)
+        private void C_CopyDir_TextChanged(object sender, TextChangedEventArgs e)
         {
-            ExecuteAction?.Invoke(parameter);
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].CopyDirectory = C_CopyDir.Text;
+        }
+
+        private void C_ServerFile_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].ServerFile = C_ServerFile.Text;
+        }
+
+        private void C_ServerArgs_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].ServerArgs = C_ServerArgs.Text;
+        }
+
+        private void C_PostBuildCmd_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].PostCmd = C_PostBuildCmd.Text;
+        }
+
+        private void C_PreBuildCmd_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].PreCmd = C_PreBuildCmd.Text;
+        }
+
+        private void C_OptimizationLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].OptimizeLevel = (int)C_OptimizationLevel.Value;
+        }
+
+        private void C_VerboseLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].VerboseLevel = (int)C_VerboseLevel.Value;
+        }
+
+        private void C_AutoCopy_Changed(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Debug.Assert(C_AutoCopy.IsChecked != null, "C_AutoCopy.IsChecked != null");
+            Program.Configs[ConfigListBox.SelectedIndex].AutoCopy = C_AutoCopy.IsChecked.Value;
+        }
+
+        public void C_AutoUpload_Changed(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Debug.Assert(C_AutoUpload.IsChecked != null, "C_AutoUpload.IsChecked != null");
+            Program.Configs[ConfigListBox.SelectedIndex].AutoUpload = C_AutoUpload.IsChecked.Value;
+        }
+
+        public void C_AutoRCON_Changed(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Debug.Assert(C_AutoUpload.IsChecked != null, "C_AutoUpload.IsChecked != null");
+            Program.Configs[ConfigListBox.SelectedIndex].AutoRCON = C_AutoRCON.IsChecked.Value;
+        }
+
+        private void C_DeleteAfterCopy_Changed(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Debug.Assert(C_DeleteAfterCopy.IsChecked != null, "C_DeleteAfterCopy.IsChecked != null");
+            Program.Configs[ConfigListBox.SelectedIndex].DeleteAfterCopy = C_DeleteAfterCopy.IsChecked.Value;
+        }
+
+        private void C_FTPHost_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].FTPHost = C_FTPHost.Text;
+        }
+
+        private void C_FTPUser_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].FTPUser = C_FTPUser.Text;
+        }
+
+        private void C_FTPPW_TextChanged(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].FTPPassword = C_FTPPW.Password;
+        }
+
+        private void C_FTPDir_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].FTPDir = C_FTPDir.Text;
+        }
+
+        private void C_RConEngine_Changed(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            if (ConfigListBox.SelectedIndex >= 0)
+            {
+                Program.Configs[ConfigListBox.SelectedIndex].RConUseSourceEngine = C_RConEngine.SelectedIndex == 0;
+            }
+        }
+
+        private void C_RConIP_TextChanged(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].RConIP = C_RConIP.Text;
+        }
+
+        private void C_RConPort_TextChanged(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            if (!ushort.TryParse(C_RConPort.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out var newPort))
+            {
+                newPort = 27015;
+                C_RConPort.Text = "27015";
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].RConPort = newPort;
+        }
+
+        private void C_RConPW_TextChanged(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].RConPassword = C_RConPW.Password;
+        }
+
+        private void C_RConCmds_TextChanged(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChange)
+            {
+                return;
+            }
+
+            Program.Configs[ConfigListBox.SelectedIndex].RConCommands = C_RConCmds.Text;
+        }
+
+        private void MetroWindow_Closing(object sender, CancelEventArgs e)
+        {
+            // TODO: find out what is this for
+            if (NeedsSMDefInvalidation)
+            {
+                foreach (var config in Program.Configs)
+                {
+                    config.InvalidateSMDef();
+                }
+            }
+
+            // Fill a list with all configs from the ListBox
+
+            var configsList = new List<string>();
+
+            foreach (ListBoxItem item in ConfigListBox.Items)
+            {
+                configsList.Add(item.Content.ToString());
+            }
+
+            // Check for empty named configs and disallow saving configs
+
+            foreach (var cfg in configsList)
+            {
+                if (cfg == string.Empty)
+                {
+                    e.Cancel = true;
+                    this.ShowMessageAsync(Program.Translations.Get("ErrorSavingConfigs"),
+                        Program.Translations.Get("EmptyConfigNames"), MessageDialogStyle.Affirmative,
+                        Program.MainWindow.MetroDialogOptions);
+                    return;
+                }
+            }
+
+            // Check for duplicate names in the config list and disallow saving configs
+
+            if (configsList.Count != configsList.Distinct().Count())
+            {
+                e.Cancel = true;
+                this.ShowMessageAsync(Program.Translations.Get("ErrorSavingConfigs"),
+                    Program.Translations.Get("DuplicateConfigNames"), MessageDialogStyle.Affirmative,
+                    Program.MainWindow.MetroDialogOptions);
+                return;
+            }
+
+            Program.MainWindow.FillConfigMenu();
+            Program.MainWindow.ChangeConfig(Program.SelectedConfig);
+            var outString = new StringBuilder();
+            var settings = new XmlWriterSettings
+            {
+                Indent = true,
+                IndentChars = "\t",
+                NewLineOnAttributes = false,
+                OmitXmlDeclaration = true
+            };
+            using (var writer = XmlWriter.Create(outString, settings))
+            {
+                writer.WriteStartElement("Configurations");
+                foreach (var c in Program.Configs)
+                {
+                    writer.WriteStartElement("Config");
+                    writer.WriteAttributeString("Name", c.Name);
+                    var SMDirOut = new StringBuilder();
+                    foreach (var dir in c.SMDirectories)
+                    {
+                        SMDirOut.Append(dir.Trim() + ";");
+                    }
+
+                    writer.WriteAttributeString("SMDirectory", SMDirOut.ToString());
+                    writer.WriteAttributeString("Standard", c.Standard ? "1" : "0");
+                    writer.WriteAttributeString("CopyDirectory", c.CopyDirectory);
+                    writer.WriteAttributeString("AutoCopy", c.AutoCopy ? "1" : "0");
+                    writer.WriteAttributeString("AutoUpload", c.AutoUpload ? "1" : "0");
+                    writer.WriteAttributeString("AutoRCON", c.AutoRCON ? "1" : "0");
+                    writer.WriteAttributeString("ServerFile", c.ServerFile);
+                    writer.WriteAttributeString("ServerArgs", c.ServerArgs);
+                    writer.WriteAttributeString("PostCmd", c.PostCmd);
+                    writer.WriteAttributeString("PreCmd", c.PreCmd);
+                    writer.WriteAttributeString("OptimizationLevel", c.OptimizeLevel.ToString());
+                    writer.WriteAttributeString("VerboseLevel", c.VerboseLevel.ToString());
+                    writer.WriteAttributeString("DeleteAfterCopy", c.DeleteAfterCopy ? "1" : "0");
+                    writer.WriteAttributeString("FTPHost", c.FTPHost);
+                    writer.WriteAttributeString("FTPUser", c.FTPUser);
+                    writer.WriteAttributeString("FTPPassword", ManagedAES.Encrypt(c.FTPPassword));
+                    writer.WriteAttributeString("FTPDir", c.FTPDir);
+                    writer.WriteAttributeString("RConSourceEngine", c.RConUseSourceEngine ? "1" : "0");
+                    writer.WriteAttributeString("RConIP", c.RConIP);
+                    writer.WriteAttributeString("RConPort", c.RConPort.ToString());
+                    writer.WriteAttributeString("RConPassword", ManagedAES.Encrypt(c.RConPassword));
+                    writer.WriteAttributeString("RConCommands", c.RConCommands);
+                    writer.WriteEndElement();
+                }
+
+                writer.WriteEndElement();
+                writer.Flush();
+            }
+
+            File.WriteAllText(Paths.GetConfigFilePath(), outString.ToString());
+            LoggingControl.LogAction($"Configs saved.", 2);
+        }
+
+        private void Language_Translate()
+        {
+            if (Program.Translations.IsDefault)
+            {
+                return;
+            }
+
+            AddSMDirButton.Content = Program.Translations.Get("Add");
+            RemoveSMDirButton.Content = Program.Translations.Get("Remove");
+            NewButton.Content = Program.Translations.Get("New");
+            DeleteButton.Content = Program.Translations.Get("Delete");
+            NameBlock.Text = Program.Translations.Get("Name");
+            ScriptingDirBlock.Text = Program.Translations.Get("ScriptDir");
+            CopyDirBlock.Text = Program.Translations.Get("CopyDir");
+            ServerExeBlock.Text = Program.Translations.Get("ServerExe");
+            ServerStartArgBlock.Text = Program.Translations.Get("serverStartArgs");
+            PreBuildBlock.Text = Program.Translations.Get("PreBuildCom");
+            PostBuildBlock.Text = Program.Translations.Get("PostBuildCom");
+            OptimizeBlock.Text = Program.Translations.Get("OptimizeLvl");
+            VerboseBlock.Text = Program.Translations.Get("VerboseLvl");
+            C_AutoCopy.Content = Program.Translations.Get("AutoCopy");
+            C_AutoUpload.Content = Program.Translations.Get("AutoUpload");
+            C_AutoRCON.Content = Program.Translations.Get("AutoRCON");
+            C_DeleteAfterCopy.Content = Program.Translations.Get("DeleteOldSMX");
+            FTPHostBlock.Text = Program.Translations.Get("FTPHost");
+            FTPUserBlock.Text = Program.Translations.Get("FTPUser");
+            FTPPWBlock.Text = Program.Translations.Get("FTPPw");
+            FTPDirBlock.Text = Program.Translations.Get("FTPDir");
+            CMD_ItemC.Text = Program.Translations.Get("CMDLineCom");
+            ItemC_EditorDir.Content = "{editordir} - " + Program.Translations.Get("ComEditorDir");
+            ItemC_ScriptDir.Content = "{scriptdir} - " + Program.Translations.Get("ComScriptDir");
+            ItemC_CopyDir.Content = "{copydir} - " + Program.Translations.Get("ComCopyDir");
+            ItemC_ScriptFile.Content = "{scriptfile} - " + Program.Translations.Get("ComScriptFile");
+            ItemC_ScriptName.Content = "{scriptname} - " + Program.Translations.Get("ComScriptName");
+            ItemC_PluginFile.Content = "{pluginfile} - " + Program.Translations.Get("ComPluginFile");
+            ItemC_PluginName.Content = "{pluginname} - " + Program.Translations.Get("ComPluginName");
+            RConEngineBlock.Text = Program.Translations.Get("RConEngine");
+            RConIPBlock.Text = Program.Translations.Get("RConIP");
+            RConPortBlock.Text = Program.Translations.Get("RconPort");
+            RConPWBlock.Text = Program.Translations.Get("RconPw");
+            RConComBlock.Text = Program.Translations.Get("RconCom");
+            Rcon_MenuC.Text = Program.Translations.Get("RConCMDLineCom");
+            MenuC_PluginsReload.Content = "{plugins_reload} - " + Program.Translations.Get("ComPluginsReload");
+            MenuC_PluginsLoad.Content = "{plugins_load} - " + Program.Translations.Get("ComPluginsLoad");
+            MenuC_PluginsUnload.Content = "{plugins_unload} - " + Program.Translations.Get("ComPluginsUnload");
+        }
+
+
+        private class SimpleCommand : ICommand
+        {
+            public Predicate<object> CanExecutePredicate { get; set; }
+            public Action<object> ExecuteAction { get; set; }
+
+            public bool CanExecute(object parameter)
+            {
+                return true;
+            }
+
+            public event EventHandler CanExecuteChanged
+            {
+                add => CommandManager.RequerySuggested += value;
+                remove => CommandManager.RequerySuggested -= value;
+            }
+
+            public void Execute(object parameter)
+            {
+                ExecuteAction?.Invoke(parameter);
+            }
         }
     }
 }

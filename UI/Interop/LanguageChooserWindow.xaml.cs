@@ -2,40 +2,41 @@
 using System.Windows.Controls;
 using MahApps.Metro.Controls;
 
-namespace SPCode.UI.Interop;
-
-public partial class LanguageChooserWindow : MetroWindow
+namespace SPCode.UI.Interop
 {
-    public string SelectedID = string.Empty;
-    public LanguageChooserWindow()
+    public partial class LanguageChooserWindow : MetroWindow
     {
-        InitializeComponent();
-    }
+        public string SelectedID = string.Empty;
+        public LanguageChooserWindow()
+        {
+            InitializeComponent();
+        }
 
-    public LanguageChooserWindow(string[] ids, string[] languages)
-    {
-        InitializeComponent();
-        for (var i = 0; i < ids.Length; ++i)
+        public LanguageChooserWindow(string[] ids, string[] languages)
         {
-            LanguageBox.Items.Add(new ComboBoxItem() { Content = languages[i], Tag = ids[i] });
+            InitializeComponent();
+            for (var i = 0; i < ids.Length; ++i)
+            {
+                LanguageBox.Items.Add(new ComboBoxItem() { Content = languages[i], Tag = ids[i] });
+            }
+            if (ids.Length > 0)
+            {
+                LanguageBox.SelectedIndex = 0;
+            }
         }
-        if (ids.Length > 0)
-        {
-            LanguageBox.SelectedIndex = 0;
-        }
-    }
 
-    private void Button_Click(object sender, RoutedEventArgs e)
-    {
-        var selectedObj = LanguageBox.SelectedItem;
-        if (selectedObj == null)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            return;
+            var selectedObj = LanguageBox.SelectedItem;
+            if (selectedObj == null)
+            {
+                return;
+            }
+            if (selectedObj is ComboBoxItem selectedItem)
+            {
+                SelectedID = (string)selectedItem.Tag;
+            }
+            Close();
         }
-        if (selectedObj is ComboBoxItem selectedItem)
-        {
-            SelectedID = (string)selectedItem.Tag;
-        }
-        Close();
     }
 }

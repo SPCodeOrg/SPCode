@@ -1,33 +1,34 @@
-﻿namespace SourcepawnCondenser.Tokenizer;
-
-public enum TokenKind
+﻿namespace SourcepawnCondenser.Tokenizer
 {
-    Identifier,             //done
-    Number,                 //d
-    Character,              //d
-    BraceOpen,              //d
-    BraceClose,             //d
-    ParenthesisOpen,        //d
-    ParenthesisClose,       //d
-    Quote,                  //d
-    SingleLineComment,      //d
-    MultiLineComment,       //d
-    Semicolon,              //d
-    Comma,                  //d
-    Assignment,             //d
+    public enum TokenKind
+    {
+        Identifier,             //done
+        Number,                 //d
+        Character,              //d
+        BraceOpen,              //d
+        BraceClose,             //d
+        ParenthesisOpen,        //d
+        ParenthesisClose,       //d
+        Quote,                  //d
+        SingleLineComment,      //d
+        MultiLineComment,       //d
+        Semicolon,              //d
+        Comma,                  //d
+        Assignment,             //d
 
-    FunctionIndicator,      //d
-    Constant,               //d
-    EnumStruct,
-    Enum,                   //d
-    Struct,                 //d
-    MethodMap,              //d
-    Property,               //d
-    PrePocessorDirective,   //d
-    TypeDef,                //d
-    TypeSet,                //d
-    New,
+        FunctionIndicator,      //d
+        Constant,               //d
+        EnumStruct,
+        Enum,                   //d
+        Struct,                 //d
+        MethodMap,              //d
+        Property,               //d
+        PrePocessorDirective,   //d
+        TypeDef,                //d
+        TypeSet,                //d
+        New,
 
-    EOL,                    //d
-    EOF,                    //d
+        EOL,                    //d
+        EOF,                    //d
+    }
 }

@@ -1,36 +1,37 @@
 ﻿using SourcepawnCondenser.SourcemodDefinition;
 using SourcepawnCondenser.Tokenizer;
 
-namespace SourcepawnCondenser;
-
-public partial class Condenser
+namespace SourcepawnCondenser
 {
-    private int ConsumeSMPPDirective()
+    public partial class Condenser
     {
-        if (t[position].Value == "#define")
+        private int ConsumeSMPPDirective()
         {
-            if ((position + 1) < length)
+            if (t[position].Value == "#define")
             {
-                if (t[position + 1].Kind == TokenKind.Identifier)
+                if ((position + 1) < length)
                 {
-                    def.Defines.Add(new SMDefine()
+                    if (t[position + 1].Kind == TokenKind.Identifier)
                     {
-                        Index = t[position].Index,
-                        Length = t[position + 1].Index - t[position].Index + t[position + 1].Length,
-                        File = FileName,
-                        Name = t[position + 1].Value
-                    });
-                    for (var j = position + 1; j < length; ++j)
-                    {
-                        if (t[j].Kind == TokenKind.EOL)
+                        def.Defines.Add(new SMDefine()
                         {
-                            return j;
+                            Index = t[position].Index,
+                            Length = t[position + 1].Index - t[position].Index + t[position + 1].Length,
+                            File = FileName,
+                            Name = t[position + 1].Value
+                        });
+                        for (var j = position + 1; j < length; ++j)
+                        {
+                            if (t[j].Kind == TokenKind.EOL)
+                            {
+                                return j;
+                            }
                         }
+                        return position + 1;
                     }
-                    return position + 1;
                 }
             }
+            return -1;
         }
-        return -1;
     }
 }
