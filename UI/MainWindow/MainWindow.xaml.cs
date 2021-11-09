@@ -205,7 +205,7 @@ namespace SPCode.UI
                         FirstAuxiliaryButtonText = Program.Translations.Get("Cancel"),
                         AnimateHide = false,
                         AnimateShow = false,
-                        DefaultButtonFocus = MessageDialogResult.SecondAuxiliary
+                        DefaultButtonFocus = MessageDialogResult.Affirmative
                     };
 
                     // Build list of unsaved files to show
