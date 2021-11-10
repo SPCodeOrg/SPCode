@@ -251,8 +251,6 @@ namespace SPCode.UI
             }
         }
 
-
-
         private void EditorObjectBrowserGridRow_WidthChanged(object sender, EventArgs e)
         {
             if (FullyInitialized)
