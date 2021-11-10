@@ -149,7 +149,7 @@ namespace SPCode.UI.Components
                 });
                 rs.Rules.Add(new HighlightingRule // #pragma deprecated messages
                 {
-                    Regex = new Regex(@"(?<=#pragma deprecated).+", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
+                    Regex = new Regex(@"(?<=#pragma deprecated ).+", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     Color = new HighlightingColor { Foreground = stringBrush }
                 });
                 rs.Rules.Add(new HighlightingRule // type-values keywords
