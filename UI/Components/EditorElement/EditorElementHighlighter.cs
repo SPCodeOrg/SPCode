@@ -207,12 +207,6 @@ namespace SPCode.UI.Components
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     Color = new HighlightingColor { Foreground = stringBrush }
                 });
-                rs.Rules.Add(new HighlightingRule // unknown function calls
-                {
-                    Regex = new Regex(@"\b\w+(?=\s*\()",
-                        RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
-                    Color = new HighlightingColor { Foreground = unknownFunctionBrush }
-                });
 
                 // Apply particular rules from the current SM Definition
 
@@ -220,7 +214,7 @@ namespace SPCode.UI.Components
                 {
                     rs.Rules.Add(new HighlightingRule
                     {
-                        Regex = new Regex(string.Join("|", smDef.Defines.Select(e => "\\b" + Regex.Escape(e.Name) + "\\b").ToArray())),
+                        Regex = new Regex("\\b(" + string.Join("|", smDef.Defines.Select(e => Regex.Escape(e.Name)).ToArray()) + ")\\b"),
                         Color = new HighlightingColor { Foreground = constantBrush }
                     });
                 }
@@ -290,6 +284,16 @@ namespace SPCode.UI.Components
                         Color = new HighlightingColor { Foreground = methodBrush }
                     });
                 }
+
+                // The unknown function calls rule is at the end because it gets applied after parsing all of the known functions.
+
+                rs.Rules.Add(new HighlightingRule // unknown function calls
+                {
+                    //Regex = new Regex(@"\b\w+(?=\s*\()",
+                    Regex = new Regex(@"(?<!#define )\b\w+(?=\s*\()",
+                        RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
+                    Color = new HighlightingColor { Foreground = unknownFunctionBrush }
+                });
 
                 rs.Name = "MainRule";
                 return rs;
