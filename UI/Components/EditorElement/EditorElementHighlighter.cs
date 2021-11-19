@@ -184,7 +184,7 @@ namespace SPCode.UI.Components
                 });
                 rs.Rules.Add(new HighlightingRule // char type
                 {
-                    Regex = new Regex(@"'\\?.?'", 
+                    Regex = new Regex(@"'\\?.?'",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     Color = new HighlightingColor { Foreground = charBrush }
                 });
@@ -212,9 +212,9 @@ namespace SPCode.UI.Components
 
                 if (smDef != null && smDef.Defines.Count > 0)
                 {
-                    rs.Rules.Add(new HighlightingRule
+                    rs.Rules.Add(new HighlightingRule // defines
                     {
-                        Regex = new Regex("\\b(" + string.Join("|", smDef.Defines.Select(e => Regex.Escape(e.Name)).ToArray()) + ")\\b"),
+                        Regex = new Regex("\\b(?:" + string.Join("|", smDef.Defines.Select(x => Regex.Match(x.Name, @"\w+").Value).ToArray()) + ")(?=\\W|$)"),
                         Color = new HighlightingColor { Foreground = constantBrush }
                     });
                 }
