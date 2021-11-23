@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using MahApps.Metro;
 using SPCode.UI.Components;
@@ -18,11 +20,28 @@ namespace SPCode.UI.Windows
         private EditorElement[] _allEditors;
         private LayoutDocumentPane _dockingPane;
         private bool IsSearchFieldOpen;
-        private readonly ObservableCollection<string> findReplaceButtonDict = new()
+        private readonly string Selection;
+        private readonly SearchOptions _searchOptions;
+
+        private readonly ObservableCollection<string> FindReplaceButtonItems = new()
         {
             Program.Translations.Get("Replace"),
             Program.Translations.Get("ReplaceAll")
         };
+
+        private enum RadioButtons
+        {
+            NSearch_RButton = 1,
+            WSearch_RButton = 2,
+            ASearch_RButton = 3,
+            RSearch_RButton = 4
+        }
+
+        private enum DocumentType
+        {
+            MenuFR_CurrDoc = 1,
+            MenuFR_AllDoc = 2
+        }
         #endregion
 
         #region Constructors
@@ -35,16 +54,18 @@ namespace SPCode.UI.Windows
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
 
+            _searchOptions = Program.OptionsObject.SearchOptions;
             Left = Program.MainWindow.Left + Program.MainWindow.Width - Program.MainWindow.ObjectBrowserColumn.Width.Value - (Width + 20);
             Top = Program.MainWindow.Top + 40;
 
-            ReplaceButton.ItemsSource = findReplaceButtonDict;
-            ReplaceButton.SelectedIndex = 0;
-            FindBox.Text = searchTerm;
-            FindBox.SelectAll();
+            Selection = searchTerm;
+            ReplaceButton.ItemsSource = FindReplaceButtonItems;
 
+            RestoreSettings();
             LoadEditorsInfo();
             Language_Translate();
+
+            FindBox.SelectAll();
         }
         #endregion
 
@@ -110,16 +131,51 @@ namespace SPCode.UI.Windows
             switch (e.Key)
             {
                 case Key.Escape:
-                    {
-                        Close();
-                        break;
-                    }
+                    Close();
+                    break;
                 case Key.F3:
-                    {
-                        Search();
-                        break;
-                    }
+                    Search();
+                    break;
             }
+        }
+
+        private void SearchBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            Program.OptionsObject.SearchOptions.FindText = FindBox.Text;
+        }
+
+        private void ReplaceBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            Program.OptionsObject.SearchOptions.ReplaceText = ReplaceBox.Text;
+        }
+
+        private void RadioButtonsChanged(object sender, RoutedEventArgs e)
+        {
+            var button = sender as RadioButton;
+            Program.OptionsObject.SearchOptions.SearchType = (int)Enum.Parse(typeof(RadioButtons), button.Name);
+        }
+
+        private void DocumentChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var item = (sender as ComboBox).SelectedItem as ComboBoxItem;
+            Program.OptionsObject.SearchOptions.Document = (int)Enum.Parse(typeof(DocumentType), item.Name);
+        }
+
+        private void MultilineRegexChanged(object sender, RoutedEventArgs e)
+        {
+            var checkbox = sender as CheckBox;
+            Program.OptionsObject.SearchOptions.MultilineRegex = checkbox.IsChecked.Value;
+        }
+
+        private void CaseSensitiveChanged(object sender, RoutedEventArgs e)
+        {
+            var checkbox = sender as CheckBox;
+            Program.OptionsObject.SearchOptions.CaseSensitive = checkbox.IsChecked.Value;
+        }
+
+        private void ReplaceChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Program.OptionsObject.SearchOptions.ReplaceType = ReplaceButton.SelectedIndex;
         }
         #endregion
 
@@ -438,6 +494,36 @@ namespace SPCode.UI.Windows
             _editor = Program.MainWindow.GetCurrentEditorElement();
             _allEditors = Program.MainWindow.GetAllEditorElements();
             _dockingPane = Program.MainWindow.DockingPane;
+        }
+
+        private void RestoreSettings()
+        {
+            // Restore find and replace texts
+            FindBox.Text = string.IsNullOrEmpty(Selection) ? _searchOptions.FindText : Selection;
+            ReplaceBox.Text = _searchOptions.ReplaceText;
+
+            // Restore radio buttons 
+            var AllRadioButtons = new RadioButton[]
+            {
+                NSearch_RButton,
+                WSearch_RButton,
+                ASearch_RButton,
+                RSearch_RButton
+            };
+
+            var stype = _searchOptions.SearchType;
+            var index = stype - 1 == -1 ? stype : stype - 1;
+            AllRadioButtons[index].IsChecked = true;
+
+            // Restore documents
+            FindDestinies.SelectedIndex = _searchOptions.Document;
+
+            // Restore checkboxes
+            CCBox.IsChecked = _searchOptions.CaseSensitive;
+            MLRBox.IsChecked = _searchOptions.MultilineRegex;
+
+            // Restore replace button
+            ReplaceButton.SelectedIndex = _searchOptions.ReplaceType;
         }
 
         public void Language_Translate()
