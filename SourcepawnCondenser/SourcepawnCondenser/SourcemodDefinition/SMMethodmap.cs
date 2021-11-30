@@ -6,8 +6,8 @@ namespace SourcepawnCondenser.SourcemodDefinition
     {
         public string Type = string.Empty;
         public string InheritedType = string.Empty;
-        public List<SMMethodmapField> Fields = new List<SMMethodmapField>();
-        public List<SMMethodmapMethod> Methods = new List<SMMethodmapMethod>();
+        public List<SMMethodmapField> Fields = new();
+        public List<SMMethodmapMethod> Methods = new();
     }
 
     public class SMMethodmapField : SMBaseDefinition

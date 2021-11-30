@@ -7,25 +7,25 @@ namespace SourcepawnCondenser.SourcemodDefinition
 {
     public class SMDefinition
     {
-        public List<SMConstant> Constants = new List<SMConstant>();
+        public List<SMConstant> Constants = new();
 
         public string[]
             ConstantsStrings = new string[0]; //ATTENTION: THIS IS NOT THE LIST OF ALL CONSTANTS - IT INCLUDES MUCH MORE
 
-        public List<string> currentVariables = new List<string>();
+        public List<string> currentVariables = new();
 
-        public List<SMDefine> Defines = new List<SMDefine>();
-        public List<SMEnum> Enums = new List<SMEnum>();
-        public List<SMEnumStruct> EnumStructs = new List<SMEnumStruct>();
+        public List<SMDefine> Defines = new();
+        public List<SMEnum> Enums = new();
+        public List<SMEnumStruct> EnumStructs = new();
 
         /* Enum structs */
         public string[] EnumStructStrings = new string[0];
         public string[] FieldStrings = new string[0];
-        public List<SMFunction> Functions = new List<SMFunction>();
+        public List<SMFunction> Functions = new();
 
         /* Other */
         public string[] FunctionStrings = new string[0];
-        public List<SMMethodmap> Methodmaps = new List<SMMethodmap>();
+        public List<SMMethodmap> Methodmaps = new();
 
 
         /* Methodmaps */
@@ -33,10 +33,10 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public string[] MethodsStrings = new string[0];
         public string[] StructFieldStrings = new string[0];
         public string[] StructMethodStrings = new string[0];
-        public List<SMStruct> Structs = new List<SMStruct>();
-        public List<SMTypedef> Typedefs = new List<SMTypedef>();
+        public List<SMStruct> Structs = new();
+        public List<SMTypedef> Typedefs = new();
         public string[] TypeStrings = new string[0];
-        public List<SMVariable> Variables = new List<SMVariable>();
+        public List<SMVariable> Variables = new();
         public SMFunction currentFunction;
 
         public void Sort()

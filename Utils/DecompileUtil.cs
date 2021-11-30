@@ -15,7 +15,6 @@ namespace SPCode.Utils
         public async Task DecompilePlugin(string filePath = null)
         {
             var java = new JavaInstallation();
-            var fileToDecompile = "";
 
             // First we check the java version of the user, and act accordingly
             ProgressDialogController checkingJavaDialog = null;
@@ -59,6 +58,7 @@ namespace SPCode.Utils
                     }
             }
 
+            string fileToDecompile;
             if (filePath == null)
             {
                 var ofd = new OpenFileDialog

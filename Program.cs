@@ -46,12 +46,6 @@ namespace SPCode
         [STAThread]
         public static void Main(string[] args)
         {
-#if DEBUG
-        System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level =
-            System.Diagnostics.SourceLevels.Critical;
-
-#endif
-
             using (new Mutex(true, "SPCodeGlobalMutex", out var mutexReserved))
             {
                 if (mutexReserved)
