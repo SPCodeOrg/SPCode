@@ -73,7 +73,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
                         foreach (var file in files)
                         {
                             var fInfo = new FileInfo(file);
-                            var subCondenser = new Condenser(File.ReadAllText(fInfo.FullName), fInfo.Name);
+                            var subCondenser = new Condenser(File.ReadAllText(fInfo.FullName), fInfo.FullName);
                             var subDefinition = subCondenser.Condense();
                             Functions.AddRange(subDefinition.Functions);
                             Enums.AddRange(subDefinition.Enums);

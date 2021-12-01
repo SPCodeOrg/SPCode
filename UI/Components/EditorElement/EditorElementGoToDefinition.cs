@@ -20,7 +20,6 @@ namespace SPCode.UI.Components
         public async Task GoToDefinition(MouseButtonEventArgs e)
         {
             var word = GetWordAtMousePosition(e);
-            Debug.Print($"The word: {word}");
             if (word.Trim().Length == 0)
             {
                 return;

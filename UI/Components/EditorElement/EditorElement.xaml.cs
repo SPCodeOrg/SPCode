@@ -661,9 +661,7 @@ namespace SPCode.UI.Components
                     var text = el.editor.Document.Text;
                     if (fInfo.Extension.Trim('.').ToLowerInvariant() == "inc")
                     {
-                        definitions[i] =
-                            new Condenser(text
-                                , fInfo.Name).Condense();
+                        definitions[i] = new Condenser(text, fInfo.FullName).Condense();
                     }
 
                     if (fInfo.Extension.Trim('.').ToLowerInvariant() == "sp")
@@ -671,18 +669,13 @@ namespace SPCode.UI.Components
                         if (el.IsLoaded)
                         {
                             caret = el.editor.CaretOffset;
-                            definitions[i] =
-                                new Condenser(text, fInfo.Name)
-                                    .Condense();
+                            definitions[i] = new Condenser(text, fInfo.FullName).Condense();
                             currentFunctions = definitions[i].Functions;
                             if (el == ce)
                             {
                                 currentSmDef = definitions[i];
                                 var caret1 = caret;
-                                currentSmDef.currentFunction =
-                                    currentFunctions.FirstOrDefault(
-                                        func => func.Index <= caret1 && caret1 <= func.EndPos);
-
+                                currentSmDef.currentFunction = currentFunctions.FirstOrDefault(func => func.Index <= caret1 && caret1 <= func.EndPos);
                             }
                         }
                     }
