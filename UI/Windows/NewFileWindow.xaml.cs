@@ -100,7 +100,7 @@ namespace SPCode.UI.Windows
             ParseTemplateFile();
             Language_Translate();
             PreviewBox.Parent = new LayoutDocument();
-            Program.MainWindow.EditorsReferences.Add(PreviewBox);
+            Program.MainWindow.EditorReferences.Add(PreviewBox);
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
             {
                 ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
@@ -279,7 +279,7 @@ namespace SPCode.UI.Windows
 
         private void NewFileWind_Closing(object sender, CancelEventArgs e)
         {
-            Program.MainWindow.EditorsReferences.Remove(PreviewBox);
+            Program.MainWindow.EditorReferences.Remove(PreviewBox);
         }
 
         #endregion

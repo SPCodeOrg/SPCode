@@ -68,7 +68,7 @@ namespace SPCode.UI
         /// <returns></returns>
         public EditorElement[] GetAllEditorElements()
         {
-            return EditorsReferences.Count < 1 ? null : EditorsReferences.ToArray();
+            return EditorReferences.Count < 1 ? null : EditorReferences.ToArray();
         }
 
         /// <summary>
@@ -338,7 +338,7 @@ namespace SPCode.UI
             try
             {
                 var ee = GetCurrentEditorElement();
-                if (ee == null || ee.IsTemplateEditor)
+                if (ee == null || ee.IsTemplateEditor || ee.ClosingPromptOpened)
                 {
                     return;
                 }
@@ -359,50 +359,13 @@ namespace SPCode.UI
             try
             {
                 var editors = GetAllEditorElements();
-                if (editors == null || GetCurrentEditorElement().IsTemplateEditor)
+
+                if (editors == null || GetCurrentEditorElement().IsTemplateEditor || editors.Length == 0 || editors.Any(x => x.ClosingPromptOpened))
                 {
                     return;
                 }
 
-                if (editors.Length > 0)
-                {
-                    var UnsavedEditorsExisting = false;
-                    foreach (var editor in editors)
-                    {
-                        UnsavedEditorsExisting |= editor.NeedsSave;
-                    }
-
-                    var ForceSave = false;
-                    if (UnsavedEditorsExisting)
-                    {
-                        var str = new StringBuilder();
-                        for (var i = 0; i < editors.Length; ++i)
-                        {
-                            if (i == 0)
-                            {
-                                str.Append(editors[i].Parent.Title.Trim('*'));
-                            }
-                            else
-                            {
-                                str.AppendLine(editors[i].Parent.Title.Trim('*'));
-                            }
-                        }
-
-                        var result = await this.ShowMessageAsync(Program.Translations.Get("SaveFollow"),
-                            str.ToString(), MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions);
-                        if (result == MessageDialogResult.Affirmative)
-                        {
-                            ForceSave = true;
-                        }
-                    }
-
-                    foreach (var editor in editors)
-                    {
-                        DockingPane.RemoveChild(editor.Parent);
-                        editor.Close(ForceSave, ForceSave);
-                    }
-                }
-                UpdateOBFileButton();
+                editors.ToList().ForEach(x => x.Close());
             }
             catch (Exception ex)
             {

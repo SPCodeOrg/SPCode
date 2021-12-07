@@ -31,7 +31,7 @@ namespace SPCode.UI
         #region Variables
         private readonly Storyboard BlendOverEffect;
         private readonly Storyboard DisableServerAnim;
-        public readonly List<EditorElement> EditorsReferences = new();
+        public readonly List<EditorElement> EditorReferences = new();
         public readonly List<DASMElement> DASMReferences = new();
         private readonly Storyboard EnableServerAnim;
         public readonly List<MenuItem> MenuItems;
@@ -416,7 +416,7 @@ namespace SPCode.UI
             layoutDocument.ToolTip = fInfo.FullName;
             editor = new EditorElement(fInfo.FullName) { Parent = layoutDocument };
             layoutDocument.Content = editor;
-            EditorsReferences.Add(editor);
+            EditorReferences.Add(editor);
             DockingPane.Children.Add(layoutDocument);
             AddNewRecentFile(fInfo);
             if (SelectMe)

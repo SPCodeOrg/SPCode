@@ -46,6 +46,7 @@ namespace SPCode.UI.Components
         private bool WantFoldingUpdate;
         public bool IsTemplateEditor = false;
         private bool Closed = false;
+        public bool ClosingPromptOpened = false;
 
         public string FullFilePath
         {
@@ -740,10 +741,12 @@ namespace SPCode.UI.Components
                 }
                 else
                 {
+                    ClosingPromptOpened = true;
                     var result = await Program.MainWindow.ShowMessageAsync(
                         $"Do you want to save changes to '{Parent.Title.Substring(1)}'?",
                         "Your changes will be lost if you don't save them",
                         MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, Program.MainWindow.ClosingDialogOptions);
+                    ClosingPromptOpened = false;
                     switch (result)
                     {
                         case MessageDialogResult.Affirmative:
@@ -774,7 +777,7 @@ namespace SPCode.UI.Components
 
             Parent = null;
 
-            Program.MainWindow.EditorsReferences.Remove(this);
+            Program.MainWindow.EditorReferences.Remove(this);
             Program.MainWindow.MenuI_ReopenLastClosedTab.IsEnabled = true;
             Program.RecentFilesStack.Push(FullFilePath);
             Program.MainWindow.UpdateWindowTitle();
