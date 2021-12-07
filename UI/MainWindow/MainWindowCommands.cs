@@ -360,7 +360,7 @@ namespace SPCode.UI
             {
                 var editors = GetAllEditorElements();
 
-                if (editors == null || GetCurrentEditorElement().IsTemplateEditor || editors.Length == 0 || editors.Any(x => x.ClosingPromptOpened))
+                if (editors == null || editors.Any(x => x.IsTemplateEditor) || editors.Length == 0 || editors.Any(x => x.ClosingPromptOpened))
                 {
                     return;
                 }
