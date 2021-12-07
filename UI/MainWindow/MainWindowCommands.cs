@@ -343,9 +343,7 @@ namespace SPCode.UI
                     return;
                 }
 
-                DockingPane.RemoveChild(ee.Parent);
                 ee.Close();
-                UpdateOBFileButton();
             }
             catch (Exception ex)
             {

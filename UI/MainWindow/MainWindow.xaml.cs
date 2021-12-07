@@ -54,6 +54,16 @@ namespace SPCode.UI
             Program.Translations.Get("CompileAll"),
             Program.Translations.Get("CompileCurrent")
         };
+
+        public MetroDialogSettings ClosingDialogOptions = new()
+        {
+            AffirmativeButtonText = Program.Translations.Get("Yes"),
+            NegativeButtonText = Program.Translations.Get("No"),
+            FirstAuxiliaryButtonText = Program.Translations.Get("Cancel"),
+            AnimateHide = false,
+            AnimateShow = false,
+            DefaultButtonFocus = MessageDialogResult.Affirmative
+        };
         #endregion
 
         #region Constructors
@@ -231,23 +241,12 @@ namespace SPCode.UI
                     // Cancel closing to handle it manually
                     e.Cancel = true;
 
-                    // Build dialog buttons
-                    var closeMetroDialogOptions = new MetroDialogSettings()
-                    {
-                        AffirmativeButtonText = Program.Translations.Get("Yes"),
-                        NegativeButtonText = Program.Translations.Get("No"),
-                        FirstAuxiliaryButtonText = Program.Translations.Get("Cancel"),
-                        AnimateHide = false,
-                        AnimateShow = false,
-                        DefaultButtonFocus = MessageDialogResult.Affirmative
-                    };
-
                     // Build list of unsaved files to show
                     var sb = new StringBuilder();
                     editors.Where(x => x.NeedsSave).ToList().ForEach(y => sb.AppendLine($"  - {y.Parent.Title.Substring(1)}"));
 
                     var result = await this.ShowMessageAsync("Save all files?", $"Unsaved files:\n{sb}",
-                        MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, closeMetroDialogOptions);
+                        MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, ClosingDialogOptions);
 
                     switch (result)
                     {
@@ -427,6 +426,7 @@ namespace SPCode.UI
                 EditorToFocus = editor;
                 SelectDocumentTimer.Start();
             }
+            layoutDocument.Closing += editor.Editor_TabClosed;
         }
 
         /// <summary>

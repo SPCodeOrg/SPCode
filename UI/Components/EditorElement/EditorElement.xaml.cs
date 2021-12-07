@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -44,6 +45,7 @@ namespace SPCode.UI.Components
         private bool SelectionIsHighlited;
         private bool WantFoldingUpdate;
         public bool IsTemplateEditor = false;
+        private bool Closed = false;
 
         public string FullFilePath
         {
@@ -208,6 +210,12 @@ namespace SPCode.UI.Components
             ParseIncludes(sender, e);
         }
 
+        public void Editor_TabClosed(object sender, CancelEventArgs e)
+        {
+            e.Cancel = true;
+            Close();
+        }
+
         private async void TextArea_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!Keyboard.IsKeyDown(Key.LeftCtrl) || IsTemplateEditor)
@@ -269,8 +277,8 @@ namespace SPCode.UI.Components
                             }
                             catch (Exception)
                             {
-                            // ignored
-                        }
+                                // ignored
+                            }
 
                             Thread.Sleep(
                                 100); //dont include System.Threading in the using directives, cause its onlyused once and the Timer class will double
@@ -341,7 +349,7 @@ namespace SPCode.UI.Components
             StatusLine_Column.Text = $"{Program.Translations.Get("ColAbb")} {editor.TextArea.Caret.Column}";
             StatusLine_Line.Text = $"{Program.Translations.Get("LnAbb")} {editor.TextArea.Caret.Line}";
 #if DEBUG
-        StatusLine_Offset.Text = $"Off {editor.TextArea.Caret.Offset}";
+            StatusLine_Offset.Text = $"Off {editor.TextArea.Caret.Offset}";
 #endif
             EvaluateIntelliSense();
 
@@ -687,8 +695,8 @@ namespace SPCode.UI.Components
                 var acNodes = smDef.ProduceACNodes();
                 var isNodes = smDef.ProduceISNodes();
 
-            // Lags the hell out when typing a lot.
-            ce.editor.SyntaxHighlighting = new AeonEditorHighlighting(smDef);
+                // Lags the hell out when typing a lot.
+                ce.editor.SyntaxHighlighting = new AeonEditorHighlighting(smDef);
 
                 foreach (var el in ee)
                 {
@@ -724,6 +732,36 @@ namespace SPCode.UI.Components
 
         public async void Close(bool ForcedToSave = false, bool CheckSavings = true)
         {
+            if (CheckSavings && _NeedsSave && !Closed)
+            {
+                if (ForcedToSave)
+                {
+                    Save();
+                }
+                else
+                {
+                    var result = await Program.MainWindow.ShowMessageAsync(
+                        $"Do you want to save changes to '{Parent.Title.Substring(1)}'?",
+                        "Your changes will be lost if you don't save them",
+                        MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, Program.MainWindow.ClosingDialogOptions);
+                    switch (result)
+                    {
+                        case MessageDialogResult.Affirmative:
+                            Closed = true;
+                            Save();
+                            break;
+                        case MessageDialogResult.Negative:
+                            Closed = true;
+                            break;
+                        case MessageDialogResult.FirstAuxiliary:
+                            return;
+                    }
+                }
+
+            }
+            Program.MainWindow.DockingPane.RemoveChild(Parent);
+            Program.MainWindow.UpdateOBFileButton();
+
             regularyTimer.Stop();
             regularyTimer.Close();
 
@@ -732,25 +770,6 @@ namespace SPCode.UI.Components
                 fileWatcher.EnableRaisingEvents = false;
                 fileWatcher.Dispose();
                 fileWatcher = null;
-            }
-
-            if (CheckSavings && _NeedsSave)
-            {
-                if (ForcedToSave)
-                {
-                    Save();
-                }
-                else
-                {
-                    var title = $"{Program.Translations.Get("SavingFile")} '" + Parent.Title.Trim('*') +
-                                "'";
-                    var Result = await Program.MainWindow.ShowMessageAsync(title, "",
-                        MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions);
-                    if (Result == MessageDialogResult.Affirmative)
-                    {
-                        Save();
-                    }
-                }
             }
 
             Parent = null;
