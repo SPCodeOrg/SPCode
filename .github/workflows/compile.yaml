@@ -19,18 +19,15 @@ jobs:
 
       # Nuget
       - uses: nuget/setup-nuget@v1
-        run: nuget restore Spcode.sln
+      - run: nuget restore Spcode.sln
 
       # Setup MSBuild
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v1.1
-        with:
-          vs-version: '[17.0.0.51503, 17.0.0.51503)'
 
       # Build Spcode
       - name: Build Spcode
-      - run: msbuild Spcode.csproj /p:Configuration=Release /p:langversion=latest
-
+        run: msbuild Spcode.csproj /p:Configuration=Release /p:langversion=latest
 
       # Build Installer
       - name: Build Installer (NSIS) 
