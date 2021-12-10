@@ -336,6 +336,9 @@ namespace SPCode.UI
                                 if (SelectMe)
                                 {
                                     editor.Parent.IsSelected = true;
+                                    editor.editor.TextArea.Caret.Show();
+                                    EditorToFocus = editor;
+                                    SelectDocumentTimer.Start();
                                 }
 
                                 outEditor = editor;
