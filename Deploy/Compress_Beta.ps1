@@ -1,5 +1,5 @@
 $loc = Get-Location
-Set-Location 'bin\Release\'
+Set-Location 'bin\Release-Beta\'
 $compress = @{
 LiteralPath= 
 "sourcepawn/", 
