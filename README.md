@@ -14,7 +14,7 @@
 <img src="https://user-images.githubusercontent.com/20617661/135123265-98b3a7bf-606e-4cee-9839-810295f936cf.png">
 
 SPCode is an open source SourcePawn editor, with multiple tools and features designed to help you <b>develop and deploy your SourceMod plugins fast and easy</b>.
-It was born in 2015 under the name of SPEdit, and in early 2020, we took care of its development.
+It was born in 2015 under the name of SPEdit, and in early 2020, we took care of its development. <a href="https://github.com/SPCodeOrg/SPCode/releases/latest">Download it now!</a>
 
 ### List of features:
 * Compiling-config system (fully customizable)
