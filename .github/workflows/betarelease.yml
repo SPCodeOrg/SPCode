@@ -40,11 +40,11 @@ jobs:
       - name: Build Installer (NSIS)
         uses: joncloud/makensis-action@v1
         with:
-          script-file: .\bin\Release\SPCode.nsi
+          script-file: .\bin\Release-Beta\SPCode.nsi
 
       # Compress Portable Version
       - name: Compress Portable Version
-        run: .\bin\Release\Compress.ps1
+        run: .\bin\Release-Beta\Compress.ps1
         shell: powershell
 
       # Build Updater
@@ -69,9 +69,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: .\bin\Release\SPCode.Installer.exe
-          asset_name: SPCode.Installer.exe
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: .\bin\Release-Beta\SPCode.Beta.Installer.exe
+          asset_name: SPCode.Beta.Installer.exe
           asset_content_type: application/octet-stream
 
       - name: Upload Portable
@@ -80,9 +80,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: .\bin\Release\SPCode.Portable.zip
-          asset_name: SPCode.Portable.zip
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: .\bin\Release-Beta\SPCode.Beta.Portable.zip
+          asset_name: SPCode.Beta.Portable.zip
           asset_content_type: application/zip
 
       - name: Upload Updater
@@ -91,7 +91,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: .\Deploy\SpcodeUpdater\bin\Release\SPCodeUpdater.exe
           asset_name: SPCodeUpdater.exe
           asset_content_type: application/octet-stream
