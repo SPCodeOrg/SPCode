@@ -42,7 +42,12 @@ jobs:
         with:
           script-file: .\bin\Release-Beta\SPCode.nsi
 
-      # Compress Portable Version
+      # Compress Stable Portable Version
+      - name: Compress Portable Version
+        run: .\bin\Release\Compress.ps1
+        shell: powershell
+        
+      # Compress Beta Portable Version
       - name: Compress Portable Version
         run: .\bin\Release-Beta\Compress.ps1
         shell: powershell
