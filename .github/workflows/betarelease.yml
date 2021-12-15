@@ -1,0 +1,95 @@
+name: Publish Beta Release
+
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Install the .NET Core workload
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.100
+
+      # Nuget
+      - uses: nuget/setup-nuget@v1
+        with:
+          nuget-version: '5.x'
+      - run: nuget restore Spcode.sln
+
+      # Setup MSBuild
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v1.1
+
+      # Build Spcode
+      - name: Build Spcode
+        run: msbuild Spcode.csproj /p:Configuration=Release-Beta /p:langversion=latest
+
+      # Build Installer
+      - name: Build Installer (NSIS)
+        uses: joncloud/makensis-action@v1
+        with:
+          script-file: .\bin\Release\SPCode.nsi
+
+      # Compress Portable Version
+      - name: Compress Portable Version
+        run: .\bin\Release\Compress.ps1
+        shell: powershell
+
+      # Build Updater
+      - name: Build Updater
+        run: msbuild Deploy\SPCodeUpdater\SPCodeUpdater.csproj /p:Configuration=Release /property:langversion=latest
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: true
+
+
+      - name: Upload Installer
+        id: upload-installer
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: .\bin\Release\SPCode.Installer.exe
+          asset_name: SPCode.Installer.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload Portable
+        id: upload-portable
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: .\bin\Release\SPCode.Portable.zip
+          asset_name: SPCode.Portable.zip
+          asset_content_type: application/zip
+
+      - name: Upload Updater
+        id: upload-updater
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: .\Deploy\SpcodeUpdater\bin\Release\SPCodeUpdater.exe
+          asset_name: SPCodeUpdater.exe
+          asset_content_type: application/octet-stream
