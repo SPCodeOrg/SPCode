@@ -211,3 +211,4 @@ $RECYCLE.BIN/
 # IDE FIles
 /.idea/
 *.iml
+App/AssemblyInfo.cs
