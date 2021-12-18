@@ -48,8 +48,8 @@ jobs:
         shell: powershell
 
       # Build Updater
-      - name: Build Updater
-        run: msbuild Deploy\SPCodeUpdater\SPCodeUpdater.csproj /p:Configuration=Release /property:langversion=latest
+      # - name: Build Updater
+      #  run: msbuild Deploy\SPCodeUpdater\SPCodeUpdater.csproj /p:Configuration=Release /property:langversion=latest
 
       - name: Create Release
         id: create_release
@@ -85,13 +85,13 @@ jobs:
           asset_name: SPCode.Beta.Portable.zip
           asset_content_type: application/zip
 
-      - name: Upload Updater
-        id: upload-updater
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: .\Deploy\SpcodeUpdater\bin\Release\SPCodeUpdater.exe
-          asset_name: SPCodeUpdater.exe
-          asset_content_type: application/octet-stream
+      #- name: Upload Updater
+      #  id: upload-updater
+       # uses: actions/upload-release-asset@v1
+        #env:
+         # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+     #   with:
+      #    upload_url: ${{ steps.create_release.outputs.upload_url }}
+       #   asset_path: .\Deploy\SpcodeUpdater\bin\Release\SPCodeUpdater.exe
+        #  asset_name: SPCodeUpdater.exe
+         # asset_content_type: application/octet-stream
