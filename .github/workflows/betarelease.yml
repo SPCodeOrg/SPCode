@@ -70,8 +70,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ needs.analyze-tags.outputs.timestamp-diff }}
-          release_name: Release ${{ needs.analyze-tags.outputs.timestamp-diff }}
+          tag_name: ${{ needs.analyze-tags.outputs.previous-tag }}
+          release_name: Release ${{ needs.analyze-tags.outputs.previous-tag }}
           draft: false
           prerelease: true
 
