@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,57 +18,63 @@ namespace SPCode.UI.Components
 
         public async Task GoToDefinition(MouseButtonEventArgs e)
         {
-            var word = GetWordAtMousePosition(e);
-            Debug.Print($"The word: {word}");
-            if (word.Trim().Length == 0)
+            try
             {
-                return;
-            }
-
-            e.Handled = true;
-
-            // First search across all scripting directories
-
-            var sm = MatchDefinition(Program.Configs[Program.SelectedConfig].GetSMDef(), word, e);
-            if (sm != null)
-            {
-                var config = Program.Configs[Program.SelectedConfig].SMDirectories;
-
-                foreach (var cfg in config)
+                var word = GetWordAtMousePosition(e);
+                if (word.Trim().Length == 0)
                 {
-                    var file = Path.GetFullPath(Path.Combine(cfg, "include", sm.File)) + ".inc";
+                    return;
+                }
 
-                    if (!File.Exists(file))
-                    {
-                        file = Path.GetFullPath(Path.Combine(cfg, sm.File)) + ".inc";
-                    }
+                e.Handled = true;
 
-                    await Task.Delay(100);
-                    if (Program.MainWindow.TryLoadSourceFile(file, out var newEditor, true, false, true) && newEditor != null)
+                // First search across all scripting directories
+
+                var sm = MatchDefinition(Program.Configs[Program.SelectedConfig].GetSMDef(), word, e);
+                if (sm != null)
+                {
+                    var config = Program.Configs[Program.SelectedConfig].SMDirectories;
+
+                    foreach (var cfg in config)
                     {
-                        newEditor.editor.TextArea.Caret.Offset = sm.Index;
-                        newEditor.editor.TextArea.Caret.BringCaretToView();
-                        newEditor.editor.TextArea.Selection = Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
-                        return;
-                    }
-                    else
-                    {
-                        LoggingControl.LogAction($"File {file} not found!");
-                        continue;
+                        var file = Path.GetFullPath(Path.Combine(cfg, "include", sm.File)) + ".inc";
+
+                        if (!File.Exists(file))
+                        {
+                            file = Path.GetFullPath(Path.Combine(cfg, sm.File)) + ".inc";
+                        }
+
+                        await Task.Delay(100);
+                        if (Program.MainWindow.TryLoadSourceFile(file, out var newEditor, true, false, true) && newEditor != null)
+                        {
+                            newEditor.editor.TextArea.Caret.Offset = sm.Index;
+                            newEditor.editor.TextArea.Caret.BringCaretToView();
+                            newEditor.editor.TextArea.Selection = Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
+                            return;
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
                 }
+
+                // If not, try to match variables in the current file 
+                // (shit solution to fix some symbols getting read first inside of the file inaproppiately)
+
+                sm = MatchDefinition(currentSmDef, word, e, true);
+                if (sm != null)
+                {
+                    editor.TextArea.Caret.Offset = sm.Index;
+                    editor.TextArea.Caret.BringCaretToView();
+                    await Task.Delay(100);
+                    editor.TextArea.Selection = Selection.Create(editor.TextArea, sm.Index, sm.Index + sm.Length);
+                }
             }
-
-            // If not, try to match variables in the current file 
-            // (shit solution to fix some symbols getting read first inside of the file inaproppiately)
-
-            sm = MatchDefinition(currentSmDef, word, e, true);
-            if (sm != null)
+            catch (Exception ex)
             {
-                editor.TextArea.Caret.Offset = sm.Index;
-                editor.TextArea.Caret.BringCaretToView();
-                await Task.Delay(100);
-                editor.TextArea.Selection = Selection.Create(editor.TextArea, sm.Index, sm.Index + sm.Length);
+                LoggingControl.LogAction($"Exception caught on go to definition: {ex.Message}. Report this bug!");
+                return;
             }
         }
 
@@ -107,12 +112,10 @@ namespace SPCode.UI.Components
             }
 
             // variables
-            sm ??= smDef.Variables.FirstOrDefault(i =>
-                i.Name.Equals(word));
+            sm ??= smDef.Variables.FirstOrDefault(i => i.Name.Equals(word));
 
             // constants
-            sm ??= smDef.Constants.FirstOrDefault(i =>
-                i.Name.Equals(word));
+            sm ??= smDef.Constants.FirstOrDefault(i => i.Name.Equals(word));
 
             // defines
             sm ??= smDef.Defines.FirstOrDefault(i => i.Name.Equals(word));
@@ -124,8 +127,7 @@ namespace SPCode.UI.Components
             {
                 foreach (var smEnum in smDef.Enums)
                 {
-                    var str = smEnum.Entries.FirstOrDefault(
-                        i => i.Equals(word));
+                    var str = smEnum.Entries.FirstOrDefault(i => i.Equals(word));
 
                     if (str == null)
                     {
@@ -138,24 +140,18 @@ namespace SPCode.UI.Components
             }
 
             // enum structs
-            sm ??= smDef.EnumStructs.FirstOrDefault(i =>
-                i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+            sm ??= smDef.EnumStructs.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
-            sm ??= smDef.EnumStructs.FirstOrDefault(
-                i => i.Fields.Any(j => j.Name == word));
+            sm ??= smDef.EnumStructs.FirstOrDefault(i => i.Fields.Any(j => j.Name == word));
 
-            sm ??= smDef.EnumStructs.FirstOrDefault(
-                i => i.Methods.Any(j => j.Name == word));
+            sm ??= smDef.EnumStructs.FirstOrDefault(i => i.Methods.Any(j => j.Name == word));
 
             // methodmaps
-            sm ??= smDef.Methodmaps.FirstOrDefault(
-                i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+            sm ??= smDef.Methodmaps.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
-            sm ??= smDef.Methodmaps.FirstOrDefault(
-                i => i.Fields.Any(j => j.Name == word));
+            sm ??= smDef.Methodmaps.FirstOrDefault(i => i.Fields.Any(j => j.Name == word));
 
-            sm ??= smDef.Methodmaps.FirstOrDefault(
-                i => i.Methods.Any(j => j.Name == word));
+            sm ??= smDef.Methodmaps.FirstOrDefault(i => i.Methods.Any(j => j.Name == word));
 
             // structs?
             sm ??= smDef.Structs.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));

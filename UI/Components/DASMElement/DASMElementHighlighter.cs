@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
+using SPCode.Utils;
 
 namespace SPCode.UI.Components
 {

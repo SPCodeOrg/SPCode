@@ -21,12 +21,6 @@ namespace SPCode.UI
         {
             var output = new List<string>();
 
-            if (!ServerIsRunning)
-            {
-                output.Add("No server running to send commands to.");
-                goto Dispatcher;
-            }
-
             var c = Program.Configs[Program.SelectedConfig];
             if (string.IsNullOrWhiteSpace(c.RConIP) || string.IsNullOrWhiteSpace(c.RConCommands))
             {
@@ -89,13 +83,11 @@ namespace SPCode.UI
                     switch ((SocketError)socketEx.ErrorCode)
                     {
                         case SocketError.ConnectionReset:
-                            output.Add("The connection was reset. Check your connection data and try again. You also could've been RCON banned for hacking attempts.");
-                            goto Dispatcher;
                         case SocketError.NotConnected:
                         case SocketError.TimedOut:
-                            output.Add("Connection to the server timed out. Make sure you've set it up correctly.\n" +
+                            output.Add("Connection to the server reset or timed out. Make sure you've set it up correctly, and the server you're targeting is available.\n" +
                                 "Your data:\n" +
-                                $"  - IP: { c.RConIP}\n" +
+                                $"  - IP: {c.RConIP}\n" +
                                 $"  - Port: {c.RConPort}");
                             goto Dispatcher;
                     }

@@ -77,7 +77,6 @@ namespace SPCode.Interop.Updater
                 ActionYesButton.Visibility = Visibility.Hidden;
                 ActionNoButton.Visibility = Visibility.Hidden;
                 ActionGithubButton.Visibility = Visibility.Hidden;
-                Icon.Visibility = Visibility.Hidden;
                 DescriptionBox.Margin = new Thickness(0, 0, 0, 0);
             }
             else
@@ -125,7 +124,6 @@ namespace SPCode.Interop.Updater
             ActionYesButton.Visibility = Visibility.Hidden;
             ActionNoButton.Visibility = Visibility.Hidden;
             ActionGithubButton.Visibility = Visibility.Hidden;
-            Icon.Visibility = Visibility.Hidden;
             MainLine.Text = string.Format(Program.Translations.Get("UpdatingTo"), updateInfo.AllReleases[0].TagName);
             SubLine.Text = Program.Translations.Get("DownloadingUpdater");
             var t = new Thread(UpdateDownloadWorker);

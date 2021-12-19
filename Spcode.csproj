@@ -191,6 +191,7 @@
     <Compile Include="Utils\Models\FTP.cs" />
     <Compile Include="Utils\ManagedAES.cs" />
     <Compile Include="UI\Components\EditorElement\Highlighting\SPBracketSearcher.cs" />
+    <Compile Include="Utils\RegexKeywordsHelper.cs" />
     <Compile Include="Utils\SPSyntaxTidy\SPSyntaxTidy.cs" />
     <Compile Include="Utils\SPSyntaxTidy\SPTokenizer.cs" />
     <Compile Include="Utils\Models\TemplateInfo.cs" />

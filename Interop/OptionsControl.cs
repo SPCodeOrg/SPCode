@@ -11,7 +11,7 @@ namespace SPCode
     [Serializable]
     public class OptionsControl
     {
-        public static int SVersion = 12;
+        public static int SVersion = 13;
         public bool Editor_AgressiveIndentation = true;
         public bool Editor_AutoCloseBrackets = true;
         public bool Editor_AutoCloseStringChars = true;
@@ -78,7 +78,11 @@ namespace SPCode
         public bool UI_Animations = true;
         public bool UI_ShowToolBar;
 
+        // Version 12
         public LinkedList<string> RecentFiles = new();
+
+        // Version 13
+        public SearchOptions SearchOptions;
 
         public int Version = 11;
 
@@ -157,6 +161,16 @@ namespace SPCode
                 {
                     Editor_TabToAutocomplete = false;
                 }
+                if (Version < 13)
+                {
+                    SearchOptions.FindText = "";
+                    SearchOptions.ReplaceText = "";
+                    SearchOptions.SearchType = 0;
+                    SearchOptions.Document = 0;
+                    SearchOptions.CaseSensitive = false;
+                    SearchOptions.MultilineRegex = false;
+                    SearchOptions.ReplaceType = 0;
+                }
 
                 //new Optionsversion - reset new fields to default
                 Version = SVersion; //then Update Version afterwars
@@ -221,6 +235,18 @@ namespace SPCode
         {
             return Color.FromArgb(c.A, c.R, c.G, c.B);
         }
+    }
+
+    [Serializable]
+    public struct SearchOptions
+    {
+        public string FindText;
+        public string ReplaceText;
+        public int SearchType;
+        public int Document;
+        public bool CaseSensitive;
+        public bool MultilineRegex;
+        public int ReplaceType;
     }
 
     public static class OptionsControlIOObject

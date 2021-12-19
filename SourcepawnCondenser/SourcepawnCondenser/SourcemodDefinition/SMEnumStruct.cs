@@ -4,8 +4,8 @@ namespace SourcepawnCondenser.SourcemodDefinition
 {
     public class SMEnumStruct : SMBaseDefinition
     {
-        public List<SMEnumStructField> Fields = new List<SMEnumStructField>();
-        public List<SMEnumStructMethod> Methods = new List<SMEnumStructMethod>();
+        public List<SMEnumStructField> Fields = new();
+        public List<SMEnumStructMethod> Methods = new();
     }
 
     public class SMEnumStructField : SMBaseDefinition

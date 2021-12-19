@@ -19,7 +19,6 @@
     </ResourceDictionary>
   </controls:MetroWindow.Resources>
   <Grid>
-    <Image Name="Icon" Source="/SPCode;component/Resources/Icons/icon.ico" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,5,5" Width="40" Height="40"/>
     <TextBlock Name="MainLine" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="50,0,0,0" FontSize="16" Foreground="{DynamicResource AccentColorBrush}" IsHitTestVisible="False" />
     <TextBlock Name="SubLine" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="50,25,0,0" FontSize="14" Foreground="{DynamicResource AccentColorBrush}" IsHitTestVisible="False" />
     <Button Name="ActionYesButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,25,0,0" Width="50" Click="ActionYesButton_Click" />

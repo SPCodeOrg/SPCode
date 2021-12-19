@@ -3,53 +3,82 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
 using SourcepawnCondenser.SourcemodDefinition;
+using SPCode.Utils;
 
 namespace SPCode.UI.Components
 {
     public class AeonEditorHighlighting : IHighlightingDefinition
     {
-
+        public string Name => "SM";
         private readonly SMDefinition smDef;
-        public AeonEditorHighlighting() { }
 
+        public AeonEditorHighlighting() { }
         public AeonEditorHighlighting(SMDefinition smDef)
         {
             this.smDef = smDef;
         }
 
-        public string Name => "SM";
-
         public HighlightingRuleSet MainRuleSet
         {
             get
             {
+                // Brushes
+                var commentBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Comments);
+                var stringBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Strings);
+                var deprecatedBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Deprecated);
+                var preprocessorBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_PreProcessor);
+                var typeValuesBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_TypesValues);
+                var mainKeywordsBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Keywords);
+                var contextKeywordsBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_ContextKeywords);
+                var typesBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Types);
+                var charBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Chars);
+                var numberBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Numbers);
+                var specialCharBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_SpecialCharacters);
+                var constantBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants);
+                var functionBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Functions);
+                var methodBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods);
+                var unknownFunctionBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_UnkownFunctions);
+                var commentsMarkerBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_CommentsMarker);
+
+                // RULESET 1: Comment Markers
                 var commentMarkerSet = new HighlightingRuleSet
                 {
                     Name = "CommentMarkerSet"
                 };
+
                 commentMarkerSet.Rules.Add(new HighlightingRule
                 {
                     Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
                         {"TODO", "FIX", "FIXME", "HACK", "WORKAROUND", "BUG"}),
                     Color = new HighlightingColor
                     {
-                        Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_CommentsMarker),
-                        FontWeight = FontWeights.Bold
+                        Foreground = commentsMarkerBrush,
+                        FontWeight = FontWeights.Bold,
                     }
                 });
+
+                // RULESET 2: Exclude inner single line comment (backslash to escape inside strings)
                 var excludeInnerSingleLineComment = new HighlightingRuleSet();
+
                 excludeInnerSingleLineComment.Spans.Add(new HighlightingSpan
-                { StartExpression = new Regex(@"\\"), EndExpression = new Regex(@".") });
+                {
+                    StartExpression = new Regex(@"\\"),
+                    EndExpression = new Regex(@".")
+                });
+
+
+                // RULESET 3: Main ruleset
                 var rs = new HighlightingRuleSet();
-                var commentBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Comments);
-                rs.Spans.Add(new HighlightingSpan //singleline comments
+
+                // Create spans
+
+                rs.Spans.Add(new HighlightingSpan // singleline comments
                 {
                     StartExpression = new Regex(@"//", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     EndExpression = new Regex(@"$", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
@@ -58,7 +87,7 @@ namespace SPCode.UI.Components
                     EndColor = new HighlightingColor { Foreground = commentBrush },
                     RuleSet = commentMarkerSet
                 });
-                rs.Spans.Add(new HighlightingSpan //multiline comments
+                rs.Spans.Add(new HighlightingSpan // multiline comments
                 {
                     StartExpression = new Regex(@"/\*",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture | RegexOptions.Multiline),
@@ -69,8 +98,7 @@ namespace SPCode.UI.Components
                     EndColor = new HighlightingColor { Foreground = commentBrush },
                     RuleSet = commentMarkerSet
                 });
-                var stringBrush = new SimpleHighlightingBrush(Program.OptionsObject.SH_Strings);
-                rs.Spans.Add(new HighlightingSpan //strings
+                rs.Spans.Add(new HighlightingSpan // strings
                 {
                     StartExpression = new Regex(@"(?<!')""",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
@@ -80,197 +108,191 @@ namespace SPCode.UI.Components
                     EndColor = new HighlightingColor { Foreground = stringBrush },
                     RuleSet = excludeInnerSingleLineComment
                 });
+
+                // Apply deprecated syntax rules
+
                 if (Program.OptionsObject.SH_HighlightDeprecateds)
                 {
-                    rs.Rules.Add(new HighlightingRule //deprecated variable declaration
+                    rs.Rules.Add(new HighlightingRule // deprecated variable declaration
                     {
                         Regex = new Regex(@"^\s*(decl|new)\s+([a-zA-z_][a-zA-z1-9_]*:)?",
                             RegexOptions.CultureInvariant | RegexOptions.Multiline | RegexOptions.ExplicitCapture),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Deprecated) }
+                        Color = new HighlightingColor { Foreground = deprecatedBrush }
                     });
-                    rs.Rules.Add(new HighlightingRule //deprecated function declaration
+                    rs.Rules.Add(new HighlightingRule // deprecated function declaration
                     {
                         Regex = new Regex(@"^(public|stock|forward)\s+[a-zA-z_][a-zA-z1-9_]*:",
                             RegexOptions.CultureInvariant | RegexOptions.Multiline | RegexOptions.ExplicitCapture),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Deprecated) }
+                        Color = new HighlightingColor { Foreground = deprecatedBrush }
                     });
-                    rs.Rules.Add(new HighlightingRule //deprecated taggings (from std types)
+                    rs.Rules.Add(new HighlightingRule // deprecated taggings (from std types)
                     {
                         Regex = new Regex(@"\b(bool|Float|float|Handle|String|char|void|int):",
                             RegexOptions.CultureInvariant | RegexOptions.Multiline | RegexOptions.ExplicitCapture),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Deprecated) }
+                        Color = new HighlightingColor { Foreground = deprecatedBrush }
                     });
-                    rs.Rules.Add(new HighlightingRule //deprecated keywords
+                    rs.Rules.Add(new HighlightingRule // deprecated keywords
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
                             {"decl", "String", "Float", "functag", "funcenum"}),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Deprecated) }
+                        Color = new HighlightingColor { Foreground = deprecatedBrush }
                     });
                 }
 
-                rs.Rules.Add(new HighlightingRule //preprocessor keywords
+                // Apply normal stock rules
+
+                rs.Rules.Add(new HighlightingRule // preprocessor keywords
                 {
                     Regex = new Regex(@"\#\S+",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
-                    Color = new HighlightingColor
-                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_PreProcessor) }
+                    Color = new HighlightingColor { Foreground = preprocessorBrush }
                 });
-                rs.Rules.Add(new HighlightingRule //type-values keywords
+                rs.Rules.Add(new HighlightingRule // #pragma deprecated messages
+                {
+                    Regex = new Regex(@"(?<=#pragma deprecated ).+", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
+                    Color = new HighlightingColor { Foreground = stringBrush }
+                });
+                rs.Rules.Add(new HighlightingRule // type-values keywords
                 {
                     Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[] { "sizeof", "true", "false", "null" }),
-                    Color = new HighlightingColor
-                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_TypesValues) }
+                    Color = new HighlightingColor { Foreground = typeValuesBrush }
                 });
-                rs.Rules.Add(new HighlightingRule //main keywords
+                rs.Rules.Add(new HighlightingRule // main keywords
                 {
                     Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
                     {
                         "if", "else", "switch", "case", "default", "for", "while", "do", "break", "continue", "return",
                         "new", "view_as", "delete"
                     }),
-                    Color = new HighlightingColor
-                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Keywords) }
+                    Color = new HighlightingColor { Foreground = mainKeywordsBrush }
                 });
-                rs.Rules.Add(new HighlightingRule //context keywords
+                rs.Rules.Add(new HighlightingRule // context keywords
                 {
                     Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
                     {
                         "stock", "normal", "native", "public", "static", "const", "methodmap", "enum", "forward",
                         "function", "struct", "property", "get", "set", "typeset", "typedef", "this"
                     }),
-                    Color = new HighlightingColor
-                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_ContextKeywords) }
+                    Color = new HighlightingColor { Foreground = contextKeywordsBrush }
                 });
 
-                rs.Rules.Add(new HighlightingRule //value types
+                rs.Rules.Add(new HighlightingRule // value types
                 {
                     Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
                         {"bool", "char", "float", "int", "void", "any", "Handle", "Function"}),
-                    Color = new HighlightingColor
-                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Types) }
+                    Color = new HighlightingColor { Foreground = typesBrush }
                 });
-                rs.Rules.Add(new HighlightingRule //char type
+                rs.Rules.Add(new HighlightingRule // char type
                 {
-                    Regex = new Regex(@"'\\?.?'", RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
-                    Color = new HighlightingColor
-                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Chars) }
+                    Regex = new Regex(@"'\\?.?'",
+                        RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
+                    Color = new HighlightingColor { Foreground = charBrush }
                 });
-                rs.Rules.Add(new HighlightingRule //numbers
+                rs.Rules.Add(new HighlightingRule // numbers
                 {
                     Regex = new Regex(
                         @"\b0[x][0-9a-fA-F]+|\b0[b][01]+|\b0[o][0-7]+|([+-]?\b[0-9]+(\.[0-9]+)?|\.[0-9]+)([eE][+-]?[0-9]+)?",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
-                    Color = new HighlightingColor
-                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Numbers) }
+                    Color = new HighlightingColor { Foreground = numberBrush }
                 });
-                rs.Rules.Add(new HighlightingRule //special characters
+                rs.Rules.Add(new HighlightingRule // special characters
                 {
                     Regex = new Regex(@"[?.;()\[\]{}+\-/%*&<>^+~!|&]+",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
-                    Color = new HighlightingColor
-                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_SpecialCharacters) }
+                    Color = new HighlightingColor { Foreground = specialCharBrush }
                 });
-                rs.Rules.Add(new HighlightingRule //std includes - string color!
+                rs.Rules.Add(new HighlightingRule // std includes - string color!
                 {
                     Regex = new Regex(@"\s[<][\w\\/\-]+(\.[\w\-]+)?[>]",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
                     Color = new HighlightingColor { Foreground = stringBrush }
                 });
 
-                if (smDef != null)
+                // Apply particular rules from the current SM Definition
+
+                if (smDef != null && smDef.Defines.Count > 0)
                 {
-                    if (smDef.Defines.Count > 0)
+                    rs.Rules.Add(new HighlightingRule // defines
                     {
-                        rs.Rules.Add(new HighlightingRule
-                        {
-                            Regex = new Regex(string.Join("|", smDef.Defines.Select(e => "\\b" + Regex.Escape(e.Name) + "\\b").ToArray())),
-                            Color = new HighlightingColor
-                            { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants) }
-                        });
-                    }
+                        Regex = new Regex("\\b(?:" + string.Join("|", smDef.Defines.Select(x => Regex.Match(x.Name, @"\w+").Value).ToArray()) + ")(?=\\W|$)"),
+                        Color = new HighlightingColor { Foreground = constantBrush }
+                    });
                 }
+
                 var def = Program.Configs[Program.SelectedConfig].GetSMDef();
+
                 if (def.TypeStrings.Length > 0)
                 {
-                    rs.Rules.Add(new HighlightingRule //types
+                    rs.Rules.Add(new HighlightingRule // types
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.TypeStrings, true),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Types) }
+                        Color = new HighlightingColor { Foreground = typesBrush }
                     });
                 }
 
                 if (def.ConstantsStrings.Length > 0)
                 {
-                    rs.Rules.Add(new HighlightingRule //constants
+                    rs.Rules.Add(new HighlightingRule // constants
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.ConstantsStrings, true),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Constants) }
+                        Color = new HighlightingColor { Foreground = constantBrush }
                     });
                 }
 
                 if (def.FunctionStrings.Length > 0)
                 {
-                    rs.Rules.Add(new HighlightingRule //Functions
+                    rs.Rules.Add(new HighlightingRule // Functions
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.FunctionStrings, true),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Functions) }
+                        Color = new HighlightingColor { Foreground = functionBrush }
                     });
                 }
 
                 if (def.MethodsStrings.Length > 0)
                 {
-                    rs.Rules.Add(new HighlightingRule //Methods
+                    rs.Rules.Add(new HighlightingRule // Methods
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.MethodsStrings),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
+                        Color = new HighlightingColor { Foreground = methodBrush }
                     });
                 }
 
                 if (def.FieldStrings.Length > 0)
                 {
-                    rs.Rules.Add(new HighlightingRule //Methods
+                    rs.Rules.Add(new HighlightingRule // Methods
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.FieldStrings),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
+                        Color = new HighlightingColor { Foreground = methodBrush }
                     });
                 }
 
                 if (def.StructFieldStrings.Length > 0)
                 {
-                    rs.Rules.Add(new HighlightingRule //Methods
+                    rs.Rules.Add(new HighlightingRule // Methods
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.StructFieldStrings),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
+                        Color = new HighlightingColor { Foreground = methodBrush }
                     });
                 }
 
                 if (def.StructMethodStrings.Length > 0)
                 {
-                    rs.Rules.Add(new HighlightingRule //Methods
+                    rs.Rules.Add(new HighlightingRule // Methods
                     {
                         Regex = RegexKeywordsHelper.GetRegexFromKeywords2(
                             def.StructMethodStrings),
-                        Color = new HighlightingColor
-                        { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Methods) }
+                        Color = new HighlightingColor { Foreground = methodBrush }
                     });
                 }
 
-                rs.Rules.Add(new HighlightingRule //unknown function calls
+                // The unknown function calls rule is at the end because it gets applied after parsing all of the known functions.
+
+                rs.Rules.Add(new HighlightingRule // unknown function calls
                 {
-                    Regex = new Regex(@"\b\w+(?=\s*\()",
+                    //Regex = new Regex(@"\b\w+(?=\s*\()",
+                    Regex = new Regex(@"(?<!#define )\b\w+(?=\s*\()",
                         RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture),
-                    Color = new HighlightingColor
-                    { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_UnkownFunctions) }
+                    Color = new HighlightingColor { Foreground = unknownFunctionBrush }
                 });
 
                 rs.Name = "MainRule";
@@ -355,115 +377,4 @@ namespace SPCode.UI.Components
         }
     }
 
-    public static class RegexKeywordsHelper
-    {
-        public static Regex GetRegexFromKeywords(string[] keywords, bool ForceAtomicRegex = false)
-        {
-            if (ForceAtomicRegex)
-            {
-                keywords = ConvertToAtomicRegexAbleStringArray(keywords);
-            }
-
-            if (keywords.Length == 0)
-            {
-                return new Regex("SPEdit_Error"); //hehe 
-            }
-
-            var UseAtomicRegex = true;
-            for (var j = 0; j < keywords.Length; ++j)
-            {
-                if (!char.IsLetterOrDigit(keywords[j][0]) ||
-                    !char.IsLetterOrDigit(keywords[j][keywords[j].Length - 1]))
-                {
-                    UseAtomicRegex = false;
-                    break;
-                }
-            }
-
-            var regexBuilder = new StringBuilder();
-            if (UseAtomicRegex)
-            {
-                regexBuilder.Append(@"\b(?>");
-            }
-            else
-            {
-                regexBuilder.Append(@"(");
-            }
-
-            var orderedKeyWords = new List<string>(keywords);
-            var i = 0;
-            foreach (var keyword in orderedKeyWords.OrderByDescending(w => w.Length))
-            {
-                if (i++ > 0)
-                {
-                    regexBuilder.Append('|');
-                }
-
-                if (UseAtomicRegex)
-                {
-                    regexBuilder.Append(Regex.Escape(keyword));
-                }
-                else
-                {
-                    if (char.IsLetterOrDigit(keyword[0]))
-                    {
-                        regexBuilder.Append(@"\b");
-                    }
-
-                    regexBuilder.Append(Regex.Escape(keyword));
-                    if (char.IsLetterOrDigit(keyword[keyword.Length - 1]))
-                    {
-                        regexBuilder.Append(@"\b");
-                    }
-                }
-            }
-
-            if (UseAtomicRegex)
-            {
-                regexBuilder.Append(@")\b");
-            }
-            else
-            {
-                regexBuilder.Append(@")");
-            }
-
-            return new Regex(regexBuilder.ToString(), RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture);
-        }
-
-        public static string[] ConvertToAtomicRegexAbleStringArray(string[] keywords)
-        {
-            var atomicRegexAbleList = new List<string>();
-            for (var j = 0; j < keywords.Length; ++j)
-            {
-                if (keywords[j].Length > 0)
-                {
-                    if (char.IsLetterOrDigit(keywords[j][0]) &&
-                        char.IsLetterOrDigit(keywords[j][keywords[j].Length - 1]))
-                    {
-                        atomicRegexAbleList.Add(keywords[j]);
-                    }
-                }
-            }
-
-            return atomicRegexAbleList.ToArray();
-        }
-
-        public static Regex GetRegexFromKeywords2(string[] keywords)
-        {
-            var regexBuilder = new StringBuilder(@"\b(?<=[^\s]+\.)(");
-            var i = 0;
-            foreach (var keyword in keywords)
-            {
-                if (i++ > 0)
-                {
-                    regexBuilder.Append("|");
-                }
-
-                regexBuilder.Append(keyword);
-            }
-
-            regexBuilder.Append(@")\b");
-            return new Regex(regexBuilder.ToString(), RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture);
-        }
-    }
 }
