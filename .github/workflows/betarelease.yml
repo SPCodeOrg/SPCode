@@ -33,7 +33,8 @@ jobs:
         id: tagfilter
         with:
           text: ${{ needs.get-tag.outputs.tag }}
-          regex: '^[0-9].[0-9].[0-9].[0-9]$'
+          regex: '^/([0-9]\.[0-9]\.[0-9]\.[0-9])$'
+          flags: gm
   
   # Get revision number
   get-revision:
