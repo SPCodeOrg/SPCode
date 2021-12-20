@@ -89,6 +89,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tag_name: ${{ needs.get-tag.outputs.tag }}.beta${{ needs.get-revision.outputs.rev }}
           release_name: Release ${{ needs.get-tag.outputs.tag }}.beta${{ needs.get-revision.outputs.rev }}
           draft: false
           prerelease: true
