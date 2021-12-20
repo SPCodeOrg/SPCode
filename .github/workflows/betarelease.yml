@@ -14,7 +14,7 @@ jobs:
       tag: ${{ steps.previoustag.outputs.tag }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2.3.3
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
       - name: Get previous tag
@@ -24,7 +24,11 @@ jobs:
   get-revision:
     runs-on: ubuntu-latest
     steps:
-    - name: Get Revision
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Get revision
       run: echo "::set-output name=rev::$(git rev-list HEAD --count)\n"
 
   build:
