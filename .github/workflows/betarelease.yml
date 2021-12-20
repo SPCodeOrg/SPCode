@@ -6,58 +6,11 @@ on:
       - development
 
 jobs:
-
-  # Get the latest tag
-  get-tag:
-    runs-on: ubuntu-latest
-    outputs:
-      tag: ${{ steps.tagfilter.outputs.match }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Get previous tag
-        id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
-  
-  # Filter latest tag
-  filter-tag:
-    runs-on: ubuntu-latest
-    needs: get-tag
-    outputs:
-      filtered-tag: ${{ steps.tagfilter.outputs.match }}
-    steps:
-      - name: Filter tag
-        uses: "actions-ecosystem/action-regex-match@v2"
-        id: tagfilter
-        with:
-          text: ${{ needs.get-tag.outputs.tag }}
-          regex: '^/([0-9]\.[0-9]\.[0-9]\.[0-9])$'
-          flags: gm
-  
-  # Get revision number
-  get-revision:
-  
-    runs-on: ubuntu-latest
-    outputs:
-      rev: ${{ steps.getrev.outputs.rev }}
-    steps:
-    
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: Get revision
-      id: getrev
-      run: | 
-        echo "::set-output name=rev::$(git rev-list HEAD --count)"
   
   # Build and release
   build:
 
     runs-on: windows-latest
-    needs: [ filter-tag, get-revision ]
     steps:
     
       # Checkout the repository
@@ -108,8 +61,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ needs.filter-tag.outputs.filtered-tag }}.beta${{ needs.get-revision.outputs.rev }}
-          release_name: Release ${{ needs.filter-tag.outputs.filtered-tag }}.beta${{ needs.get-revision.outputs.rev }}
+          tag_name: ${{ %TAG% }}.beta${{ %REV% }}
+          release_name: Release ${{ %TAG% }}.beta${{ %REV% }}
           draft: false
           prerelease: true
 
