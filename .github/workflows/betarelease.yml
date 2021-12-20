@@ -11,7 +11,7 @@ jobs:
   get-tag:
     runs-on: ubuntu-latest
     outputs:
-      tag: ${{ steps.previoustag.outputs.tag }}
+      tag: ${{ steps.tagfilter.outputs.group1 }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -20,7 +20,14 @@ jobs:
       - name: Get previous tag
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - name: Filter tag
+        uses: "actions-ecosystem/action-regex-match@v2"
+        id: tagfilter
+        with:
+          text: ${{ steps.previoustag.outputs.tag }}
+          regex: '^[0-9].[0-9].[0-9].[0-9]$'
   
+  # Get revision number
   get-revision:
     runs-on: ubuntu-latest
     outputs:
