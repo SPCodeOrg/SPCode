@@ -23,12 +23,15 @@ jobs:
   
   get-revision:
     runs-on: ubuntu-latest
+    outputs:
+      rev: ${{ steps.getrev.outputs.rev }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
     - name: Get revision
+      id: getrev
       run: | 
         echo "::set-output name=rev::$(git rev-list HEAD --count)"
 
