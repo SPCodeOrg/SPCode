@@ -29,7 +29,8 @@ jobs:
       with:
         fetch-depth: 0
     - name: Get revision
-      run: echo "::set-output name=rev::$(git rev-list HEAD --count)\n"
+      run: | 
+        echo "::set-output name=rev::$(git rev-list HEAD --count)"
 
   build:
 
