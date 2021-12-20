@@ -26,6 +26,12 @@ jobs:
         with:
           text: ${{ steps.previoustag.outputs.tag }}
           regex: '^[0-9].[0-9].[0-9].[0-9]$'
+          
+      - name: Debug
+        run: | 
+          echo ${{ steps.previoustag.outputs.tag }}
+          echo ${{ steps.tagfilter.outputs.match }}
+          echo ${{ steps.tagfilter.outputs.group1 }}
   
   # Get revision number
   get-revision:
