@@ -7,27 +7,35 @@ on:
 
 jobs:
 
-  analyze-tags:
+  # Get the latest tag
+  get-tag:
     runs-on: ubuntu-latest
     outputs:
-      previous-tag: ${{ steps.previoustag.outputs.tag }}
+      tag: ${{ steps.previoustag.outputs.tag }}
     steps:
-      - uses: actions/checkout@v2.3.3
+      - name: Checkout repository
+        uses: actions/checkout@v2.3.3
         with:
           fetch-depth: 0
       - name: Get previous tag
         id: previoustag
         uses: "WyriHaximus/github-action-get-previous-tag@v1"
+  
+  get-revision:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get Revision
+      run: echo "::set-output name=rev::$(git rev-list HEAD --count)\n"
 
   build:
 
     runs-on: windows-latest
-    needs: analyze-tags
+    needs: [ get-tag, get-revision ]
     steps:
+    
+      # Checkout the repository
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       # Install the .NET Core workload
       - name: Install .NET Core
@@ -36,7 +44,8 @@ jobs:
           dotnet-version: 6.0.100
 
       # Nuget
-      - uses: nuget/setup-nuget@v1
+      - name: Restore NuGet packages 
+        uses: nuget/setup-nuget@v1
         with:
           nuget-version: '5.x'
       - run: nuget restore Spcode.sln
@@ -45,8 +54,8 @@ jobs:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v1.1
 
-      # Build Spcode
-      - name: Build Spcode
+      # Build SPCode
+      - name: Build SPCode
         run: msbuild Spcode.csproj /p:Configuration=Release-Beta /p:langversion=latest
 
       # Build Installer
@@ -70,8 +79,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ needs.analyze-tags.outputs.previous-tag }}
-          release_name: Release ${{ needs.analyze-tags.outputs.previous-tag }}
+          tag_name: ${{ needs.get-tag.outputs.tag }}
+          release_name: Release ${{ needs.get-tag.outputs.tag }}.beta${{ needs.get-revision.outputs.rev }}
           draft: false
           prerelease: true
 
