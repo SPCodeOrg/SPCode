@@ -7,29 +7,21 @@ on:
 
 jobs:
 
-  # Get the latest tag
-  get-tag:
-    runs-on: ubuntu-latest
-    outputs:
-      tag: ${{ steps.previoustag.outputs.tag }}
-    steps:
-      - uses: actions/checkout@v2.3.3
-        with:
-          fetch-depth: 0
-      - name: Get previous tag
-        id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
-
   # Build and release
   build:
 
     runs-on: windows-latest
-    needs: get-tag 
     steps:
     
       # Checkout the repository
       - name: Checkout
         uses: actions/checkout@v2
+
+      # Fetch latest tag
+      - name: Get tag
+        id: get-tag
+        run: |
+          echo "::set-output name=TAG::$(git describe --match "[0-9].[0-9].[0-9].[0-9]" --tags --abbrev=0)"
 
       # Install the .NET Core workload
       - name: Install .NET Core
@@ -73,8 +65,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ needs.get-tag.outputs.tag }}
-          release_name: Release ${{ needs.get-tag.outputs.tag }}
+          tag_name: ${{ steps.get-tag.outputs.TAG }}
+          release_name: Release ${{ steps.get-tag.outputs.TAG }}
           draft: false
           prerelease: false
 
