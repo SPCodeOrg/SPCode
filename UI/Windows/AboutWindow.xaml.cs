@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,7 +31,14 @@ namespace SPCode.UI.Windows
                     g.Background = gridBrush;
                 }
             }
-            TitleBox.Text = $"SPCode ({Assembly.GetEntryAssembly()?.GetName().Version}) - {Program.Translations.Get("SPEditCap")}";
+#if BETA
+            var attribute = (AssemblyInformationalVersionAttribute)Assembly.GetExecutingAssembly()
+                .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault();
+            var versionString = attribute.InformationalVersion;
+#else
+            var versionString = Assembly.GetEntryAssembly()?.GetName().Version;
+#endif
+            TitleBox.Text = $"SPCode ({versionString}) - {Program.Translations.Get("SPEditCap")}";
             LicenseField.Text = File.ReadAllText(Constants.LicenseFile);
         }
 

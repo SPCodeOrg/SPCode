@@ -46,7 +46,14 @@ namespace SPCode
         [STAThread]
         public static void Main(string[] args)
         {
-            using (new Mutex(true, "SPCodeGlobalMutex", out var mutexReserved))
+#if BETA
+            string mutexName = "SPCodeGlobalMutexBeta";
+            string splashScreenImage = "Resources/Icons/icon256xbeta.png";
+#else
+            string mutexName = "SPCodeGlobalMutex";
+            string splashScreenImage = "Resources/Icons/icon256x.png";
+#endif
+            using (new Mutex(true, mutexName, out var mutexReserved))
             {
                 if (mutexReserved)
                 {
@@ -54,8 +61,7 @@ namespace SPCode
                     try
                     {
 #endif
-
-                        var splashScreen = new SplashScreen("Resources/Icons/icon256x.png");
+                        var splashScreen = new SplashScreen(splashScreenImage);
                         splashScreen.Show(false, true);
                         Environment.CurrentDirectory =
                             Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
