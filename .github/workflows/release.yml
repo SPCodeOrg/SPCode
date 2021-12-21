@@ -16,6 +16,8 @@ jobs:
       # Checkout the repository
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       # Fetch latest tag
       - name: Get tag
