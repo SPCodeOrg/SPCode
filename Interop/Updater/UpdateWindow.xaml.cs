@@ -75,6 +75,7 @@ namespace SPCode.Interop.Updater
             // change 3
             // added this 1
             // added this 2
+            // added this 3
             if (OnlyChangelog)
             {
                 Title = "SPCode Changelog";
