@@ -41,6 +41,7 @@ namespace SPCode.Utils
             { "ErrorUpdate", "Error while checking for updates." },
             { "VersUpToDate", "Version up to date" },
             { "VersionYour", "Your program version {0} is up to date." },
+            { "VersionYourBeta", "Your beta program version {0} is up to date." },
             { "Details", "Details" },
             { "Compiling", "Compiling" },
             { "Error", "Error" },

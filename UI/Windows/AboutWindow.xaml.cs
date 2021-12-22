@@ -32,11 +32,9 @@ namespace SPCode.UI.Windows
                 }
             }
 #if BETA
-            var attribute = (AssemblyInformationalVersionAttribute)Assembly.GetExecutingAssembly()
-                .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault();
-            var versionString = attribute.InformationalVersion;
+            var versionString = VersionHelper.GetAssemblyInformationalVersion();
 #else
-            var versionString = Assembly.GetEntryAssembly()?.GetName().Version;
+            var versionString = VersionHelper.GetAssemblyVersion();
 #endif
             TitleBox.Text = $"SPCode ({versionString}) - {Program.Translations.Get("SPEditCap")}";
             LicenseField.Text = File.ReadAllText(Constants.LicenseFile);

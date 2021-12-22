@@ -213,6 +213,7 @@
     <Compile Include="Utils\SPSyntaxTidy\SPSyntaxTidy.cs" />
     <Compile Include="Utils\SPSyntaxTidy\SPTokenizer.cs" />
     <Compile Include="Utils\Models\TemplateInfo.cs" />
+    <Compile Include="Utils\VersionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Interop\Updater\UpdateWindow.xaml">

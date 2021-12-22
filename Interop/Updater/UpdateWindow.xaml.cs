@@ -70,14 +70,6 @@ namespace SPCode.Interop.Updater
         /// </summary>
         public void PrepareUpdateWindow(bool OnlyChangelog = false)
         {
-            // change 1
-            // change 2
-            // change 3
-            // added this 1
-            // added this 2
-            // added this 3
-            // added this 4
-            // NEW 5
             if (OnlyChangelog)
             {
                 Title = "SPCode Changelog";

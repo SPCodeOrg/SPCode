@@ -1,7 +1,9 @@
-﻿using System;
+﻿using SPCode.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Octokit;
 
@@ -35,18 +37,27 @@ namespace SPCode.Interop.Updater
             var info = new UpdateInfo();
             try
             {
-                info.AllReleases = await GetAllReleases();
-                if (!IsUpToDate(Assembly.GetEntryAssembly()?.GetName().Version, Version.Parse(info.AllReleases[0].TagName)))
+                info.AllReleases = (await GetAllReleases()).ToList();
+
+#if BETA
+                var currentVersion = VersionHelper.GetRevisionNumber();
+                var latestVersion = VersionHelper.GetRevisionNumber(info.AllReleases[0].TagName);
+#else
+                var currentVersion = VersionHelper.GetAssemblyVersion();
+                var latestVersion = new Version(info.AllReleases[0].TagName);
+#endif
+
+                if (IsUpToDate(currentVersion, latestVersion))
                 {
-                    if (info.Asset == null)
-                    {
-                        throw new Exception("Unable to find a valid asset!");
-                    }
-                    info.IsAvailable = true;
+                    info.IsAvailable = false;
                 }
                 else
                 {
-                    info.IsAvailable = false;
+                    if (info.Asset == null)
+                    {
+                        throw new Exception("A new release was pushed, but no valid update assets were found.");
+                    }
+                    info.IsAvailable = true;
                 }
             }
             catch (Exception e)
@@ -71,16 +82,21 @@ namespace SPCode.Interop.Updater
         /// <param name="currentVer"></param>
         /// <param name="latestVer"></param>
         /// <returns></returns>
-        private static bool IsUpToDate(Version currentVer, Version latestVer)
+        private static bool IsUpToDate(object currentVer, object latestVer)
         {
-            return currentVer.CompareTo(latestVer) >= 0;
+            // If we're comparing beta versions, compare revision numbers
+#if BETA
+            return Convert.ToInt32(currentVer) >= Convert.ToInt32(latestVer);
+#else
+            return ((Version)currentVer).CompareTo((Version)latestVer) >= 0;
+#endif
         }
 
         /// <summary>
         /// Calls the GitHub API to get all releases.
         /// </summary>
         /// <returns></returns>
-        private static async Task<List<Release>> GetAllReleases()
+        private static async Task<IEnumerable<Release>> GetAllReleases()
         {
             var apiOptions = new ApiOptions()
             {
@@ -89,7 +105,13 @@ namespace SPCode.Interop.Updater
             };
 
             var client = new GitHubClient(new ProductHeaderValue("spcode-client"));
-            return (await client.Repository.Release.GetAll("SPCodeOrg", "SPCode", apiOptions)).ToList();
+            var releases = await client.Repository.Release.GetAll("maxijabase", "SPCode", apiOptions);
+#if BETA
+            var finalReleasesList = releases.Where(x => x.Prerelease);
+#else
+            var finalReleasesList = releases.Where(x => !x.Prerelease);
+#endif
+            return finalReleasesList;
         }
     }
 }
