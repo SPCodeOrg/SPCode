@@ -40,7 +40,7 @@ jobs:
       - run: nuget restore Spcode.sln
 
       # Setup MSBuild
-      - name: Setup MSBuild.exe
+      - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.1
 
       # Build SPCode
@@ -59,9 +59,10 @@ jobs:
         shell: powershell
 
       # Build Updater
-      # - name: Build Updater
-      #  run: msbuild Deploy\SPCodeUpdater\SPCodeUpdater.csproj /p:Configuration=Release /property:langversion=latest
-
+      - name: Build Updater
+        run: msbuild Deploy\SPCodeUpdater\SPCodeUpdater.csproj /p:Configuration=Release-Beta /p:langversion=latest
+      
+      # Create Release
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -73,7 +74,7 @@ jobs:
           draft: false
           prerelease: true
 
-
+      # Upload Installer
       - name: Upload Installer
         id: upload-installer
         uses: actions/upload-release-asset@v1
@@ -85,6 +86,7 @@ jobs:
           asset_name: SPCode.Beta.Installer.exe
           asset_content_type: application/octet-stream
 
+      # Upload Portable
       - name: Upload Portable
         id: upload-portable
         uses: actions/upload-release-asset@v1
@@ -96,13 +98,14 @@ jobs:
           asset_name: SPCode.Beta.Portable.zip
           asset_content_type: application/zip
 
-      #- name: Upload Updater
-      #  id: upload-updater
-       # uses: actions/upload-release-asset@v1
-        #env:
-         # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-     #   with:
-      #    upload_url: ${{ steps.create_release.outputs.upload_url }}
-       #   asset_path: .\Deploy\SpcodeUpdater\bin\Release\SPCodeUpdater.exe
-        #  asset_name: SPCodeUpdater.exe
-         # asset_content_type: application/octet-stream
+      # Upload Updater
+      - name: Upload Updater
+       id: upload-updater
+       uses: actions/upload-release-asset@v1
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       with:
+         upload_url: ${{ steps.create_release.outputs.upload_url }}
+         asset_path: .\Deploy\SpcodeUpdater\bin\Release-Beta\SPCodeUpdater.exe
+         asset_name: SPCodeUpdater.exe
+         asset_content_type: application/octet-stream
