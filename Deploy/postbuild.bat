@@ -23,10 +23,12 @@ if "%1"=="Release-Beta" set beta=1
 if %beta%==1 (
   copy ".\..\..\Deploy\SPCode_Beta.nsi" ".\SPCode.nsi" /y
   copy ".\..\..\Deploy\Compress_Beta.ps1" ".\Compress.ps1" /y
+  copy ".\..\..\Deploy\icon_beta.ico" ".\icon.ico" /y
 
 ) else (
   copy ".\..\..\Deploy\SPCode_Stable.nsi" ".\SPCode.nsi" /y
   copy ".\..\..\Deploy\Compress_Stable.ps1" ".\Compress.ps1" /y
+  copy ".\..\..\Deploy\icon_stable.ico" ".\icon.ico" /y
 )
 
 exit 0

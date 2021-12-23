@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using SPCodeUpdater.Properties;
 
 namespace SPCodeUpdater
 {
@@ -9,8 +8,6 @@ namespace SPCodeUpdater
         public UpdateMarquee()
         {
             InitializeComponent();
-            var bmp = Resources.IconPng;
-            pictureBox1.Image = bmp;
         }
 
         public void SetToReadyState()

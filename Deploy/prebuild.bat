@@ -16,11 +16,10 @@ if "%1"=="Release-Beta" set beta=1
 if %beta%==1 (
 	copy "..\Resources\Icons\IconTemplates\Icon_Beta.ico" "..\Resources\Icons\Icon.ico" /y
 	copy "..\Resources\Icons\IconTemplates\icon256xbeta.png" "..\Resources\Icons\icon256x.png" /y
-	copy "..\Deploy\icon_beta.ico" ".\icon.ico" /y
 ) else (
 	copy "..\Resources\Icons\IconTemplates\Icon.ico" "..\Resources\Icons\Icon.ico" /y
 	copy "..\Resources\Icons\IconTemplates\icon256x.png" "..\Resources\Icons\icon256x.png" /y
-	copy "..\Deploy\icon_stable.ico" ".\icon.ico" /y
+
 )
 
 exit 0
