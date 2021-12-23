@@ -4,7 +4,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading;
 using System.Windows.Forms;
-using SPCodeUpdater.Properties;
 
 namespace SPCodeUpdater
 {
@@ -43,8 +42,11 @@ namespace SPCodeUpdater
         {
             var um = (UpdateMarquee)arg;
             var zipFile = Path.Combine(Environment.CurrentDirectory, "updateZipFile.zip");
-
-            var zipFileContent = Resources.Update;
+#if BETA
+            var zipFileContent = File.ReadAllBytes(@"..\..\..\bin\Release-Beta\SPCode.Beta.Portable.zip");
+#else
+            var zipFileContent = File.ReadAllBytes(@"..\..\..\bin\Release\SPCode.Portable.zip");
+#endif
 
             File.WriteAllBytes(zipFile, zipFileContent);
 
@@ -66,7 +68,7 @@ namespace SPCodeUpdater
                             Directory.CreateDirectory(dirBuffer);
                         }
 
-                        // Now we can safly extact the file.
+                        // Now we can safely extact the file.
                         entry.ExtractToFile(entry.FullName, true);
                     }
                 }

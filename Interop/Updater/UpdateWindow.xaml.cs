@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using MahApps.Metro;
 using MdXaml;
 using SPCode.Utils;
@@ -90,18 +91,21 @@ namespace SPCode.Interop.Updater
 
             var releasesBody = new StringBuilder();
 
-            foreach (var release in updateInfo.AllReleases)
+            if (updateInfo.AllReleases != null && updateInfo.AllReleases.Count > 0)
             {
-                releasesBody.Append($"**%{{color:{GetAccentHex()}}}Version {release.TagName}%** ");
-                releasesBody.AppendLine($"*%{{color:gray}}({MonthToTitlecase(release.CreatedAt)})% *\r\n");
-                releasesBody.AppendLine(release.Body + "\r\n");
+                foreach (var release in updateInfo.AllReleases)
+                {
+                    releasesBody.Append($"**%{{color:{GetAccentHex()}}}Version {release.TagName}%** ");
+                    releasesBody.AppendLine($"*%{{color:gray}}({MonthToTitlecase(release.CreatedAt)})% *\r\n");
+                    releasesBody.AppendLine(release.Body + "\r\n");
+                }
             }
 
             releasesBody.Append($"*%{{color:gray}}More releases in {Constants.GitHubReleases}%*");
 
             var document = new Markdown();
             var content = document.Transform(releasesBody.ToString());
-            content.FontFamily = new System.Windows.Media.FontFamily("Segoe UI");
+            content.FontFamily = new FontFamily("Segoe UI");
             DescriptionBox.Document = content;
 
             if (updateInfo.SkipDialog)

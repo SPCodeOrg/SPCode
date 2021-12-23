@@ -38,6 +38,11 @@ namespace SPCode.Interop.Updater
             try
             {
                 info.AllReleases = (await GetAllReleases()).ToList();
+                if (info.AllReleases.Count == 0)
+                {
+                    info.IsAvailable = false;
+                    return;
+                }
 
 #if BETA
                 var currentVersion = VersionHelper.GetRevisionNumber();
