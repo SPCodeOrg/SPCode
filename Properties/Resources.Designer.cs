@@ -59,25 +59,5 @@ namespace SPCode.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Busca un recurso adaptado de tipo System.Drawing.Icon similar a (Icono).
-        /// </summary>
-        internal static System.Drawing.Icon Icon {
-            get {
-                object obj = ResourceManager.GetObject("Icon", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Busca un recurso adaptado de tipo System.Drawing.Icon similar a (Icono).
-        /// </summary>
-        internal static System.Drawing.Icon Icon_Beta {
-            get {
-                object obj = ResourceManager.GetObject("Icon_Beta", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
     }
 }

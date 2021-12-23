@@ -460,12 +460,7 @@
     <ClInclude Include="Resources\Misc\Templates\Template_CSS.sp" />
     <ClInclude Include="Resources\Misc\Templates\Template_Generic.sp" />
     <ClInclude Include="Resources\Misc\Templates\Template_TF2.sp" />
-    <Content Include="Deploy\icon_beta.ico" />
-    <Content Include="Deploy\icon_stable.ico" />
     <Content Include="Deploy\nsis-plugins\DotNetChecker.dll" />
-    <None Include="Resources\icon256xbeta.ico" />
-    <Resource Include="Resources\Icons\Icon_Beta.ico" />
-    <Resource Include="Resources\Icons\icon256xbeta.png" />
     <Content Include="Resources\License.txt" />
     <Content Include="Resources\Misc\Configurations\sm_1_10_0_6509\include\admin.inc" />
     <Content Include="Resources\Misc\Configurations\sm_1_10_0_6509\include\adminmenu.inc" />
@@ -595,7 +590,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>cd ..\..\Deploy\
-prebuild.bat</PreBuildEvent>
+prebuild.bat $(ConfigurationName)</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>copy ..\..\Deploy\postbuild.bat .\postbuild.bat
