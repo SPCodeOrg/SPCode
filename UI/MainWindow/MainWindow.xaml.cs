@@ -82,7 +82,7 @@ namespace SPCode.UI
             }
 
             // Set title
-            Title = NamesHelper.ProgramPublicName;
+            Title = NamesHelper.ProgramPublicName + "(change 2)";
 
             // Timer to select the newly opened editor 200ms after it has been opened
             SelectDocumentTimer = new DispatcherTimer()
