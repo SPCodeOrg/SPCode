@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Octokit;
 
@@ -58,9 +56,9 @@ namespace SPCode.Interop.Updater
                 }
                 else
                 {
-                    if (info.Updater == null)
+                    if (info.Updater == null || info.Portable == null)
                     {
-                        throw new Exception("A new release was pushed, but no valid update assets were found.");
+                        throw new Exception("A new release was pushed, but one or more assets were not found.");
                     }
                     info.IsAvailable = true;
                 }
@@ -110,7 +108,7 @@ namespace SPCode.Interop.Updater
             };
 
             var client = new GitHubClient(new ProductHeaderValue("spcode-client"));
-            var releases = await client.Repository.Release.GetAll("maxijabase", "SPCode", apiOptions);
+            var releases = await client.Repository.Release.GetAll("SPCodeOrg", "SPCode", apiOptions);
 #if BETA
             var finalReleasesList = releases.Where(x => x.Prerelease);
 #else
