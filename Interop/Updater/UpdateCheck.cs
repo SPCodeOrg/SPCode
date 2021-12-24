@@ -58,7 +58,7 @@ namespace SPCode.Interop.Updater
                 }
                 else
                 {
-                    if (info.Asset == null)
+                    if (info.Updater == null)
                     {
                         throw new Exception("A new release was pushed, but no valid update assets were found.");
                     }

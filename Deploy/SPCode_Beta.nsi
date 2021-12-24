@@ -35,23 +35,6 @@ SetOutPath $INSTDIR
 !insertmacro CheckNetFramework 48
 
 File SPCode.exe
-File MahApps.Metro.dll
-File ICSharpCode.AvalonEdit.dll
-File System.Windows.Interactivity.dll
-File Xceed.Wpf.AvalonDock.dll
-File Xceed.Wpf.AvalonDock.Themes.Metro.dll
-File smxdasm.dll
-File ValveQuery.dll
-File MdXaml.dll
-File SourcepawnCondenser.dll
-File ByteSize.dll
-File Renci.SshNet.dll
-File Newtonsoft.Json.dll
-File DiscordRPC.dll
-File ControlzEx.dll
-File Octokit.dll
-File Microsoft.WindowsAPICodePack.dll
-File Microsoft.WindowsAPICodePack.Shell.dll
 
 File lang_0_spcode.xml
 File License.txt
@@ -120,23 +103,7 @@ SectionEnd
 
 Section "Uninstall"
 
-Delete $INSTDIR\uninstall.exe
 Delete $INSTDIR\SPCode.exe
-Delete $INSTDIR\MahApps.Metro.dll
-Delete $INSTDIR\ICSharpCode.AvalonEdit.dll
-Delete $INSTDIR\System.Windows.Interactivity.dll
-Delete $INSTDIR\Xceed.Wpf.AvalonDock.dll
-Delete $INSTDIR\Xceed.Wpf.AvalonDock.Themes.Metro.dll
-Delete $INSTDIR\smxdasm.dll
-Delete $INSTDIR\LysisForSpedit.dll
-Delete $INSTDIR\ValveQuery.dll
-Delete $INSTDIR\SourcepawnCondenser.dll
-Delete $INSTDIR\Renci.SshNet.dll
-Delete $INSTDIR\Newtonsoft.Json.dll
-Delete $INSTDIR\MdXaml.dll
-Delete $INSTDIR\DiscordRPC.dll
-Delete $INSTDIR\Microsoft.WindowsAPICodePack.dll
-Delete $INSTDIR\Microsoft.WindowsAPICodePack.Shell.dll
 
 Delete $INSTDIR\lang_0_spcode.xml
 Delete $INSTDIR\License.txt

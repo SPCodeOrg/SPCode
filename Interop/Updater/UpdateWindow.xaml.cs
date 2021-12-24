@@ -139,16 +139,23 @@ namespace SPCode.Interop.Updater
         /// </summary>
         private void UpdateDownloadWorker()
         {
-            var asset = updateInfo.Asset;
-            if (File.Exists(asset.Name))
-            {
-                File.Delete(asset.Name);
-            }
+            var updater = updateInfo.Updater;
+            var portable = updateInfo.Portable;
 
             try
             {
+                if (File.Exists(updater.Name))
+                {
+                    File.Delete(updater.Name);
+                }
+
+                if (File.Exists(portable.Name))
+                {
+                    File.Delete(portable.Name);
+                }
                 using var client = new WebClient();
-                client.DownloadFile(asset.BrowserDownloadUrl, asset.Name);
+                client.DownloadFile(updater.BrowserDownloadUrl, updater.Name);
+                client.DownloadFile(portable.BrowserDownloadUrl, portable.Name);
             }
             catch (Exception e)
             {

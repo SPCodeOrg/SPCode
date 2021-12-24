@@ -35,23 +35,6 @@ SetOutPath $INSTDIR
 !insertmacro CheckNetFramework 48
 
 File SPCode.exe
-File MahApps.Metro.dll
-File ICSharpCode.AvalonEdit.dll
-File System.Windows.Interactivity.dll
-File Xceed.Wpf.AvalonDock.dll
-File Xceed.Wpf.AvalonDock.Themes.Metro.dll
-File smxdasm.dll
-File ValveQuery.dll
-File MdXaml.dll
-File SourcepawnCondenser.dll
-File ByteSize.dll
-File Renci.SshNet.dll
-File Newtonsoft.Json.dll
-File DiscordRPC.dll
-File ControlzEx.dll
-File Octokit.dll
-File Microsoft.WindowsAPICodePack.dll
-File Microsoft.WindowsAPICodePack.Shell.dll
 
 File lang_0_spcode.xml
 File License.txt

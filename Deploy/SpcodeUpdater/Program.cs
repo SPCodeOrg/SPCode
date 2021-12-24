@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using ICSharpCode.SharpZipLib.Core;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace SPCodeUpdater
 {
@@ -14,12 +16,7 @@ namespace SPCodeUpdater
         [STAThread]
         public static void Main()
         {
-#if BETA
-            var processName = "SPCode Beta";
-#else
-            var processName = "SPCode";
-#endif
-            var processes = Process.GetProcessesByName(processName);
+            var processes = Process.GetProcesses().Where(x => x.ProcessName.Contains("SPCode"));
             foreach (var process in processes)
             {
                 try
@@ -28,7 +25,7 @@ namespace SPCodeUpdater
                 }
                 catch (Exception)
                 {
-                    // ignored
+
                 }
             }
 
@@ -45,43 +42,54 @@ namespace SPCodeUpdater
 
         private static void Worker(object arg)
         {
-            var um = (UpdateMarquee)arg;
-            var zipFile = Path.Combine(Environment.CurrentDirectory, "updateZipFile.zip");
+            try
+            {
+                var um = (UpdateMarquee)arg;
+
 #if BETA
-            var zipFileContent = File.ReadAllBytes(@"..\..\..\bin\Release-Beta\SPCode.Beta.Portable.zip");
+                var zipFile = ".\\SPCode.Beta.Portable.zip";
 #else
-            var zipFileContent = File.ReadAllBytes(@"..\..\..\bin\Release\SPCode.Portable.zip");
+                var zipFile = ".\\SPCode.Portable.zip";
 #endif
 
-            File.WriteAllBytes(zipFile, zipFileContent);
-
-            var zipInfo = new FileInfo(zipFile);
-
-            using (var archive = ZipFile.OpenRead(zipInfo.FullName))
-            {
-                foreach (var entry in archive.Entries)
+                using (var fsInput = File.OpenRead(zipFile))
+                using (var zf = new ZipFile(fsInput))
                 {
-                    // Dont override the sourcemod files
-                    if (!entry.FullName.StartsWith(@"sourcepawn\"))
-                    {
-                        // Get File directory
-                        var dirBuffer = Path.GetDirectoryName(entry.FullName);
 
-                        // Create directory if not empty
-                        if (!string.IsNullOrEmpty(dirBuffer))
+                    foreach (ZipEntry zipEntry in zf)
+                    {
+                        if (zipEntry.IsDirectory || zipEntry.Name.Contains("sourcepawn"))
                         {
-                            Directory.CreateDirectory(dirBuffer);
+                            continue;
                         }
 
-                        // Now we can safely extact the file.
-                        entry.ExtractToFile(entry.FullName, true);
+                        var entryFileName = zipEntry.Name;
+
+                        var fullZipToPath = Path.Combine(@".\", entryFileName);
+                        var directoryName = Path.GetDirectoryName(fullZipToPath);
+
+                        if (directoryName.Length > 0)
+                        {
+                            Directory.CreateDirectory(directoryName);
+                        }
+
+                        var buffer = new byte[4096];
+
+                        using (var zipStream = zf.GetInputStream(zipEntry))
+                        using (Stream fsOutput = File.Create(fullZipToPath))
+                        {
+                            StreamUtils.Copy(zipStream, fsOutput, buffer);
+                        }
                     }
                 }
+
+                um.Invoke((InvokeDel)(() => { um.SetToReadyState(); }));
             }
-
-            zipInfo.Delete();
-
-            um.Invoke((InvokeDel)(() => { um.SetToReadyState(); }));
+            catch (Exception ex)
+            {
+                MessageBox.Show($"The updater failed to update SPCode properly: {ex.Message}");
+                Application.Exit();
+            }
         }
     }
 }
