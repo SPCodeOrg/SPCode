@@ -2,11 +2,11 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("SPCode")]
+[assembly: AssemblyTitle("${PROGRAMNAME}")]
 [assembly: AssemblyDescription("SPCode - A lightweight SourcePawn editor")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SPCode Organization")]
-[assembly: AssemblyProduct("SPCode")]
+[assembly: AssemblyProduct("${PROGRAMNAME}")]
 [assembly: AssemblyCopyright("Copyright © Julien Kluge 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

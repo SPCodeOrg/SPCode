@@ -15,6 +15,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <LangVersion>latest</LangVersion>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -29,10 +31,9 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AssemblyName>SPCode</AssemblyName>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -45,6 +46,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AssemblyName>SPCode</AssemblyName>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -62,6 +64,7 @@
     <ApplicationIcon>Resources\Icons\Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug-Beta|AnyCPU'">
+    <AssemblyName>SPCode Beta</AssemblyName>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug-Beta\</OutputPath>
     <DefineConstants>DEBUG;BETA;TRACE</DefineConstants>
@@ -71,6 +74,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release-Beta|AnyCPU'">
+    <AssemblyName>SPCode Beta</AssemblyName>
     <OutputPath>bin\Release-Beta\</OutputPath>
     <DefineConstants>BETA;TRACE</DefineConstants>
     <Optimize>true</Optimize>
@@ -204,6 +208,7 @@
     <Compile Include="Utils\Models\HotkeyInfo.cs" />
     <Compile Include="Utils\HotkeyUtils.cs" />
     <Compile Include="Utils\JavaInstallation.cs" />
+    <Compile Include="Utils\NamesHelper.cs" />
     <Compile Include="Utils\ObjectBrowserUtils.cs" />
     <Compile Include="Utils\Paths.cs" />
     <Compile Include="Utils\Models\FTP.cs" />
@@ -298,7 +303,7 @@
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.8 %28x86 and x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4.8 %28x86 y x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
