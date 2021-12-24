@@ -73,7 +73,7 @@ namespace SPCode.Interop.Updater
         {
             if (OnlyChangelog)
             {
-                Title = "SPCode Changelog";
+                Title = "SPCode Changelog (change 1)";
                 MainLine.Visibility = Visibility.Hidden;
                 ActionYesButton.Visibility = Visibility.Hidden;
                 ActionNoButton.Visibility = Visibility.Hidden;
