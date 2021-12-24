@@ -34,7 +34,7 @@ SetOutPath $INSTDIR
 
 !insertmacro CheckNetFramework 48
 
-File SPCode.exe
+File "SPCode Beta.exe"
 File MahApps.Metro.dll
 File ICSharpCode.AvalonEdit.dll
 File System.Windows.Interactivity.dll
@@ -75,12 +75,11 @@ OptionsExist:
 Delete $APPDATA\spcodebeta\options_0.dat
 OptionsDoesNotExist:
 
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcodebeta" DisplayName" "SPCode (Beta) - A lightweight SourcePawn editor"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcodebeta" DisplayName" "SPCode Beta - A lightweight SourcePawn editor"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcodebeta" UninstallString" "$INSTDIR\uninstall.exe"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcodebeta" "InstallLocation" "$INSTDIR"
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcodebeta" "DisplayIcon" "$INSTDIR\SPCode.exe"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcodebeta" "DisplayIcon" "$INSTDIR\SPCode Beta.exe"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcodebeta" "Publisher" "SPCode Organization"
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcodebeta" "DisplayVersion" "1.8.0.0-beta"
 WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcodebeta" "NoModify" 1
 WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcodebeta" "NoRepair" 1
 
@@ -111,7 +110,7 @@ SectionEnd
 
 Section "Desktop Shortcut" prog05
 SectionIn 1
-CreateShortCut "$DESKTOP\SPCode Beta.lnk" "$INSTDIR\SPCode.exe" ""
+CreateShortCut "$DESKTOP\SPCode Beta.lnk" "$INSTDIR\SPCode Beta.exe" ""
 SectionEnd
 
 Section "Startmenu Shortcut" prog06
@@ -122,10 +121,7 @@ SectionEnd
 Section "Uninstall"
 
 Delete $INSTDIR\uninstall.exe
-
-
-
-Delete $INSTDIR\SPCode.exe
+Delete "$INSTDIR\SPCode Beta.exe"
 Delete $INSTDIR\MahApps.Metro.dll
 Delete $INSTDIR\ICSharpCode.AvalonEdit.dll
 Delete $INSTDIR\System.Windows.Interactivity.dll

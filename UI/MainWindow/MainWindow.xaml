@@ -10,7 +10,7 @@
              x:Name="metroWindow" 
              x:Class="SPCode.UI.MainWindow"
              SaveWindowPosition="True"
-             Title="SPCode" GlowBrush="{DynamicResource AccentColorBrush}" MinHeight="100" MinWidth="200" KeyDown="MainWindowEvent_KeyDown" Closing="MetroWindow_Closing"
+             GlowBrush="{DynamicResource AccentColorBrush}" MinHeight="100" MinWidth="200" KeyDown="MainWindowEvent_KeyDown" Closing="MetroWindow_Closing"
                       AllowDrop="True" Drop="MetroWindow_Drop" ShowIconOnTitleBar="False" TitleCaps="False" av:DesignHeight="396" av:DesignWidth="765.333">
   <controls:MetroWindow.Resources>
     <ResourceDictionary>

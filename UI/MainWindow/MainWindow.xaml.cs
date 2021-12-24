@@ -81,6 +81,9 @@ namespace SPCode.UI
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
 
+            // Set title
+            Title = NamesHelper.ProgramPublicName;
+
             // Timer to select the newly opened editor 200ms after it has been opened
             SelectDocumentTimer = new DispatcherTimer()
             {
@@ -475,7 +478,7 @@ namespace SPCode.UI
                 outString = ee?.FullFilePath ?? de.FilePath;
             }
 
-            outString += " - SPCode";
+            outString += $" - {NamesHelper.ProgramPublicName}";
 
             if (Program.DiscordClient.IsInitialized)
             {
