@@ -4,7 +4,7 @@ $compress = @{
 LiteralPath= 
 "sourcepawn/", 
 "lysis/", 
-"SPCode Beta.exe", 
+"SPCode.exe", 
 "MdXaml.dll", 
 "MahApps.Metro.dll", 
 "ICSharpCode.AvalonEdit.dll", 
