@@ -46,12 +46,7 @@ namespace SPCode
         [STAThread]
         public static void Main(string[] args)
         {
-#if BETA
-            string mutexName = "SPCodeGlobalMutexBeta";
-#else
-            string mutexName = "SPCodeGlobalMutex";
-#endif
-            using (new Mutex(true, mutexName, out var mutexReserved))
+            using (new Mutex(true, NamesHelper.MutexName, out var mutexReserved))
             {
                 if (mutexReserved)
                 {
