@@ -82,7 +82,7 @@ namespace SPCode.UI
             }
 
             // Set title
-            Title = NamesHelper.ProgramPublicName + "(change 2 test 1.8.1.2)";
+            Title = NamesHelper.ProgramPublicName + "(change 2 1.8.2.0.beta(tuvieja))";
 
             // Timer to select the newly opened editor 200ms after it has been opened
             SelectDocumentTimer = new DispatcherTimer()
