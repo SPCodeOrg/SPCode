@@ -58,7 +58,7 @@ namespace SPCodeUpdater
 
                     foreach (ZipEntry zipEntry in zf)
                     {
-                        if (zipEntry.IsDirectory || zipEntry.Name.Contains("sourcepawn"))
+                        if (zipEntry.Name.Contains("sourcepawn\\"))
                         {
                             continue;
                         }
