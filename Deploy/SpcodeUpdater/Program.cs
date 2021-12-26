@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using ICSharpCode.SharpZipLib.Core;
@@ -85,14 +86,22 @@ namespace SPCodeUpdater
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"The updater failed to update SPCode properly: {ex.Message}");
+                var sb = new StringBuilder();
+                sb.AppendLine("The updater failed to update SPCode properly.");
+                sb.AppendLine("=============================================");
+                sb.AppendLine($"Exception message: {ex.Message}");
+                sb.AppendLine("=============================================");
+                sb.AppendLine($"Stack trace:\n{ex.StackTrace}");
+                sb.AppendLine("=============================================");
+                var thread = new Thread(() => MessageBox.Show(sb.ToString()));
+                thread.Start();
                 Success = false;
             }
             finally
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    Arguments = $"/C SPCode.exe {(Success ? "--updated" : string.Empty)}",
+                    Arguments = $"/C SPCode.exe {(Success ? "--updateok" : "--updatefail")}",
                     FileName = "cmd",
                     WindowStyle = ProcessWindowStyle.Hidden
                 });
