@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using SPCodeUpdater.Properties;
+using ICSharpCode.SharpZipLib.Core;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace SPCodeUpdater
 {
     public static class Program
     {
-        public delegate void InvokeDel();
-
+        private static bool Success;
         [STAThread]
         public static void Main()
         {
@@ -24,7 +25,7 @@ namespace SPCodeUpdater
                 }
                 catch (Exception)
                 {
-                    // ignored
+
                 }
             }
 
@@ -41,40 +42,71 @@ namespace SPCodeUpdater
 
         private static void Worker(object arg)
         {
-            var um = (UpdateMarquee)arg;
-            var zipFile = Path.Combine(Environment.CurrentDirectory, "updateZipFile.zip");
-
-            var zipFileContent = Resources.Update;
-
-            File.WriteAllBytes(zipFile, zipFileContent);
-
-            var zipInfo = new FileInfo(zipFile);
-
-            using (var archive = ZipFile.OpenRead(zipInfo.FullName))
+            try
             {
-                foreach (var entry in archive.Entries)
-                {
-                    // Dont override the sourcemod files
-                    if (!entry.FullName.StartsWith(@"sourcepawn\"))
-                    {
-                        // Get File directory
-                        var dirBuffer = Path.GetDirectoryName(entry.FullName);
+                var um = (UpdateMarquee)arg;
 
-                        // Create directory if not empty
-                        if (!string.IsNullOrEmpty(dirBuffer))
+#if BETA
+                var zipFile = ".\\SPCode.Beta.Portable.zip";
+#else
+                var zipFile = ".\\SPCode.Portable.zip";
+#endif
+
+                using (var fsInput = File.OpenRead(zipFile))
+                using (var zf = new ZipFile(fsInput))
+                {
+
+                    foreach (ZipEntry zipEntry in zf)
+                    {
+                        if (zipEntry.Name.Contains("sourcepawn\\"))
                         {
-                            Directory.CreateDirectory(dirBuffer);
+                            continue;
                         }
 
-                        // Now we can safly extact the file.
-                        entry.ExtractToFile(entry.FullName, true);
+                        var entryFileName = zipEntry.Name;
+
+                        var fullZipToPath = Path.Combine(@".\", entryFileName);
+                        var directoryName = Path.GetDirectoryName(fullZipToPath);
+
+                        if (directoryName.Length > 0)
+                        {
+                            Directory.CreateDirectory(directoryName);
+                        }
+
+                        var buffer = new byte[4096];
+
+                        using (var zipStream = zf.GetInputStream(zipEntry))
+                        using (Stream fsOutput = File.Create(fullZipToPath))
+                        {
+                            StreamUtils.Copy(zipStream, fsOutput, buffer);
+                        }
                     }
                 }
+                Success = true;
             }
-
-            zipInfo.Delete();
-
-            um.Invoke((InvokeDel)(() => { um.SetToReadyState(); }));
+            catch (Exception ex)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("The updater failed to update SPCode properly.");
+                sb.AppendLine("=============================================");
+                sb.AppendLine($"Exception message: {ex.Message}");
+                sb.AppendLine("=============================================");
+                sb.AppendLine($"Stack trace:\n{ex.StackTrace}");
+                sb.AppendLine("=============================================");
+                var thread = new Thread(() => MessageBox.Show(sb.ToString()));
+                thread.Start();
+                Success = false;
+            }
+            finally
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    Arguments = $"/C SPCode.exe {(Success ? "--updateok" : "--updatefail")}",
+                    FileName = "cmd",
+                    WindowStyle = ProcessWindowStyle.Hidden
+                });
+                Application.Exit();
+            }
         }
     }
 }

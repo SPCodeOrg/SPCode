@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Pipes;
 using System.Text;
+using SPCode.Utils;
 
 namespace SPCode.Interop
 {
@@ -18,7 +19,7 @@ namespace SPCode.Interop
                 stream.Write(stringLengthData, 0, stringLengthData.Length);
                 stream.Write(stringData, 0, stringData.Length);
             }
-            using var pipeClient = new NamedPipeClientStream(".", "SPCodeNamedPipeServer", PipeDirection.Out, PipeOptions.Asynchronous);
+            using var pipeClient = new NamedPipeClientStream(".", NamesHelper.PipeServerName, PipeDirection.Out, PipeOptions.Asynchronous);
             pipeClient.Connect(5000);
             pipeClient.Write(array, 0, array.Length);
             pipeClient.Flush();

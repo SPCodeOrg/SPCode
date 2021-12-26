@@ -35,23 +35,6 @@ SetOutPath $INSTDIR
 !insertmacro CheckNetFramework 48
 
 File SPCode.exe
-File MahApps.Metro.dll
-File ICSharpCode.AvalonEdit.dll
-File System.Windows.Interactivity.dll
-File Xceed.Wpf.AvalonDock.dll
-File Xceed.Wpf.AvalonDock.Themes.Metro.dll
-File smxdasm.dll
-File ValveQuery.dll
-File MdXaml.dll
-File SourcepawnCondenser.dll
-File ByteSize.dll
-File Renci.SshNet.dll
-File Newtonsoft.Json.dll
-File DiscordRPC.dll
-File ControlzEx.dll
-File Octokit.dll
-File Microsoft.WindowsAPICodePack.dll
-File Microsoft.WindowsAPICodePack.Shell.dll
 
 File lang_0_spcode.xml
 File License.txt
@@ -80,7 +63,6 @@ WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "U
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "InstallLocation" "$INSTDIR"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayIcon" "$INSTDIR\SPCode.exe"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "Publisher" "SPCode Organization"
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "DisplayVersion" "1.8.0.0"
 WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "NoModify" 1
 WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\spcode" "NoRepair" 1
 

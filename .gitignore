@@ -211,3 +211,6 @@ $RECYCLE.BIN/
 # IDE FIles
 /.idea/
 *.iml
+App/AssemblyInfo.cs
+Resources/Icons/Icon.ico
+Resources/Icons/icon256x.png

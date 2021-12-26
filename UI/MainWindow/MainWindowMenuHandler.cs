@@ -292,10 +292,15 @@ namespace SPCode.UI
                 }
                 else
                 {
-                    await this.ShowMessageAsync(Program.Translations.Get("VersUpToDate"),
-                        string.Format(Program.Translations.Get("VersionYour"),
-                            Assembly.GetEntryAssembly()?.GetName().Version)
-                        , MessageDialogStyle.Affirmative, MetroDialogOptions);
+#if BETA
+                    var message = string.Format(Program.Translations.Get("VersionYourBeta"),
+                            VersionHelper.GetAssemblyInformationalVersion());
+#else
+                    var message = string.Format(Program.Translations.Get("VersionYour"),
+                            VersionHelper.GetAssemblyVersion());
+#endif
+                    await this.ShowMessageAsync(Program.Translations.Get("VersUpToDate"), 
+                        message, MessageDialogStyle.Affirmative, MetroDialogOptions);
                 }
             }
         }
@@ -327,9 +332,9 @@ namespace SPCode.UI
                 case 2: Server_Start(); break;
             }
         }
-        #endregion
+#endregion
 
-        #region Methods
+#region Methods
         /// <summary>
         /// Loads the input gesture texts to the menu items.
         /// </summary>
@@ -448,6 +453,6 @@ namespace SPCode.UI
             // Return the MenuItem
             return mi;
         }
-        #endregion
+#endregion
     }
 }

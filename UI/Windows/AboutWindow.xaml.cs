@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,7 +31,7 @@ namespace SPCode.UI.Windows
                     g.Background = gridBrush;
                 }
             }
-            TitleBox.Text = $"SPCode ({Assembly.GetEntryAssembly()?.GetName().Version}) - {Program.Translations.Get("SPEditCap")}";
+            TitleBox.Text = $"SPCode ({NamesHelper.VersionString}) - {Program.Translations.Get("SPEditCap")}";
             LicenseField.Text = File.ReadAllText(Constants.LicenseFile);
         }
 

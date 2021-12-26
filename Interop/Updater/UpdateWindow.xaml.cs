@@ -7,7 +7,9 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using MahApps.Metro;
+using MahApps.Metro.Controls.Dialogs;
 using MdXaml;
 using SPCode.Utils;
 
@@ -51,10 +53,12 @@ namespace SPCode.Interop.Updater
         {
             Close();
         }
+
         private void ActionGithubButton_Click(object sender, RoutedEventArgs e)
         {
             Process.Start(new ProcessStartInfo(Constants.GitHubLatestRelease));
         }
+
         private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
@@ -90,18 +94,21 @@ namespace SPCode.Interop.Updater
 
             var releasesBody = new StringBuilder();
 
-            foreach (var release in updateInfo.AllReleases)
+            if (updateInfo.AllReleases != null && updateInfo.AllReleases.Count > 0)
             {
-                releasesBody.Append($"**%{{color:{GetAccentHex()}}}Version {release.TagName}%** ");
-                releasesBody.AppendLine($"*%{{color:gray}}({MonthToTitlecase(release.CreatedAt)})% *\r\n");
-                releasesBody.AppendLine(release.Body + "\r\n");
+                foreach (var release in updateInfo.AllReleases)
+                {
+                    releasesBody.Append($"**%{{color:{GetAccentHex()}}}Version {release.TagName}%** ");
+                    releasesBody.AppendLine($"*%{{color:gray}}({MonthToTitlecase(release.CreatedAt)})% *\r\n");
+                    releasesBody.AppendLine(release.Body + "\r\n");
+                }
             }
 
             releasesBody.Append($"*%{{color:gray}}More releases in {Constants.GitHubReleases}%*");
 
             var document = new Markdown();
             var content = document.Transform(releasesBody.ToString());
-            content.FontFamily = new System.Windows.Media.FontFamily("Segoe UI");
+            content.FontFamily = new FontFamily("Segoe UI");
             DescriptionBox.Document = content;
 
             if (updateInfo.SkipDialog)
@@ -135,24 +142,33 @@ namespace SPCode.Interop.Updater
         /// </summary>
         private void UpdateDownloadWorker()
         {
-            var asset = updateInfo.Asset;
-            if (File.Exists(asset.Name))
-            {
-                File.Delete(asset.Name);
-            }
+            var updater = updateInfo.Updater;
+            var portable = updateInfo.Portable;
 
             try
             {
+                if (File.Exists(updater.Name))
+                {
+                    File.Delete(updater.Name);
+                }
+
+                if (File.Exists(portable.Name))
+                {
+                    File.Delete(portable.Name);
+                }
                 using var client = new WebClient();
-                client.DownloadFile(asset.BrowserDownloadUrl, asset.Name);
+                client.DownloadFile(updater.BrowserDownloadUrl, updater.Name);
+                client.DownloadFile(portable.BrowserDownloadUrl, portable.Name);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                MessageBox.Show(
-                    "Error while downloading the updater." + Environment.NewLine + "Details: " + e.Message +
-                    Environment.NewLine + "$$$" + e.StackTrace,
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                Dispatcher.Invoke(Close);
+                Dispatcher.Invoke(() =>
+                {
+                    Program.MainWindow.ShowMessageAsync("Error while downloading the update assets",
+                        $"{ex.Message}", MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                    Close();
+                });
+                return;
             }
 
             Thread.Sleep(100);

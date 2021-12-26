@@ -81,6 +81,9 @@ namespace SPCode.UI
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
 
+            // Set title
+            Title = NamesHelper.ProgramPublicName;
+
             // Timer to select the newly opened editor 200ms after it has been opened
             SelectDocumentTimer = new DispatcherTimer()
             {
@@ -143,6 +146,14 @@ namespace SPCode.UI
                 if (!args[i].EndsWith("exe"))
                 {
                     TryLoadSourceFile(args[i], out _, false, true, i == 0);
+                }
+                if (args[i].ToLowerInvariant() == "--updateok")
+                {
+                    this.ShowMessageAsync("Update completed", "SPCode has been updated successfully.");
+                }
+                if (args[i].ToLowerInvariant() == "--updatefail")
+                {
+                    this.ShowMessageAsync("Update failed", "SPCode could not be updated properly.");
                 }
             }
 
@@ -475,7 +486,7 @@ namespace SPCode.UI
                 outString = ee?.FullFilePath ?? de.FilePath;
             }
 
-            outString += " - SPCode";
+            outString += $" - {NamesHelper.ProgramPublicName}";
 
             if (Program.DiscordClient.IsInitialized)
             {
