@@ -20,7 +20,7 @@
     </controls:MetroWindow.Resources>
     <Grid>
         <TextBlock Name="MainLine" VerticalAlignment="Top" Margin="10,0,40,0" FontSize="16" Foreground="{DynamicResource AccentColorBrush}" IsHitTestVisible="False" />
-        <TextBlock Name="SubLine" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="50,25,0,0" FontSize="14" Foreground="{DynamicResource AccentColorBrush}" IsHitTestVisible="False" />
+        <TextBlock Name="SubLine" VerticalAlignment="Top" Margin="10,25,40,0" FontSize="14" Foreground="{DynamicResource AccentColorBrush}" IsHitTestVisible="False" />
         <Button Name="ActionYesButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,25,0,0" Width="50" Click="ActionYesButton_Click" />
         <Button Name="ActionNoButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="69,25,0,0" Width="50" Click="ActionNoButton_Click" />
         <FlowDocumentScrollViewer xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

@@ -243,7 +243,7 @@ namespace SPCode.Utils
             { "No", "No" },
             { "ViewGithub", "View on GitHub" },
             { "UpdatingTo", "Updating to {0}" },
-            { "DownloadingUpdater", "Downloading updater..." },
+            { "DownloadingUpdater", "Downloading update assets..." },
             { "StartingUpdater", "Starting updater..." },
             { "Add", "Add" },
             { "Remove", "Remove" },

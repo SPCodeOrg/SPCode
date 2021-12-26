@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using MahApps.Metro;
+using MahApps.Metro.Controls.Dialogs;
 using MdXaml;
 using SPCode.Utils;
 
@@ -52,10 +53,12 @@ namespace SPCode.Interop.Updater
         {
             Close();
         }
+
         private void ActionGithubButton_Click(object sender, RoutedEventArgs e)
         {
             Process.Start(new ProcessStartInfo(Constants.GitHubLatestRelease));
         }
+
         private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
@@ -157,13 +160,15 @@ namespace SPCode.Interop.Updater
                 client.DownloadFile(updater.BrowserDownloadUrl, updater.Name);
                 client.DownloadFile(portable.BrowserDownloadUrl, portable.Name);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                MessageBox.Show(
-                    "Error while downloading the updater." + Environment.NewLine + "Details: " + e.Message +
-                    Environment.NewLine + "$$$" + e.StackTrace,
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                Dispatcher.Invoke(Close);
+                Dispatcher.Invoke(() =>
+                {
+                    Program.MainWindow.ShowMessageAsync("Error while downloading the update assets",
+                        $"{ex.Message}", MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                    Close();
+                });
+                return;
             }
 
             Thread.Sleep(100);
