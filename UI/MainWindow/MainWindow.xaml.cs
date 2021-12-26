@@ -147,6 +147,10 @@ namespace SPCode.UI
                 {
                     TryLoadSourceFile(args[i], out _, false, true, i == 0);
                 }
+                if (args[i].ToLowerInvariant() == "--updated")
+                {
+                    this.ShowMessageAsync("Update completed", "SPCode has been updated successfully.");
+                }
             }
 
             // Close SplashScreen

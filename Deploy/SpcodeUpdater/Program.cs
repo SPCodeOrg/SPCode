@@ -11,8 +11,7 @@ namespace SPCodeUpdater
 {
     public static class Program
     {
-        public delegate void InvokeDel();
-
+        private static bool Success;
         [STAThread]
         public static void Main()
         {
@@ -82,12 +81,21 @@ namespace SPCodeUpdater
                         }
                     }
                 }
-
-                um.Invoke((InvokeDel)(() => { um.SetToReadyState(); }));
+                Success = true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"The updater failed to update SPCode properly: {ex.Message}");
+                Success = false;
+            }
+            finally
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    Arguments = $"/C SPCode.exe {(Success ? "--updated" : string.Empty)}",
+                    FileName = "cmd",
+                    WindowStyle = ProcessWindowStyle.Hidden
+                });
                 Application.Exit();
             }
         }
