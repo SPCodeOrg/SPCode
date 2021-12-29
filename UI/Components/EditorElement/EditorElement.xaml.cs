@@ -347,19 +347,22 @@ namespace SPCode.UI.Components
 
         private void Caret_PositionChanged(object sender, EventArgs e)
         {
+            if (Program.MainWindow == null)
+            {
+                return;
+            }
+
             StatusLine_Column.Text = $"{Program.Translations.Get("ColAbb")} {editor.TextArea.Caret.Column}";
             StatusLine_Line.Text = $"{Program.Translations.Get("LnAbb")} {editor.TextArea.Caret.Line}";
 #if DEBUG
             StatusLine_Offset.Text = $"Off {editor.TextArea.Caret.Offset}";
 #endif
-            EvaluateIntelliSense();
-
             var result = bracketSearcher.SearchBracket(editor.Document, editor.CaretOffset);
             bracketHighlightRenderer.SetHighlight(result);
 
-            if (!Program.OptionsObject.Program_DynamicISAC || Program.MainWindow == null)
+            if (Program.OptionsObject.Program_DynamicISAC)
             {
-                return;
+                EvaluateIntelliSense();
             }
 
             if (parseTimer != null)
