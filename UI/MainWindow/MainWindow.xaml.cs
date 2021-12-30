@@ -449,7 +449,7 @@ namespace SPCode.UI
         private void AddDASMElement(FileInfo fileInfo)
         {
             var layoutDocument = new LayoutDocument { Title = "DASM: " + fileInfo.Name };
-            var dasmElement = new DASMElement(fileInfo);
+            var dasmElement = new DASMElement(fileInfo) { Parent = layoutDocument };
             DASMReferences.Add(dasmElement);
             layoutDocument.Content = dasmElement;
             DockingPane.Children.Add(layoutDocument);

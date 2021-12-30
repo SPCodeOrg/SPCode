@@ -6,13 +6,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using smxdasm;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace SPCode.UI.Components
 {
     public partial class DASMElement : UserControl
     {
         private double LineHeight = 0.0;
-
+        public new LayoutDocument Parent;
         private SmxFile file_;
         private readonly StringBuilder detail_buffer_ = new();
         public string FilePath;
@@ -922,6 +923,7 @@ namespace SPCode.UI.Components
 
         public void Close()
         {
+            Program.MainWindow.DockingPane.RemoveChild(Parent);
             Program.MainWindow.DASMReferences.Remove(this);
             Program.RecentFilesStack.Push(FilePath);
             Program.MainWindow.UpdateWindowTitle();

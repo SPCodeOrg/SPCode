@@ -338,12 +338,13 @@ namespace SPCode.UI
             try
             {
                 var ee = GetCurrentEditorElement();
-                if (ee == null || ee.IsTemplateEditor || ee.ClosingPromptOpened)
+                var de = GetCurrentDASMElement();
+                if (ee != null && (ee.IsTemplateEditor || ee.ClosingPromptOpened))
                 {
                     return;
                 }
-
-                ee.Close();
+                ee?.Close();
+                de?.Close();
             }
             catch (Exception ex)
             {
@@ -359,6 +360,7 @@ namespace SPCode.UI
             try
             {
                 var editors = GetAllEditorElements();
+                var dasm = GetAllDASMElements();
 
                 if (editors == null || editors.Any(x => x.IsTemplateEditor) || editors.Length == 0 || editors.Any(x => x.ClosingPromptOpened))
                 {
@@ -366,6 +368,7 @@ namespace SPCode.UI
                 }
 
                 editors.ToList().ForEach(x => x.Close());
+                dasm?.ToList().ForEach(y => y.Close());
             }
             catch (Exception ex)
             {
