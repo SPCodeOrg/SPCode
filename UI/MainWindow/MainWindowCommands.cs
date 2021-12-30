@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -66,18 +67,18 @@ namespace SPCode.UI
         /// Gets an array of all open editor elements.
         /// </summary>
         /// <returns></returns>
-        public EditorElement[] GetAllEditorElements()
+        public List<EditorElement> GetAllEditorElements()
         {
-            return EditorReferences.Count < 1 ? null : EditorReferences.ToArray();
+            return EditorReferences.Count == 0 ? null : EditorReferences;
         }
 
         /// <summary>
         /// Gets an array of all open DASM elements.
         /// </summary>
         /// <returns></returns>
-        public DASMElement[] GetAllDASMElements()
+        public List<DASMElement> GetAllDASMElements()
         {
-            return DASMReferences.Count < 1 ? null : DASMReferences.ToArray();
+            return DASMReferences.Count < 1 ? null : DASMReferences;
         }
 
         /// <summary>
@@ -314,7 +315,7 @@ namespace SPCode.UI
                     return;
                 }
 
-                if (editors.Length > 0)
+                if (editors.Count > 0)
                 {
                     foreach (var editor in editors)
                     {
@@ -362,7 +363,7 @@ namespace SPCode.UI
                 var editors = GetAllEditorElements();
                 var dasm = GetAllDASMElements();
 
-                if (editors == null || editors.Any(x => x.IsTemplateEditor) || editors.Length == 0 || editors.Any(x => x.ClosingPromptOpened))
+                if (editors == null || editors.Any(x => x.IsTemplateEditor) || editors.Count == 0 || editors.Any(x => x.ClosingPromptOpened))
                 {
                     return;
                 }
@@ -555,7 +556,7 @@ namespace SPCode.UI
         {
             try
             {
-                var editors = All ? GetAllEditorElements() : new[] { GetCurrentEditorElement() };
+                var editors = All ? GetAllEditorElements() : new() { GetCurrentEditorElement() };
                 if (editors == null)
                 {
                     return;

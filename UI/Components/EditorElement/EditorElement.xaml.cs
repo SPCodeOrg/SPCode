@@ -664,9 +664,9 @@ namespace SPCode.UI.Components
                     return;
                 }
 
-                var definitions = new SMDefinition[ee.Length];
+                var definitions = new SMDefinition[ee.Count];
                 List<SMFunction> currentFunctions = null;
-                for (var i = 0; i < ee.Length; ++i)
+                for (var i = 0; i < ee.Count; ++i)
                 {
                     var el = ee[i];
                     var fInfo = new FileInfo(el.FullFilePath);
@@ -794,8 +794,8 @@ namespace SPCode.UI.Components
             var lineList = new List<DocumentLine>();
             var document = editor.TextArea.Document;
 
-            // Start undo transaction so undoing this doesn't result in undoing every single comment manually
-            document.UndoStack.StartUndoGroup();
+            // Start update so undoing this doesn't result in undoing every single comment manually
+            document.BeginUpdate();
 
             // If there's no selection, add to lineList the line the caret is standing on
             if (!selectionSegments.Any())
@@ -850,8 +850,8 @@ namespace SPCode.UI.Components
                 }
             }
 
-            // End the undo transaction
-            document.UndoStack.EndUndoGroup();
+            // End update
+            document.EndUpdate();
         }
 
         public void ChangeCase(bool toUpper = true)

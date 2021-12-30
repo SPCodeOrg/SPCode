@@ -17,7 +17,7 @@ namespace SPCode.UI.Windows
     {
         #region Variables
         private EditorElement _editor;
-        private EditorElement[] _allEditors;
+        private List<EditorElement> _allEditors;
         private LayoutDocumentPane _dockingPane;
         private bool IsSearchFieldOpen;
         private readonly string Selection;
@@ -228,7 +228,7 @@ namespace SPCode.UI.Windows
             LoadEditorsInfo();
             var editors = GetEditorElementsForFraction(out var editorIndex);
             var regex = GetSearchRegex();
-            if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
+            if (editors == null || editors.Count < 1 || editors[0] == null || regex == null)
             {
                 return;
             }
@@ -236,9 +236,9 @@ namespace SPCode.UI.Windows
             var startFileCaretOffset = 0;
             var foundOccurence = false;
 
-            for (var i = editorIndex; i < (editors.Length + editorIndex + 1); ++i)
+            for (var i = editorIndex; i < (editors.Count + editorIndex + 1); ++i)
             {
-                var index = ValueUnderMap(i, editors.Length);
+                var index = ValueUnderMap(i, editors.Count);
                 string searchText;
                 var addToOffset = 0;
                 if (i == editorIndex)
@@ -248,7 +248,7 @@ namespace SPCode.UI.Windows
                     if (startFileCaretOffset < 0) { startFileCaretOffset = 0; }
                     searchText = editors[index].editor.Text.Substring(startFileCaretOffset);
                 }
-                else if (i == (editors.Length + editorIndex))
+                else if (i == (editors.Count + editorIndex))
                 {
                     searchText = startFileCaretOffset == 0 ?
                         string.Empty :
@@ -286,7 +286,7 @@ namespace SPCode.UI.Windows
             LoadEditorsInfo();
             var editors = GetEditorElementsForFraction(out var editorIndex);
             var regex = GetSearchRegex();
-            if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
+            if (editors == null || editors.Count < 1 || editors[0] == null || regex == null)
             {
                 return;
             }
@@ -294,9 +294,9 @@ namespace SPCode.UI.Windows
             var replaceString = ReplaceBox.Text;
             var startFileCaretOffset = 0;
             var foundOccurence = false;
-            for (var i = editorIndex; i < (editors.Length + editorIndex + 1); ++i)
+            for (var i = editorIndex; i < (editors.Count + editorIndex + 1); ++i)
             {
-                var index = ValueUnderMap(i, editors.Length);
+                var index = ValueUnderMap(i, editors.Count);
                 string searchText;
                 var addToOffset = 0;
                 if (i == editorIndex)
@@ -306,7 +306,7 @@ namespace SPCode.UI.Windows
                     if (startFileCaretOffset < 0) { startFileCaretOffset = 0; }
                     searchText = editors[index].editor.Text.Substring(startFileCaretOffset);
                 }
-                else if (i == (editors.Length + editorIndex))
+                else if (i == (editors.Count + editorIndex))
                 {
                     searchText = startFileCaretOffset == 0 ?
                         string.Empty :
@@ -345,7 +345,7 @@ namespace SPCode.UI.Windows
             LoadEditorsInfo();
             var editors = GetEditorElementsForFraction(out _);
             var regex = GetSearchRegex();
-            if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
+            if (editors == null || editors.Count < 1 || editors[0] == null || regex == null)
             {
                 return;
             }
@@ -380,7 +380,7 @@ namespace SPCode.UI.Windows
             LoadEditorsInfo();
             var editors = GetEditorElementsForFraction(out _);
             if (editors == null) { return; }
-            if (editors.Length < 1) { return; }
+            if (editors.Count < 1) { return; }
             if (editors[0] == null) { return; }
             var regex = GetSearchRegex();
             if (regex == null) { return; }
@@ -454,20 +454,20 @@ namespace SPCode.UI.Windows
             return regex;
         }
 
-        private EditorElement[] GetEditorElementsForFraction(out int editorIndex)
+        private List<EditorElement> GetEditorElementsForFraction(out int editorIndex)
         {
             LoadEditorsInfo();
             var editorStartIndex = 0;
-            EditorElement[] editors;
+            List<EditorElement> editors;
             if (FindDestinies.SelectedIndex == 0)
-            { editors = new[] { _editor }; }
+            { editors = new() { _editor }; }
             else
             {
                 editors = _allEditors;
                 var checkElement = _dockingPane.SelectedContent?.Content;
                 if (checkElement is EditorElement)
                 {
-                    for (var i = 0; i < editors.Length; ++i)
+                    for (var i = 0; i < editors.Count; ++i)
                     {
                         if (editors[i] == checkElement)
                         {

@@ -22,14 +22,9 @@ namespace SPCode.UI
         #region Events
         private void FileMenu_Open(object sender, RoutedEventArgs e)
         {
-            var editors = GetAllEditorElements();
-            var EditorsAreOpen = false;
-            if (editors != null)
-            {
-                EditorsAreOpen = editors.Length > 0;
-            }
-
+            var EditorsAreOpen = GetAllEditorElements() != null;
             var EditorIsSelected = GetCurrentEditorElement() != null;
+
             MenuI_Save.IsEnabled = EditorIsSelected;
             MenuI_SaveAs.IsEnabled = EditorIsSelected;
             MenuI_Close.IsEnabled = EditorIsSelected;
