@@ -242,7 +242,7 @@ namespace SPCode.UI
                 // Close directly if no files need to be saved
                 var editors = GetAllEditorElements()?.ToList();
 
-                if (editors == null || (editors != null && !editors.Any(x => x.NeedsSave)))
+                if (editors == null || (editors != null && !editors.Any(x => x.NeedsSave)) || Program.OptionsObject.ActionOnClose != ActionOnClose.Prompt)
                 {
                     ClosingBuffer = true;
                     CloseProgram(true);

@@ -65,7 +65,7 @@ namespace SPCode
 #endif
                         _IsLocalInstallation = Paths.IsLocalInstallation();
                         UpdateStatus = new UpdateInfo();
-                        OptionsObject = OptionsControlIOObject.Load(out var ProgramIsNew);
+                        OptionsObject = OptionsControl.Load(out var ProgramIsNew);
 
                         if (!File.Exists(Constants.HotkeysFile))
                         {
@@ -176,7 +176,7 @@ namespace SPCode
 #endif
                         app.Startup += App_Startup;
                         app.Run(MainWindow);
-                        OptionsControlIOObject.Save();
+                        OptionsControl.Save();
 #if !DEBUG
                     }
                     catch (Exception e)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -25,6 +26,12 @@ namespace SPCode.UI.Windows
             "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald", "Teal", "Cyan", "Cobalt", "Indigo", "Violet",
             "Pink", "Magenta", "Crimson", "Amber",
             "Yellow", "Brown", "Olive", "Steel", "Mauve", "Taupe", "Sienna"
+        };
+        private readonly Dictionary<ActionOnClose, string> ActionOnCloseMessages = new()
+        {
+            { ActionOnClose.Prompt, Program.Translations.Get("ActionClosePrompt") },
+            { ActionOnClose.Save, Program.Translations.Get("Save") },
+            { ActionOnClose.DontSave, Program.Translations.Get("DontSave") }
         };
         private bool RestartTextIsShown;
         private readonly bool AllowChanging;
@@ -421,6 +428,11 @@ namespace SPCode.UI.Windows
             ToggleRestartText(true);
         }
 
+        private void ActionOnCloseBox_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            Program.OptionsObject.ActionOnClose = (ActionOnClose)ActionOnCloseBox.SelectedIndex;
+        }
+
         private void HardwareSalts_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging)
@@ -629,6 +641,13 @@ namespace SPCode.UI.Windows
                     LanguageBox.SelectedIndex = i;
                 }
             }
+
+            foreach (var action in ActionOnCloseMessages.Values)
+            {
+                ActionOnCloseBox.Items.Add(action);
+            }
+
+            ActionOnCloseBox.SelectedIndex = (int)Program.OptionsObject.ActionOnClose;
 
             if (Program.OptionsObject.Editor_AutoSave)
             {

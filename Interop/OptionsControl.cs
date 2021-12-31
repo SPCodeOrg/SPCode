@@ -11,7 +11,7 @@ namespace SPCode
     [Serializable]
     public class OptionsControl
     {
-        public static int SVersion = 13;
+        public static int SVersion = 14;
         public bool Editor_AgressiveIndentation = true;
         public bool Editor_AutoCloseBrackets = true;
         public bool Editor_AutoCloseStringChars = true;
@@ -83,6 +83,9 @@ namespace SPCode
 
         // Version 13
         public SearchOptions SearchOptions;
+
+        // Version 14
+        public ActionOnClose ActionOnClose;
 
         public int Version = 11;
 
@@ -195,7 +198,7 @@ namespace SPCode
             SH_CommentsMarker = new SerializableColor(0xFF, 0xFF, 0x20, 0x20);
             SH_Strings = new SerializableColor(0xFF, 0xF4, 0x6B, 0x6C);
             SH_PreProcessor = new SerializableColor(0xFF, 0x7E, 0x7E, 0x7E);
-            SH_Types = new SerializableColor(0xFF, 0x28, 0x90, 0xB0); //56 9C D5
+            SH_Types = new SerializableColor(0xFF, 0x28, 0x90, 0xB0);
             SH_TypesValues = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
             SH_Keywords = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
             SH_ContextKeywords = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
@@ -207,6 +210,54 @@ namespace SPCode
             SH_Constants = new SerializableColor(0xFF, 0xBC, 0x62, 0xC5);
             SH_Functions = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
             SH_Methods = new SerializableColor(0xFF, 0x3B, 0xC6, 0x7E);
+        }
+
+        public static void Save()
+        {
+            try
+            {
+                var formatter = new BinaryFormatter();
+                using var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Create, FileAccess.ReadWrite,
+                    FileShare.None);
+                formatter.Serialize(fileStream, Program.OptionsObject);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        public static OptionsControl Load(out bool ProgramIsNew)
+        {
+            try
+            {
+                if (File.Exists(Paths.GetOptionsFilePath()))
+                {
+                    OptionsControl optionsObject;
+                    var formatter = new BinaryFormatter();
+                    using (var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Open, FileAccess.Read,
+                        FileShare.ReadWrite))
+                    {
+                        optionsObject = (OptionsControl)formatter.Deserialize(fileStream);
+                    }
+
+                    optionsObject.FillNullToDefaults();
+                    ProgramIsNew = false;
+                    return optionsObject;
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            var oco = new OptionsControl();
+            oco.ReCreateCryptoKey();
+#if DEBUG
+            ProgramIsNew = false;
+#else
+            ProgramIsNew = true;
+#endif
+            return oco;
         }
     }
 
@@ -249,54 +300,11 @@ namespace SPCode
         public int ReplaceType;
     }
 
-    public static class OptionsControlIOObject
+    [Serializable]
+    public enum ActionOnClose
     {
-        public static void Save()
-        {
-            try
-            {
-                var formatter = new BinaryFormatter();
-                using var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Create, FileAccess.ReadWrite,
-                    FileShare.None);
-                formatter.Serialize(fileStream, Program.OptionsObject);
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        public static OptionsControl Load(out bool ProgramIsNew)
-        {
-            try
-            {
-                if (File.Exists(Paths.GetOptionsFilePath()))
-                {
-                    object deserializedOptionsObj;
-                    var formatter = new BinaryFormatter();
-                    using (var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Open, FileAccess.Read,
-                        FileShare.ReadWrite))
-                    {
-                        deserializedOptionsObj = formatter.Deserialize(fileStream);
-                    }
-
-                    var oc = (OptionsControl)deserializedOptionsObj;
-                    oc.FillNullToDefaults();
-                    ProgramIsNew = false;
-                    return oc;
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-            var oco = new OptionsControl();
-            oco.ReCreateCryptoKey();
-#if DEBUG
-        ProgramIsNew = false;
-#else
-            ProgramIsNew = true;
-#endif
-            return oco;
-        }
+        Prompt,
+        Save,
+        DontSave
     }
 }

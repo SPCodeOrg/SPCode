@@ -736,9 +736,11 @@ namespace SPCode.UI.Components
 
         public async void Close(bool ForcedToSave = false, bool CheckSavings = true)
         {
-            if (CheckSavings && _NeedsSave && !Closed)
+            var action = Program.OptionsObject.ActionOnClose;
+
+            if (CheckSavings && _NeedsSave && !Closed && action != ActionOnClose.DontSave)
             {
-                if (ForcedToSave)
+                if (ForcedToSave || action == ActionOnClose.Save)
                 {
                     Save();
                 }

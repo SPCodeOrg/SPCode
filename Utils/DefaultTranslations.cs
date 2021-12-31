@@ -60,6 +60,7 @@ namespace SPCode.Utils
             { "NewTemplate", "New from Template" },
             { "Open", "Open" },
             { "Save", "Save" },
+            { "DontSave", "Don't save" },
             { "SaveAll", "Save all" },
             { "SaveAs", "Save as" },
             { "Close", "Close" },
@@ -286,6 +287,7 @@ namespace SPCode.Utils
             { "IllegalCharacters", "Illegal characters" },
             { "ReopenLastClosedTab", "Reopen the last closed tab" },
             { "DefaultTaken", "Default taken!" },
+            { "ActionClosePrompt", "Prompt whether to save" },
         };
     }
 }
