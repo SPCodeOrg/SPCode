@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -46,6 +47,8 @@ namespace SPCode.UI.Components
         private bool SelectionIsHighlited;
         private bool WantFoldingUpdate;
         public bool IsTemplateEditor = false;
+        private bool Closed = false;
+        public bool ClosingPromptOpened = false;
 
         private readonly DispatcherTimer LinterTimer;
 
@@ -219,6 +222,12 @@ namespace SPCode.UI.Components
             ParseIncludes(sender, e);
         }
 
+        public void Editor_TabClosed(object sender, CancelEventArgs e)
+        {
+            e.Cancel = true;
+            Close();
+        }
+
         private async void TextArea_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!Keyboard.IsKeyDown(Key.LeftCtrl) || IsTemplateEditor)
@@ -250,9 +259,9 @@ namespace SPCode.UI.Components
                 if (_NeedsSave)
                 {
                     var result = MessageBox.Show(
-                        string.Format(Program.Translations.GetLanguage("DFileChanged"), _FullFilePath) +
-                        Environment.NewLine + Program.Translations.GetLanguage("FileTryReload"),
-                        Program.Translations.GetLanguage("FileChanged"), MessageBoxButton.YesNo,
+                        string.Format(Program.Translations.Get("DFileChanged"), _FullFilePath) +
+                        Environment.NewLine + Program.Translations.Get("FileTryReload"),
+                        Program.Translations.Get("FileChanged"), MessageBoxButton.YesNo,
                         MessageBoxImage.Asterisk);
                     reloadFile = result == MessageBoxResult.Yes;
                 }
@@ -354,19 +363,22 @@ namespace SPCode.UI.Components
 
         private void Caret_PositionChanged(object sender, EventArgs e)
         {
-            StatusLine_Column.Text = $"{Program.Translations.GetLanguage("ColAbb")} {editor.TextArea.Caret.Column}";
-            StatusLine_Line.Text = $"{Program.Translations.GetLanguage("LnAbb")} {editor.TextArea.Caret.Line}";
+            if (Program.MainWindow == null)
+            {
+                return;
+            }
+
+            StatusLine_Column.Text = $"{Program.Translations.Get("ColAbb")} {editor.TextArea.Caret.Column}";
+            StatusLine_Line.Text = $"{Program.Translations.Get("LnAbb")} {editor.TextArea.Caret.Line}";
 #if DEBUG
             StatusLine_Offset.Text = $"Off {editor.TextArea.Caret.Offset}";
 #endif
-            EvaluateIntelliSense();
-
             var result = bracketSearcher.SearchBracket(editor.Document, editor.CaretOffset);
             bracketHighlightRenderer.SetHighlight(result);
 
-            if (!Program.OptionsObject.Program_DynamicISAC || Program.MainWindow == null)
+            if (Program.OptionsObject.Program_DynamicISAC)
             {
-                return;
+                EvaluateIntelliSense();
             }
 
             if (parseTimer != null)
@@ -549,7 +561,7 @@ namespace SPCode.UI.Components
 
         private void TextArea_SelectionChanged(object sender, EventArgs e)
         {
-            StatusLine_SelectionLength.Text = $"{Program.Translations.GetLanguage("LenAbb")} {editor.SelectionLength}";
+            StatusLine_SelectionLength.Text = $"{Program.Translations.Get("LenAbb")} {editor.SelectionLength}";
         }
 
         private void PrevMouseWheel(object sender, MouseWheelEventArgs e)
@@ -682,18 +694,16 @@ namespace SPCode.UI.Components
                     return;
                 }
 
-                var definitions = new SMDefinition[ee.Length];
+                var definitions = new SMDefinition[ee.Count];
                 List<SMFunction> currentFunctions = null;
-                for (var i = 0; i < ee.Length; ++i)
+                for (var i = 0; i < ee.Count; ++i)
                 {
                     var el = ee[i];
                     var fInfo = new FileInfo(el.FullFilePath);
                     var text = el.editor.Document.Text;
                     if (fInfo.Extension.Trim('.').ToLowerInvariant() == "inc")
                     {
-                        definitions[i] =
-                            new Condenser(text
-                                , fInfo.Name).Condense();
+                        definitions[i] = new Condenser(text, fInfo.FullName).Condense();
                     }
 
                     if (fInfo.Extension.Trim('.').ToLowerInvariant() == "sp")
@@ -701,18 +711,13 @@ namespace SPCode.UI.Components
                         if (el.IsLoaded)
                         {
                             caret = el.editor.CaretOffset;
-                            definitions[i] =
-                                new Condenser(text, fInfo.Name)
-                                    .Condense();
+                            definitions[i] = new Condenser(text, fInfo.FullName).Condense();
                             currentFunctions = definitions[i].Functions;
                             if (el == ce)
                             {
                                 currentSmDef = definitions[i];
                                 var caret1 = caret;
-                                currentSmDef.currentFunction =
-                                    currentFunctions.FirstOrDefault(
-                                        func => func.Index <= caret1 && caret1 <= func.EndPos);
-
+                                currentSmDef.currentFunction = currentFunctions.FirstOrDefault(func => func.Index <= caret1 && caret1 <= func.EndPos);
                             }
                         }
                     }
@@ -749,7 +754,7 @@ namespace SPCode.UI.Components
             if (size > 2 && size < 31)
             {
                 editor.FontSize = size;
-                StatusLine_FontSize.Text = size.ToString("n0") + $" {Program.Translations.GetLanguage("PtAbb")}";
+                StatusLine_FontSize.Text = size.ToString("n0") + $" {Program.Translations.Get("PtAbb")}";
             }
 
             if (updateLineHeight)
@@ -761,6 +766,40 @@ namespace SPCode.UI.Components
 
         public async void Close(bool ForcedToSave = false, bool CheckSavings = true)
         {
+            var action = Program.OptionsObject.ActionOnClose;
+
+            if (CheckSavings && _NeedsSave && !Closed && action != ActionOnClose.DontSave)
+            {
+                if (ForcedToSave || action == ActionOnClose.Save)
+                {
+                    Save();
+                }
+                else
+                {
+                    ClosingPromptOpened = true;
+                    var result = await Program.MainWindow.ShowMessageAsync(
+                        $"Do you want to save changes to '{Parent.Title.Substring(1)}'?",
+                        "Your changes will be lost if you don't save them",
+                        MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, Program.MainWindow.ClosingDialogOptions);
+                    ClosingPromptOpened = false;
+                    switch (result)
+                    {
+                        case MessageDialogResult.Affirmative:
+                            Closed = true;
+                            Save();
+                            break;
+                        case MessageDialogResult.Negative:
+                            Closed = true;
+                            break;
+                        case MessageDialogResult.FirstAuxiliary:
+                            return;
+                    }
+                }
+
+            }
+            Program.MainWindow.DockingPane.RemoveChild(Parent);
+            Program.MainWindow.UpdateOBFileButton();
+
             regularyTimer.Stop();
             regularyTimer.Close();
 
@@ -771,28 +810,9 @@ namespace SPCode.UI.Components
                 fileWatcher = null;
             }
 
-            if (CheckSavings && _NeedsSave)
-            {
-                if (ForcedToSave)
-                {
-                    Save();
-                }
-                else
-                {
-                    var title = $"{Program.Translations.GetLanguage("SavingFile")} '" + Parent.Title.Trim('*') +
-                                "'";
-                    var Result = await Program.MainWindow.ShowMessageAsync(title, "",
-                        MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions);
-                    if (Result == MessageDialogResult.Affirmative)
-                    {
-                        Save();
-                    }
-                }
-            }
-
             Parent = null;
 
-            Program.MainWindow.EditorsReferences.Remove(this);
+            Program.MainWindow.EditorReferences.Remove(this);
             Program.MainWindow.MenuI_ReopenLastClosedTab.IsEnabled = true;
             Program.RecentFilesStack.Push(FullFilePath);
             Program.MainWindow.UpdateWindowTitle();
@@ -806,8 +826,8 @@ namespace SPCode.UI.Components
             var lineList = new List<DocumentLine>();
             var document = editor.TextArea.Document;
 
-            // Start undo transaction so undoing this doesn't result in undoing every single comment manually
-            document.UndoStack.StartUndoGroup();
+            // Start update so undoing this doesn't result in undoing every single comment manually
+            document.BeginUpdate();
 
             // If there's no selection, add to lineList the line the caret is standing on
             if (!selectionSegments.Any())
@@ -862,8 +882,8 @@ namespace SPCode.UI.Components
                 }
             }
 
-            // End the undo transaction
-            document.UndoStack.EndUndoGroup();
+            // End update
+            document.EndUpdate();
         }
 
         public void ChangeCase(bool toUpper = true)
@@ -959,13 +979,12 @@ namespace SPCode.UI.Components
                 {
                     using var fs = new FileStream(_FullFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
                     editor.Save(fs);
-                    Program.MainWindow.RefreshObjectBrowser();
                 }
                 catch (Exception e)
                 {
                     MessageBox.Show(Program.MainWindow,
-                        Program.Translations.GetLanguage("DSaveError") + Environment.NewLine + "(" + e.Message + ")",
-                        Program.Translations.GetLanguage("SaveError"),
+                        Program.Translations.Get("DSaveError") + Environment.NewLine + "(" + e.Message + ")",
+                        Program.Translations.Get("SaveError"),
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
@@ -999,20 +1018,20 @@ namespace SPCode.UI.Components
                 return;
             }
 
-            MenuC_Undo.Header = Program.Translations.GetLanguage("Undo");
-            MenuC_Redo.Header = Program.Translations.GetLanguage("Redo");
-            MenuC_Cut.Header = Program.Translations.GetLanguage("Cut");
-            MenuC_Copy.Header = Program.Translations.GetLanguage("Copy");
-            MenuC_Paste.Header = Program.Translations.GetLanguage("Paste");
-            MenuC_SelectAll.Header = Program.Translations.GetLanguage("SelectAll");
-            CompileBox.Content = Program.Translations.GetLanguage("Compile");
+            MenuC_Undo.Header = Program.Translations.Get("Undo");
+            MenuC_Redo.Header = Program.Translations.Get("Redo");
+            MenuC_Cut.Header = Program.Translations.Get("Cut");
+            MenuC_Copy.Header = Program.Translations.Get("Copy");
+            MenuC_Paste.Header = Program.Translations.Get("Paste");
+            MenuC_SelectAll.Header = Program.Translations.Get("SelectAll");
+            CompileBox.Content = Program.Translations.Get("Compile");
             if (!Initial)
             {
                 StatusLine_Column.Text =
-                    $"{Program.Translations.GetLanguage("ColAbb")} {editor.TextArea.Caret.Column}";
-                StatusLine_Line.Text = $"{Program.Translations.GetLanguage("LnAbb")} {editor.TextArea.Caret.Line}";
+                    $"{Program.Translations.Get("ColAbb")} {editor.TextArea.Caret.Column}";
+                StatusLine_Line.Text = $"{Program.Translations.Get("LnAbb")} {editor.TextArea.Caret.Line}";
                 StatusLine_FontSize.Text =
-                    editor.FontSize.ToString("n0") + $" {Program.Translations.GetLanguage("PtAbb")}";
+                    editor.FontSize.ToString("n0") + $" {Program.Translations.Get("PtAbb")}";
             }
         }
 

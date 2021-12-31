@@ -589,4 +589,5 @@ namespace SourcepawnCondenser
             return variables;
         }
     }
+
 }

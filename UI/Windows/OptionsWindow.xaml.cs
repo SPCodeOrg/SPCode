@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -25,6 +26,12 @@ namespace SPCode.UI.Windows
             "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald", "Teal", "Cyan", "Cobalt", "Indigo", "Violet",
             "Pink", "Magenta", "Crimson", "Amber",
             "Yellow", "Brown", "Olive", "Steel", "Mauve", "Taupe", "Sienna"
+        };
+        private readonly Dictionary<ActionOnClose, string> ActionOnCloseMessages = new()
+        {
+            { ActionOnClose.Prompt, Program.Translations.Get("ActionClosePrompt") },
+            { ActionOnClose.Save, Program.Translations.Get("Save") },
+            { ActionOnClose.DontSave, Program.Translations.Get("DontSave") }
         };
         private bool RestartTextIsShown;
         private readonly bool AllowChanging;
@@ -70,15 +77,15 @@ namespace SPCode.UI.Windows
 
         private async void RestoreButton_Clicked(object sender, RoutedEventArgs e)
         {
-            var result = await this.ShowMessageAsync(Program.Translations.GetLanguage("ResetOptions"),
-                Program.Translations.GetLanguage("ResetOptQues"), MessageDialogStyle.AffirmativeAndNegative);
+            var result = await this.ShowMessageAsync(Program.Translations.Get("ResetOptions"),
+                Program.Translations.Get("ResetOptQues"), MessageDialogStyle.AffirmativeAndNegative);
             if (result == MessageDialogResult.Affirmative)
             {
                 Program.OptionsObject = new OptionsControl();
                 Program.OptionsObject.ReCreateCryptoKey();
                 Program.MainWindow.OptionMenuEntry.IsEnabled = false;
-                await this.ShowMessageAsync(Program.Translations.GetLanguage("RestartEditor"),
-                    Program.Translations.GetLanguage("YRestartEditor"), MessageDialogStyle.Affirmative,
+                await this.ShowMessageAsync(Program.Translations.Get("RestartEditor"),
+                    Program.Translations.Get("YRestartEditor"), MessageDialogStyle.Affirmative,
                     MetroDialogOptions);
                 Close();
             }
@@ -421,6 +428,11 @@ namespace SPCode.UI.Windows
             ToggleRestartText(true);
         }
 
+        private void ActionOnCloseBox_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            Program.OptionsObject.ActionOnClose = (ActionOnClose)ActionOnCloseBox.SelectedIndex;
+        }
+
         private void HardwareSalts_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging)
@@ -572,6 +584,18 @@ namespace SPCode.UI.Windows
                 }
             }
         }
+
+        private void TabToAutocomplete_Changed(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChanging)
+            {
+                return;
+            }
+
+            Debug.Assert(ShowTabs.IsChecked != null, "TabToAutocomplete.IsChecked != null");
+            Program.OptionsObject.Editor_TabToAutocomplete = UseTabToAutocomplete.IsChecked.Value;
+        }
+
         #endregion
 
         #region Methods
@@ -618,6 +642,13 @@ namespace SPCode.UI.Windows
                 }
             }
 
+            foreach (var action in ActionOnCloseMessages.Values)
+            {
+                ActionOnCloseBox.Items.Add(action);
+            }
+
+            ActionOnCloseBox.SelectedIndex = (int)Program.OptionsObject.ActionOnClose;
+
             if (Program.OptionsObject.Editor_AutoSave)
             {
                 var seconds = Program.OptionsObject.Editor_AutoSaveInterval;
@@ -654,8 +685,8 @@ namespace SPCode.UI.Windows
             AutoCloseStringChars.IsChecked = Program.OptionsObject.Editor_AutoCloseStringChars;
             ShowSpaces.IsChecked = Program.OptionsObject.Editor_ShowSpaces;
             ShowTabs.IsChecked = Program.OptionsObject.Editor_ShowTabs;
-            FontFamilyTB.Text =
-                $"{Program.Translations.GetLanguage("FontFamily")} ({Program.OptionsObject.Editor_FontFamily}):";
+            UseTabToAutocomplete.IsChecked = Program.OptionsObject.Editor_TabToAutocomplete;
+            FontFamilyTB.Text = $"{Program.Translations.Get("FontFamily")} ({Program.OptionsObject.Editor_FontFamily}):";
             FontFamilyCB.SelectedValue = new FontFamily(Program.OptionsObject.Editor_FontFamily);
             IndentationSize.Value = Program.OptionsObject.Editor_IndentationSize;
             HardwareSalts.IsChecked = Program.OptionsObject.Program_UseHardwareSalts;
@@ -673,8 +704,8 @@ namespace SPCode.UI.Windows
                 if (!RestartTextIsShown)
                 {
                     StatusTextBlock.Content = FullEffect
-                        ? Program.Translations.GetLanguage("RestartEdiFullEff")
-                        : Program.Translations.GetLanguage("RestartEdiEff");
+                        ? Program.Translations.Get("RestartEdiFullEff")
+                        : Program.Translations.Get("RestartEdiEff");
                     RestartTextIsShown = true;
                 }
             }
@@ -694,7 +725,7 @@ namespace SPCode.UI.Windows
                     VerticalAlignment = VerticalAlignment.Top,
                     Margin = new Thickness(161, txtMargin, 0, 0),
                     TextWrapping = TextWrapping.Wrap,
-                    Text = Program.Translations.GetLanguage(hkInfo.Command)
+                    Text = Program.Translations.Get(hkInfo.Command)
                 };
                 var hotkeyEditor = new HotkeyEditorControl()
                 {
@@ -708,6 +739,7 @@ namespace SPCode.UI.Windows
                     FontStyle = hkInfo.Hotkey == null || hkInfo.Hotkey.ToString() == "None" ? FontStyles.Italic : FontStyles.Normal
                 };
                 hotkeyEditor.PreviewKeyDown += Hotkey_PreviewKeyDown;
+                hotkeyEditor.PreviewMouseDown += Hotkey_PreviewMouseDown;
                 Grid.SetColumn(hotkeyEditor, 1);
                 var separator = new Separator()
                 {
@@ -735,38 +767,37 @@ namespace SPCode.UI.Windows
                 return;
             }
 
-            HardwareSalts.Content = Program.Translations.GetLanguage("HardwareEncryption");
-            ProgramHeader.Header = $" {Program.Translations.GetLanguage("Program")}";
-            DefaultButton.Content = Program.Translations.GetLanguage("DefaultValues");
-            HardwareAcc.Content = Program.Translations.GetLanguage("HardwareAcc");
-            UIAnimation.Content = Program.Translations.GetLanguage("UIAnim");
-            OpenIncludes.Content = Program.Translations.GetLanguage("OpenInc");
-            OpenIncludesRecursive.Content = Program.Translations.GetLanguage("OpenIncRec");
-            AutoUpdate.Content = Program.Translations.GetLanguage("AutoUpdate");
-            ShowToolBar.Content = Program.Translations.GetLanguage("ShowToolbar");
-            DynamicISAC.Content = Program.Translations.GetLanguage("DynamicISAC");
-            DarkTheme.Content = Program.Translations.GetLanguage("DarkTheme");
-            ThemeColorLabel.Content = Program.Translations.GetLanguage("ThemeColor");
-            LanguageLabel.Content = Program.Translations.GetLanguage("LanguageStr");
-            EditorHeader.Header = $" {Program.Translations.GetLanguage("Editor")}";
-            FontSizeBlock.Text = Program.Translations.GetLanguage("FontSize");
-            ScrollSpeedBlock.Text = Program.Translations.GetLanguage("ScrollSpeed");
-            WordWrap.Content = Program.Translations.GetLanguage("WordWrap");
-            AgressiveIndentation.Content = Program.Translations.GetLanguage("AggIndentation");
-            LineReformatting.Content = Program.Translations.GetLanguage("ReformatAfterSem");
-            TabToSpace.Content = Program.Translations.GetLanguage("TabsToSpace");
-            AutoCloseBrackets.Content = $"{Program.Translations.GetLanguage("AutoCloseBrack")} (), [], {{}}";
-            AutoCloseStringChars.Content = $"{Program.Translations.GetLanguage("AutoCloseStrChr")} \"\", ''";
-            ShowSpaces.Content = Program.Translations.GetLanguage("ShowSpaces");
-            ShowTabs.Content = Program.Translations.GetLanguage("ShowTabs");
-            IndentationSizeBlock.Text = Program.Translations.GetLanguage("IndentationSize");
-            SyntaxHighBlock.Text = Program.Translations.GetLanguage("SyntaxHigh");
-            HighlightDeprecateds.Content = Program.Translations.GetLanguage("HighDeprecat");
-            AutoSaveBlock.Text = Program.Translations.GetLanguage("AutoSaveMin");
-            DefaultButton.Content = Program.Translations.GetLanguage("DefaultValues");
-            DiscordPresence.Content = Program.Translations.GetLanguage("EnableRPC");
-            DiscordPresenceTime.Content = Program.Translations.GetLanguage("EnableRPCTime");
-            DiscordPresenceFile.Content = Program.Translations.GetLanguage("EnableRPCFile");
+            HardwareSalts.Content = Program.Translations.Get("HardwareEncryption");
+            ProgramHeader.Header = $" {Program.Translations.Get("Program")}";
+            DefaultButton.Content = Program.Translations.Get("DefaultValues");
+            HardwareAcc.Content = Program.Translations.Get("HardwareAcc");
+            UIAnimation.Content = Program.Translations.Get("UIAnim");
+            OpenIncludes.Content = Program.Translations.Get("OpenInc");
+            OpenIncludesRecursive.Content = Program.Translations.Get("OpenIncRec");
+            AutoUpdate.Content = Program.Translations.Get("AutoUpdate");
+            ShowToolBar.Content = Program.Translations.Get("ShowToolbar");
+            DynamicISAC.Content = Program.Translations.Get("DynamicISAC");
+            DarkTheme.Content = Program.Translations.Get("DarkTheme");
+            ThemeColorLabel.Content = Program.Translations.Get("ThemeColor");
+            LanguageLabel.Content = Program.Translations.Get("LanguageStr");
+            EditorHeader.Header = $" {Program.Translations.Get("Editor")}";
+            FontSizeBlock.Text = Program.Translations.Get("FontSize");
+            ScrollSpeedBlock.Text = Program.Translations.Get("ScrollSpeed");
+            WordWrap.Content = Program.Translations.Get("WordWrap");
+            AgressiveIndentation.Content = Program.Translations.Get("AggIndentation");
+            LineReformatting.Content = Program.Translations.Get("ReformatAfterSem");
+            TabToSpace.Content = Program.Translations.Get("TabsToSpace");
+            AutoCloseBrackets.Content = $"{Program.Translations.Get("AutoCloseBrack")} (), [], {{}}";
+            AutoCloseStringChars.Content = $"{Program.Translations.Get("AutoCloseStrChr")} \"\", ''";
+            ShowSpaces.Content = Program.Translations.Get("ShowSpaces");
+            ShowTabs.Content = Program.Translations.Get("ShowTabs");
+            IndentationSizeBlock.Text = Program.Translations.Get("IndentationSize");
+            HighlightDeprecateds.Content = Program.Translations.Get("HighDeprecat");
+            AutoSaveBlock.Text = Program.Translations.Get("AutoSaveMin");
+            DefaultButton.Content = Program.Translations.Get("DefaultValues");
+            DiscordPresence.Content = Program.Translations.Get("EnableRPC");
+            DiscordPresenceTime.Content = Program.Translations.Get("EnableRPCTime");
+            DiscordPresenceFile.Content = Program.Translations.Get("EnableRPCFile");
 
             foreach (var item in HotkeysGrid.Children)
             {
@@ -775,7 +806,7 @@ namespace SPCode.UI.Windows
                     var cItem = item as TextBlock;
                     if (!string.IsNullOrEmpty(cItem.Name))
                     {
-                        cItem.Text = Program.Translations.GetLanguage(cItem.Name.Substring(3));
+                        cItem.Text = Program.Translations.Get(cItem.Name.Substring(3));
                     }
                 }
             }

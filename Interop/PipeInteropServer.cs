@@ -2,6 +2,7 @@
 using System.IO.Pipes;
 using System.Text;
 using SPCode.UI;
+using SPCode.Utils;
 
 namespace SPCode.Interop
 {
@@ -37,7 +38,7 @@ namespace SPCode.Interop
                 pipeServer.Close();
                 pipeServer = null;
             }
-            pipeServer = new NamedPipeServerStream("SPCodeNamedPipeServer", PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+            pipeServer = new NamedPipeServerStream(NamesHelper.PipeServerName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
             pipeServer.BeginWaitForConnection(new AsyncCallback(PipeConnection_MessageIn), null);
         }
 

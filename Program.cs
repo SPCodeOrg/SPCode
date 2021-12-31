@@ -43,18 +43,10 @@ namespace SPCode
 
         public static bool _IsLocalInstallation;
 
-        public static bool IsSearchOpen = false;
-
         [STAThread]
         public static void Main(string[] args)
         {
-#if DEBUG     
-            System.Diagnostics.PresentationTraceSources.DataBindingSource.Switch.Level =
-                System.Diagnostics.SourceLevels.Critical;
-
-#endif
-
-            using (new Mutex(true, "SPCodeGlobalMutex", out var mutexReserved))
+            using (new Mutex(true, NamesHelper.MutexName, out var mutexReserved))
             {
                 if (mutexReserved)
                 {
@@ -62,7 +54,6 @@ namespace SPCode
                     try
                     {
 #endif
-
                     var splashScreen = new SplashScreen("Resources/Icons/icon256x.png");
                     splashScreen.Show(false, true);
                     Environment.CurrentDirectory =
@@ -74,7 +65,7 @@ namespace SPCode
 #endif
                     _IsLocalInstallation = Paths.IsLocalInstallation();
                     UpdateStatus = new UpdateInfo();
-                    OptionsObject = OptionsControlIOObject.Load(out var ProgramIsNew);
+                    OptionsObject = OptionsControl.Load(out var ProgramIsNew);
 
                     if (!File.Exists(Constants.HotkeysFile))
                     {
@@ -185,7 +176,7 @@ namespace SPCode
 #endif
                     app.Startup += App_Startup;
                     app.Run(MainWindow);
-                    OptionsControlIOObject.Save();
+                    OptionsControl.Save();
 #if !DEBUG
                     }
                     catch (Exception e)
@@ -293,7 +284,7 @@ namespace SPCode
             outString.AppendLine("Current Culture: " + CultureInfo.CurrentCulture);
             outString.AppendLine();
             var eNumber = 1;
-            for (; ; )
+            while (true)
             {
                 if (e == null)
                 {

@@ -45,7 +45,7 @@ namespace SPCode.UI.Windows
                                     AddExtension = true,
                                     Filter = "Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|All Files (*.*)|*.*",
                                     OverwritePrompt = true,
-                                    Title = Program.Translations.GetLanguage("New")
+                                    Title = Program.Translations.Get("New")
                                 };
                                 var result = dialog.ShowDialog();
 
@@ -100,7 +100,7 @@ namespace SPCode.UI.Windows
             ParseTemplateFile();
             Language_Translate();
             PreviewBox.Parent = new LayoutDocument();
-            Program.MainWindow.EditorsReferences.Add(PreviewBox);
+            Program.MainWindow.EditorReferences.Add(PreviewBox);
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
             {
                 ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
@@ -125,7 +125,7 @@ namespace SPCode.UI.Windows
         {
             try
             {
-                if (TemplateListBox.SelectedItem != null && (TemplateListBox.SelectedItem as ListBoxItem).Tag is TemplateInfo templateInfo)
+                if ((TemplateListBox.SelectedItem as ListBoxItem)?.Tag is TemplateInfo templateInfo)
                 {
                     PreviewBox.editor.Text = File.ReadAllText(templateInfo.Path);
                     PathBox.Text = Path.Combine(PathStr, templateInfo.NewName);
@@ -140,61 +140,78 @@ namespace SPCode.UI.Windows
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TemplateEditMode || TemplateNewMode)
+            try
             {
-                var tempName = TbxRenameTemplate.Text;
-                if (!IsValidTemplate(ref tempName, out var message))
+                if (TemplateEditMode || TemplateNewMode)
                 {
-                    TbxRenameTemplate.BorderBrush = new SolidColorBrush(Colors.Red);
-                    LblError.Visibility = Visibility.Visible;
-                    LblError.Content = message;
+                    var tempName = TbxRenameTemplate.Text;
+                    if (!IsValidTemplate(ref tempName, out var message))
+                    {
+                        TbxRenameTemplate.BorderBrush = new SolidColorBrush(Colors.Red);
+                        LblError.Visibility = Visibility.Visible;
+                        LblError.Content = message;
+                        return;
+                    }
+
+                    foreach (ListBoxItem item in TemplateListBox.Items)
+                    {
+                        item.IsEnabled = true;
+                    }
+
+                    PreviewBox.editor.IsReadOnly = true;
+
+                    if (TemplateEditMode)
+                    {
+                        SaveTemplate(tempName);
+                        TemplateEditMode = false;
+                    }
+                    else
+                    {
+                        CreateTemplate(tempName);
+                        TemplateListBox.SelectedIndex = TemplateListBox.Items.Count - 1;
+                        TemplateNewMode = false;
+                    }
+
+                    HideVisuals();
                     return;
                 }
-
-                foreach (ListBoxItem item in TemplateListBox.Items)
-                {
-                    item.IsEnabled = true;
-                }
-
-                PreviewBox.editor.IsReadOnly = true;
-
-                if (TemplateEditMode)
-                {
-                    SaveTemplate(tempName);
-                }
-                else
-                {
-                    CreateTemplate(tempName);
-                }
-
-                HideVisuals();
-                return;
+                GoToSelectedTemplate();
             }
-            GoToSelectedTemplate();
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TemplateEditMode)
+            try
             {
-                HideVisuals();
-                TemplateEditMode = false;
-                PreviewBox.editor.IsReadOnly = true;
-                var tInfo = (TemplateListBox.SelectedItem as ListBoxItem).Tag as TemplateInfo;
-                PreviewBox.editor.Text = File.ReadAllText(tInfo.Path);
-                PathBox.Text = tInfo.Path;
+                if (TemplateEditMode)
+                {
+                    HideVisuals();
+                    TemplateEditMode = false;
+                    PreviewBox.editor.IsReadOnly = true;
+                    var tInfo = (TemplateListBox.SelectedItem as ListBoxItem).Tag as TemplateInfo;
+                    PreviewBox.editor.Text = File.ReadAllText(tInfo.Path);
+                    PathBox.Text = tInfo.Path;
+                }
+                else if (TemplateNewMode)
+                {
+                    HideVisuals();
+                    TemplateNewMode = false;
+                    PreviewBox.editor.IsReadOnly = true;
+                    TemplateListBox.SelectedIndex = 0;
+                    TemplateListBox.Items.RemoveAt(TemplateListBox.Items.Count - 1);
+                }
+                else
+                {
+                    Close();
+                }
             }
-            else if (TemplateNewMode)
+            catch (Exception ex)
             {
-                HideVisuals();
-                TemplateNewMode = false;
-                PreviewBox.editor.IsReadOnly = true;
-                TemplateListBox.SelectedIndex = 0;
-                TemplateListBox.Items.RemoveAt(TemplateListBox.Items.Count - 1);
-            }
-            else
-            {
-                Close();
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
@@ -262,7 +279,7 @@ namespace SPCode.UI.Windows
 
         private void NewFileWind_Closing(object sender, CancelEventArgs e)
         {
-            Program.MainWindow.EditorsReferences.Remove(PreviewBox);
+            Program.MainWindow.EditorReferences.Remove(PreviewBox);
         }
 
         #endregion
@@ -274,76 +291,89 @@ namespace SPCode.UI.Windows
         /// </summary>
         private void CacheTemplates()
         {
-            if (File.Exists(Paths.GetTemplatesFilePath()))
+            try
             {
-                LBIList = new List<ListBoxItem>();
-                using Stream stream = File.OpenRead(Paths.GetTemplatesFilePath());
-                var doc = new XmlDocument();
-                doc.Load(stream);
-                if (doc.ChildNodes.Count <= 0)
+                if (File.Exists(Paths.GetTemplatesFilePath()))
                 {
-                    return;
-                }
-
-                if (doc.ChildNodes[0].Name != "Templates")
-                {
-                    return;
-                }
-
-                var mainNode = doc.ChildNodes[0];
-                for (var i = 0; i < mainNode.ChildNodes.Count; ++i)
-                {
-                    if (mainNode.ChildNodes[i].Name == "Template")
+                    LBIList = new List<ListBoxItem>();
+                    using Stream stream = File.OpenRead(Paths.GetTemplatesFilePath());
+                    var doc = new XmlDocument();
+                    doc.Load(stream);
+                    if (doc.ChildNodes.Count <= 0)
                     {
-                        var attributes = mainNode.ChildNodes[i].Attributes;
-                        var NameStr = attributes?["Name"].Value;
-                        var FileNameStr = attributes?["File"].Value;
-                        var NewNameStr = attributes?["NewName"].Value;
+                        return;
+                    }
 
-                        Debug.Assert(FileNameStr != null, nameof(FileNameStr) + " != null");
-                        var FilePathStr = Path.Combine(Paths.GetTemplatesDirectory(), FileNameStr);
-                        if (File.Exists(FilePathStr))
+                    if (doc.ChildNodes[0].Name != "Templates")
+                    {
+                        return;
+                    }
+
+                    var mainNode = doc.ChildNodes[0];
+                    for (var i = 0; i < mainNode.ChildNodes.Count; ++i)
+                    {
+                        if (mainNode.ChildNodes[i].Name == "Template")
                         {
-                            Debug.Assert(NameStr != null, nameof(NameStr) + " != null");
+                            var attributes = mainNode.ChildNodes[i].Attributes;
+                            var NameStr = attributes?["Name"].Value;
+                            var FileNameStr = attributes?["File"].Value;
+                            var NewNameStr = attributes?["NewName"].Value;
 
-                            var lbi = new ListBoxItem()
+                            Debug.Assert(FileNameStr != null, nameof(FileNameStr) + " != null");
+                            var FilePathStr = Path.Combine(Paths.GetTemplatesDirectory(), FileNameStr);
+                            if (File.Exists(FilePathStr))
                             {
-                                Tag = new TemplateInfo()
-                                {
-                                    Name = NameStr,
-                                    FileName = FileNameStr,
-                                    NewName = NewNameStr,
-                                    Path = FilePathStr
-                                },
-                                Content = NameStr
-                            };
+                                Debug.Assert(NameStr != null, nameof(NameStr) + " != null");
 
-                            lbi.MouseDoubleClick += TemplateListItem_MouseDoubleClick;
-                            lbi.KeyDown += TemplateListItem_KeyDown;
-                            LBIList.Add(lbi);
+                                var lbi = new ListBoxItem()
+                                {
+                                    Tag = new TemplateInfo()
+                                    {
+                                        Name = NameStr,
+                                        FileName = FileNameStr,
+                                        NewName = NewNameStr,
+                                        Path = FilePathStr
+                                    },
+                                    Content = NameStr
+                                };
+
+                                lbi.MouseDoubleClick += TemplateListItem_MouseDoubleClick;
+                                lbi.KeyDown += TemplateListItem_KeyDown;
+                                LBIList.Add(lbi);
+                            }
                         }
                     }
+                    Program.SelectedTemplatePath = LBIList.Count > 0 ? (LBIList[0].Tag as TemplateInfo).Path : null;
                 }
-                Program.SelectedTemplatePath = LBIList.Count > 0 ? (LBIList[0].Tag as TemplateInfo).Path : null;
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
         private void ParseTemplateFile()
         {
-            if (LBIList != null)
+            try
             {
-                LBIList.ForEach(x => TemplateListBox.Items.Add(x));
+                if (LBIList != null)
+                {
+                    LBIList.ForEach(x => TemplateListBox.Items.Add(x));
+                }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
         private void Language_Translate()
         {
-            if (Program.Translations.IsDefault)
+            if (!Program.Translations.IsDefault)
             {
-                return;
+                PreviewBlock.Text = $"{Program.Translations.Get("Preview")}:";
+                SaveButton.Content = Program.Translations.Get("Save");
             }
-            PreviewBlock.Text = $"{Program.Translations.GetLanguage("Preview")}:";
-            SaveButton.Content = Program.Translations.GetLanguage("Save");
         }
 
         private void GoToSelectedTemplate()
@@ -351,149 +381,186 @@ namespace SPCode.UI.Windows
             try
             {
                 var destFile = new FileInfo(PathBox.Text);
-                var templateInfo = (TemplateListBox.SelectedItem as ListBoxItem).Tag as TemplateInfo;
-                File.Copy(templateInfo.Path, destFile.FullName, true);
-                Program.MainWindow.TryLoadSourceFile(destFile.FullName, out _, true, true, true);
+                if ((TemplateListBox.SelectedItem as ListBoxItem)?.Tag is TemplateInfo templateInfo)
+                {
+                    File.Copy(templateInfo.Path, destFile.FullName, true);
+                    Program.MainWindow.TryLoadSourceFile(destFile.FullName, out _, true, true, true);
+                }
 
                 Close();
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
         private void SaveTemplate(string name)
         {
-            var temp = TemplateListBox.SelectedItem as ListBoxItem;
-            var tempFilePath = Paths.GetTemplatesFilePath();
-
-            // Save the file's content
-            var path = (temp.Tag as TemplateInfo).Path;
-            File.WriteAllText(path, PreviewBox.editor.Text);
-
-            // Save the new entry in Templates.xml
-            using Stream stream = File.OpenRead(tempFilePath);
-            var doc = new XmlDocument();
-            doc.Load(stream);
-            stream.Dispose();
-
-            foreach (XmlElement elem in doc.ChildNodes[0].ChildNodes)
+            try
             {
-                if (elem.Attributes["Name"].Value == temp.Content.ToString())
+                var temp = TemplateListBox.SelectedItem as ListBoxItem;
+                var tempFilePath = Paths.GetTemplatesFilePath();
+
+                // Save the file's content
+                var path = (temp.Tag as TemplateInfo).Path;
+                File.WriteAllText(path, PreviewBox.editor.Text);
+
+                // Save the new entry in Templates.xml
+                using Stream stream = File.OpenRead(tempFilePath);
+                var doc = new XmlDocument();
+                doc.Load(stream);
+                stream.Dispose();
+
+                foreach (XmlElement elem in doc.ChildNodes[0].ChildNodes)
                 {
-                    var pathboxFileInfo = new FileInfo(PathBox.Text);
-                    var newFilePath = Path.GetDirectoryName(path) + Path.DirectorySeparatorChar + pathboxFileInfo.Name.Replace(" ", "");
-
-                    // Update name of template
-                    elem.Attributes["Name"].Value = name;
-                    temp.Content = name;
-
-                    // Update NewFile name that's going to create, only if the item's file name is different from the one in PathBox
-                    if (elem.Attributes["NewName"].Value.ToString() != pathboxFileInfo.Name)
+                    if (elem.Attributes["Name"].Value == temp.Content.ToString())
                     {
-                        elem.Attributes["NewName"].Value = pathboxFileInfo.Name;
-                        File.Move(path, newFilePath);
-                        elem.Attributes["File"].Value = pathboxFileInfo.Name.Replace(" ", "");
+                        var pathboxFileInfo = new FileInfo(PathBox.Text);
+                        var newFilePath = Path.GetDirectoryName(path) + Path.DirectorySeparatorChar + pathboxFileInfo.Name.Replace(" ", "");
 
-                        // Save new properties to list item
-                        temp.Tag = new TemplateInfo()
+                        // Update name of template
+                        elem.Attributes["Name"].Value = name;
+                        temp.Content = name;
+
+                        // Update NewFile name that's going to create, only if the item's file name is different from the one in PathBox
+                        if (elem.Attributes["NewName"].Value.ToString() != pathboxFileInfo.Name)
                         {
-                            Name = name,
-                            NewName = pathboxFileInfo.Name,
-                            Path = newFilePath,
-                            FileName = pathboxFileInfo.Name.Replace(" ", "")
-                        };
+                            elem.Attributes["NewName"].Value = pathboxFileInfo.Name;
+                            File.Move(path, newFilePath);
+                            elem.Attributes["File"].Value = pathboxFileInfo.Name.Replace(" ", "");
+
+                            // Save new properties to list item
+                            temp.Tag = new TemplateInfo()
+                            {
+                                Name = name,
+                                NewName = pathboxFileInfo.Name,
+                                Path = newFilePath,
+                                FileName = pathboxFileInfo.Name.Replace(" ", "")
+                            };
+                        }
+                        doc.Save(tempFilePath);
+                        break;
                     }
-                    doc.Save(tempFilePath);
-                    break;
                 }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
         private void DeleteTemplate(ListBoxItem temp)
         {
-            TemplateListBox.Items.RemoveAt(TemplateListBox.SelectedIndex);
-            File.Delete(new FileInfo((temp.Tag as TemplateInfo).Path).FullName);
-            using Stream stream = File.OpenRead(Paths.GetTemplatesFilePath());
-            var doc = new XmlDocument();
-            doc.Load(stream);
-            stream.Dispose();
-            foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
+            try
             {
-                if (node.Attributes["Name"].Value == temp.Content.ToString())
+                TemplateListBox.Items.RemoveAt(TemplateListBox.SelectedIndex);
+                File.Delete(new FileInfo((temp.Tag as TemplateInfo).Path).FullName);
+                using Stream stream = File.OpenRead(Paths.GetTemplatesFilePath());
+                var doc = new XmlDocument();
+                doc.Load(stream);
+                stream.Dispose();
+                foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
                 {
-                    doc.ChildNodes[0].RemoveChild(node);
-                    doc.Save(Paths.GetTemplatesFilePath());
-                    return;
+                    if (node.Attributes["Name"].Value == temp.Content.ToString())
+                    {
+                        doc.ChildNodes[0].RemoveChild(node);
+                        doc.Save(Paths.GetTemplatesFilePath());
+                        return;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
         private void CreateTemplate(string name)
         {
-            var tempFilePath = Paths.GetTemplatesFilePath();
-            var pathBoxFileInfo = new FileInfo(PathBox.Text);
-
-            // Save in XML
-            using Stream stream = File.OpenRead(tempFilePath);
-            var doc = new XmlDocument();
-            doc.Load(stream);
-            stream.Dispose();
-
-            var newNode = doc.CreateElement("Template");
-            newNode.SetAttribute("Name", name);
-            newNode.SetAttribute("NewName", pathBoxFileInfo.Name);
-            newNode.SetAttribute("File", pathBoxFileInfo.Name.Replace(" ", ""));
-
-            doc.ChildNodes[0].AppendChild(newNode);
-            doc.Save(tempFilePath);
-
-            // Create file
-            var newFilePath = Path.GetDirectoryName(tempFilePath) + Path.DirectorySeparatorChar + pathBoxFileInfo.Name.Replace(" ", "");
-            File.WriteAllText(newFilePath, PreviewBox.editor.Text);
-
-            // Save ListBoxItem
-            var lbi = new ListBoxItem()
+            try
             {
-                Content = name,
-                Tag = new TemplateInfo()
+                var tempFilePath = Paths.GetTemplatesFilePath();
+                var pathBoxFileInfo = new FileInfo(PathBox.Text);
+
+                // Save in XML
+                using Stream stream = File.OpenRead(tempFilePath);
+                var doc = new XmlDocument();
+                doc.Load(stream);
+                stream.Dispose();
+
+                var newNode = doc.CreateElement("Template");
+                newNode.SetAttribute("Name", name);
+                newNode.SetAttribute("NewName", pathBoxFileInfo.Name);
+                newNode.SetAttribute("File", pathBoxFileInfo.Name.Replace(" ", ""));
+
+                doc.ChildNodes[0].AppendChild(newNode);
+                doc.Save(tempFilePath);
+
+                // Create file
+                var newFilePath = Path.GetDirectoryName(tempFilePath) + Path.DirectorySeparatorChar + pathBoxFileInfo.Name.Replace(" ", "");
+                File.WriteAllText(newFilePath, PreviewBox.editor.Text);
+
+                // Save ListBoxItem
+                var lbi = new ListBoxItem()
                 {
-                    FileName = pathBoxFileInfo.Name.Replace(" ", ""),
-                    Name = name,
-                    NewName = pathBoxFileInfo.Name,
-                    Path = newFilePath,
-                }
-            };
-            lbi.MouseDoubleClick += TemplateListItem_MouseDoubleClick;
-            TemplateListBox.Items[TemplateListBox.Items.Count - 1] = lbi;
+                    Content = name,
+                    Tag = new TemplateInfo()
+                    {
+                        FileName = pathBoxFileInfo.Name.Replace(" ", ""),
+                        Name = name,
+                        NewName = pathBoxFileInfo.Name,
+                        Path = newFilePath,
+                    }
+                };
+                lbi.MouseDoubleClick += TemplateListItem_MouseDoubleClick;
+                TemplateListBox.Items[TemplateListBox.Items.Count - 1] = lbi;
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+            }
         }
 
         private void ShowVisuals(bool isNewTemplate)
         {
-            PreviewBlock.Text = $"{Program.Translations.GetLanguage("Name")}:";
-            TbxRenameTemplate.Text = isNewTemplate ? "" : (TemplateListBox.SelectedItem as ListBoxItem).Content.ToString();
-            TbxRenameTemplate.Visibility = Visibility.Visible;
-            var mg = PreviewBox.Margin;
-            mg.Top += 10;
-            PreviewBox.Margin = mg;
-            foreach (ListBoxItem item in TemplateListBox.Items)
+            try
             {
-                item.IsEnabled = false;
+                PreviewBlock.Text = $"{Program.Translations.Get("Name")}:";
+                TbxRenameTemplate.Text = isNewTemplate ? "" : (TemplateListBox.SelectedItem as ListBoxItem).Content.ToString();
+                TbxRenameTemplate.Visibility = Visibility.Visible;
+                var mg = PreviewBox.Margin;
+                mg.Top += 10;
+                PreviewBox.Margin = mg;
+                foreach (ListBoxItem item in TemplateListBox.Items)
+                {
+                    item.IsEnabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
         private void HideVisuals()
         {
-            PreviewBlock.Text = $"{Program.Translations.GetLanguage("Preview")}:";
-            TbxRenameTemplate.Visibility = Visibility.Collapsed;
-            LblError.Visibility = Visibility.Collapsed;
-            var mg = PreviewBox.Margin;
-            mg.Top -= 10;
-            PreviewBox.Margin = mg;
-            foreach (ListBoxItem item in TemplateListBox.Items)
+            try
             {
-                item.IsEnabled = true;
+                PreviewBlock.Text = $"{Program.Translations.Get("Preview")}:";
+                TbxRenameTemplate.Visibility = Visibility.Collapsed;
+                LblError.Visibility = Visibility.Collapsed;
+                var mg = PreviewBox.Margin;
+                mg.Top -= 10;
+                PreviewBox.Margin = mg;
+                foreach (ListBoxItem item in TemplateListBox.Items)
+                {
+                    item.IsEnabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
@@ -504,13 +571,13 @@ namespace SPCode.UI.Windows
 
             if (tempName != (TemplateListBox.SelectedItem as ListBoxItem).Content.ToString() && TemplateListBox.Items.Cast<ListBoxItem>().ToList().Any(x => x.Content.ToString().ToLower() == tempName.ToLower()))
             {
-                message = Program.Translations.GetLanguage("TemplateExists");
+                message = Program.Translations.Get("TemplateExists");
                 return false;
             }
 
             if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
             {
-                message = Program.Translations.GetLanguage("EmptyName");
+                message = Program.Translations.Get("EmptyName");
                 return false;
             }
 
@@ -519,7 +586,7 @@ namespace SPCode.UI.Windows
 
             if (arr.Length == 0)
             {
-                message = Program.Translations.GetLanguage("IllegalCharacters");
+                message = Program.Translations.Get("IllegalCharacters");
                 return false;
             }
 
@@ -527,6 +594,5 @@ namespace SPCode.UI.Windows
             return true;
         }
         #endregion
-
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -66,18 +67,18 @@ namespace SPCode.UI
         /// Gets an array of all open editor elements.
         /// </summary>
         /// <returns></returns>
-        public EditorElement[] GetAllEditorElements()
+        public List<EditorElement> GetAllEditorElements()
         {
-            return EditorsReferences.Count < 1 ? null : EditorsReferences.ToArray();
+            return EditorReferences.Count == 0 ? null : EditorReferences;
         }
 
         /// <summary>
         /// Gets an array of all open DASM elements.
         /// </summary>
         /// <returns></returns>
-        public DASMElement[] GetAllDASMElements()
+        public List<DASMElement> GetAllDASMElements()
         {
-            return DASMReferences.Count < 1 ? null : DASMReferences.ToArray();
+            return DASMReferences.Count < 1 ? null : DASMReferences;
         }
 
         /// <summary>
@@ -102,11 +103,10 @@ namespace SPCode.UI
                 File.Create(newFilePath).Close();
 
                 AddEditorElement(new FileInfo(newFilePath), $"New Plugin ({newFileNum}).sp", true, out _);
-                RefreshObjectBrowser();
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
 
         }
@@ -128,7 +128,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
 
         }
@@ -152,7 +152,7 @@ namespace SPCode.UI
                     CheckPathExists = true,
                     Filter = Constants.FileOpenFilters,
                     Multiselect = true,
-                    Title = Program.Translations.GetLanguage("OpenNewFile")
+                    Title = Program.Translations.Get("OpenNewFile")
                 };
                 var result = ofd.ShowDialog(this);
                 if (result.Value)
@@ -168,8 +168,8 @@ namespace SPCode.UI
                         if (!AnyFileLoaded)
                         {
                             MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
-                            this.ShowMessageAsync(Program.Translations.GetLanguage("NoFileOpened"),
-                                Program.Translations.GetLanguage("NoFileOpenedCap"), MessageDialogStyle.Affirmative,
+                            this.ShowMessageAsync(Program.Translations.Get("NoFileOpened"),
+                                Program.Translations.Get("NoFileOpenedCap"), MessageDialogStyle.Affirmative,
                                 MetroDialogOptions);
                         }
                     }
@@ -179,7 +179,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -199,7 +199,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -213,7 +213,7 @@ namespace SPCode.UI
                 var ee = GetCurrentEditorElement();
                 if (ee != null && !ee.IsTemplateEditor)
                 {
-                    var sfd = new SaveFileDialog { AddExtension = true, Filter = Constants.FileSaveFilters, OverwritePrompt = true, Title = Program.Translations.GetLanguage("SaveFileAs"), FileName = ee.Parent.Title.Trim('*') };
+                    var sfd = new SaveFileDialog { AddExtension = true, Filter = Constants.FileSaveFilters, OverwritePrompt = true, Title = Program.Translations.Get("SaveFileAs"), FileName = ee.Parent.Title.Trim('*') };
                     var result = sfd.ShowDialog(this);
                     if (result.Value && !string.IsNullOrWhiteSpace(sfd.FileName))
                     {
@@ -225,7 +225,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -244,7 +244,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -263,7 +263,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -281,29 +281,24 @@ namespace SPCode.UI
 
                 var selection = GetCurrentEditorElement().editor.TextArea.Selection.GetText();
 
-                if (Program.IsSearchOpen)
+                foreach (Window win in Application.Current.Windows)
                 {
-                    foreach (Window win in Application.Current.Windows)
+                    if (win is FindReplaceWindow findWin)
                     {
-                        if (win is FindReplaceWindow findWin)
-                        {
-                            findWin.Activate();
-                            findWin.FindBox.Text = selection;
-                            findWin.FindBox.SelectAll();
-                            findWin.FindBox.Focus();
-                            return;
-                        }
+                        findWin.Activate();
+                        findWin.FindBox.Text = selection;
+                        findWin.FindBox.SelectAll();
+                        findWin.FindBox.Focus();
+                        return;
                     }
                 }
-                var findWindow = new FindReplaceWindow(selection);
-                Program.IsSearchOpen = true;
-                findWindow.Owner = this;
+                var findWindow = new FindReplaceWindow(selection) { Owner = this };
                 findWindow.Show();
                 findWindow.FindBox.Focus();
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -320,7 +315,7 @@ namespace SPCode.UI
                     return;
                 }
 
-                if (editors.Length > 0)
+                if (editors.Count > 0)
                 {
                     foreach (var editor in editors)
                     {
@@ -332,7 +327,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -344,18 +339,17 @@ namespace SPCode.UI
             try
             {
                 var ee = GetCurrentEditorElement();
-                if (ee == null || ee.IsTemplateEditor)
+                var de = GetCurrentDASMElement();
+                if (ee != null && (ee.IsTemplateEditor || ee.ClosingPromptOpened))
                 {
                     return;
                 }
-
-                DockingPane.RemoveChild(ee.Parent);
-                ee.Close();
-                UpdateOBFileButton();
+                ee?.Close();
+                de?.Close();
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -367,54 +361,19 @@ namespace SPCode.UI
             try
             {
                 var editors = GetAllEditorElements();
-                if (editors == null || GetCurrentEditorElement().IsTemplateEditor)
+                var dasm = GetAllDASMElements();
+
+                if (editors == null || editors.Any(x => x.IsTemplateEditor) || editors.Count == 0 || editors.Any(x => x.ClosingPromptOpened))
                 {
                     return;
                 }
 
-                if (editors.Length > 0)
-                {
-                    var UnsavedEditorsExisting = false;
-                    foreach (var editor in editors)
-                    {
-                        UnsavedEditorsExisting |= editor.NeedsSave;
-                    }
-
-                    var ForceSave = false;
-                    if (UnsavedEditorsExisting)
-                    {
-                        var str = new StringBuilder();
-                        for (var i = 0; i < editors.Length; ++i)
-                        {
-                            if (i == 0)
-                            {
-                                str.Append(editors[i].Parent.Title.Trim('*'));
-                            }
-                            else
-                            {
-                                str.AppendLine(editors[i].Parent.Title.Trim('*'));
-                            }
-                        }
-
-                        var result = await this.ShowMessageAsync(Program.Translations.GetLanguage("SaveFollow"),
-                            str.ToString(), MessageDialogStyle.AffirmativeAndNegative, MetroDialogOptions);
-                        if (result == MessageDialogResult.Affirmative)
-                        {
-                            ForceSave = true;
-                        }
-                    }
-
-                    foreach (var editor in editors)
-                    {
-                        DockingPane.RemoveChild(editor.Parent);
-                        editor.Close(ForceSave, ForceSave);
-                    }
-                }
-                UpdateOBFileButton();
+                editors.ToList().ForEach(x => x.Close());
+                dasm?.ToList().ForEach(y => y.Close());
             }
             catch (Exception ex)
             {
-                await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                await this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -436,7 +395,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -458,7 +417,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -474,7 +433,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -490,7 +449,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -506,7 +465,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -530,7 +489,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -546,7 +505,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -565,7 +524,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -585,7 +544,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -597,7 +556,7 @@ namespace SPCode.UI
         {
             try
             {
-                var editors = All ? GetAllEditorElements() : new[] { GetCurrentEditorElement() };
+                var editors = All ? GetAllEditorElements() : new() { GetCurrentEditorElement() };
                 if (editors == null)
                 {
                     return;
@@ -641,7 +600,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -657,7 +616,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                await this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -677,7 +636,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
         /// <summary>
@@ -696,7 +655,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
     }

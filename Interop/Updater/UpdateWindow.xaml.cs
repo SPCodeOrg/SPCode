@@ -6,7 +6,10 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 using MahApps.Metro;
+using MahApps.Metro.Controls.Dialogs;
 using MdXaml;
 using SPCode.Utils;
 
@@ -25,7 +28,7 @@ namespace SPCode.Interop.Updater
             InitializeComponent();
         }
 
-        public UpdateWindow(UpdateInfo info) : this()
+        public UpdateWindow(UpdateInfo info, bool OnlyChangelog = false) : this()
         {
 
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
@@ -35,7 +38,7 @@ namespace SPCode.Interop.Updater
             }
 
             updateInfo = info;
-            PrepareUpdateWindow();
+            PrepareUpdateWindow(OnlyChangelog);
 
         }
         #endregion
@@ -50,9 +53,18 @@ namespace SPCode.Interop.Updater
         {
             Close();
         }
+
         private void ActionGithubButton_Click(object sender, RoutedEventArgs e)
         {
             Process.Start(new ProcessStartInfo(Constants.GitHubLatestRelease));
+        }
+
+        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
         }
         #endregion
 
@@ -60,28 +72,43 @@ namespace SPCode.Interop.Updater
         /// <summary>
         /// Prepares the update window with all the necessary info.
         /// </summary>
-        public void PrepareUpdateWindow()
+        public void PrepareUpdateWindow(bool OnlyChangelog = false)
         {
-            Title = string.Format(Program.Translations.GetLanguage("VersionAvailable"), updateInfo.AllReleases[0].TagName);
-            MainLine.Text = Program.Translations.GetLanguage("WantToUpdate");
-            ActionYesButton.Content = Program.Translations.GetLanguage("Yes");
-            ActionNoButton.Content = Program.Translations.GetLanguage("No");
-            ActionGithubButton.Content = Program.Translations.GetLanguage("ViewGithub");
+            if (OnlyChangelog)
+            {
+                Title = "SPCode Changelog";
+                MainLine.Visibility = Visibility.Hidden;
+                ActionYesButton.Visibility = Visibility.Hidden;
+                ActionNoButton.Visibility = Visibility.Hidden;
+                ActionGithubButton.Visibility = Visibility.Hidden;
+                DescriptionBox.Margin = new Thickness(0, 0, 0, 0);
+            }
+            else
+            {
+                Title = string.Format(Program.Translations.Get("VersionAvailable"), updateInfo.AllReleases[0].TagName);
+                MainLine.Text = Program.Translations.Get("WantToUpdate");
+                ActionYesButton.Content = Program.Translations.Get("Yes");
+                ActionNoButton.Content = Program.Translations.Get("No");
+                ActionGithubButton.Content = Program.Translations.Get("ViewGithub");
+            }
 
             var releasesBody = new StringBuilder();
 
-            foreach (var release in updateInfo.AllReleases)
+            if (updateInfo.AllReleases != null && updateInfo.AllReleases.Count > 0)
             {
-                releasesBody.Append($"**%{{color:{GetAccentHex()}}}Version {release.TagName}%** ");
-                releasesBody.AppendLine($"*%{{color:gray}}({MonthToTitlecase(release.CreatedAt)})% *\r\n");
-                releasesBody.AppendLine(release.Body + "\r\n");
+                foreach (var release in updateInfo.AllReleases)
+                {
+                    releasesBody.Append($"**%{{color:{GetAccentHex()}}}Version {release.TagName}%** ");
+                    releasesBody.AppendLine($"*%{{color:gray}}({MonthToTitlecase(release.CreatedAt)})% *\r\n");
+                    releasesBody.AppendLine(release.Body + "\r\n");
+                }
             }
 
             releasesBody.Append($"*%{{color:gray}}More releases in {Constants.GitHubReleases}%*");
 
             var document = new Markdown();
             var content = document.Transform(releasesBody.ToString());
-            content.FontFamily = new System.Windows.Media.FontFamily("Segoe UI");
+            content.FontFamily = new FontFamily("Segoe UI");
             DescriptionBox.Document = content;
 
             if (updateInfo.SkipDialog)
@@ -104,9 +131,8 @@ namespace SPCode.Interop.Updater
             ActionYesButton.Visibility = Visibility.Hidden;
             ActionNoButton.Visibility = Visibility.Hidden;
             ActionGithubButton.Visibility = Visibility.Hidden;
-            Icon.Visibility = Visibility.Hidden;
-            MainLine.Text = string.Format(Program.Translations.GetLanguage("UpdatingTo"), updateInfo.AllReleases[0].TagName);
-            SubLine.Text = Program.Translations.GetLanguage("DownloadingUpdater");
+            MainLine.Text = string.Format(Program.Translations.Get("UpdatingTo"), updateInfo.AllReleases[0].TagName);
+            SubLine.Text = Program.Translations.Get("DownloadingUpdater");
             var t = new Thread(UpdateDownloadWorker);
             t.Start();
         }
@@ -116,24 +142,33 @@ namespace SPCode.Interop.Updater
         /// </summary>
         private void UpdateDownloadWorker()
         {
-            var asset = updateInfo.Asset;
-            if (File.Exists(asset.Name))
-            {
-                File.Delete(asset.Name);
-            }
+            var updater = updateInfo.Updater;
+            var portable = updateInfo.Portable;
 
             try
             {
+                if (File.Exists(updater.Name))
+                {
+                    File.Delete(updater.Name);
+                }
+
+                if (File.Exists(portable.Name))
+                {
+                    File.Delete(portable.Name);
+                }
                 using var client = new WebClient();
-                client.DownloadFile(asset.BrowserDownloadUrl, asset.Name);
+                client.DownloadFile(updater.BrowserDownloadUrl, updater.Name);
+                client.DownloadFile(portable.BrowserDownloadUrl, portable.Name);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                MessageBox.Show(
-                    "Error while downloading the updater." + Environment.NewLine + "Details: " + e.Message +
-                    Environment.NewLine + "$$$" + e.StackTrace,
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                Dispatcher.Invoke(Close);
+                Dispatcher.Invoke(() =>
+                {
+                    Program.MainWindow.ShowMessageAsync("Error while downloading the update assets",
+                        $"{ex.Message}", MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                    Close();
+                });
+                return;
             }
 
             Thread.Sleep(100);
@@ -145,7 +180,7 @@ namespace SPCode.Interop.Updater
         /// </summary>
         private void FinalizeUpdate()
         {
-            SubLine.Text = Program.Translations.GetLanguage("StartingUpdater");
+            SubLine.Text = Program.Translations.Get("StartingUpdater");
             UpdateLayout();
             try
             {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
 using System.Xml;
 using SPCode.Utils;
 
@@ -97,6 +99,19 @@ namespace SPCode.Interop
                 });
 
             }
+            catch (XmlException ex)
+            {
+                var invalidHotkeysFile = Constants.HotkeysFile + ".invalid";
+                if (File.Exists(invalidHotkeysFile))
+                {
+                    File.Delete(invalidHotkeysFile);
+                }
+                File.Move(Constants.HotkeysFile, invalidHotkeysFile);
+                CreateDefaultHotkeys();
+                MessageBox.Show("There was an error parsing the Hotkeys.xml file.\n" +
+                    $"It has been renamed to {invalidHotkeysFile}, and a new one was created.\n" +
+                    $"Details: {ex.Message}", "SPCode Error");
+            }
             catch (Exception ex)
             {
                 throw new Exception("Error while checking and buffering the hotkeys", ex);
@@ -126,7 +141,7 @@ namespace SPCode.Interop
                 }
 
                 // Buffer hotkeys in global HotkeyInfo list
-                Program.HotkeysList = new List<HotkeyInfo>();
+                Program.HotkeysList = new();
                 foreach (XmlNode node in document.ChildNodes[0].ChildNodes)
                 {
                     Program.HotkeysList.Add(new HotkeyInfo(new Hotkey(node.InnerText), node.Name));

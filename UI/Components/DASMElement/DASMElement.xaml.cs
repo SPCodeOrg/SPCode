@@ -6,13 +6,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using smxdasm;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace SPCode.UI.Components
 {
     public partial class DASMElement : UserControl
     {
         private double LineHeight = 0.0;
-
+        public new LayoutDocument Parent;
         private SmxFile file_;
         private readonly StringBuilder detail_buffer_ = new();
         public string FilePath;
@@ -45,7 +46,7 @@ namespace SPCode.UI.Components
             }
             catch (Exception e)
             {
-                detailbox_.Text = Program.Translations.GetLanguage("ErrorFileLoadProc") + Environment.NewLine + Environment.NewLine + $"{Program.Translations.GetLanguage("Details")}: " + e.Message;
+                detailbox_.Text = Program.Translations.Get("ErrorFileLoadProc") + Environment.NewLine + Environment.NewLine + $"{Program.Translations.Get("Details")}: " + e.Message;
                 return;
             }
             RenderFile();
@@ -308,7 +309,7 @@ namespace SPCode.UI.Components
             }
             catch (Exception e)
             {
-                AddDetailLine(Program.Translations.GetLanguage("NotDissMethod"), name, e.Message);
+                AddDetailLine(Program.Translations.Get("NotDissMethod"), name, e.Message);
                 EndDetailUpdate();
                 return;
             }
@@ -922,6 +923,7 @@ namespace SPCode.UI.Components
 
         public void Close()
         {
+            Program.MainWindow.DockingPane.RemoveChild(Parent);
             Program.MainWindow.DASMReferences.Remove(this);
             Program.RecentFilesStack.Push(FilePath);
             Program.MainWindow.UpdateWindowTitle();

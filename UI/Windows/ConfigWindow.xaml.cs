@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -100,7 +101,7 @@ namespace SPCode.UI.Windows
                                     Multiselect = false,
                                     CheckFileExists = true,
                                     CheckPathExists = true,
-                                    Title = Program.Translations.GetLanguage("SelectExe")
+                                    Title = Program.Translations.Get("SelectExe")
                                 };
                                 var result = dialog.ShowDialog();
 
@@ -176,7 +177,7 @@ namespace SPCode.UI.Windows
             };
             var configList = new List<Config>(Program.Configs) { c };
             Program.Configs = configList.ToArray();
-            ConfigListBox.Items.Add(new ListBoxItem { Content = Program.Translations.GetLanguage("NewConfig") });
+            ConfigListBox.Items.Add(new ListBoxItem { Content = Program.Translations.Get("NewConfig") });
         }
 
         private void DeleteButton_Clicked(object sender, RoutedEventArgs e)
@@ -185,8 +186,8 @@ namespace SPCode.UI.Windows
             var c = Program.Configs[index];
             if (c.Standard)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("CannotDelConf"),
-                    Program.Translations.GetLanguage("YCannotDelConf"), MessageDialogStyle.Affirmative,
+                this.ShowMessageAsync(Program.Translations.Get("CannotDelConf"),
+                    Program.Translations.Get("YCannotDelConf"), MessageDialogStyle.Affirmative,
                     Program.MainWindow.MetroDialogOptions);
                 return;
             }
@@ -225,8 +226,8 @@ namespace SPCode.UI.Windows
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    this.ShowMessageAsync("Access error", 
-                        "The directory you just specified could not be accessed properly by SPCode. You might have trouble using the includes from this directory.", 
+                    this.ShowMessageAsync("Access error",
+                        "The directory you just specified could not be accessed properly by SPCode. You might have trouble using the includes from this directory.",
                         MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
                 }
 
@@ -473,7 +474,7 @@ namespace SPCode.UI.Windows
             Program.Configs[ConfigListBox.SelectedIndex].RConCommands = C_RConCmds.Text;
         }
 
-        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
             // TODO: find out what is this for
             if (NeedsSMDefInvalidation)
@@ -500,8 +501,8 @@ namespace SPCode.UI.Windows
                 if (cfg == string.Empty)
                 {
                     e.Cancel = true;
-                    this.ShowMessageAsync(Program.Translations.GetLanguage("ErrorSavingConfigs"),
-                        Program.Translations.GetLanguage("EmptyConfigNames"), MessageDialogStyle.Affirmative,
+                    this.ShowMessageAsync(Program.Translations.Get("ErrorSavingConfigs"),
+                        Program.Translations.Get("EmptyConfigNames"), MessageDialogStyle.Affirmative,
                         Program.MainWindow.MetroDialogOptions);
                     return;
                 }
@@ -512,8 +513,8 @@ namespace SPCode.UI.Windows
             if (configsList.Count != configsList.Distinct().Count())
             {
                 e.Cancel = true;
-                this.ShowMessageAsync(Program.Translations.GetLanguage("ErrorSavingConfigs"),
-                    Program.Translations.GetLanguage("DuplicateConfigNames"), MessageDialogStyle.Affirmative,
+                this.ShowMessageAsync(Program.Translations.Get("ErrorSavingConfigs"),
+                    Program.Translations.Get("DuplicateConfigNames"), MessageDialogStyle.Affirmative,
                     Program.MainWindow.MetroDialogOptions);
                 return;
             }
@@ -581,44 +582,44 @@ namespace SPCode.UI.Windows
                 return;
             }
 
-            AddSMDirButton.Content = Program.Translations.GetLanguage("Add");
-            RemoveSMDirButton.Content = Program.Translations.GetLanguage("Remove");
-            NewButton.Content = Program.Translations.GetLanguage("New");
-            DeleteButton.Content = Program.Translations.GetLanguage("Delete");
-            NameBlock.Text = Program.Translations.GetLanguage("Name");
-            ScriptingDirBlock.Text = Program.Translations.GetLanguage("ScriptDir");
-            CopyDirBlock.Text = Program.Translations.GetLanguage("CopyDir");
-            ServerExeBlock.Text = Program.Translations.GetLanguage("ServerExe");
-            ServerStartArgBlock.Text = Program.Translations.GetLanguage("serverStartArgs");
-            PreBuildBlock.Text = Program.Translations.GetLanguage("PreBuildCom");
-            PostBuildBlock.Text = Program.Translations.GetLanguage("PostBuildCom");
-            OptimizeBlock.Text = Program.Translations.GetLanguage("OptimizeLvl");
-            VerboseBlock.Text = Program.Translations.GetLanguage("VerboseLvl");
-            C_AutoCopy.Content = Program.Translations.GetLanguage("AutoCopy");
-            C_AutoUpload.Content = Program.Translations.GetLanguage("AutoUpload");
-            C_AutoRCON.Content = Program.Translations.GetLanguage("AutoRCON");
-            C_DeleteAfterCopy.Content = Program.Translations.GetLanguage("DeleteOldSMX");
-            FTPHostBlock.Text = Program.Translations.GetLanguage("FTPHost");
-            FTPUserBlock.Text = Program.Translations.GetLanguage("FTPUser");
-            FTPPWBlock.Text = Program.Translations.GetLanguage("FTPPw");
-            FTPDirBlock.Text = Program.Translations.GetLanguage("FTPDir");
-            CMD_ItemC.Text = Program.Translations.GetLanguage("CMDLineCom");
-            ItemC_EditorDir.Content = "{editordir} - " + Program.Translations.GetLanguage("ComEditorDir");
-            ItemC_ScriptDir.Content = "{scriptdir} - " + Program.Translations.GetLanguage("ComScriptDir");
-            ItemC_CopyDir.Content = "{copydir} - " + Program.Translations.GetLanguage("ComCopyDir");
-            ItemC_ScriptFile.Content = "{scriptfile} - " + Program.Translations.GetLanguage("ComScriptFile");
-            ItemC_ScriptName.Content = "{scriptname} - " + Program.Translations.GetLanguage("ComScriptName");
-            ItemC_PluginFile.Content = "{pluginfile} - " + Program.Translations.GetLanguage("ComPluginFile");
-            ItemC_PluginName.Content = "{pluginname} - " + Program.Translations.GetLanguage("ComPluginName");
-            RConEngineBlock.Text = Program.Translations.GetLanguage("RConEngine");
-            RConIPBlock.Text = Program.Translations.GetLanguage("RConIP");
-            RConPortBlock.Text = Program.Translations.GetLanguage("RconPort");
-            RConPWBlock.Text = Program.Translations.GetLanguage("RconPw");
-            RConComBlock.Text = Program.Translations.GetLanguage("RconCom");
-            Rcon_MenuC.Text = Program.Translations.GetLanguage("RConCMDLineCom");
-            MenuC_PluginsReload.Content = "{plugins_reload} - " + Program.Translations.GetLanguage("ComPluginsReload");
-            MenuC_PluginsLoad.Content = "{plugins_load} - " + Program.Translations.GetLanguage("ComPluginsLoad");
-            MenuC_PluginsUnload.Content = "{plugins_unload} - " + Program.Translations.GetLanguage("ComPluginsUnload");
+            AddSMDirButton.Content = Program.Translations.Get("Add");
+            RemoveSMDirButton.Content = Program.Translations.Get("Remove");
+            NewButton.Content = Program.Translations.Get("New");
+            DeleteButton.Content = Program.Translations.Get("Delete");
+            NameBlock.Text = Program.Translations.Get("Name");
+            ScriptingDirBlock.Text = Program.Translations.Get("ScriptDir");
+            CopyDirBlock.Text = Program.Translations.Get("CopyDir");
+            ServerExeBlock.Text = Program.Translations.Get("ServerExe");
+            ServerStartArgBlock.Text = Program.Translations.Get("serverStartArgs");
+            PreBuildBlock.Text = Program.Translations.Get("PreBuildCom");
+            PostBuildBlock.Text = Program.Translations.Get("PostBuildCom");
+            OptimizeBlock.Text = Program.Translations.Get("OptimizeLvl");
+            VerboseBlock.Text = Program.Translations.Get("VerboseLvl");
+            C_AutoCopy.Content = Program.Translations.Get("AutoCopy");
+            C_AutoUpload.Content = Program.Translations.Get("AutoUpload");
+            C_AutoRCON.Content = Program.Translations.Get("AutoRCON");
+            C_DeleteAfterCopy.Content = Program.Translations.Get("DeleteOldSMX");
+            FTPHostBlock.Text = Program.Translations.Get("FTPHost");
+            FTPUserBlock.Text = Program.Translations.Get("FTPUser");
+            FTPPWBlock.Text = Program.Translations.Get("FTPPw");
+            FTPDirBlock.Text = Program.Translations.Get("FTPDir");
+            CMD_ItemC.Text = Program.Translations.Get("CMDLineCom");
+            ItemC_EditorDir.Content = "{editordir} - " + Program.Translations.Get("ComEditorDir");
+            ItemC_ScriptDir.Content = "{scriptdir} - " + Program.Translations.Get("ComScriptDir");
+            ItemC_CopyDir.Content = "{copydir} - " + Program.Translations.Get("ComCopyDir");
+            ItemC_ScriptFile.Content = "{scriptfile} - " + Program.Translations.Get("ComScriptFile");
+            ItemC_ScriptName.Content = "{scriptname} - " + Program.Translations.Get("ComScriptName");
+            ItemC_PluginFile.Content = "{pluginfile} - " + Program.Translations.Get("ComPluginFile");
+            ItemC_PluginName.Content = "{pluginname} - " + Program.Translations.Get("ComPluginName");
+            RConEngineBlock.Text = Program.Translations.Get("RConEngine");
+            RConIPBlock.Text = Program.Translations.Get("RConIP");
+            RConPortBlock.Text = Program.Translations.Get("RconPort");
+            RConPWBlock.Text = Program.Translations.Get("RconPw");
+            RConComBlock.Text = Program.Translations.Get("RconCom");
+            Rcon_MenuC.Text = Program.Translations.Get("RConCMDLineCom");
+            MenuC_PluginsReload.Content = "{plugins_reload} - " + Program.Translations.Get("ComPluginsReload");
+            MenuC_PluginsLoad.Content = "{plugins_load} - " + Program.Translations.Get("ComPluginsLoad");
+            MenuC_PluginsUnload.Content = "{plugins_unload} - " + Program.Translations.Get("ComPluginsUnload");
         }
 
 

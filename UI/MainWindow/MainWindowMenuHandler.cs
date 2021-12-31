@@ -22,14 +22,9 @@ namespace SPCode.UI
         #region Events
         private void FileMenu_Open(object sender, RoutedEventArgs e)
         {
-            var editors = GetAllEditorElements();
-            var EditorsAreOpen = false;
-            if (editors != null)
-            {
-                EditorsAreOpen = editors.Length > 0;
-            }
-
+            var EditorsAreOpen = GetAllEditorElements() != null;
             var EditorIsSelected = GetCurrentEditorElement() != null;
+
             MenuI_Save.IsEnabled = EditorIsSelected;
             MenuI_SaveAs.IsEnabled = EditorIsSelected;
             MenuI_Close.IsEnabled = EditorIsSelected;
@@ -219,6 +214,11 @@ namespace SPCode.UI
             aboutWindow.ShowDialog();
         }
 
+        private void Menu_Help(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(Constants.GitHubWiki));
+        }
+
         private void Menu_OpenSPDef(object sender, RoutedEventArgs e)
         {
             var spDefinitionWindow = new SPDefinitionWindow { Owner = this, ShowInTaskbar = false };
@@ -253,7 +253,7 @@ namespace SPCode.UI
 
         private async void UpdateCheck_Click(object sender, RoutedEventArgs e)
         {
-            var updatingWindow = await this.ShowProgressAsync(Program.Translations.GetLanguage("CheckingUpdates") + "...", "", false, MetroDialogOptions);
+            var updatingWindow = await this.ShowProgressAsync(Program.Translations.Get("CheckingUpdates") + "...", "", false, MetroDialogOptions);
             updatingWindow.SetIndeterminate();
 
             await UpdateCheck.Check();
@@ -280,19 +280,40 @@ namespace SPCode.UI
                 await updatingWindow.CloseAsync();
                 if (status.GotException)
                 {
-                    await this.ShowMessageAsync(Program.Translations.GetLanguage("FailedCheck"),
-                        Program.Translations.GetLanguage("ErrorUpdate") + Environment.NewLine +
-                        $"{Program.Translations.GetLanguage("Details")}: " + status.ExceptionMessage
+                    await this.ShowMessageAsync(Program.Translations.Get("FailedCheck"),
+                        Program.Translations.Get("ErrorUpdate") + Environment.NewLine +
+                        $"{Program.Translations.Get("Details")}: " + status.ExceptionMessage
                         , MessageDialogStyle.Affirmative, MetroDialogOptions);
                 }
                 else
                 {
-                    await this.ShowMessageAsync(Program.Translations.GetLanguage("VersUpToDate"),
-                        string.Format(Program.Translations.GetLanguage("VersionYour"),
-                            Assembly.GetEntryAssembly()?.GetName().Version)
-                        , MessageDialogStyle.Affirmative, MetroDialogOptions);
+#if BETA
+                    var message = string.Format(Program.Translations.Get("VersionYourBeta"),
+                            VersionHelper.GetAssemblyInformationalVersion());
+#else
+                    var message = string.Format(Program.Translations.Get("VersionYour"),
+                            VersionHelper.GetAssemblyVersion());
+#endif
+                    await this.ShowMessageAsync(Program.Translations.Get("VersUpToDate"),
+                        message, MessageDialogStyle.Affirmative, MetroDialogOptions);
                 }
             }
+        }
+
+        private async void Changelog_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = await this.ShowProgressAsync("Retrieving changelog...", "Please wait...");
+            dialog.SetIndeterminate();
+
+            if (Program.UpdateStatus.AllReleases == null)
+            {
+                await UpdateCheck.Check();
+            }
+            var status = Program.UpdateStatus;
+
+            await dialog.CloseAsync();
+            var uw = new UpdateWindow(status, true) { Owner = this };
+            uw.ShowDialog();
         }
 
         private void MenuButton_Compile(object sender, RoutedEventArgs e)

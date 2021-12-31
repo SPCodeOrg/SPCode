@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using MahApps.Metro;
 using SPCode.UI.Components;
@@ -15,14 +17,31 @@ namespace SPCode.UI.Windows
     {
         #region Variables
         private EditorElement _editor;
-        private EditorElement[] _allEditors;
+        private List<EditorElement> _allEditors;
         private LayoutDocumentPane _dockingPane;
         private bool IsSearchFieldOpen;
-        private readonly ObservableCollection<string> findReplaceButtonDict = new()
+        private readonly string Selection;
+        private readonly SearchOptions _searchOptions;
+
+        private readonly ObservableCollection<string> FindReplaceButtonItems = new()
         {
-            Program.Translations.GetLanguage("Replace"),
-            Program.Translations.GetLanguage("ReplaceAll")
+            Program.Translations.Get("Replace"),
+            Program.Translations.Get("ReplaceAll")
         };
+
+        private enum RadioButtons
+        {
+            NSearch_RButton = 1,
+            WSearch_RButton = 2,
+            ASearch_RButton = 3,
+            RSearch_RButton = 4
+        }
+
+        private enum DocumentType
+        {
+            MenuFR_CurrDoc = 1,
+            MenuFR_AllDoc = 2
+        }
         #endregion
 
         #region Constructors
@@ -35,16 +54,18 @@ namespace SPCode.UI.Windows
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
 
+            _searchOptions = Program.OptionsObject.SearchOptions;
             Left = Program.MainWindow.Left + Program.MainWindow.Width - Program.MainWindow.ObjectBrowserColumn.Width.Value - (Width + 20);
             Top = Program.MainWindow.Top + 40;
 
-            ReplaceButton.ItemsSource = findReplaceButtonDict;
-            ReplaceButton.SelectedIndex = 0;
-            FindBox.Text = searchTerm;
-            FindBox.SelectAll();
+            Selection = searchTerm;
+            ReplaceButton.ItemsSource = FindReplaceButtonItems;
 
+            RestoreSettings();
             LoadEditorsInfo();
             Language_Translate();
+
+            FindBox.SelectAll();
         }
         #endregion
 
@@ -110,21 +131,51 @@ namespace SPCode.UI.Windows
             switch (e.Key)
             {
                 case Key.Escape:
-                    {
-                        Close();
-                        break;
-                    }
+                    Close();
+                    break;
                 case Key.F3:
-                    {
-                        Search();
-                        break;
-                    }
+                    Search();
+                    break;
             }
         }
 
-        private void MetroWindow_Closed(object sender, EventArgs e)
+        private void SearchBoxTextChanged(object sender, TextChangedEventArgs e)
         {
-            Program.IsSearchOpen = false;
+            Program.OptionsObject.SearchOptions.FindText = FindBox.Text;
+        }
+
+        private void ReplaceBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            Program.OptionsObject.SearchOptions.ReplaceText = ReplaceBox.Text;
+        }
+
+        private void RadioButtonsChanged(object sender, RoutedEventArgs e)
+        {
+            var button = sender as RadioButton;
+            Program.OptionsObject.SearchOptions.SearchType = (int)Enum.Parse(typeof(RadioButtons), button.Name);
+        }
+
+        private void DocumentChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var item = (sender as ComboBox).SelectedItem as ComboBoxItem;
+            Program.OptionsObject.SearchOptions.Document = (int)Enum.Parse(typeof(DocumentType), item.Name);
+        }
+
+        private void MultilineRegexChanged(object sender, RoutedEventArgs e)
+        {
+            var checkbox = sender as CheckBox;
+            Program.OptionsObject.SearchOptions.MultilineRegex = checkbox.IsChecked.Value;
+        }
+
+        private void CaseSensitiveChanged(object sender, RoutedEventArgs e)
+        {
+            var checkbox = sender as CheckBox;
+            Program.OptionsObject.SearchOptions.CaseSensitive = checkbox.IsChecked.Value;
+        }
+
+        private void ReplaceChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Program.OptionsObject.SearchOptions.ReplaceType = ReplaceButton.SelectedIndex;
         }
         #endregion
 
@@ -177,7 +228,7 @@ namespace SPCode.UI.Windows
             LoadEditorsInfo();
             var editors = GetEditorElementsForFraction(out var editorIndex);
             var regex = GetSearchRegex();
-            if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
+            if (editors == null || editors.Count < 1 || editors[0] == null || regex == null)
             {
                 return;
             }
@@ -185,9 +236,9 @@ namespace SPCode.UI.Windows
             var startFileCaretOffset = 0;
             var foundOccurence = false;
 
-            for (var i = editorIndex; i < (editors.Length + editorIndex + 1); ++i)
+            for (var i = editorIndex; i < (editors.Count + editorIndex + 1); ++i)
             {
-                var index = ValueUnderMap(i, editors.Length);
+                var index = ValueUnderMap(i, editors.Count);
                 string searchText;
                 var addToOffset = 0;
                 if (i == editorIndex)
@@ -197,7 +248,7 @@ namespace SPCode.UI.Windows
                     if (startFileCaretOffset < 0) { startFileCaretOffset = 0; }
                     searchText = editors[index].editor.Text.Substring(startFileCaretOffset);
                 }
-                else if (i == (editors.Length + editorIndex))
+                else if (i == (editors.Count + editorIndex))
                 {
                     searchText = startFileCaretOffset == 0 ?
                         string.Empty :
@@ -219,14 +270,14 @@ namespace SPCode.UI.Windows
                         var location = editors[index].editor.Document.GetLocation(m.Index + addToOffset);
                         editors[index].editor.ScrollTo(location.Line, location.Column);
                         FindResultBlock.Text = "Found in offset " + (m.Index + addToOffset).ToString() + " with length " + m.Length.ToString();
-                        FindResultBlock.Text = string.Format(Program.Translations.GetLanguage("FoundInOff"), m.Index + addToOffset, m.Length);
+                        FindResultBlock.Text = string.Format(Program.Translations.Get("FoundInOff"), m.Index + addToOffset, m.Length);
                         break;
                     }
                 }
             }
             if (!foundOccurence)
             {
-                FindResultBlock.Text = Program.Translations.GetLanguage("FoundNothing");
+                FindResultBlock.Text = Program.Translations.Get("FoundNothing");
             }
         }
 
@@ -235,7 +286,7 @@ namespace SPCode.UI.Windows
             LoadEditorsInfo();
             var editors = GetEditorElementsForFraction(out var editorIndex);
             var regex = GetSearchRegex();
-            if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
+            if (editors == null || editors.Count < 1 || editors[0] == null || regex == null)
             {
                 return;
             }
@@ -243,9 +294,9 @@ namespace SPCode.UI.Windows
             var replaceString = ReplaceBox.Text;
             var startFileCaretOffset = 0;
             var foundOccurence = false;
-            for (var i = editorIndex; i < (editors.Length + editorIndex + 1); ++i)
+            for (var i = editorIndex; i < (editors.Count + editorIndex + 1); ++i)
             {
-                var index = ValueUnderMap(i, editors.Length);
+                var index = ValueUnderMap(i, editors.Count);
                 string searchText;
                 var addToOffset = 0;
                 if (i == editorIndex)
@@ -255,7 +306,7 @@ namespace SPCode.UI.Windows
                     if (startFileCaretOffset < 0) { startFileCaretOffset = 0; }
                     searchText = editors[index].editor.Text.Substring(startFileCaretOffset);
                 }
-                else if (i == (editors.Length + editorIndex))
+                else if (i == (editors.Count + editorIndex))
                 {
                     searchText = startFileCaretOffset == 0 ?
                         string.Empty :
@@ -278,14 +329,14 @@ namespace SPCode.UI.Windows
                         editors[index].editor.Select(m.Index + addToOffset, result.Length);
                         var location = editors[index].editor.Document.GetLocation(m.Index + addToOffset);
                         editors[index].editor.ScrollTo(location.Line, location.Column);
-                        FindResultBlock.Text = string.Format(Program.Translations.GetLanguage("ReplacedOff"), MinHeight + addToOffset);
+                        FindResultBlock.Text = string.Format(Program.Translations.Get("ReplacedOff"), MinHeight + addToOffset);
                         break;
                     }
                 }
             }
             if (!foundOccurence)
             {
-                FindResultBlock.Text = Program.Translations.GetLanguage("FoundNothing");
+                FindResultBlock.Text = Program.Translations.Get("FoundNothing");
             }
         }
 
@@ -294,7 +345,7 @@ namespace SPCode.UI.Windows
             LoadEditorsInfo();
             var editors = GetEditorElementsForFraction(out _);
             var regex = GetSearchRegex();
-            if (editors == null || editors.Length < 1 || editors[0] == null || regex == null)
+            if (editors == null || editors.Count < 1 || editors[0] == null || regex == null)
             {
                 return;
             }
@@ -321,7 +372,7 @@ namespace SPCode.UI.Windows
                 }
             }
             FindResultBlock.Text = "Replaced " + count.ToString() + " occurences in " + fileCount.ToString() + " documents";
-            FindResultBlock.Text = string.Format(Program.Translations.GetLanguage("ReplacedOcc"), count, fileCount);
+            FindResultBlock.Text = string.Format(Program.Translations.Get("ReplacedOcc"), count, fileCount);
         }
 
         private void Count()
@@ -329,7 +380,7 @@ namespace SPCode.UI.Windows
             LoadEditorsInfo();
             var editors = GetEditorElementsForFraction(out _);
             if (editors == null) { return; }
-            if (editors.Length < 1) { return; }
+            if (editors.Count < 1) { return; }
             if (editors[0] == null) { return; }
             var regex = GetSearchRegex();
             if (regex == null) { return; }
@@ -339,7 +390,7 @@ namespace SPCode.UI.Windows
                 var mc = regex.Matches(editor.editor.Text);
                 count += mc.Count;
             }
-            FindResultBlock.Text = count.ToString() + " " + Program.Translations.GetLanguage("OccFound");
+            FindResultBlock.Text = count.ToString() + " " + Program.Translations.Get("OccFound");
         }
 
         private Regex GetSearchRegex()
@@ -347,7 +398,7 @@ namespace SPCode.UI.Windows
             var findString = FindBox.Text;
             if (string.IsNullOrEmpty(findString))
             {
-                FindResultBlock.Text = Program.Translations.GetLanguage("EmptyPatt");
+                FindResultBlock.Text = Program.Translations.Get("EmptyPatt");
                 return null;
             }
             Regex regex = new(string.Empty);
@@ -394,7 +445,7 @@ namespace SPCode.UI.Windows
                         }
                         catch (Exception)
                         {
-                            FindResultBlock.Text = Program.Translations.GetLanguage("NoValidRegex"); return null;
+                            FindResultBlock.Text = Program.Translations.Get("NoValidRegex"); return null;
                         }
                     }
                 }
@@ -403,20 +454,20 @@ namespace SPCode.UI.Windows
             return regex;
         }
 
-        private EditorElement[] GetEditorElementsForFraction(out int editorIndex)
+        private List<EditorElement> GetEditorElementsForFraction(out int editorIndex)
         {
             LoadEditorsInfo();
             var editorStartIndex = 0;
-            EditorElement[] editors;
+            List<EditorElement> editors;
             if (FindDestinies.SelectedIndex == 0)
-            { editors = new[] { _editor }; }
+            { editors = new() { _editor }; }
             else
             {
                 editors = _allEditors;
                 var checkElement = _dockingPane.SelectedContent?.Content;
                 if (checkElement is EditorElement)
                 {
-                    for (var i = 0; i < editors.Length; ++i)
+                    for (var i = 0; i < editors.Count; ++i)
                     {
                         if (editors[i] == checkElement)
                         {
@@ -445,19 +496,49 @@ namespace SPCode.UI.Windows
             _dockingPane = Program.MainWindow.DockingPane;
         }
 
+        private void RestoreSettings()
+        {
+            // Restore find and replace texts
+            FindBox.Text = string.IsNullOrEmpty(Selection) ? _searchOptions.FindText : Selection;
+            ReplaceBox.Text = _searchOptions.ReplaceText;
+
+            // Restore radio buttons 
+            var AllRadioButtons = new RadioButton[]
+            {
+                NSearch_RButton,
+                WSearch_RButton,
+                ASearch_RButton,
+                RSearch_RButton
+            };
+
+            var stype = _searchOptions.SearchType;
+            var index = stype - 1 == -1 ? stype : stype - 1;
+            AllRadioButtons[index].IsChecked = true;
+
+            // Restore documents
+            FindDestinies.SelectedIndex = _searchOptions.Document;
+
+            // Restore checkboxes
+            CCBox.IsChecked = _searchOptions.CaseSensitive;
+            MLRBox.IsChecked = _searchOptions.MultilineRegex;
+
+            // Restore replace button
+            ReplaceButton.SelectedIndex = _searchOptions.ReplaceType;
+        }
+
         public void Language_Translate()
         {
-            NSearch_RButton.Content = Program.Translations.GetLanguage("NormalSearch");
-            WSearch_RButton.Content = Program.Translations.GetLanguage("MatchWholeWords");
-            ASearch_RButton.Content = $"{Program.Translations.GetLanguage("AdvancSearch")} (\\r, \\n, \\t, ...)";
-            RSearch_RButton.Content = Program.Translations.GetLanguage("RegexSearch");
-            MenuFR_CurrDoc.Content = Program.Translations.GetLanguage("CurrDoc");
-            MenuFR_AllDoc.Content = Program.Translations.GetLanguage("AllDoc");
+            NSearch_RButton.Content = Program.Translations.Get("NormalSearch");
+            WSearch_RButton.Content = Program.Translations.Get("MatchWholeWords");
+            ASearch_RButton.Content = $"{Program.Translations.Get("AdvancSearch")} (\\r, \\n, \\t, ...)";
+            RSearch_RButton.Content = Program.Translations.Get("RegexSearch");
+            MenuFR_CurrDoc.Content = Program.Translations.Get("CurrDoc");
+            MenuFR_AllDoc.Content = Program.Translations.Get("AllDoc");
 
-            Find_Button.Content = $"{Program.Translations.GetLanguage("Find")} (F3)";
-            Count_Button.Content = Program.Translations.GetLanguage("Count");
-            CCBox.Content = Program.Translations.GetLanguage("CaseSen");
-            MLRBox.Content = Program.Translations.GetLanguage("MultilineRegex");
+            Find_Button.Content = $"{Program.Translations.Get("Find")} (F3)";
+            Count_Button.Content = Program.Translations.Get("Count");
+            CCBox.Content = Program.Translations.Get("CaseSen");
+            MLRBox.Content = Program.Translations.Get("MultilineRegex");
         }
         #endregion
     }

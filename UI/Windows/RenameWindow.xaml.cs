@@ -81,12 +81,12 @@ namespace SPCode.UI.Windows
             var inputText = TxtName.Text;
             if (string.IsNullOrEmpty(inputText))
             {
-                lblError.Content = Program.Translations.GetLanguage("EmptyName");
+                lblError.Content = Program.Translations.Get("EmptyName");
                 return;
             }
             if (IsNameTaken(inputText))
             {
-                lblError.Content = Program.Translations.GetLanguage("NameAlreadyExists");
+                lblError.Content = Program.Translations.Get("NameAlreadyExists");
                 return;
             }
             NewName = TxtName.Text;
@@ -110,22 +110,22 @@ namespace SPCode.UI.Windows
 
         private void CheckExtension()
         {
-                if (!TxtName.Text.Contains(".") || !Program.MainWindow.FileIcons.ContainsKey(TxtName.Text.Substring(TxtName.Text.LastIndexOf('.'))))
-                {
-                    lblError.Content = Program.Translations.GetLanguage("FileNotSupported");
-                    lblError.ToolTip = Program.Translations.GetLanguage("FileWillBeExcluded");
-                }
-                else
-                {
-                    lblError.Content = "";
-                    lblError.ToolTip = "";
-                }
+            if (!TxtName.Text.Contains(".") || !Program.MainWindow.FileIcons.ContainsKey(TxtName.Text.Substring(TxtName.Text.LastIndexOf('.'))))
+            {
+                lblError.Content = Program.Translations.Get("FileNotSupported");
+                lblError.ToolTip = Program.Translations.Get("FileWillBeExcluded");
+            }
+            else
+            {
+                lblError.Content = "";
+                lblError.ToolTip = "";
+            }
         }
 
         public void Language_Translate()
         {
-            BtAccept.Content = Program.Translations.GetLanguage("Accept");
-            BtCancel.Content = Program.Translations.GetLanguage("Cancel");
+            BtAccept.Content = Program.Translations.Get("Accept");
+            BtCancel.Content = Program.Translations.Get("Cancel");
         }
         #endregion
     }

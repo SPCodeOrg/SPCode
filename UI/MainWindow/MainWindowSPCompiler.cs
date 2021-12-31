@@ -26,6 +26,8 @@ namespace SPCode.UI
         private bool InCompiling;
         private Thread ServerCheckThread;
 
+        private ProgressDialogController ProgressTask;
+
         private bool ServerIsRunning;
         private Process ServerProcess;
 
@@ -36,7 +38,8 @@ namespace SPCode.UI
         private async void Compile_SPScripts(bool compileAll = true)
         {
             // Checks if the program is compiling to avoid doing it again, and checks if the editor is from the templates window
-            if (InCompiling || GetCurrentEditorElement().IsTemplateEditor)
+            var ee = GetCurrentEditorElement();
+            if (InCompiling || (ee != null && ee.IsTemplateEditor))
             {
                 return;
             }
@@ -72,8 +75,8 @@ namespace SPCode.UI
             if (!SpCompFound)
             {
                 LoggingControl.LogAction($"No compiler found, aborting.");
-                await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"),
-                    Program.Translations.GetLanguage("SPCompNotFound"), MessageDialogStyle.Affirmative,
+                await this.ShowMessageAsync(Program.Translations.Get("Error"),
+                    Program.Translations.Get("SPCompNotFound"), MessageDialogStyle.Affirmative,
                     MetroDialogOptions);
                 InCompiling = false;
                 return;
@@ -105,7 +108,6 @@ namespace SPCode.UI
             }
             else
             {
-                var ee = GetCurrentEditorElement();
                 if (ee == null)
                 {
                     InCompiling = false;
@@ -123,12 +125,16 @@ namespace SPCode.UI
             {
                 // Shows the 'Compiling...' window
                 ErrorResultGrid.Items.Clear();
-                var progressTask = await this.ShowProgressAsync(Program.Translations.GetLanguage("Compiling"), "",
+
+                ProgressTask = await this.ShowProgressAsync(Program.Translations.Get("Compiling"), "",
                     false, MetroDialogOptions);
-                progressTask.SetProgress(0.0);
+                ProgressTask.SetProgress(0.0);
+
                 var stringOutput = new StringBuilder();
                 var errorFilterRegex = new Regex(Constants.ErrorFilterRegex, 
                     RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
+                var regexOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline;
+                var errorFilterRegex = new Regex(Constants.ErrorFilterRegex, regexOptions);
 
                 var compiledSuccess = 0;
 
@@ -142,7 +148,7 @@ namespace SPCode.UI
                     }
 
                     var file = ScriptsCompiled[i];
-                    progressTask.SetMessage($"{file} ({i}/{compileCount}) ");
+                    ProgressTask.SetMessage($"{file} ({i}/{compileCount}) ");
                     ProcessUITasks();
                     var fileInfo = new FileInfo(file);
                     if (fileInfo.Exists)
@@ -179,13 +185,9 @@ namespace SPCode.UI
                         process.StartInfo.Arguments =
                             "\"" + fileInfo.FullName + "\" -o=\"" + outFile + "\" -e=\"" + errorFile + "\"" +
                             includeStr + " -O=" + currentConfig.OptimizeLevel + " -v=" + currentConfig.VerboseLevel;
-                        progressTask.SetProgress((i + 1 - 0.5d) / compileCount);
+                        ProgressTask.SetProgress((i + 1 - 0.5d) / compileCount);
                         var execResult = ExecuteCommandLine(currentConfig.PreCmd, fileInfo.DirectoryName, currentConfig.CopyDirectory,
                             fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
-                        if (!string.IsNullOrWhiteSpace(execResult))
-                        {
-
-                        }
 
                         ProcessUITasks();
 
@@ -196,8 +198,8 @@ namespace SPCode.UI
 
                             if (process.ExitCode != 1 && process.ExitCode != 0)
                             {
-                                await progressTask.CloseAsync();
-                                await this.ShowMessageAsync(Program.Translations.GetLanguage("Error"),
+                                await ProgressTask.CloseAsync();
+                                await this.ShowMessageAsync(Program.Translations.Get("Error"),
                                     "The SourcePawn compiler has crashed.\n" +
                                     "Try again, or file an issue at the SourcePawn GitHub repository describing your steps that lead to this instance in detail.\n" +
                                     $"Exit code: {process.ExitCode:X}", MessageDialogStyle.Affirmative,
@@ -209,9 +211,9 @@ namespace SPCode.UI
                         }
                         catch (Exception)
                         {
-                            await progressTask.CloseAsync();
-                            await this.ShowMessageAsync(Program.Translations.GetLanguage("SPCompNotStarted"),
-                                Program.Translations.GetLanguage("Error"), MessageDialogStyle.Affirmative,
+                            await ProgressTask.CloseAsync();
+                            await this.ShowMessageAsync(Program.Translations.Get("SPCompNotStarted"),
+                                Program.Translations.Get("Error"), MessageDialogStyle.Affirmative,
                                 MetroDialogOptions);
                             InCompiling = false;
                             return;
@@ -264,12 +266,8 @@ namespace SPCode.UI
 
                         var execResult_Post = ExecuteCommandLine(currentConfig.PostCmd, fileInfo.DirectoryName,
                             currentConfig.CopyDirectory, fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
-                        if (!string.IsNullOrWhiteSpace(execResult_Post))
-                        {
 
-                        }
-
-                        progressTask.SetProgress((double)(i + 1) / compileCount);
+                        ProgressTask.SetProgress((double)(i + 1) / compileCount);
                         ProcessUITasks();
                     }
                 }
@@ -281,29 +279,29 @@ namespace SPCode.UI
 
                 if (!PressedEscape)
                 {
-                    progressTask.SetProgress(1.0);
+                    ProgressTask.SetProgress(1.0);
                     if (currentConfig.AutoCopy)
                     {
-                        progressTask.SetTitle(Program.Translations.GetLanguage("CopyingFiles"));
-                        progressTask.SetIndeterminate();
+                        ProgressTask.SetTitle(Program.Translations.Get("CopyingFiles") + "...");
+                        ProgressTask.SetIndeterminate();
                         await Task.Run(() => Copy_Plugins());
-                        progressTask.SetProgress(1.0);
+                        ProgressTask.SetProgress(1.0);
                     }
 
                     if (currentConfig.AutoUpload)
                     {
-                        progressTask.SetTitle(Program.Translations.GetLanguage("FTPUploading"));
-                        progressTask.SetIndeterminate();
+                        ProgressTask.SetTitle(Program.Translations.Get("FTPUploading") + "...");
+                        ProgressTask.SetIndeterminate();
                         await Task.Run(FTPUpload_Plugins);
-                        progressTask.SetProgress(1.0);
+                        ProgressTask.SetProgress(1.0);
                     }
 
                     if (currentConfig.AutoRCON)
                     {
-                        progressTask.SetTitle(Program.Translations.GetLanguage("RCONCommand"));
-                        progressTask.SetIndeterminate();
+                        ProgressTask.SetTitle(Program.Translations.Get("RCONCommand") + "...");
+                        ProgressTask.SetIndeterminate();
                         await Task.Run(Server_Query);
-                        progressTask.SetProgress(1.0);
+                        ProgressTask.SetProgress(1.0);
                     }
 
                     if (CompileOutputRow.Height.Value < 11.0)
@@ -312,8 +310,7 @@ namespace SPCode.UI
                     }
                 }
 
-                RefreshObjectBrowser();
-                await progressTask.CloseAsync();
+                await ProgressTask.CloseAsync();
             }
             InCompiling = false;
         }
@@ -324,67 +321,68 @@ namespace SPCode.UI
         private void Copy_Plugins()
         {
             var output = new List<string>();
-            if (CompiledFiles.Count > 0)
+            if (CompiledFiles.Count <= 0)
             {
-                var copyCount = 0;
-                var c = Program.Configs[Program.SelectedConfig];
-                if (string.IsNullOrWhiteSpace(c.CopyDirectory))
+                LoggingControl.LogAction("No plugins found to copy.", 2);
+                return;
+            }
+            var copyCount = 0;
+            var c = Program.Configs[Program.SelectedConfig];
+            if (string.IsNullOrWhiteSpace(c.CopyDirectory))
+            {
+                output.Add($"Copy directory is empty.");
+                goto Dispatcher;
+            }
+            if (!Directory.Exists(c.CopyDirectory))
+            {
+                output.Add("The specified Copy Directory was not found.");
+                goto Dispatcher;
+            }
+            output.Add($"Copying plugin(s)...");
+            NonUploadedFiles.Clear();
+            var stringOutput = new StringBuilder();
+            foreach (var file in CompiledFiles)
+            {
+                var destFile = new FileInfo(file);
+                try
                 {
-                    output.Add($"Copy directory is empty.");
-                    goto Dispatcher;
-                }
-                if (!Directory.Exists(c.CopyDirectory))
-                {
-                    output.Add("The specified Copy Directory was not found.");
-                    goto Dispatcher;
-                }
-                output.Add($"Copying plugin(s)...");
-                NonUploadedFiles.Clear();
-                var stringOutput = new StringBuilder();
-                foreach (var file in CompiledFiles)
-                {
-                    var destFile = new FileInfo(file);
-                    try
+                    if (destFile.Exists)
                     {
-                        if (destFile.Exists)
+                        var destinationFileName = destFile.Name;
+                        var copyFileDestination = Path.Combine(c.CopyDirectory, destinationFileName);
+                        File.Copy(file, copyFileDestination, true);
+                        NonUploadedFiles.Add(copyFileDestination);
+                        output.Add($"{Program.Translations.Get("Copied")}: {copyFileDestination}");
+                        ++copyCount;
+                        if (c.DeleteAfterCopy)
                         {
-                            var destinationFileName = destFile.Name;
-                            var copyFileDestination = Path.Combine(c.CopyDirectory, destinationFileName);
-                            File.Copy(file, copyFileDestination, true);
-                            NonUploadedFiles.Add(copyFileDestination);
-                            output.Add($"{Program.Translations.GetLanguage("Copied")}: {copyFileDestination}");
-                            ++copyCount;
-                            if (c.DeleteAfterCopy)
-                            {
-                                File.Delete(file);
-                                output.Add($"{Program.Translations.GetLanguage("Deleted")}: {copyFileDestination}");
-                            }
+                            File.Delete(file);
+                            output.Add($"{Program.Translations.Get("Deleted")}: {copyFileDestination}");
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        output.Add($"{Program.Translations.GetLanguage("FailCopy")}: {destFile.Name}");
-                        output.Add(ex.Message);
-                    }
                 }
-
-                if (copyCount == 0)
+                catch (Exception ex)
                 {
-                    output.Add($"{Program.Translations.GetLanguage("NoFilesCopy")}");
+                    output.Add($"{Program.Translations.Get("FailCopy")}: {destFile.Name}");
+                    output.Add(ex.Message);
                 }
-
-            Dispatcher:
-
-                Dispatcher.Invoke(() =>
-                {
-                    output.ForEach(x => LoggingControl.LogAction(x));
-                    if (CompileOutputRow.Height.Value < 11.0)
-                    {
-                        CompileOutputRow.Height = new GridLength(200.0);
-                    }
-                    RefreshObjectBrowser();
-                });
             }
+
+            if (copyCount == 0)
+            {
+                output.Add($"{Program.Translations.Get("NoFilesCopy")}");
+            }
+
+        Dispatcher:
+
+            Dispatcher.Invoke(() =>
+            {
+                output.ForEach(x => LoggingControl.LogAction(x));
+                if (CompileOutputRow.Height.Value < 11.0)
+                {
+                    CompileOutputRow.Height = new GridLength(200.0);
+                }
+            });
         }
 
         /// <summary>
@@ -395,6 +393,7 @@ namespace SPCode.UI
             var output = new List<string>();
             if (NonUploadedFiles.Count <= 0)
             {
+                LoggingControl.LogAction("No plugins found to upload.", 2);
                 return;
             }
 
@@ -428,21 +427,21 @@ namespace SPCode.UI
                         try
                         {
                             ftp.Upload(uploadDir, file);
-                            output.Add($"{Program.Translations.GetLanguage("Uploaded")}: {fileInfo.Name}");
+                            output.Add($"{Program.Translations.Get("Uploaded")}: {fileInfo.Name}");
                         }
                         catch (Exception e)
                         {
-                            output.Add(string.Format(Program.Translations.GetLanguage("ErrorUploadFile"),
+                            output.Add(string.Format(Program.Translations.Get("ErrorUploadFile"),
                                 fileInfo.Name, uploadDir));
-                            output.Add($"{Program.Translations.GetLanguage("Details")}: {e.Message}");
+                            output.Add($"{Program.Translations.Get("Details")}: {e.Message}");
                         }
                     }
                 }
             }
             catch (Exception e)
             {
-                output.Add(Program.Translations.GetLanguage("ErrorUpload"));
-                output.Add($"{Program.Translations.GetLanguage("Details")}: " + e.Message);
+                output.Add(Program.Translations.Get("ErrorUpload"));
+                output.Add($"{Program.Translations.Get("Details")}: " + e.Message);
             }
 
         Dispatcher:
@@ -464,6 +463,7 @@ namespace SPCode.UI
         {
             if (ServerIsRunning)
             {
+                LoggingControl.LogAction("The server is already running!", 2);
                 return;
             }
             var c = Program.Configs[Program.SelectedConfig];
@@ -513,6 +513,7 @@ namespace SPCode.UI
                 {
                     EnableServerAnim.Begin();
                     UpdateWindowTitle();
+                    LoggingControl.LogAction("Server started.", 2);
                 });
                 ServerProcess.WaitForExit();
                 ServerProcess.Dispose();
@@ -523,8 +524,8 @@ namespace SPCode.UI
                     {
                         DisableServerAnim.Begin();
                         UpdateWindowTitle();
+                        LoggingControl.LogAction("Server stopped.", 2);
                     }
-                    LoggingControl.LogAction("Server started.", 2);
                 });
             }
             catch (Exception)

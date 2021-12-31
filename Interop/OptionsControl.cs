@@ -11,7 +11,7 @@ namespace SPCode
     [Serializable]
     public class OptionsControl
     {
-        public static int SVersion = 11;
+        public static int SVersion = 14;
         public bool Editor_AgressiveIndentation = true;
         public bool Editor_AutoCloseBrackets = true;
         public bool Editor_AutoCloseStringChars = true;
@@ -25,6 +25,7 @@ namespace SPCode
         public double Editor_ScrollLines = 4.0;
         public bool Editor_ShowSpaces;
         public bool Editor_ShowTabs;
+        public bool Editor_TabToAutocomplete;
 
         public bool Editor_WordWrap = false;
 
@@ -77,7 +78,14 @@ namespace SPCode
         public bool UI_Animations = true;
         public bool UI_ShowToolBar;
 
+        // Version 12
         public LinkedList<string> RecentFiles = new();
+
+        // Version 13
+        public SearchOptions SearchOptions;
+
+        // Version 14
+        public ActionOnClose ActionOnClose;
 
         public int Version = 11;
 
@@ -152,6 +160,20 @@ namespace SPCode
                         Program_AccentColor = "Blue";
                     }
                 }
+                if (Version < 12)
+                {
+                    Editor_TabToAutocomplete = false;
+                }
+                if (Version < 13)
+                {
+                    SearchOptions.FindText = "";
+                    SearchOptions.ReplaceText = "";
+                    SearchOptions.SearchType = 0;
+                    SearchOptions.Document = 0;
+                    SearchOptions.CaseSensitive = false;
+                    SearchOptions.MultilineRegex = false;
+                    SearchOptions.ReplaceType = 0;
+                }
 
                 //new Optionsversion - reset new fields to default
                 Version = SVersion; //then Update Version afterwars
@@ -176,7 +198,7 @@ namespace SPCode
             SH_CommentsMarker = new SerializableColor(0xFF, 0xFF, 0x20, 0x20);
             SH_Strings = new SerializableColor(0xFF, 0xF4, 0x6B, 0x6C);
             SH_PreProcessor = new SerializableColor(0xFF, 0x7E, 0x7E, 0x7E);
-            SH_Types = new SerializableColor(0xFF, 0x28, 0x90, 0xB0); //56 9C D5
+            SH_Types = new SerializableColor(0xFF, 0x28, 0x90, 0xB0);
             SH_TypesValues = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
             SH_Keywords = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
             SH_ContextKeywords = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
@@ -188,6 +210,54 @@ namespace SPCode
             SH_Constants = new SerializableColor(0xFF, 0xBC, 0x62, 0xC5);
             SH_Functions = new SerializableColor(0xFF, 0x56, 0x9C, 0xD5);
             SH_Methods = new SerializableColor(0xFF, 0x3B, 0xC6, 0x7E);
+        }
+
+        public static void Save()
+        {
+            try
+            {
+                var formatter = new BinaryFormatter();
+                using var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Create, FileAccess.ReadWrite,
+                    FileShare.None);
+                formatter.Serialize(fileStream, Program.OptionsObject);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        public static OptionsControl Load(out bool ProgramIsNew)
+        {
+            try
+            {
+                if (File.Exists(Paths.GetOptionsFilePath()))
+                {
+                    OptionsControl optionsObject;
+                    var formatter = new BinaryFormatter();
+                    using (var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Open, FileAccess.Read,
+                        FileShare.ReadWrite))
+                    {
+                        optionsObject = (OptionsControl)formatter.Deserialize(fileStream);
+                    }
+
+                    optionsObject.FillNullToDefaults();
+                    ProgramIsNew = false;
+                    return optionsObject;
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            var oco = new OptionsControl();
+            oco.ReCreateCryptoKey();
+#if DEBUG
+            ProgramIsNew = false;
+#else
+            ProgramIsNew = true;
+#endif
+            return oco;
         }
     }
 
@@ -218,54 +288,23 @@ namespace SPCode
         }
     }
 
-    public static class OptionsControlIOObject
+    [Serializable]
+    public struct SearchOptions
     {
-        public static void Save()
-        {
-            try
-            {
-                var formatter = new BinaryFormatter();
-                using var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Create, FileAccess.ReadWrite,
-                    FileShare.None);
-                formatter.Serialize(fileStream, Program.OptionsObject);
-            }
-            catch (Exception)
-            {
-            }
-        }
+        public string FindText;
+        public string ReplaceText;
+        public int SearchType;
+        public int Document;
+        public bool CaseSensitive;
+        public bool MultilineRegex;
+        public int ReplaceType;
+    }
 
-        public static OptionsControl Load(out bool ProgramIsNew)
-        {
-            try
-            {
-                if (File.Exists(Paths.GetOptionsFilePath()))
-                {
-                    object deserializedOptionsObj;
-                    var formatter = new BinaryFormatter();
-                    using (var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Open, FileAccess.Read,
-                        FileShare.ReadWrite))
-                    {
-                        deserializedOptionsObj = formatter.Deserialize(fileStream);
-                    }
-
-                    var oc = (OptionsControl)deserializedOptionsObj;
-                    oc.FillNullToDefaults();
-                    ProgramIsNew = false;
-                    return oc;
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-            var oco = new OptionsControl();
-            oco.ReCreateCryptoKey();
-#if DEBUG
-            ProgramIsNew = false;
-#else
-            ProgramIsNew = true;
-#endif
-            return oco;
-        }
+    [Serializable]
+    public enum ActionOnClose
+    {
+        Prompt,
+        Save,
+        DontSave
     }
 }

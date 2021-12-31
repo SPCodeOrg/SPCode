@@ -2,38 +2,49 @@ name: Publish Release
 
 on:
   push:
-    tags:
-      - '*'
+    branches:
+      - master
 
 jobs:
+
+  # Build and release
   build:
 
     runs-on: windows-latest
-
     steps:
+    
+      # Checkout the repository
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Fetch latest tag
+      - name: Get tag
+        id: get-tag
+        run: |
+          echo "::set-output name=TAG::$(git describe --match "[0-9].[0-9].[0-9].[0-9]" --tags --abbrev=0)"
 
       # Install the .NET Core workload
       - name: Install .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.100
+          dotnet-version: 6.0.100
 
       # Nuget
-      - uses: nuget/setup-nuget@v1
+      - name: Restore NuGet packages 
+        uses: nuget/setup-nuget@v1
         with:
           nuget-version: '5.x'
       - run: nuget restore Spcode.sln
 
       # Setup MSBuild
       - name: Setup MSBuild.exe
-        uses: microsoft/setup-msbuild@v1.0.2
+        uses: microsoft/setup-msbuild@v1.1
 
-
-      # Build Spcode
-      - name: Build Spcode
-        run: msbuild Spcode.csproj /p:Configuration=Release
+      # Build SPCode
+      - name: Build SPCode
+        run: msbuild Spcode.csproj /p:Configuration=Release /p:langversion=latest
 
       # Build Installer
       - name: Build Installer (NSIS)
@@ -48,7 +59,7 @@ jobs:
 
       # Build Updater
       - name: Build Updater
-        run: msbuild Deploy\SPCodeUpdater\SPCodeUpdater.csproj /p:Configuration=Release
+        run: msbuild Deploy\SPCodeUpdater\SPCodeUpdater.csproj /p:Configuration=Release /property:langversion=latest
 
       - name: Create Release
         id: create_release
@@ -56,8 +67,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ steps.get-tag.outputs.TAG }}
+          release_name: Release ${{ steps.get-tag.outputs.TAG }}
           draft: false
           prerelease: false
 
@@ -68,7 +79,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: .\bin\Release\SPCode.Installer.exe
           asset_name: SPCode.Installer.exe
           asset_content_type: application/octet-stream
@@ -79,7 +90,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: .\bin\Release\SPCode.Portable.zip
           asset_name: SPCode.Portable.zip
           asset_content_type: application/zip
@@ -90,7 +101,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: .\Deploy\SpcodeUpdater\bin\Release\SPCodeUpdater.exe
           asset_name: SPCodeUpdater.exe
           asset_content_type: application/octet-stream

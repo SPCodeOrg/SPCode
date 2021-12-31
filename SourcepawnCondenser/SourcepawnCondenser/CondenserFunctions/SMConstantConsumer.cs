@@ -65,7 +65,6 @@ namespace SourcepawnCondenser
                     }
                 }
             }
-
             return -1;
         }
     }

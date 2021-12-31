@@ -38,8 +38,8 @@ namespace SPCode.UI.Windows
             var def = Program.Configs[Program.SelectedConfig].GetSMDef();
             if (def == null)
             {
-                MessageBox.Show(Program.Translations.GetLanguage("ConfigWrongPars"),
-                    Program.Translations.GetLanguage("Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(Program.Translations.Get("ConfigWrongPars"),
+                    Program.Translations.Get("Error"), MessageBoxButton.OK, MessageBoxImage.Warning);
                 Close();
                 return;
             }
@@ -68,7 +68,7 @@ namespace SPCode.UI.Windows
 
             foreach (var e in defList.Where(e => string.IsNullOrWhiteSpace(e.Name)))
             {
-                e.Name = $"--{Program.Translations.GetLanguage("NoName")}--";
+                e.Name = $"--{Program.Translations.Get("NoName")}--";
             }
 
             defList.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
@@ -109,7 +109,7 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm1.Name;
                     SPFullNameBlock.Text = sm1.FullName;
                     SPFileBlock.Text = sm1.File + ".inc" +
-                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm1.Index, sm1.Length)}";
+                                       $" {string.Format(Program.Translations.Get("PosLen"), sm1.Index, sm1.Length)}";
                     SPTypeBlock.Text = "Function";
                     SPCommentBox.Text = "Comment: " + sm1.CommentString + "\nType: " + sm1.FunctionKind;
                     return;
@@ -120,7 +120,7 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm2.Name;
                     SPFullNameBlock.Text = string.Empty;
                     SPFileBlock.Text = sm2.File + ".inc" +
-                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm2.Index, sm2.Length)}";
+                                       $" {string.Format(Program.Translations.Get("PosLen"), sm2.Index, sm2.Length)}";
                     SPTypeBlock.Text = "Constant";
                     SPCommentBox.Text = string.Empty;
                     return;
@@ -131,7 +131,7 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm3.Name;
                     SPFullNameBlock.Text = string.Empty;
                     SPFileBlock.Text = sm3.File + ".inc" +
-                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm3.Index, sm3.Length)}";
+                                       $" {string.Format(Program.Translations.Get("PosLen"), sm3.Index, sm3.Length)}";
                     SPTypeBlock.Text = "Enum " + sm3.Entries.Length + " entries";
                     var outString = new StringBuilder();
                     for (var i = 0; i < sm3.Entries.Length; ++i)
@@ -149,7 +149,7 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm4.Name;
                     SPFullNameBlock.Text = string.Empty;
                     SPFileBlock.Text = sm4.File + ".inc" +
-                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm4.Index, sm4.Length)}";
+                                       $" {string.Format(Program.Translations.Get("PosLen"), sm4.Index, sm4.Length)}";
                     SPTypeBlock.Text = "Struct";
                     SPCommentBox.Text = string.Empty;
                     return;
@@ -160,7 +160,7 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm5.Name;
                     SPFullNameBlock.Text = string.Empty;
                     SPFileBlock.Text = sm5.File + ".inc" +
-                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm5.Index, sm5.Length)}";
+                                       $" {string.Format(Program.Translations.Get("PosLen"), sm5.Index, sm5.Length)}";
                     SPTypeBlock.Text = "Definition";
                     SPCommentBox.Text = string.Empty;
                     return;
@@ -169,10 +169,10 @@ namespace SPCode.UI.Windows
                 if (TagValue is SMMethodmap sm6)
                 {
                     SPNameBlock.Text = sm6.Name;
-                    SPFullNameBlock.Text = $"{Program.Translations.GetLanguage("TypeStr")}: " + sm6.Type +
-                                           $" - {Program.Translations.GetLanguage("InheritedFrom")}: {sm6.InheritedType}";
+                    SPFullNameBlock.Text = $"{Program.Translations.Get("TypeStr")}: " + sm6.Type +
+                                           $" - {Program.Translations.Get("InheritedFrom")}: {sm6.InheritedType}";
                     SPFileBlock.Text = sm6.File + ".inc" +
-                                       $" ({string.Format(Program.Translations.GetLanguage("PosLen"), sm6.Index, sm6.Length)})";
+                                       $" ({string.Format(Program.Translations.Get("PosLen"), sm6.Index, sm6.Length)})";
                     SPTypeBlock.Text = "Methodmap " + sm6.Methods.Count + " methods - " + sm6.Fields.Count + " fields";
                     var outString = new StringBuilder();
                     outString.AppendLine("Methods:");
@@ -197,8 +197,8 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm7.Name;
                     SPFullNameBlock.Text = sm7.FullName;
                     SPFileBlock.Text = sm7.File + ".inc" +
-                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm7.Index, sm7.Length)}";
-                    SPTypeBlock.Text = $"{Program.Translations.GetLanguage("MethodFrom")} {sm7.MethodmapName}";
+                                       $" {string.Format(Program.Translations.Get("PosLen"), sm7.Index, sm7.Length)}";
+                    SPTypeBlock.Text = $"{Program.Translations.Get("MethodFrom")} {sm7.MethodmapName}";
                     SPCommentBox.Text = sm7.CommentString;
                     return;
                 }
@@ -208,8 +208,8 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm8.Name;
                     SPFullNameBlock.Text = sm8.FullName;
                     SPFileBlock.Text = sm8.File + ".inc" +
-                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm8.Index, sm8.Length)}";
-                    SPTypeBlock.Text = $"{Program.Translations.GetLanguage("PropertyFrom")} {sm8.MethodmapName}";
+                                       $" {string.Format(Program.Translations.Get("PosLen"), sm8.Index, sm8.Length)}";
+                    SPTypeBlock.Text = $"{Program.Translations.Get("PropertyFrom")} {sm8.MethodmapName}";
                     SPCommentBox.Text = string.Empty;
                     return;
                 }
@@ -219,7 +219,7 @@ namespace SPCode.UI.Windows
                     SPNameBlock.Text = sm.Name;
                     SPFullNameBlock.Text = string.Empty;
                     SPFileBlock.Text = sm.File + ".inc" +
-                                       $" {string.Format(Program.Translations.GetLanguage("PosLen"), sm.Index, sm.Length)}";
+                                       $" {string.Format(Program.Translations.Get("PosLen"), sm.Index, sm.Length)}";
                     SPTypeBlock.Text = "Typedef/Typeset";
                     SPCommentBox.Text = sm.FullName;
                     return;
@@ -312,7 +312,7 @@ namespace SPCode.UI.Windows
 
         private void Language_Translate()
         {
-            TextBoxHelper.SetWatermark(SPSearchBox, Program.Translations.GetLanguage("Search"));
+            TextBoxHelper.SetWatermark(SPSearchBox, Program.Translations.Get("Search"));
             /*if (Program.Translations.GetLanguage("IsDefault)
             {
                 return;

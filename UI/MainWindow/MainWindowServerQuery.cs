@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using QueryMaster;
+using MahApps.Metro.Controls.Dialogs;
 using SPCode.Interop;
+using ValveQuery.GameServer;
 
 namespace SPCode.UI
 {
@@ -13,9 +16,11 @@ namespace SPCode.UI
         /// <summary>
         /// Queries the server with the specified command in the command box of the config.
         /// </summary>
+
         private void Server_Query()
         {
             var output = new List<string>();
+
             var c = Program.Configs[Program.SelectedConfig];
             if (string.IsNullOrWhiteSpace(c.RConIP) || string.IsNullOrWhiteSpace(c.RConCommands))
             {
@@ -23,40 +28,71 @@ namespace SPCode.UI
                 goto Dispatcher;
             }
 
-            output.Add("Sending commands...");
-
             try
             {
-                var type = EngineType.GoldSource;
-                if (c.RConUseSourceEngine)
+                using var server = ServerQuery.GetServerInstance(c.RConIP, c.RConPort, false, 500, 500, 2, true);
+                var serverInfo = server.GetInfo();
+
+                if (serverInfo == null)
                 {
-                    type = EngineType.Source;
+                    output.Add("No server found to send commands to.");
+                    goto Dispatcher;
                 }
 
-                using (var server = ServerQuery.GetServerInstance(type, c.RConIP, c.RConPort, null))
+                server.GetControl(c.RConPassword, false);
+
+                output.Add($"Server: {serverInfo.Name}");
+                output.Add("Sending commands...");
+
+                var cmds = ReplaceRconCMDVariables(c.RConCommands).Split('\n');
+
+                if (cmds.Any(x => x.Contains("{plugin")))
                 {
-                    var serverInfo = server.GetInfo();
-                    output.Add(serverInfo.Name);
-                    using var rcon = server.GetControl(c.RConPassword);
-                    var cmds = ReplaceRconCMDVariables(c.RConCommands).Split('\n');
-                    foreach (var cmd in cmds)
+                    output.Add("No plugins available to replace placeholders commands with. Removing them...");
+                    cmds = cmds.Where(x => !x.Contains("{plugin")).ToArray();
+                    if (cmds.Length == 0)
                     {
-                        var t = Task.Run(() =>
-                        {
-                            var command = cmd.Trim('\r').Trim();
-                            if (!string.IsNullOrWhiteSpace(command))
-                            {
-                                output.Add(rcon.SendCommand(command));
-                            }
-                        });
-                        t.Wait();
+                        output.Add("No commands sent.");
+                        goto Dispatcher;
                     }
+                }
+
+                foreach (var cmd in cmds)
+                {
+                    var t = Task.Run(() =>
+                    {
+                        var command = cmd.Trim('\r').Trim();
+                        if (!string.IsNullOrWhiteSpace(command))
+                        {
+                            output.Add(server.Rcon.SendCommand(command));
+                        }
+                    });
+                    t.Wait();
                 }
                 output.Add("Commands sent.");
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                output.Add("Error: " + e.Message);
+                if (ex.Message.Contains("Not authorized"))
+                {
+                    output.Add("Incorrect RCON password.");
+                    goto Dispatcher;
+                }
+                if (ex is SocketException socketEx)
+                {
+                    switch ((SocketError)socketEx.ErrorCode)
+                    {
+                        case SocketError.ConnectionReset:
+                        case SocketError.NotConnected:
+                        case SocketError.TimedOut:
+                            output.Add("Connection to the server reset or timed out. Make sure you've set it up correctly, and the server you're targeting is available.\n" +
+                                "Your data:\n" +
+                                $"  - IP: {c.RConIP}\n" +
+                                $"  - Port: {c.RConPort}");
+                            goto Dispatcher;
+                    }
+                }
+                output.Add($"SPCode unhandled error: {ex.Message}");
             }
 
         Dispatcher:

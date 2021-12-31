@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,7 +31,7 @@ namespace SPCode.UI.Windows
                     g.Background = gridBrush;
                 }
             }
-            TitleBox.Text = $"SPCode ({Assembly.GetEntryAssembly()?.GetName().Version}) - {Program.Translations.GetLanguage("SPEditCap")}";
+            TitleBox.Text = $"SPCode ({NamesHelper.VersionString}) - {Program.Translations.Get("SPEditCap")}";
             LicenseField.Text = File.ReadAllText(Constants.LicenseFile);
         }
 
@@ -51,9 +52,9 @@ namespace SPCode.UI.Windows
             {
                 return;
             }
-            WrittenByBlock.Text = string.Format(Program.Translations.GetLanguage("WrittenBy"), "Julien Kluge (Julien.Kluge@gmail.com");
-            LicenseBlock.Text = Program.Translations.GetLanguage("License");
-            PeopleInvolvedBlock.Text = Program.Translations.GetLanguage("PeopleInv");
+            WrittenByBlock.Text = string.Format(Program.Translations.Get("WrittenBy"), "Julien Kluge (Julien.Kluge@gmail.com");
+            LicenseBlock.Text = Program.Translations.Get("License");
+            PeopleInvolvedBlock.Text = Program.Translations.Get("PeopleInv");
         }
     }
 }

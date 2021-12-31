@@ -153,7 +153,7 @@ namespace SPCode.UI
                 {
                     // Open up the Rename Window and fetch the new name from there
                     var fileTag = file.Tag as ObjectBrowserTag;
-                    var renameWindow = new RenameWindow(fileTag.Value);
+                    var renameWindow = new RenameWindow(fileTag.Value) { Owner = this };
                     renameWindow.ShowDialog();
 
                     ObjectBrowser.ContextMenu = null;
@@ -184,7 +184,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.GetLanguage("Error"), ex.Message);
+                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message);
             }
         }
 
@@ -288,7 +288,7 @@ namespace SPCode.UI
             OBExpanded = !OBExpanded;
             MoveSubContainers(ObjectBrowser, OBExpanded);
             BtExpandCollapse.Content = (Image)FindResource(OBExpanded ? "ImgCollapse" : "ImgExpand");
-            BtExpandCollapse.ToolTip = Program.Translations.GetLanguage(OBExpanded ? "CollapseAllDirs" : "ExpandAllDirs");
+            BtExpandCollapse.ToolTip = Program.Translations.Get(OBExpanded ? "CollapseAllDirs" : "ExpandAllDirs");
         }
 
         private void BtRefreshDir_Click(object sender, RoutedEventArgs e)
@@ -362,7 +362,7 @@ namespace SPCode.UI
                 {
                     ObjectBrowser.Items.Add(new TreeViewItem()
                     {
-                        Header = BuildTreeViewItemContent($"{Program.Translations.GetLanguage("NoResultsThisDir")}", Constants.EmptyIcon),
+                        Header = BuildTreeViewItemContent($"{Program.Translations.Get("NoResultsThisDir")}", Constants.EmptyIcon),
                         FontStyle = FontStyles.Italic,
                         Foreground = new SolidColorBrush(Colors.Gray),
                         Tag = new ObjectBrowserTag()
@@ -611,7 +611,7 @@ namespace SPCode.UI
             {
                 var tvi = new TreeViewItem()
                 {
-                    Header = BuildTreeViewItemContent($"({Program.Translations.GetLanguage("Empty").ToLower()})", Constants.EmptyIcon),
+                    Header = BuildTreeViewItemContent($"({Program.Translations.Get("Empty").ToLower()})", Constants.EmptyIcon),
                     FontStyle = FontStyles.Italic,
                     Foreground = new SolidColorBrush(Colors.Gray),
                     Tag = new ObjectBrowserTag()

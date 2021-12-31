@@ -120,7 +120,7 @@ namespace SPCode.Utils.SPSyntaxTidy
                             var startIndex = i;
                             var endIndex =
                                 i; // this is here, because if we reach the end of the document, this is still a comment
-                            //so when we fall out of the for-loop without lineending match, we'll just use this as the endoffset.
+                                   //so when we fall out of the for-loop without lineending match, we'll just use this as the endoffset.
                             ++i;
                             for (var j = i; j < length; ++j)
                             {
