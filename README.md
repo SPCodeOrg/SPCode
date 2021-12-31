@@ -35,7 +35,7 @@ It was born in 2015 under the name of SPEdit, and in early 2020, we took care of
 * Errors/warnings list
 * Syntax reformatter (syntax tidy)
 * Auto-updating
-* [Lysis Decompiler](https://github.com/peace-maker/lysis-java) (by [@peace-maker](https://github.com/peace-maker))
+* [Lysis Decompiler](https://github.com/peace-maker/lysis-java) (by [peace-maker](https://github.com/peace-maker))
 * SMX dissassembler
 * RCON querying
 * Auto bracket-closing
@@ -44,11 +44,18 @@ It was born in 2015 under the name of SPEdit, and in early 2020, we took care of
 
 <h2>Building</h2>
 
-[PENDING]
+Requirements:
+- [.NET Framework 4.8](https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net48-developer-pack-offline-installer)
+- [NSIS](https://nsis.sourceforge.io/Download)
+
+1- Build the program: `msbuild Spcode.csproj /p:Configuration=Release` <br>
+2- Create the installer with `makensis .\bin\Release\SPCode.nsi` <br>
+3- Create the portable version running `.\Compress.ps1` with PowerShell <br>
+4- Build the updater: `msbuild Deploy\SpcodeUpdater\SpcodeUpdater.csproj /p:Configuration=Release`
 
 <h2>Credits</h2>
 
-* [Julien Kluge](https//github.com/JulienKluge) (original author of [SPEdit](https//github.com/JulienKluge/SPEdit))
-* [Maxi Jabase](https//github.com/maxijabase) (current maintainer)
-* [Natanel Shitrit](https//github.com/natanel-shitrit) (maintainer)
-* [Hexer10](https//github.com/Hexer10) (maintainer, SPCode creator)
+* [Julien Kluge](https://github.com/JulienKluge) (original author of [SPEdit](https://github.com/JulienKluge/SPEdit))
+* [Maxi Jabase](https://github.com/maxijabase) (current maintainer)
+* [Natanel Shitrit](https://github.com/natanel-shitrit) (maintainer)
+* [Hexer10](https://github.com/Hexer10) (maintainer, SPCode creator)
