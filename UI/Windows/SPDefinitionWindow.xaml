@@ -1,28 +1,34 @@
 ﻿<controls:MetroWindow x:Class="SPCode.UI.Windows.SPDefinitionWindow"
-             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Width="1000" Height="600" ResizeMode="CanResize" WindowStartupLocation="CenterOwner" GlowBrush="{DynamicResource AccentColorBrush}"
-                      ShowTitleBar="False" Title="Parsed Sourcepawn Definion">
-    <controls:MetroWindow.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </controls:MetroWindow.Resources>
-    <Grid>
-        <TextBox Name="SPSearchBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" TextChanged="TextBox_TextChanged" />
-        <controls:MetroProgressBar Name="SPProgress" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Margin="0,26,0,0" IsIndeterminate="False" IsHitTestVisible="False" Height="4" Foreground="{DynamicResource AccentColorBrush}" Background="{DynamicResource WhiteColorBrush}" />
-        <ListBox Name="SPBox" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="300" Margin="1,30,0,5" SelectionChanged="SPFunctionsListBox_SelectionChanged" MouseDoubleClick="SPFunctionsListBox_DoubleClick" KeyDown="SPFunctionsListBox_KeyDown"/>
-        <TextBlock Name="SPNameBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="305,15,0,0" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" IsHitTestVisible="False" />
-        <TextBlock Name="SPFullNameBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="305,45,0,0" FontSize="18" IsHitTestVisible="False" />
-        <TextBlock Name="SPFileBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="305,75,0,0" FontSize="16" IsHitTestVisible="False" Foreground="Gray" />
-        <TextBlock Name="SPTypeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="305,105,0,0" FontSize="16" IsHitTestVisible="False" Foreground="Gray" />
-        <TextBox Name="SPCommentBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="305,135,5,5" IsReadOnly="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" />
-    </Grid>
+                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      Width="1000" 
+                      Height="600" 
+                      ResizeMode="CanResize" 
+                      WindowStartupLocation="CenterOwner" 
+                      GlowBrush="{DynamicResource AccentColorBrush}"
+                      ShowTitleBar="False" 
+                      Title="Parsed Sourcepawn Definion">
+  
+  <controls:MetroWindow.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </controls:MetroWindow.Resources>
+  <Grid>
+    <TextBox Name="SPSearchBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" TextChanged="TextBox_TextChanged" />
+    <controls:MetroProgressBar Name="SPProgress" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Margin="0,26,0,0" IsIndeterminate="False" IsHitTestVisible="False" Height="4" Foreground="{DynamicResource AccentColorBrush}" Background="{DynamicResource WhiteColorBrush}" />
+    <ListBox Name="SPBox" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="300" Margin="1,30,0,5" SelectionChanged="SPFunctionsListBox_SelectionChanged" MouseDoubleClick="SPFunctionsListBox_DoubleClick" KeyDown="SPFunctionsListBox_KeyDown"/>
+    <TextBlock Name="SPNameBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="305,15,0,0" FontSize="20" Foreground="{DynamicResource AccentColorBrush}" IsHitTestVisible="False" />
+    <TextBlock Name="SPFullNameBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="305,45,0,0" FontSize="18" IsHitTestVisible="False" />
+    <TextBlock Name="SPFileBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="305,75,0,0" FontSize="16" IsHitTestVisible="False" Foreground="Gray" />
+    <TextBlock Name="SPTypeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="305,105,0,0" FontSize="16" IsHitTestVisible="False" Foreground="Gray" />
+    <TextBox Name="SPCommentBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="305,135,5,5" IsReadOnly="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto" />
+  </Grid>
 </controls:MetroWindow>

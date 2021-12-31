@@ -153,7 +153,7 @@ namespace SPCode.UI
                 {
                     // Open up the Rename Window and fetch the new name from there
                     var fileTag = file.Tag as ObjectBrowserTag;
-                    var renameWindow = new RenameWindow(fileTag.Value);
+                    var renameWindow = new RenameWindow(fileTag.Value) { Owner = this };
                     renameWindow.ShowDialog();
 
                     ObjectBrowser.ContextMenu = null;

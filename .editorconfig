@@ -225,3 +225,11 @@ dotnet_diagnostic.IDE0046.severity = none
 
 # CS8632: The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 dotnet_diagnostic.CS8632.severity = none
+
+[*.xml]
+[*.xaml]
+
+# Indentation and spacing
+indent_size = 2
+indent_style = space
+tab_width = 2

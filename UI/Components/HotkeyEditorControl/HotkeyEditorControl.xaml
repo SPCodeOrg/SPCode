@@ -4,7 +4,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              x:Name="UserControl"
-             mc:Ignorable="d" Height="60" Width="250">
+             mc:Ignorable="d" 
+             Height="60" 
+             Width="250">
+
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -17,13 +20,12 @@
     </ResourceDictionary>
   </UserControl.Resources>
   <TextBox x:Name="HotkeyTextBox"
-             HorizontalContentAlignment="Center"
-             VerticalContentAlignment="Center"
-             IsReadOnly="True"
-             IsReadOnlyCaretVisible="False"
-             IsUndoEnabled="False"
-             PreviewKeyDown="HotkeyTextBox_PreviewKeyDown"
-             Text="{Binding Hotkey, ElementName=UserControl, Mode=OneWay, TargetNullValue=None}" BorderBrush="#FF444444">
-  </TextBox>
+           HorizontalContentAlignment="Center"
+           VerticalContentAlignment="Center"
+           IsReadOnly="True"
+           IsReadOnlyCaretVisible="False"
+           IsUndoEnabled="False"
+           PreviewKeyDown="HotkeyTextBox_PreviewKeyDown"
+           Text="{Binding Hotkey, ElementName=UserControl, Mode=OneWay, TargetNullValue=None}" BorderBrush="#FF444444"/>
 </UserControl>
   

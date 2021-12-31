@@ -54,78 +54,78 @@ namespace SPCode
                     try
                     {
 #endif
-                        var splashScreen = new SplashScreen("Resources/Icons/icon256x.png");
-                        splashScreen.Show(false, true);
-                        Environment.CurrentDirectory =
-                            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
-                            throw new NullReferenceException();
+                    var splashScreen = new SplashScreen("Resources/Icons/icon256x.png");
+                    splashScreen.Show(false, true);
+                    Environment.CurrentDirectory =
+                        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ??
+                        throw new NullReferenceException();
 #if !DEBUG
                         ProfileOptimization.SetProfileRoot(Environment.CurrentDirectory);
                         ProfileOptimization.StartProfile("Startup.Profile");
 #endif
-                        _IsLocalInstallation = Paths.IsLocalInstallation();
-                        UpdateStatus = new UpdateInfo();
-                        OptionsObject = OptionsControl.Load(out var ProgramIsNew);
+                    _IsLocalInstallation = Paths.IsLocalInstallation();
+                    UpdateStatus = new UpdateInfo();
+                    OptionsObject = OptionsControl.Load(out var ProgramIsNew);
 
-                        if (!File.Exists(Constants.HotkeysFile))
+                    if (!File.Exists(Constants.HotkeysFile))
+                    {
+                        HotkeyControl.CreateDefaultHotkeys();
+                    }
+                    else
+                    {
+                        HotkeyControl.CheckAndBufferHotkeys();
+                    }
+
+                    // Delete the default Ctrl+D hotkey to assign manually
+                    AvalonEditCommands.DeleteLine.InputGestures.Clear();
+
+                    if (OptionsObject.Program_DiscordPresence)
+                    {
+                        // Init Discord RPC
+                        DiscordClient.Initialize();
+
+                        // Set default presence
+                        DiscordClient.SetPresence(new RichPresence
                         {
-                            HotkeyControl.CreateDefaultHotkeys();
-                        }
-                        else
-                        {
-                            HotkeyControl.CheckAndBufferHotkeys();
-                        }
-
-                        // Delete the default Ctrl+D hotkey to assign manually
-                        AvalonEditCommands.DeleteLine.InputGestures.Clear();
-
-                        if (OptionsObject.Program_DiscordPresence)
-                        {
-                            // Init Discord RPC
-                            DiscordClient.Initialize();
-
-                            // Set default presence
-                            DiscordClient.SetPresence(new RichPresence
+                            State = "Idle",
+                            Timestamps = DiscordTime,
+                            Assets = new Assets
                             {
-                                State = "Idle",
-                                Timestamps = DiscordTime,
-                                Assets = new Assets
-                                {
-                                    LargeImageKey = "immagine"
-                                },
-                                Buttons = new Button[]
-                                {
+                                LargeImageKey = "immagine"
+                            },
+                            Buttons = new Button[]
+                            {
                                 new Button() { Label = Constants.GetSPCodeText, Url = Constants.GitHubLatestRelease }
-                                }
-                            });
-                        }
-
-
-                        Translations = new TranslationProvider();
-                        Translations.LoadLanguage(OptionsObject.Language, true);
-                        foreach (var arg in args)
-                        {
-                            if (arg.ToLowerInvariant() == "-rcck") //ReCreateCryptoKey
-                            {
-                                OptionsObject.ReCreateCryptoKey();
-                                MakeRCCKAlert();
                             }
-                        }
+                        });
+                    }
 
-                        Configs = ConfigLoader.Load();
-                        for (var i = 0; i < Configs.Length; ++i)
-                        {
-                            if (Configs[i].Name == OptionsObject.Program_SelectedConfig)
-                            {
-                                SelectedConfig = i;
-                                break;
-                            }
-                        }
 
-                        if (!OptionsObject.Program_UseHardwareAcceleration)
+                    Translations = new TranslationProvider();
+                    Translations.LoadLanguage(OptionsObject.Language, true);
+                    foreach (var arg in args)
+                    {
+                        if (arg.ToLowerInvariant() == "-rcck") //ReCreateCryptoKey
                         {
-                            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+                            OptionsObject.ReCreateCryptoKey();
+                            MakeRCCKAlert();
                         }
+                    }
+
+                    Configs = ConfigLoader.Load();
+                    for (var i = 0; i < Configs.Length; ++i)
+                    {
+                        if (Configs[i].Name == OptionsObject.Program_SelectedConfig)
+                        {
+                            SelectedConfig = i;
+                            break;
+                        }
+                    }
+
+                    if (!OptionsObject.Program_UseHardwareAcceleration)
+                    {
+                        RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+                    }
 #if !DEBUG
                         if (ProgramIsNew)
                         {
@@ -147,9 +147,9 @@ namespace SPCode
                             }
                         }
 #endif
-                        MainWindow = new MainWindow(splashScreen);
-                        var pipeServer = new PipeInteropServer(MainWindow);
-                        pipeServer.Start();
+                    MainWindow = new MainWindow(splashScreen);
+                    var pipeServer = new PipeInteropServer(MainWindow);
+                    pipeServer.Start();
 #if !DEBUG
                     }
                     catch (Exception e)
@@ -174,9 +174,9 @@ namespace SPCode
                             Task.Run(UpdateCheck.Check);
                         }
 #endif
-                        app.Startup += App_Startup;
-                        app.Run(MainWindow);
-                        OptionsControl.Save();
+                    app.Startup += App_Startup;
+                    app.Run(MainWindow);
+                    OptionsControl.Save();
 #if !DEBUG
                     }
                     catch (Exception e)

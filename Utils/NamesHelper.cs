@@ -5,7 +5,7 @@
 #if BETA
         public static bool Beta = true;
 #else
-        public static bool Beta = false; 
+        public static bool Beta = false;
 #endif
         public static string ProgramPublicName => Beta ? $"SPCode Beta (rev.{VersionHelper.GetRevisionNumber()})" : "SPCode";
         public static string PipeServerName => Beta ? "SPCodeBetaNamedPipeServer" : "SPCodeNamedPipeServer";

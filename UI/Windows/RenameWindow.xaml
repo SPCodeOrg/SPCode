@@ -1,11 +1,21 @@
-﻿<controls:MetroWindow
-             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="SPCode.UI.Windows.RenameWindow"
-             WindowStartupLocation="CenterScreen" 
-             GlowBrush="{DynamicResource AccentColorBrush}" 
-             Background="{DynamicResource WhiteBrush}" ResizeMode="NoResize" ShowInTaskbar="True" Title="SPCode Rename" Height="96" Width="256" HorizontalAlignment="Center" VerticalAlignment="Top" UseNoneWindowStyle="False" Topmost="True" TitlebarHeight="0" KeyDown="MetroWindow_KeyDown">
+﻿<controls:MetroWindow xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      x:Class="SPCode.UI.Windows.RenameWindow"
+                      WindowStartupLocation="CenterScreen" 
+                      GlowBrush="{DynamicResource AccentColorBrush}" 
+                      Background="{DynamicResource WhiteBrush}" 
+                      ResizeMode="NoResize" 
+                      ShowInTaskbar="True" 
+                      Title="SPCode Rename" 
+                      Height="96" 
+                      Width="256" 
+                      HorizontalAlignment="Center" 
+                      VerticalAlignment="Top" 
+                      UseNoneWindowStyle="False" 
+                      TitlebarHeight="0" 
+                      KeyDown="MetroWindow_KeyDown">
+  
   <controls:MetroWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

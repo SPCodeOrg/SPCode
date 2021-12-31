@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using ValveQuery.GameServer;
-using SPCode.Interop;
-using System.Net.Sockets;
-using System.Linq;
 using MahApps.Metro.Controls.Dialogs;
+using SPCode.Interop;
+using ValveQuery.GameServer;
 
 namespace SPCode.UI
 {

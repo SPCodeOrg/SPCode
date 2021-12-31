@@ -1,13 +1,18 @@
-﻿<controls:MetroWindow 
-  x:Class="SPCode.UI.Windows.OptionsWindow"
-  xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-  xmlns:components="clr-namespace:SPCode.UI.Components"
-  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  Width="680" Height="400" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" GlowBrush="{DynamicResource AccentColorBrush}" 
-  Background="{DynamicResource WhiteBrush}"
-  Title="Options" ShowTitleBar="False" KeyDown="MetroWindow_KeyDown">
-  
+﻿<controls:MetroWindow x:Class="SPCode.UI.Windows.OptionsWindow"
+                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:components="clr-namespace:SPCode.UI.Components"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      Width="680" 
+                      Height="400" 
+                      ResizeMode="NoResize" 
+                      WindowStartupLocation="CenterOwner" 
+                      GlowBrush="{DynamicResource AccentColorBrush}" 
+                      Background="{DynamicResource WhiteBrush}"
+                      Title="Options" 
+                      ShowTitleBar="False" 
+                      KeyDown="MetroWindow_KeyDown">
+
   <controls:MetroWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

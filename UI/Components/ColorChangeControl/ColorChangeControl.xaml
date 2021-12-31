@@ -4,27 +4,29 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="105" d:DesignWidth="300">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <Grid>
-        <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Black" />
-        <TextBlock Name="ColorName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" />
-        <TextBox Name="BrushRect" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5,5,0" Height="20" Width="150" TextChanged="BrushRect_TextChanged" />
-        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,30,0,0" Text="R:" IsHitTestVisible="False" />
-        <Slider Name="RSlider" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="25,30,5,0" Minimum="0" Maximum="255" TickFrequency="8" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="SliderValue_Changed" />
-        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,55,0,0" Text="G:" IsHitTestVisible="False" />
-        <Slider Name="GSlider" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="25,55,5,0" Minimum="0" Maximum="255" TickFrequency="8" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="SliderValue_Changed" />
-        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,80,0,0" Text="B:" IsHitTestVisible="False" />
-        <Slider Name="BSlider" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="25,80,5,0" Minimum="0" Maximum="255" TickFrequency="8" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="SliderValue_Changed" />
-    </Grid>
+             d:DesignHeight="105" 
+             d:DesignWidth="300">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid>
+    <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stroke="Black" />
+    <TextBlock Name="ColorName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" />
+    <TextBox Name="BrushRect" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5,5,0" Height="20" Width="150" TextChanged="BrushRect_TextChanged" />
+    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,30,0,0" Text="R:" IsHitTestVisible="False" />
+    <Slider Name="RSlider" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="25,30,5,0" Minimum="0" Maximum="255" TickFrequency="8" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="SliderValue_Changed" />
+    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,55,0,0" Text="G:" IsHitTestVisible="False" />
+    <Slider Name="GSlider" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="25,55,5,0" Minimum="0" Maximum="255" TickFrequency="8" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="SliderValue_Changed" />
+    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,80,0,0" Text="B:" IsHitTestVisible="False" />
+    <Slider Name="BSlider" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="25,80,5,0" Minimum="0" Maximum="255" TickFrequency="8" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="SliderValue_Changed" />
+  </Grid>
 </UserControl>
