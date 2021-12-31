@@ -18,14 +18,18 @@ namespace CondenserTest
             InitializeComponent();
             var str = new StringBuilder();
             var files = new List<string>();
-            files.AddRange(Directory.GetFiles(@"D:\AlliedModders\includes", "*.inc", SearchOption.AllDirectories));
-            str.AppendLine(files.Count.ToString());
-            foreach (var f in files)
+            var dir = @"D:\spcodecomp\custom configs\include";
+            if (Directory.Exists(dir))
             {
-                str.AppendLine(File.ReadAllText(f));
+                files.AddRange(Directory.GetFiles(dir, "*.inc", SearchOption.AllDirectories));
+                str.AppendLine(files.Count.ToString());
+                foreach (var f in files)
+                {
+                    str.AppendLine(File.ReadAllText(f));
+                }
+                textBox.Text = str.ToString();
             }
             ExpandBox.IsChecked = false;
-            textBox.Text = str.ToString();
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -332,22 +336,22 @@ namespace CondenserTest
 
         private Brush ChooseBackgroundFromTokenKind(TokenKind kind)
         {
-            switch (kind)
+            return kind switch
             {
-                case TokenKind.BraceClose:
-                case TokenKind.BraceOpen: return Brushes.LightGray;
-                case TokenKind.Character: return Brushes.LightSalmon;
-                case TokenKind.EOF: return Brushes.LimeGreen;
-                case TokenKind.Identifier: return Brushes.LightSteelBlue;
-                case TokenKind.Number: return Brushes.LightSeaGreen;
-                case TokenKind.ParenthesisClose:
-                case TokenKind.ParenthesisOpen: return Brushes.LightSlateGray;
-                case TokenKind.Quote: return Brushes.LightGoldenrodYellow;
-                case TokenKind.EOL: return Brushes.Aqua;
-                case TokenKind.SingleLineComment:
-                case TokenKind.MultiLineComment: return Brushes.Honeydew;
-                default: return Brushes.IndianRed;
-            }
+                TokenKind.BraceClose or
+                TokenKind.BraceOpen => Brushes.LightGray,
+                TokenKind.Character => Brushes.LightSalmon,
+                TokenKind.EOF => Brushes.LimeGreen,
+                TokenKind.Identifier => Brushes.LightSteelBlue,
+                TokenKind.Number => Brushes.LightSeaGreen,
+                TokenKind.ParenthesisClose or
+                TokenKind.ParenthesisOpen => Brushes.LightSlateGray,
+                TokenKind.Quote => Brushes.LightGoldenrodYellow,
+                TokenKind.EOL => Brushes.Aqua,
+                TokenKind.SingleLineComment or
+                TokenKind.MultiLineComment => Brushes.Honeydew,
+                _ => Brushes.IndianRed
+            };
         }
 
         private void CaretPositionChangedEvent(object sender, RoutedEventArgs e)

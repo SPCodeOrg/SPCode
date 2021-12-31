@@ -446,7 +446,7 @@ namespace SourcepawnCondenser.Tokenizer
                             }
 
                             var directiveString = Source.Substring(startIndex, endIndex - startIndex);
-                            token.Add(new Token(directiveString, TokenKind.PrePocessorDirective, startIndex));
+                            token.Add(new Token(directiveString, TokenKind.PreprocessorDirective, startIndex));
 
                             if (directiveString == "#define" && sArray[endIndex] == ' ')
                             {

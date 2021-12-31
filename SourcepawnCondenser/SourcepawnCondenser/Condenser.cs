@@ -81,7 +81,7 @@ namespace SourcepawnCondenser
 
                             break;
                         }
-                    case TokenKind.PrePocessorDirective:
+                    case TokenKind.PreprocessorDirective:
                         {
                             var newIndex = ConsumeSMPPDirective();
                             if (newIndex != -1)

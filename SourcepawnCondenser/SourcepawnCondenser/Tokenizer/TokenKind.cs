@@ -23,7 +23,7 @@
         Struct,                 //d
         MethodMap,              //d
         Property,               //d
-        PrePocessorDirective,   //d
+        PreprocessorDirective,   //d
         TypeDef,                //d
         TypeSet,                //d
         New,
