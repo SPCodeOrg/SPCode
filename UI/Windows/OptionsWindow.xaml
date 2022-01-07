@@ -51,8 +51,8 @@
             <ComboBox Name="AccentColor" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="425,5,0,0" Width="200" SelectionChanged="AccentColor_Changed" />
             <Label Name="LanguageLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="333,37,0,0" Content="Language:" />
             <ComboBox Name="LanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="425,37,0,0" Width="200" SelectionChanged="LanguageBox_Changed" />
-            <Label Name="ActionOnCloseLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="333,72,0,0" Content="On close:" />
-            <ComboBox Name="ActionOnCloseBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="425,72,0,0" Width="200" SelectionChanged="ActionOnCloseBox_Changed" />
+            <Label Name="ActionOnCloseLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="333,69,0,0" Content="On close:" />
+            <ComboBox Name="ActionOnCloseBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="425,69,0,0" Width="200" SelectionChanged="ActionOnCloseBox_Changed" />
           </Grid>
         </ScrollViewer>
       </controls:MetroTabItem>

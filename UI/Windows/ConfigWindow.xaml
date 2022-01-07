@@ -61,8 +61,8 @@
                          Style="{StaticResource SearchMetroTextBox}"
                          controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFileCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
         <TextBox Name="C_ServerArgs" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,186,5,0" TextChanged="C_ServerArgs_TextChanged" />
-        <TextBox Name="C_PreBuildCmd" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,246,5,0" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PreBuildCmd_TextChanged" />
-        <TextBox Name="C_PostBuildCmd" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,351,5,0" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PostBuildCmd_TextChanged" />
+        <TextBox Name="C_PreBuildCmd" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,246,5,0" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PreBuildCmd_TextChanged" GotFocus="BuildCommandsBoxes_OnFocus" />
+        <TextBox Name="C_PostBuildCmd" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,351,5,0" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PostBuildCmd_TextChanged" GotFocus="BuildCommandsBoxes_OnFocus" />
         <Slider Name="C_OptimizationLevel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="195,436,0,0" Width="75" Minimum="0" Maximum="2" TickFrequency="2" IsSnapToTickEnabled="True" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="C_OptimizationLevel_ValueChanged" />
         <Slider Name="C_VerboseLevel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="195,466,0,0" Width="75" Minimum="0" Maximum="2" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="C_VerboseLevel_ValueChanged" />
         <TextBlock Name="FTPHostBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,501,0,0" Text="FTP Host:" IsHitTestVisible="False" />
@@ -73,32 +73,20 @@
         <TextBox Name="C_FTPUser" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,526,5,0" TextChanged="C_FTPUser_TextChanged" />
         <PasswordBox Name="C_FTPPW" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,556,5,0" PasswordChanged="C_FTPPW_TextChanged" />
         <TextBox Name="C_FTPDir" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,586,5,0" TextChanged="C_FTPDir_TextChanged" />
-        <ComboBox Name="CMD_ItemC" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,216,5,0" Text="Commandline variables" Width="200" SelectedIndex="0">
-          <ComboBoxItem Name="ItemC_EditorDir" Content="{}{editordir} - Directory of the SPEdit binary" />
-          <ComboBoxItem Name="ItemC_ScriptDir" Content="{}{scriptdir} - Directory of the Compiling script" />
-          <ComboBoxItem Name="ItemC_CopyDir" Content="{}{copydir} - Directory where the smx should be copied" />
-          <ComboBoxItem Name="ItemC_ScriptFile" Content="{}{scriptfile} - Full Directory and Name of the script" />
-          <ComboBoxItem Name="ItemC_ScriptName" Content="{}{scriptname} - File Name of the script" />
-          <ComboBoxItem Name="ItemC_PluginFile" Content="{}{pluginfile} - Full Directory and Name of the compiled script" />
-          <ComboBoxItem Name="ItemC_PluginName" Content="{}{pluginname} - File Name of the compiled script" />
+        <ComboBox Name="CMD_ItemC" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,216,5,0" Width="200" SelectedIndex="0">
+          <ComboBoxItem Visibility="Collapsed">Macros</ComboBoxItem>
         </ComboBox>
-        <TextBlock Name="RConEngineBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,636,0,0" Text="RCon Server Engine:" IsHitTestVisible="False" />
         <TextBlock Name="RConIPBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,666,0,0" Text="RCon Server IP:" IsHitTestVisible="False" />
         <TextBlock Name="RConPortBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,696,0,0" Text="RCon Server Port:" IsHitTestVisible="False" />
         <TextBlock Name="RConPWBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,726,0,0" Text="RCon Password:" IsHitTestVisible="False" />
         <TextBlock Name="RConComBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,756,0,0" Text="RCon Commands:" IsHitTestVisible="False" />
-        <ComboBox Name="C_RConEngine" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,631,5,0" SelectionChanged="C_RConEngine_Changed">
-          <ComboBoxItem Content="Source Engine" IsSelected="True" />
-          <ComboBoxItem Content="Gold Source Engine" />
-        </ComboBox>
         <TextBox Name="C_RConIP" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,661,5,0" TextChanged="C_RConIP_TextChanged" />
         <TextBox Name="C_RConPort" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,691,5,0" TextChanged="C_RConPort_TextChanged" />
         <PasswordBox Name="C_RConPW" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="195,721,5,0" PasswordChanged="C_RConPW_TextChanged" />
-        <ComboBox Name="Rcon_MenuC" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,751,5,0" Text="Rcon commandline variables" Width="200" SelectedIndex="0">
-          <ComboBoxItem Name="MenuC_PluginsReload" Content="{}{plugins_reload} - Reloads all compiled plugins" />
-          <ComboBoxItem Name="MenuC_PluginsLoad" Content="{}{plugins_load} - Loads all compiled plugins" />
-          <ComboBoxItem Name="MenuC_PluginsUnload" Content="{}{plugins_unload} - Unloads all compiled plugins" />
+        <ComboBox Name="Rcon_MenuC" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,751,5,0" Width="200" SelectedIndex="0">
+          <ComboBoxItem Visibility="Collapsed">Macros</ComboBoxItem>
         </ComboBox>
+
         <TextBox Name="C_RConCmds" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,781,5,0" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_RConCmds_TextChanged" />
         <Rectangle Fill="#FFCCCCCC" HorizontalAlignment="Left" Height="93" Margin="195,30,0,0" Stroke="#FFCCCCCC" VerticalAlignment="Top" Width="668"/>
         <ListBox x:Name="C_SMDir" Height="91" Margin="196,31,6,0" VerticalAlignment="Top" SelectionMode="Extended"/>

@@ -25,8 +25,27 @@ namespace SPCode.UI.Windows
         private bool NeedsSMDefInvalidation;
 
         private ICommand textBoxButtonFileCmd;
-
         private ICommand textBoxButtonFolderCmd;
+
+        private static TextBox SelectedBox;
+
+        private readonly string[] CompileMacros =
+        {
+            "{editordir} - Directory of the SPCode binary",
+            "{scriptdir} - Directory of the compiling script",
+            "{copydir} - Directory where the .smx should be copied",
+            "{scriptfile} - Full directory and name of the script",
+            "{scriptname} - File name of the script",
+            "{pluginfile} - Full directory and name of the compiled script",
+            "{pluginname} - File name of the compiled script"
+        };
+
+        private readonly string[] CommandMacros =
+        {
+            "{plugins_reload} - Reloads all compiled plugins",
+            "{plugins_load} - Loads all compiled plugins",
+            "{plugins_unload} - Unloads all compiled plugins"
+        };
 
         public ConfigWindow()
         {
@@ -43,7 +62,14 @@ namespace SPCode.UI.Windows
                 ConfigListBox.Items.Add(new ListBoxItem { Content = config.Name });
             }
 
+            SelectedBox = C_PreBuildCmd;
+
             ConfigListBox.SelectedIndex = Program.SelectedConfig;
+
+            CompileMacros.ToList().ForEach(x => CMD_ItemC.Items.Add(x));
+            CMD_ItemC.SelectionChanged += CompileMacros_OnClickedItem;
+            CommandMacros.ToList().ForEach(x => Rcon_MenuC.Items.Add(x));
+            Rcon_MenuC.SelectionChanged += CommandMacros_OnClickedItem;
         }
 
         public ICommand TextBoxButtonFolderCmd
@@ -130,6 +156,49 @@ namespace SPCode.UI.Windows
             LoadConfigToUI(ConfigListBox.SelectedIndex);
         }
 
+        private void CompileMacros_OnClickedItem(object sender, SelectionChangedEventArgs e)
+        {
+            if (CMD_ItemC.SelectedItem is not string content)
+            {
+                return;
+            }
+
+            SelectedBox.AppendText(content.Substring(0, content.IndexOf('}') + 1));
+            var item = new ComboBoxItem()
+            {
+                Visibility = Visibility.Collapsed,
+                Content = "Macros",
+            };
+            CMD_ItemC.Items.Insert(0, item);
+            CMD_ItemC.SelectedIndex = 0;
+            SelectedBox.Focus();
+            SelectedBox.Select(SelectedBox.Text.Length, 0);
+        }
+
+        private void CommandMacros_OnClickedItem(object sender, SelectionChangedEventArgs e)
+        {
+            if (Rcon_MenuC.SelectedItem is not string content)
+            {
+                return;
+            }
+
+            C_RConCmds.AppendText(content.Substring(0, content.IndexOf('}') + 1));
+            var item = new ComboBoxItem()
+            {
+                Visibility = Visibility.Collapsed,
+                Content = "Macros",
+            };
+            Rcon_MenuC.Items.Insert(0, item);
+            Rcon_MenuC.SelectedIndex = 0;
+            C_RConCmds.Focus();
+            C_RConCmds.Select(C_RConCmds.Text.Length, 0);
+        }
+
+        private void BuildCommandsBoxes_OnFocus(object sender, RoutedEventArgs e)
+        {
+            SelectedBox = sender as TextBox;
+        }
+
         private void LoadConfigToUI(int index)
         {
             if (index < 0 || index >= Program.Configs.Length)
@@ -157,7 +226,6 @@ namespace SPCode.UI.Windows
             C_FTPUser.Text = c.FTPUser;
             C_FTPPW.Password = c.FTPPassword;
             C_FTPDir.Text = c.FTPDir;
-            C_RConEngine.SelectedIndex = c.RConUseSourceEngine ? 0 : 1;
             C_RConIP.Text = c.RConIP;
             C_RConPort.Text = c.RConPort.ToString();
             C_RConPW.Password = c.RConPassword;
@@ -227,7 +295,7 @@ namespace SPCode.UI.Windows
                 catch (UnauthorizedAccessException)
                 {
                     this.ShowMessageAsync("Access error",
-                        "The directory you just specified could not be accessed properly by SPCode. You might have trouble using the includes from this directory.",
+                        "The directory you just specified could not be accessed properly by SPCode. You may have trouble using the includes from this directory.",
                         MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
                 }
 
@@ -415,19 +483,6 @@ namespace SPCode.UI.Windows
             Program.Configs[ConfigListBox.SelectedIndex].FTPDir = C_FTPDir.Text;
         }
 
-        private void C_RConEngine_Changed(object sender, RoutedEventArgs e)
-        {
-            if (!AllowChange)
-            {
-                return;
-            }
-
-            if (ConfigListBox.SelectedIndex >= 0)
-            {
-                Program.Configs[ConfigListBox.SelectedIndex].RConUseSourceEngine = C_RConEngine.SelectedIndex == 0;
-            }
-        }
-
         private void C_RConIP_TextChanged(object sender, RoutedEventArgs e)
         {
             if (!AllowChange)
@@ -476,7 +531,6 @@ namespace SPCode.UI.Windows
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
-            // TODO: find out what is this for
             if (NeedsSMDefInvalidation)
             {
                 foreach (var config in Program.Configs)
@@ -485,31 +539,23 @@ namespace SPCode.UI.Windows
                 }
             }
 
-            // Fill a list with all configs from the ListBox
-
             var configsList = new List<string>();
-
             foreach (ListBoxItem item in ConfigListBox.Items)
             {
                 configsList.Add(item.Content.ToString());
             }
 
-            // Check for empty named configs and disallow saving configs
-
-            foreach (var cfg in configsList)
+            // Check for empty named configs
+            if (configsList.Any(x => string.IsNullOrEmpty(x)))
             {
-                if (cfg == string.Empty)
-                {
-                    e.Cancel = true;
-                    this.ShowMessageAsync(Program.Translations.Get("ErrorSavingConfigs"),
-                        Program.Translations.Get("EmptyConfigNames"), MessageDialogStyle.Affirmative,
-                        Program.MainWindow.MetroDialogOptions);
-                    return;
-                }
+                e.Cancel = true;
+                this.ShowMessageAsync(Program.Translations.Get("ErrorSavingConfigs"),
+                    Program.Translations.Get("EmptyConfigNames"), MessageDialogStyle.Affirmative,
+                    Program.MainWindow.MetroDialogOptions);
+                return;
             }
 
-            // Check for duplicate names in the config list and disallow saving configs
-
+            // Check for duplicate names in the config list
             if (configsList.Count != configsList.Distinct().Count())
             {
                 e.Cancel = true;
@@ -559,7 +605,6 @@ namespace SPCode.UI.Windows
                     writer.WriteAttributeString("FTPUser", c.FTPUser);
                     writer.WriteAttributeString("FTPPassword", ManagedAES.Encrypt(c.FTPPassword));
                     writer.WriteAttributeString("FTPDir", c.FTPDir);
-                    writer.WriteAttributeString("RConSourceEngine", c.RConUseSourceEngine ? "1" : "0");
                     writer.WriteAttributeString("RConIP", c.RConIP);
                     writer.WriteAttributeString("RConPort", c.RConPort.ToString());
                     writer.WriteAttributeString("RConPassword", ManagedAES.Encrypt(c.RConPassword));
@@ -604,22 +649,11 @@ namespace SPCode.UI.Windows
             FTPPWBlock.Text = Program.Translations.Get("FTPPw");
             FTPDirBlock.Text = Program.Translations.Get("FTPDir");
             CMD_ItemC.Text = Program.Translations.Get("CMDLineCom");
-            ItemC_EditorDir.Content = "{editordir} - " + Program.Translations.Get("ComEditorDir");
-            ItemC_ScriptDir.Content = "{scriptdir} - " + Program.Translations.Get("ComScriptDir");
-            ItemC_CopyDir.Content = "{copydir} - " + Program.Translations.Get("ComCopyDir");
-            ItemC_ScriptFile.Content = "{scriptfile} - " + Program.Translations.Get("ComScriptFile");
-            ItemC_ScriptName.Content = "{scriptname} - " + Program.Translations.Get("ComScriptName");
-            ItemC_PluginFile.Content = "{pluginfile} - " + Program.Translations.Get("ComPluginFile");
-            ItemC_PluginName.Content = "{pluginname} - " + Program.Translations.Get("ComPluginName");
-            RConEngineBlock.Text = Program.Translations.Get("RConEngine");
             RConIPBlock.Text = Program.Translations.Get("RConIP");
             RConPortBlock.Text = Program.Translations.Get("RconPort");
             RConPWBlock.Text = Program.Translations.Get("RconPw");
             RConComBlock.Text = Program.Translations.Get("RconCom");
             Rcon_MenuC.Text = Program.Translations.Get("RConCMDLineCom");
-            MenuC_PluginsReload.Content = "{plugins_reload} - " + Program.Translations.Get("ComPluginsReload");
-            MenuC_PluginsLoad.Content = "{plugins_load} - " + Program.Translations.Get("ComPluginsLoad");
-            MenuC_PluginsUnload.Content = "{plugins_unload} - " + Program.Translations.Get("ComPluginsUnload");
         }
 
 

@@ -138,7 +138,6 @@ namespace SPCode.Interop
                             FTPUser = _FTPUser,
                             FTPPassword = _FTPPW,
                             FTPDir = _FTPDir,
-                            RConUseSourceEngine = _RConEngineTypeSource,
                             RConIP = _RConIP,
                             RConPort = _RConPort,
                             RConPassword = _RConPassword,
