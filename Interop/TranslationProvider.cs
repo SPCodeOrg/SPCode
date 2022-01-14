@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows;
 using System.Xml;
 using SPCode.Utils;
-using static SPCode.Utils.DefaultTranslations;
 
 namespace SPCode.Interop
 {
@@ -35,7 +34,6 @@ namespace SPCode.Interop
         /// <param name="Initial"></param>
         public void LoadLanguage(string lang, bool Initial = false)
         {
-            DefaultLangDict.Keys.ToList().ForEach(x => LangDict[x] = DefaultLangDict[x]);
             var languageList = new List<string>();
             var languageIDList = new List<string>();
             languageList.Add("English");

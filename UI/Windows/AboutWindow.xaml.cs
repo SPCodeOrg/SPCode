@@ -31,7 +31,7 @@ namespace SPCode.UI.Windows
                     g.Background = gridBrush;
                 }
             }
-            TitleBox.Text = $"SPCode ({NamesHelper.VersionString}) - {Program.Translations.Get("SPEditCap")}";
+            TitleBox.Text = $"SPCode ({NamesHelper.VersionString}) - {Program.Translations.Get("SPCodeCap")}";
             LicenseField.Text = File.ReadAllText(Constants.LicenseFile);
         }
 

@@ -100,7 +100,7 @@ namespace SPCode
                         });
                     }
 
-
+                    // Set up translations
                     Translations = new TranslationProvider();
                     Translations.LoadLanguage(OptionsObject.Language, true);
                     foreach (var arg in args)
