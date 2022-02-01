@@ -107,8 +107,8 @@ namespace SPCode.Interop.Updater
                 PageSize = 10
             };
 
-            var client = new GitHubClient(new ProductHeaderValue("spcode-client"));
-            var releases = await client.Repository.Release.GetAll("SPCodeOrg", "SPCode", apiOptions);
+            var client = new GitHubClient(new ProductHeaderValue(Constants.ProductHeaderValueName));
+            var releases = await client.Repository.Release.GetAll(Constants.OrgName, Constants.MainRepoName, apiOptions);
 #if BETA
             var finalReleasesList = releases.Where(x => x.Prerelease);
 #else

@@ -628,7 +628,7 @@ namespace SPCode.UI.Windows
                 }
             }
 
-            for (var i = 0; i < Program.Translations.AvailableLanguages.Length; ++i)
+            for (var i = 0; i < Program.Translations.AvailableLanguages.Count; ++i)
             {
                 var item = new ComboboxItem
                 {

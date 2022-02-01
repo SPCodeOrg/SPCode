@@ -1,21 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Windows;
 using System.Xml;
+using Octokit;
 using SPCode.Utils;
 
 namespace SPCode.Interop
 {
     public class TranslationProvider
     {
-        public string[] AvailableLanguageIDs;
-        public string[] AvailableLanguages;
+        public List<string> AvailableLanguageIDs = new();
+        public List<string> AvailableLanguages = new();
+        private readonly string _tempDir = Paths.GetTempDirectory();
+        private readonly string _translationsDir = Paths.GetTranslationsDirectory();
 
         public bool IsDefault = true;
 
         private readonly Dictionary<string, string> LangDict = new(StringComparer.OrdinalIgnoreCase);
+
+        public TranslationProvider()
+        {
+            // Make sure translations dir exists
+            if (!Directory.Exists(_translationsDir))
+            {
+                Directory.CreateDirectory(_translationsDir);
+            }
+
+            if (IsUpdateAvailable(out var latestVersion))
+            {
+                UpdateTranslations(latestVersion);
+            }
+
+            ParseTranslationFiles();
+        }
 
         /// <summary>
         /// Gets the translation of the specified phrase.
@@ -89,8 +110,89 @@ namespace SPCode.Interop
                         , MessageBoxImage.Warning);
                 }
             }
-            AvailableLanguages = languageList.ToArray();
-            AvailableLanguageIDs = languageIDList.ToArray();
+            AvailableLanguages = languageList;
+            AvailableLanguageIDs = languageIDList;
+        }
+
+        public void ParseTranslationFiles()
+        {
+            try
+            {
+                var filesDir = Directory.GetFiles(_translationsDir).Where(x => x.EndsWith(".xml"));
+                foreach (var file in filesDir)
+                {
+                    // Create wrapper
+                    var fInfo = new FileInfo(file);
+
+                    // Parse content in an XML object
+                    var doc = new XmlDocument();
+                    doc.LoadXml(File.ReadAllText(fInfo.FullName));
+
+                    // Get language name and ID
+                    var langName = doc.ChildNodes[0].ChildNodes
+                        .Cast<XmlNode>()
+                        .Single(x => x.Name == "language")
+                        .InnerText;
+                    var langID = fInfo.Name.Substring(0, fInfo.Name.IndexOf('.'));
+
+                    // Add file to the available languages lists
+                    AvailableLanguages.Add(langName);
+                    AvailableLanguageIDs.Add(langID);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"There was a problem while updating the translations file.\n" +
+                    $"Details: {ex.Message}");
+            }
+        }
+
+        public void UpdateTranslations(Release latestVersion)
+        {
+            // Clear temp folder before beggining
+            DirUtils.ClearTempFolder();
+
+            // Download latest release zip file
+            var wc = new WebClient();
+            var downloadedFile = Path.Combine(_tempDir, "langs.zip");
+            wc.Headers.Add(HttpRequestHeader.UserAgent, Constants.ProductHeaderValueName);
+            wc.DownloadFile(latestVersion.ZipballUrl, downloadedFile);
+
+            // Decompress and replace all of its files
+            ZipFile.ExtractToDirectory(downloadedFile, _tempDir);
+            var filesDir = Directory.GetFiles(Directory.GetDirectories(_tempDir)[0]).Where(x => x.EndsWith(".xml"));
+            foreach (var file in filesDir)
+            {
+                // Create wrapper
+                var fInfo = new FileInfo(file);
+
+                // Replace current file with this one
+                var destination = Path.Combine(_translationsDir, fInfo.Name);
+                if (File.Exists(destination))
+                {
+                    File.Delete(destination);
+                }
+                File.Move(fInfo.FullName, destination);
+            }
+
+            // Delete all temp folder contents
+            DirUtils.ClearTempFolder();
+
+            // Update version to options object
+            Program.OptionsObject.TranslationsVersion = int.Parse(latestVersion.Name);
+        }
+
+        public bool IsUpdateAvailable(out Release latestVersion)
+        {
+            var client = new GitHubClient(new ProductHeaderValue(Constants.ProductHeaderValueName));
+
+            // Check if translations need update by comparing stored version with latest release name from repository
+            var versionStored = Program.OptionsObject.TranslationsVersion;
+
+            latestVersion = client.Repository.Release.GetAll(Constants.OrgName,
+                Constants.TranslationsRepoName).Result[0];
+
+            return latestVersion != null && versionStored != 0 && versionStored < int.Parse(latestVersion.Name);
         }
     }
 }

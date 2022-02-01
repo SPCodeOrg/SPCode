@@ -102,7 +102,8 @@ namespace SPCode
 
                     // Set up translations
                     Translations = new TranslationProvider();
-                    Translations.LoadLanguage(OptionsObject.Language, true);
+
+                    // Check startup arguments for -rcck
                     foreach (var arg in args)
                     {
                         if (arg.ToLowerInvariant() == "-rcck") //ReCreateCryptoKey
