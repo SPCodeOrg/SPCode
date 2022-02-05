@@ -5,7 +5,6 @@ LiteralPath=
 "sourcepawn/", 
 "lysis/", 
 "SPCode.exe", 
-"lang_0_spcode.xml", 
 "GPLv3.txt",
 "License.txt"
 DestinationPath = "SPCode.Portable.zip"
