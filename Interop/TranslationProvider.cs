@@ -20,7 +20,7 @@ namespace SPCode.Interop
 
         public bool IsDefault = true;
 
-        private readonly Dictionary<string, string> LangDict = new(StringComparer.OrdinalIgnoreCase);
+        private static readonly Dictionary<string, string> LangDict = new(StringComparer.OrdinalIgnoreCase);
 
         public TranslationProvider()
         {
@@ -43,7 +43,7 @@ namespace SPCode.Interop
         /// </summary>
         /// <param name="phrase">The phrase to return translated</param>
         /// <returns></returns>
-        public string Get(string phrase)
+        public static string Translate(string phrase)
         {
             return LangDict.ContainsKey(phrase) ? LangDict[phrase] : "<empty>";
         }

@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -13,7 +12,7 @@ using SPCode.Interop;
 using SPCode.Interop.Updater;
 using SPCode.UI.Windows;
 using SPCode.Utils;
-using SPCode.Utils.Models;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI
 {
@@ -253,7 +252,7 @@ namespace SPCode.UI
 
         private async void UpdateCheck_Click(object sender, RoutedEventArgs e)
         {
-            var updatingWindow = await this.ShowProgressAsync(Program.Translations.Get("CheckingUpdates") + "...", "", false, MetroDialogOptions);
+            var updatingWindow = await this.ShowProgressAsync(Translate("CheckingUpdates") + "...", "", false, MetroDialogOptions);
             updatingWindow.SetIndeterminate();
 
             await UpdateCheck.Check();
@@ -280,21 +279,21 @@ namespace SPCode.UI
                 await updatingWindow.CloseAsync();
                 if (status.GotException)
                 {
-                    await this.ShowMessageAsync(Program.Translations.Get("FailedCheck"),
-                        Program.Translations.Get("ErrorUpdate") + Environment.NewLine +
-                        $"{Program.Translations.Get("Details")}: " + status.ExceptionMessage
+                    await this.ShowMessageAsync(Translate("FailedCheck"),
+                        Translate("ErrorUpdate") + Environment.NewLine +
+                        $"{Translate("Details")}: " + status.ExceptionMessage
                         , MessageDialogStyle.Affirmative, MetroDialogOptions);
                 }
                 else
                 {
 #if BETA
-                    var message = string.Format(Program.Translations.Get("VersionYourBeta"),
+                    var message = string.Format(Translate("VersionYourBeta"),
                             VersionHelper.GetAssemblyInformationalVersion());
 #else
-                    var message = string.Format(Program.Translations.Get("VersionYour"),
+                    var message = string.Format(Translate("VersionYour"),
                             VersionHelper.GetAssemblyVersion());
 #endif
-                    await this.ShowMessageAsync(Program.Translations.Get("VersUpToDate"),
+                    await this.ShowMessageAsync(Translate("VersUpToDate"),
                         message, MessageDialogStyle.Affirmative, MetroDialogOptions);
                 }
             }

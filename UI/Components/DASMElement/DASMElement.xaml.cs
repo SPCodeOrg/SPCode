@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using smxdasm;
 using Xceed.Wpf.AvalonDock.Layout;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI.Components
 {
@@ -46,7 +47,7 @@ namespace SPCode.UI.Components
             }
             catch (Exception e)
             {
-                detailbox_.Text = Program.Translations.Get("ErrorFileLoadProc") + Environment.NewLine + Environment.NewLine + $"{Program.Translations.Get("Details")}: " + e.Message;
+                detailbox_.Text = Translate("ErrorFileLoadProc") + Environment.NewLine + Environment.NewLine + $"{Translate("Details")}: " + e.Message;
                 return;
             }
             RenderFile();
@@ -309,7 +310,7 @@ namespace SPCode.UI.Components
             }
             catch (Exception e)
             {
-                AddDetailLine(Program.Translations.Get("NotDissMethod"), name, e.Message);
+                AddDetailLine(Translate("NotDissMethod"), name, e.Message);
                 EndDetailUpdate();
                 return;
             }

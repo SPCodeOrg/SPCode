@@ -10,6 +10,7 @@ using System.Windows.Input;
 using MahApps.Metro;
 using SPCode.UI.Components;
 using Xceed.Wpf.AvalonDock.Layout;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI.Windows
 {
@@ -25,8 +26,8 @@ namespace SPCode.UI.Windows
 
         private readonly ObservableCollection<string> FindReplaceButtonItems = new()
         {
-            Program.Translations.Get("Replace"),
-            Program.Translations.Get("ReplaceAll")
+            Translate("Replace"),
+            Translate("ReplaceAll")
         };
 
         private enum RadioButtons
@@ -270,14 +271,14 @@ namespace SPCode.UI.Windows
                         var location = editors[index].editor.Document.GetLocation(m.Index + addToOffset);
                         editors[index].editor.ScrollTo(location.Line, location.Column);
                         FindResultBlock.Text = "Found in offset " + (m.Index + addToOffset).ToString() + " with length " + m.Length.ToString();
-                        FindResultBlock.Text = string.Format(Program.Translations.Get("FoundInOff"), m.Index + addToOffset, m.Length);
+                        FindResultBlock.Text = string.Format(Translate("FoundInOff"), m.Index + addToOffset, m.Length);
                         break;
                     }
                 }
             }
             if (!foundOccurence)
             {
-                FindResultBlock.Text = Program.Translations.Get("FoundNothing");
+                FindResultBlock.Text = Translate("FoundNothing");
             }
         }
 
@@ -329,14 +330,14 @@ namespace SPCode.UI.Windows
                         editors[index].editor.Select(m.Index + addToOffset, result.Length);
                         var location = editors[index].editor.Document.GetLocation(m.Index + addToOffset);
                         editors[index].editor.ScrollTo(location.Line, location.Column);
-                        FindResultBlock.Text = string.Format(Program.Translations.Get("ReplacedOff"), MinHeight + addToOffset);
+                        FindResultBlock.Text = string.Format(Translate("ReplacedOff"), MinHeight + addToOffset);
                         break;
                     }
                 }
             }
             if (!foundOccurence)
             {
-                FindResultBlock.Text = Program.Translations.Get("FoundNothing");
+                FindResultBlock.Text = Translate("FoundNothing");
             }
         }
 
@@ -372,7 +373,7 @@ namespace SPCode.UI.Windows
                 }
             }
             FindResultBlock.Text = "Replaced " + count.ToString() + " occurences in " + fileCount.ToString() + " documents";
-            FindResultBlock.Text = string.Format(Program.Translations.Get("ReplacedOcc"), count, fileCount);
+            FindResultBlock.Text = string.Format(Translate("ReplacedOcc"), count, fileCount);
         }
 
         private void Count()
@@ -390,7 +391,7 @@ namespace SPCode.UI.Windows
                 var mc = regex.Matches(editor.editor.Text);
                 count += mc.Count;
             }
-            FindResultBlock.Text = count.ToString() + " " + Program.Translations.Get("OccFound");
+            FindResultBlock.Text = count.ToString() + " " + Translate("OccFound");
         }
 
         private Regex GetSearchRegex()
@@ -398,7 +399,7 @@ namespace SPCode.UI.Windows
             var findString = FindBox.Text;
             if (string.IsNullOrEmpty(findString))
             {
-                FindResultBlock.Text = Program.Translations.Get("EmptyPatt");
+                FindResultBlock.Text = Translate("EmptyPatt");
                 return null;
             }
             Regex regex = new(string.Empty);
@@ -445,7 +446,7 @@ namespace SPCode.UI.Windows
                         }
                         catch (Exception)
                         {
-                            FindResultBlock.Text = Program.Translations.Get("NoValidRegex"); return null;
+                            FindResultBlock.Text = Translate("NoValidRegex"); return null;
                         }
                     }
                 }
@@ -528,17 +529,17 @@ namespace SPCode.UI.Windows
 
         public void Language_Translate()
         {
-            NSearch_RButton.Content = Program.Translations.Get("NormalSearch");
-            WSearch_RButton.Content = Program.Translations.Get("MatchWholeWords");
-            ASearch_RButton.Content = $"{Program.Translations.Get("AdvancSearch")} (\\r, \\n, \\t, ...)";
-            RSearch_RButton.Content = Program.Translations.Get("RegexSearch");
-            MenuFR_CurrDoc.Content = Program.Translations.Get("CurrDoc");
-            MenuFR_AllDoc.Content = Program.Translations.Get("AllDoc");
+            NSearch_RButton.Content = Translate("NormalSearch");
+            WSearch_RButton.Content = Translate("MatchWholeWords");
+            ASearch_RButton.Content = $"{Translate("AdvancSearch")} (\\r, \\n, \\t, ...)";
+            RSearch_RButton.Content = Translate("RegexSearch");
+            MenuFR_CurrDoc.Content = Translate("CurrDoc");
+            MenuFR_AllDoc.Content = Translate("AllDoc");
 
-            Find_Button.Content = $"{Program.Translations.Get("Find")} (F3)";
-            Count_Button.Content = Program.Translations.Get("Count");
-            CCBox.Content = Program.Translations.Get("CaseSen");
-            MLRBox.Content = Program.Translations.Get("MultilineRegex");
+            Find_Button.Content = $"{Translate("Find")} (F3)";
+            Count_Button.Content = Translate("Count");
+            CCBox.Content = Translate("CaseSen");
+            MLRBox.Content = Translate("MultilineRegex");
         }
         #endregion
     }

@@ -9,8 +9,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using DiscordRPC;
@@ -22,6 +20,7 @@ using SPCode.UI.Components;
 using SPCode.Utils;
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
+using static SPCode.Interop.TranslationProvider;
 using Button = DiscordRPC.Button;
 
 namespace SPCode.UI
@@ -44,22 +43,22 @@ namespace SPCode.UI
 
         private ObservableCollection<string> ActionButtonDict = new()
         {
-            Program.Translations.Get("Copy"),
-            Program.Translations.Get("UploadFTP"),
-            Program.Translations.Get("StartServer")
+            Translate("Copy"),
+            Translate("UploadFTP"),
+            Translate("StartServer")
         };
 
         private ObservableCollection<string> CompileButtonDict = new()
         {
-            Program.Translations.Get("CompileAll"),
-            Program.Translations.Get("CompileCurrent")
+            Translate("CompileAll"),
+            Translate("CompileCurrent")
         };
 
         public MetroDialogSettings ClosingDialogOptions = new()
         {
-            AffirmativeButtonText = Program.Translations.Get("Yes"),
-            NegativeButtonText = Program.Translations.Get("No"),
-            FirstAuxiliaryButtonText = Program.Translations.Get("Cancel"),
+            AffirmativeButtonText = Translate("Yes"),
+            NegativeButtonText = Translate("No"),
+            FirstAuxiliaryButtonText = Translate("Cancel"),
             AnimateHide = false,
             AnimateShow = false,
             DefaultButtonFocus = MessageDialogResult.Affirmative
@@ -508,7 +507,7 @@ namespace SPCode.UI
 
             if (ServerIsRunning)
             {
-                outString = $"{outString} | {Program.Translations.Get("ServerRunning")}";
+                outString = $"{outString} | {Translate("ServerRunning")}";
             }
 
             Title = outString;

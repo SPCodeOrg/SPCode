@@ -7,11 +7,10 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Media;
 using MahApps.Metro.Controls.Dialogs;
 using SPCode.Interop;
 using SPCode.Utils;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI
 {
@@ -75,8 +74,8 @@ namespace SPCode.UI
             if (!SpCompFound)
             {
                 LoggingControl.LogAction($"No compiler found, aborting.");
-                await this.ShowMessageAsync(Program.Translations.Get("Error"),
-                    Program.Translations.Get("SPCompNotFound"), MessageDialogStyle.Affirmative,
+                await this.ShowMessageAsync(Translate("Error"),
+                    Translate("SPCompNotFound"), MessageDialogStyle.Affirmative,
                     MetroDialogOptions);
                 InCompiling = false;
                 return;
@@ -126,7 +125,7 @@ namespace SPCode.UI
                 // Shows the 'Compiling...' window
                 ErrorResultGrid.Items.Clear();
 
-                ProgressTask = await this.ShowProgressAsync(Program.Translations.Get("Compiling"), "",
+                ProgressTask = await this.ShowProgressAsync(Translate("Compiling"), "",
                     false, MetroDialogOptions);
                 ProgressTask.SetProgress(0.0);
 
@@ -197,7 +196,7 @@ namespace SPCode.UI
                             if (process.ExitCode != 1 && process.ExitCode != 0)
                             {
                                 await ProgressTask.CloseAsync();
-                                await this.ShowMessageAsync(Program.Translations.Get("Error"),
+                                await this.ShowMessageAsync(Translate("Error"),
                                     "The SourcePawn compiler has crashed.\n" +
                                     "Try again, or file an issue at the SourcePawn GitHub repository describing your steps that lead to this instance in detail.\n" +
                                     $"Exit code: {process.ExitCode:X}", MessageDialogStyle.Affirmative,
@@ -210,8 +209,8 @@ namespace SPCode.UI
                         catch (Exception)
                         {
                             await ProgressTask.CloseAsync();
-                            await this.ShowMessageAsync(Program.Translations.Get("SPCompNotStarted"),
-                                Program.Translations.Get("Error"), MessageDialogStyle.Affirmative,
+                            await this.ShowMessageAsync(Translate("SPCompNotStarted"),
+                                Translate("Error"), MessageDialogStyle.Affirmative,
                                 MetroDialogOptions);
                             InCompiling = false;
                             return;
@@ -280,7 +279,7 @@ namespace SPCode.UI
                     ProgressTask.SetProgress(1.0);
                     if (currentConfig.AutoCopy)
                     {
-                        ProgressTask.SetTitle(Program.Translations.Get("CopyingFiles") + "...");
+                        ProgressTask.SetTitle(Translate("CopyingFiles") + "...");
                         ProgressTask.SetIndeterminate();
                         await Task.Run(() => Copy_Plugins());
                         ProgressTask.SetProgress(1.0);
@@ -288,7 +287,7 @@ namespace SPCode.UI
 
                     if (currentConfig.AutoUpload)
                     {
-                        ProgressTask.SetTitle(Program.Translations.Get("FTPUploading") + "...");
+                        ProgressTask.SetTitle(Translate("FTPUploading") + "...");
                         ProgressTask.SetIndeterminate();
                         await Task.Run(FTPUpload_Plugins);
                         ProgressTask.SetProgress(1.0);
@@ -296,7 +295,7 @@ namespace SPCode.UI
 
                     if (currentConfig.AutoRCON)
                     {
-                        ProgressTask.SetTitle(Program.Translations.Get("RCONCommand") + "...");
+                        ProgressTask.SetTitle(Translate("RCONCommand") + "...");
                         ProgressTask.SetIndeterminate();
                         await Task.Run(Server_Query);
                         ProgressTask.SetProgress(1.0);
@@ -350,25 +349,25 @@ namespace SPCode.UI
                         var copyFileDestination = Path.Combine(c.CopyDirectory, destinationFileName);
                         File.Copy(file, copyFileDestination, true);
                         NonUploadedFiles.Add(copyFileDestination);
-                        output.Add($"{Program.Translations.Get("Copied")}: {copyFileDestination}");
+                        output.Add($"{Translate("Copied")}: {copyFileDestination}");
                         ++copyCount;
                         if (c.DeleteAfterCopy)
                         {
                             File.Delete(file);
-                            output.Add($"{Program.Translations.Get("Deleted")}: {copyFileDestination}");
+                            output.Add($"{Translate("Deleted")}: {copyFileDestination}");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    output.Add($"{Program.Translations.Get("FailCopy")}: {destFile.Name}");
+                    output.Add($"{Translate("FailCopy")}: {destFile.Name}");
                     output.Add(ex.Message);
                 }
             }
 
             if (copyCount == 0)
             {
-                output.Add($"{Program.Translations.Get("NoFilesCopy")}");
+                output.Add($"{Translate("NoFilesCopy")}");
             }
 
         Dispatcher:
@@ -425,21 +424,21 @@ namespace SPCode.UI
                         try
                         {
                             ftp.Upload(uploadDir, file);
-                            output.Add($"{Program.Translations.Get("Uploaded")}: {fileInfo.Name}");
+                            output.Add($"{Translate("Uploaded")}: {fileInfo.Name}");
                         }
                         catch (Exception e)
                         {
-                            output.Add(string.Format(Program.Translations.Get("ErrorUploadFile"),
+                            output.Add(string.Format(Translate("ErrorUploadFile"),
                                 fileInfo.Name, uploadDir));
-                            output.Add($"{Program.Translations.Get("Details")}: {e.Message}");
+                            output.Add($"{Translate("Details")}: {e.Message}");
                         }
                     }
                 }
             }
             catch (Exception e)
             {
-                output.Add(Program.Translations.Get("ErrorUpload"));
-                output.Add($"{Program.Translations.Get("Details")}: " + e.Message);
+                output.Add(Translate("ErrorUpload"));
+                output.Add($"{Translate("Details")}: " + e.Message);
             }
 
         Dispatcher:

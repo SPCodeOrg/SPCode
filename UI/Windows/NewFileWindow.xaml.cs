@@ -14,6 +14,7 @@ using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using SPCode.Utils;
 using Xceed.Wpf.AvalonDock.Layout;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI.Windows
 {
@@ -45,7 +46,7 @@ namespace SPCode.UI.Windows
                                     AddExtension = true,
                                     Filter = "Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|All Files (*.*)|*.*",
                                     OverwritePrompt = true,
-                                    Title = Program.Translations.Get("New")
+                                    Title = Translate("New")
                                 };
                                 var result = dialog.ShowDialog();
 
@@ -179,7 +180,7 @@ namespace SPCode.UI.Windows
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
@@ -211,7 +212,7 @@ namespace SPCode.UI.Windows
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
@@ -348,7 +349,7 @@ namespace SPCode.UI.Windows
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
@@ -363,7 +364,7 @@ namespace SPCode.UI.Windows
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
@@ -371,8 +372,8 @@ namespace SPCode.UI.Windows
         {
             if (!Program.Translations.IsDefault)
             {
-                PreviewBlock.Text = $"{Program.Translations.Get("Preview")}:";
-                SaveButton.Content = Program.Translations.Get("Save");
+                PreviewBlock.Text = $"{Translate("Preview")}:";
+                SaveButton.Content = Translate("Save");
             }
         }
 
@@ -391,7 +392,7 @@ namespace SPCode.UI.Windows
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
@@ -446,7 +447,7 @@ namespace SPCode.UI.Windows
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
@@ -472,7 +473,7 @@ namespace SPCode.UI.Windows
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
@@ -518,7 +519,7 @@ namespace SPCode.UI.Windows
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
@@ -526,7 +527,7 @@ namespace SPCode.UI.Windows
         {
             try
             {
-                PreviewBlock.Text = $"{Program.Translations.Get("Name")}:";
+                PreviewBlock.Text = $"{Translate("Name")}:";
                 TbxRenameTemplate.Text = isNewTemplate ? "" : (TemplateListBox.SelectedItem as ListBoxItem).Content.ToString();
                 TbxRenameTemplate.Visibility = Visibility.Visible;
                 var mg = PreviewBox.Margin;
@@ -539,7 +540,7 @@ namespace SPCode.UI.Windows
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
@@ -547,7 +548,7 @@ namespace SPCode.UI.Windows
         {
             try
             {
-                PreviewBlock.Text = $"{Program.Translations.Get("Preview")}:";
+                PreviewBlock.Text = $"{Translate("Preview")}:";
                 TbxRenameTemplate.Visibility = Visibility.Collapsed;
                 LblError.Visibility = Visibility.Collapsed;
                 var mg = PreviewBox.Margin;
@@ -560,7 +561,7 @@ namespace SPCode.UI.Windows
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
         }
 
@@ -571,13 +572,13 @@ namespace SPCode.UI.Windows
 
             if (tempName != (TemplateListBox.SelectedItem as ListBoxItem).Content.ToString() && TemplateListBox.Items.Cast<ListBoxItem>().ToList().Any(x => x.Content.ToString().ToLower() == tempName.ToLower()))
             {
-                message = Program.Translations.Get("TemplateExists");
+                message = Translate("TemplateExists");
                 return false;
             }
 
             if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
             {
-                message = Program.Translations.Get("EmptyName");
+                message = Translate("EmptyName");
                 return false;
             }
 
@@ -586,7 +587,7 @@ namespace SPCode.UI.Windows
 
             if (arr.Length == 0)
             {
-                message = Program.Translations.Get("IllegalCharacters");
+                message = Translate("IllegalCharacters");
                 return false;
             }
 

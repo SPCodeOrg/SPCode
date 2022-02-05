@@ -12,6 +12,7 @@ using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
 using MdXaml;
 using SPCode.Utils;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.Interop.Updater
 {
@@ -85,11 +86,11 @@ namespace SPCode.Interop.Updater
             }
             else
             {
-                Title = string.Format(Program.Translations.Get("VersionAvailable"), updateInfo.AllReleases[0].TagName);
-                MainLine.Text = Program.Translations.Get("WantToUpdate");
-                ActionYesButton.Content = Program.Translations.Get("Yes");
-                ActionNoButton.Content = Program.Translations.Get("No");
-                ActionGithubButton.Content = Program.Translations.Get("ViewGithub");
+                Title = string.Format(Translate("VersionAvailable"), updateInfo.AllReleases[0].TagName);
+                MainLine.Text = Translate("WantToUpdate");
+                ActionYesButton.Content = Translate("Yes");
+                ActionNoButton.Content = Translate("No");
+                ActionGithubButton.Content = Translate("ViewGithub");
             }
 
             var releasesBody = new StringBuilder();
@@ -131,8 +132,8 @@ namespace SPCode.Interop.Updater
             ActionYesButton.Visibility = Visibility.Hidden;
             ActionNoButton.Visibility = Visibility.Hidden;
             ActionGithubButton.Visibility = Visibility.Hidden;
-            MainLine.Text = string.Format(Program.Translations.Get("UpdatingTo"), updateInfo.AllReleases[0].TagName);
-            SubLine.Text = Program.Translations.Get("DownloadingUpdater");
+            MainLine.Text = string.Format(Translate("UpdatingTo"), updateInfo.AllReleases[0].TagName);
+            SubLine.Text = Translate("DownloadingUpdater");
             var t = new Thread(UpdateDownloadWorker);
             t.Start();
         }
@@ -180,7 +181,7 @@ namespace SPCode.Interop.Updater
         /// </summary>
         private void FinalizeUpdate()
         {
-            SubLine.Text = Program.Translations.Get("StartingUpdater");
+            SubLine.Text = Translate("StartingUpdater");
             UpdateLayout();
             try
             {

@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using ICSharpCode.AvalonEdit;
 using MahApps.Metro;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI.Windows
 {
@@ -149,9 +150,9 @@ namespace SPCode.UI.Windows
 
         public void Language_Translate()
         {
-            rbLineJump.Content = Program.Translations.Get("GoToLine");
-            rbOffsetJump.Content = Program.Translations.Get("GoToOffset");
-            btJump.Content = Program.Translations.Get("Go");
+            rbLineJump.Content = Translate("GoToLine");
+            rbOffsetJump.Content = Translate("GoToOffset");
+            btJump.Content = Translate("Go");
         }
         #endregion
     }

@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using MahApps.Metro;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI.Windows
 {
@@ -81,12 +82,12 @@ namespace SPCode.UI.Windows
             var inputText = TxtName.Text;
             if (string.IsNullOrEmpty(inputText))
             {
-                lblError.Content = Program.Translations.Get("EmptyName");
+                lblError.Content = Translate("EmptyName");
                 return;
             }
             if (IsNameTaken(inputText))
             {
-                lblError.Content = Program.Translations.Get("NameAlreadyExists");
+                lblError.Content = Translate("NameAlreadyExists");
                 return;
             }
             NewName = TxtName.Text;
@@ -112,8 +113,8 @@ namespace SPCode.UI.Windows
         {
             if (!TxtName.Text.Contains(".") || !Program.MainWindow.FileIcons.ContainsKey(TxtName.Text.Substring(TxtName.Text.LastIndexOf('.'))))
             {
-                lblError.Content = Program.Translations.Get("FileNotSupported");
-                lblError.ToolTip = Program.Translations.Get("FileWillBeExcluded");
+                lblError.Content = Translate("FileNotSupported");
+                lblError.ToolTip = Translate("FileWillBeExcluded");
             }
             else
             {
@@ -124,8 +125,8 @@ namespace SPCode.UI.Windows
 
         public void Language_Translate()
         {
-            BtAccept.Content = Program.Translations.Get("Accept");
-            BtCancel.Content = Program.Translations.Get("Cancel");
+            BtAccept.Content = Translate("Accept");
+            BtCancel.Content = Translate("Cancel");
         }
         #endregion
     }
