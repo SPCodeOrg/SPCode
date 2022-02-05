@@ -52,66 +52,43 @@ namespace SPCode.Interop
         /// Loads the specified language.
         /// </summary>
         /// <param name="lang">The language to load</param>
-        /// <param name="Initial"></param>
-        public void LoadLanguage(string lang, bool Initial = false)
+        /// <param name="initial"></param>
+        public void LoadLanguage(string lang, bool initial = false)
         {
-            var languageList = new List<string>();
-            var languageIDList = new List<string>();
-            languageList.Add("English");
-            languageIDList.Add("");
             lang = lang.Trim().ToLowerInvariant();
-            IsDefault = (string.IsNullOrEmpty(lang) || lang.ToLowerInvariant() == "en") && Initial;
-            if (File.Exists(Constants.LanguagesFile))
+            IsDefault = (string.IsNullOrEmpty(lang) || lang.ToLowerInvariant() == "default") && initial;
+            var doc = new XmlDocument();
+            try
             {
-                try
+                // Fill with defaults first
+                if (initial)
                 {
-                    var document = new XmlDocument();
-                    document.Load(Constants.LanguagesFile);
-                    if (document.ChildNodes.Count < 1)
+                    doc.Load(Path.Combine(_translationsDir, Constants.DefaultTranslationsFile));
+                    foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
                     {
-                        throw new Exception("No Root-Node: \"translations\" found");
+                        LangDict.Add(node.Name, node.InnerText);
                     }
 
-                    XmlNode rootLangNode = null;
-                    foreach (XmlNode childNode in document.ChildNodes[0].ChildNodes)
+                    // Return if the attempted language to load is the default one
+                    if (lang == "default")
                     {
-                        var lID = childNode.Name;
-                        var lNm = lID;
-                        if (childNode.Name.ToLowerInvariant() == lang)
-                        {
-                            rootLangNode = childNode;
-                        }
-                        if (childNode.FirstChild.Name.ToLowerInvariant() == "language")
-                        {
-                            lNm = childNode.FirstChild.InnerText;
-                        }
-                        languageList.Add(lNm);
-                        languageIDList.Add(lID);
-                    }
-                    if (rootLangNode != null)
-                    {
-                        foreach (XmlNode node in rootLangNode.ChildNodes)
-                        {
-                            if (node.NodeType == XmlNodeType.Comment)
-                            {
-                                continue;
-                            }
-                            var nn = node.Name.ToLowerInvariant();
-                            var nv = node.InnerText;
-                            LangDict[nn] = nv;
-                        }
+                        return;
                     }
                 }
-                catch (Exception e)
+
+                var file = Path.Combine(_translationsDir, $"{lang}.xml");
+                doc.Load(file);
+
+                // Replace existing keys with the ones available in this file
+                foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
                 {
-                    MessageBox.Show("An error occured while reading the language-file. Without them, the editor wont show translations." + Environment.NewLine + "Details: " + e.Message
-                        , "Error while reading configs."
-                        , MessageBoxButton.OK
-                        , MessageBoxImage.Warning);
+                    LangDict[node.Name] = node.InnerText;
                 }
             }
-            AvailableLanguages = languageList;
-            AvailableLanguageIDs = languageIDList;
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void ParseTranslationFiles()
