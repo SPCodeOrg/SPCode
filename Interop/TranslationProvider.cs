@@ -15,12 +15,11 @@ namespace SPCode.Interop
     {
         public List<string> AvailableLanguageIDs = new();
         public List<string> AvailableLanguages = new();
-        private readonly string _tempDir = Paths.GetTempDirectory();
-        private readonly string _translationsDir = Paths.GetTranslationsDirectory();
-
         public bool IsDefault = true;
 
-        private static readonly Dictionary<string, string> LangDict = new(StringComparer.OrdinalIgnoreCase);
+        private readonly string _tempDir = Paths.GetTempDirectory();
+        private readonly string _translationsDir = Paths.GetTranslationsDirectory();
+        private static readonly Dictionary<string, string> _langDictionary = new(StringComparer.OrdinalIgnoreCase);
 
         public TranslationProvider()
         {
@@ -30,9 +29,9 @@ namespace SPCode.Interop
                 Directory.CreateDirectory(_translationsDir);
             }
 
-            if (IsUpdateAvailable(out var latestVersion))
+            if (IsUpdateAvailable(out var release))
             {
-                UpdateTranslations(latestVersion);
+                UpdateTranslations(release);
             }
 
             ParseTranslationFiles();
@@ -45,14 +44,14 @@ namespace SPCode.Interop
         /// <returns></returns>
         public static string Translate(string phrase)
         {
-            return LangDict.ContainsKey(phrase) ? LangDict[phrase] : "<empty>";
+            return _langDictionary.ContainsKey(phrase) ? _langDictionary[phrase] : "<empty>";
         }
 
         /// <summary>
         /// Loads the specified language.
         /// </summary>
         /// <param name="lang">The language to load</param>
-        /// <param name="initial"></param>
+        /// <param name="initial">Whether this was the startup initial method call</param>
         public void LoadLanguage(string lang, bool initial = false)
         {
             // This is probably the first boot ever
@@ -73,7 +72,7 @@ namespace SPCode.Interop
                     doc.Load(Path.Combine(_translationsDir, Constants.DefaultTranslationsFile));
                     foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
                     {
-                        LangDict.Add(node.Name, node.InnerText);
+                        _langDictionary.Add(node.Name, node.InnerText);
                     }
 
                     // Return if the attempted language to load is the default one
@@ -89,7 +88,7 @@ namespace SPCode.Interop
                 // Replace existing keys with the ones available in this file
                 foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
                 {
-                    LangDict[node.Name] = node.InnerText;
+                    _langDictionary[node.Name] = node.InnerText;
                 }
             }
             catch (Exception)
@@ -98,6 +97,9 @@ namespace SPCode.Interop
             }
         }
 
+        /// <summary>
+        /// Gets all of the translation files and adds them to the global available languages list.
+        /// </summary>
         public void ParseTranslationFiles()
         {
             try
@@ -131,6 +133,9 @@ namespace SPCode.Interop
             }
         }
 
+        /// <summary>
+        /// Downloads the latest translation files release from GitHub for SPCode to parse them.
+        /// </summary>
         public void UpdateTranslations(Release latestVersion)
         {
             // Clear temp folder before beggining
@@ -166,11 +171,13 @@ namespace SPCode.Interop
             Program.OptionsObject.TranslationsVersion = int.Parse(latestVersion.Name);
         }
 
+        /// <summary>
+        /// Compares the stored version of the translations release with the one from GitHub
+        /// </summary>
+        /// <returns>Whether there's an update available</returns>
         public bool IsUpdateAvailable(out Release latestVersion)
         {
             var client = new GitHubClient(new ProductHeaderValue(Constants.ProductHeaderValueName));
-
-            // Check if translations need update by comparing stored version with latest release name from repository
             var versionStored = Program.OptionsObject.TranslationsVersion;
 
             latestVersion = client.Repository.Release.GetAll(Constants.OrgName,
