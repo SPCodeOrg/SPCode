@@ -70,7 +70,6 @@ namespace SPCode.Interop
                 // Fill with defaults first
                 if (initial)
                 {
-                    _langDictionary.Clear();
                     doc.Load(Path.Combine(_translationsDir, Constants.DefaultTranslationsFile));
                     foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
                     {
@@ -88,7 +87,8 @@ namespace SPCode.Interop
                 if (!File.Exists(file))
                 {
                     UpdateTranslations();
-                    LoadLanguage(lang, initial);
+                    LoadLanguage(lang);
+                    return;
                 }
                 else
                 {
