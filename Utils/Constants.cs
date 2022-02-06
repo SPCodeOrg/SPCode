@@ -45,6 +45,7 @@
         #region Other
         public const string GetSPCodeText = "Get SPCode";
         public const string DiscordRPCAppID = "692110664948514836";
+        public const string DefaultLanguageID = "default";
         #endregion
     }
 }

@@ -55,9 +55,16 @@ namespace SPCode.Interop
         /// <param name="initial"></param>
         public void LoadLanguage(string lang, bool initial = false)
         {
+            // This is probably the first boot ever
+            if (lang == string.Empty)
+            {
+                lang = Constants.DefaultLanguageID;
+                Program.OptionsObject.Language = lang;
+            }
             lang = lang.Trim().ToLowerInvariant();
-            IsDefault = (string.IsNullOrEmpty(lang) || lang.ToLowerInvariant() == "default") && initial;
+            IsDefault = (string.IsNullOrEmpty(lang) || lang.ToLowerInvariant() == Constants.DefaultLanguageID) && initial;
             var doc = new XmlDocument();
+
             try
             {
                 // Fill with defaults first
@@ -70,7 +77,7 @@ namespace SPCode.Interop
                     }
 
                     // Return if the attempted language to load is the default one
-                    if (lang == "default")
+                    if (lang == Constants.DefaultLanguageID)
                     {
                         return;
                     }
@@ -169,7 +176,7 @@ namespace SPCode.Interop
             latestVersion = client.Repository.Release.GetAll(Constants.OrgName,
                 Constants.TranslationsRepoName).Result[0];
 
-            return latestVersion != null && versionStored != 0 && versionStored < int.Parse(latestVersion.Name);
+            return versionStored < int.Parse(latestVersion.Name);
         }
     }
 }
