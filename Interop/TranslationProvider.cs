@@ -20,6 +20,7 @@ namespace SPCode.Interop
         private readonly string _tempDir = Paths.GetTempDirectory();
         private readonly string _translationsDir = Paths.GetTranslationsDirectory();
         private static readonly Dictionary<string, string> _langDictionary = new(StringComparer.OrdinalIgnoreCase);
+        private Release _latestVersion;
 
         public TranslationProvider()
         {
@@ -29,9 +30,9 @@ namespace SPCode.Interop
                 Directory.CreateDirectory(_translationsDir);
             }
 
-            if (IsUpdateAvailable(out var release))
+            if (IsUpdateAvailable())
             {
-                UpdateTranslations(release);
+                UpdateTranslations();
             }
 
             ParseTranslationFiles();
@@ -69,6 +70,7 @@ namespace SPCode.Interop
                 // Fill with defaults first
                 if (initial)
                 {
+                    _langDictionary.Clear();
                     doc.Load(Path.Combine(_translationsDir, Constants.DefaultTranslationsFile));
                     foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
                     {
@@ -83,12 +85,20 @@ namespace SPCode.Interop
                 }
 
                 var file = Path.Combine(_translationsDir, $"{lang}.xml");
-                doc.Load(file);
-
-                // Replace existing keys with the ones available in this file
-                foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
+                if (!File.Exists(file))
                 {
-                    _langDictionary[node.Name] = node.InnerText;
+                    UpdateTranslations();
+                    LoadLanguage(lang, initial);
+                }
+                else
+                {
+                    doc.Load(file);
+
+                    // Replace existing keys with the ones available in this file
+                    foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
+                    {
+                        _langDictionary[node.Name] = node.InnerText;
+                    }
                 }
             }
             catch (Exception)
@@ -136,7 +146,7 @@ namespace SPCode.Interop
         /// <summary>
         /// Downloads the latest translation files release from GitHub for SPCode to parse them.
         /// </summary>
-        public void UpdateTranslations(Release latestVersion)
+        public void UpdateTranslations()
         {
             // Clear temp folder before beggining
             DirUtils.ClearTempFolder();
@@ -145,7 +155,7 @@ namespace SPCode.Interop
             var wc = new WebClient();
             var downloadedFile = Path.Combine(_tempDir, "langs.zip");
             wc.Headers.Add(HttpRequestHeader.UserAgent, Constants.ProductHeaderValueName);
-            wc.DownloadFile(latestVersion.ZipballUrl, downloadedFile);
+            wc.DownloadFile(_latestVersion.ZipballUrl, downloadedFile);
 
             // Decompress and replace all of its files
             ZipFile.ExtractToDirectory(downloadedFile, _tempDir);
@@ -168,22 +178,22 @@ namespace SPCode.Interop
             DirUtils.ClearTempFolder();
 
             // Update version to options object
-            Program.OptionsObject.TranslationsVersion = int.Parse(latestVersion.Name);
+            Program.OptionsObject.TranslationsVersion = int.Parse(_latestVersion.Name);
         }
 
         /// <summary>
         /// Compares the stored version of the translations release with the one from GitHub
         /// </summary>
         /// <returns>Whether there's an update available</returns>
-        public bool IsUpdateAvailable(out Release latestVersion)
+        public bool IsUpdateAvailable()
         {
             var client = new GitHubClient(new ProductHeaderValue(Constants.ProductHeaderValueName));
             var versionStored = Program.OptionsObject.TranslationsVersion;
 
-            latestVersion = client.Repository.Release.GetAll(Constants.OrgName,
+            _latestVersion = client.Repository.Release.GetAll(Constants.OrgName,
                 Constants.TranslationsRepoName).Result[0];
 
-            return versionStored < int.Parse(latestVersion.Name);
+            return versionStored < int.Parse(_latestVersion.Name);
         }
     }
 }
