@@ -134,9 +134,9 @@ namespace SPCode
                             if (Translations.AvailableLanguageIDs.Count> 0)
                             {
                                 splashScreen.Close(new TimeSpan(0, 0, 1));
-                                var languageWindow =
-                                    new LanguageChooserWindow(Translations.AvailableLanguageIDs.ToArray(),
-                                        Translations.AvailableLanguages.ToArray());
+                                var langIds = Translations.AvailableLanguageIDs;
+                                var langs = Translations.AvailableLanguages;
+                                var languageWindow = new LanguageChooserWindow(langIds, langs);
                                 languageWindow.ShowDialog();
                                 var potentialSelectedLanguageID = languageWindow.SelectedID;
                                 if (!string.IsNullOrWhiteSpace(potentialSelectedLanguageID))
