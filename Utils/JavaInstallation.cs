@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ByteSizeLib;
 using MahApps.Metro.Controls.Dialogs;
 using SPCode.UI;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.Utils
 {
@@ -34,8 +35,8 @@ namespace SPCode.Utils
         public async Task InstallJava()
         {
             // Spawn progress dialog when downloading Java
-            dwJavaInCourse = await _win.ShowProgressAsync(Program.Translations.Get("DownloadingJava") + "...",
-                Program.Translations.Get("FetchingJava"), false, _metroDialogOptions);
+            dwJavaInCourse = await _win.ShowProgressAsync(Translate("DownloadingJava") + "...",
+                Translate("FetchingJava"), false, _metroDialogOptions);
             dwJavaInCourse.SetProgress(0.0);
             MainWindow.ProcessUITasks();
 
@@ -50,8 +51,8 @@ namespace SPCode.Utils
         {
             // Handles percentage and MB downloaded/left
             dwJavaInCourse.SetMessage(
-                $"{e.ProgressPercentage}% {Program.Translations.Get("AmountCompleted")}, " +
-                $"{Program.Translations.Get("AmountDownloaded")} {Math.Round(ByteSize.FromBytes(e.BytesReceived).MegaBytes),0} MB / " +
+                $"{e.ProgressPercentage}% {Translate("AmountCompleted")}, " +
+                $"{Translate("AmountDownloaded")} {Math.Round(ByteSize.FromBytes(e.BytesReceived).MegaBytes),0} MB / " +
                 $"{Math.Round(ByteSize.FromBytes(e.TotalBytesToReceive).MegaBytes),0} MB");
 
             // Handles progress bar
@@ -66,16 +67,16 @@ namespace SPCode.Utils
                 // If file downloaded properly, it should open
                 Process.Start(OutFile);
                 await _win.ShowMessageAsync(
-                    Program.Translations.Get("JavaOpened"),
-                    Program.Translations.Get("JavaSuggestRestart"),
+                    Translate("JavaOpened"),
+                    Translate("JavaSuggestRestart"),
                     MessageDialogStyle.Affirmative);
             }
             else
             {
                 // Otherwise, just offer a manual download
                 if (await _win.ShowMessageAsync(
-                    Program.Translations.Get("JavaDownErrorTitle"),
-                    Program.Translations.Get("JavaDownErrorMessage"),
+                    Translate("JavaDownErrorTitle"),
+                    Translate("JavaDownErrorMessage"),
                     MessageDialogStyle.AffirmativeAndNegative, _metroDialogOptions) == MessageDialogResult.Affirmative)
                 {
                     Process.Start(new ProcessStartInfo
@@ -84,8 +85,8 @@ namespace SPCode.Utils
                         UseShellExecute = true
                     });
                     await _win.ShowMessageAsync(
-                    Program.Translations.Get("JavaOpenedBrowser"),
-                    Program.Translations.Get("JavaSuggestRestart"),
+                    Translate("JavaOpenedBrowser"),
+                    Translate("JavaSuggestRestart"),
                     MessageDialogStyle.Affirmative);
                 }
             }

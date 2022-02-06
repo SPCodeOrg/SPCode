@@ -8,6 +8,10 @@
         public const string GitHubReleases = "https://github.com/SPCodeOrg/SPCode/releases";
         public const string GitHubLatestRelease = "https://github.com/SPCodeOrg/SPCode/releases/latest";
         public const string GitHubWiki = "https://github.com/SPCodeOrg/SPCode/wiki";
+        public const string OrgName = "SPCodeOrg";
+        public const string MainRepoName = "SPCode";
+        public const string TranslationsRepoName = "spcode-translations";
+        public const string ProductHeaderValueName = "spcode-client";
         #endregion
 
         #region Java Downloads
@@ -29,6 +33,7 @@
         public const string HotkeysFile = "Hotkeys.xml";
         public const string LicenseFile = "License.txt";
         public const string LanguagesFile = "lang_0_spcode.xml";
+        public const string DefaultTranslationsFile = "default.xml";
         #endregion
 
         #region Filters
@@ -40,6 +45,7 @@
         #region Other
         public const string GetSPCodeText = "Get SPCode";
         public const string DiscordRPCAppID = "692110664948514836";
+        public const string DefaultLanguageID = "default";
         #endregion
     }
 }

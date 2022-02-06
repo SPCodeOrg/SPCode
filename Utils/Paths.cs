@@ -66,6 +66,13 @@ namespace SPCode.Utils
             return LocalInstallation ? localPath : appDataPath;
         }
 
+        public static string GetTranslationsDirectory()
+        {
+            var appDataPath = SPCodeAppDataPath + @"\translations";
+            var localPath = @".\translations";
+            return LocalInstallation ? localPath : appDataPath;
+        }
+
         public static string GetConfigFilePath()
         {
             var appDataPath = SPCodeAppDataPath + @"\sourcepawn\configs\Configs.xml";

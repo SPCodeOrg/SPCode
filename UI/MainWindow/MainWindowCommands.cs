@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
@@ -10,6 +9,7 @@ using SPCode.UI.Components;
 using SPCode.UI.Windows;
 using SPCode.Utils;
 using SPCode.Utils.SPSyntaxTidy;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI
 {
@@ -106,7 +106,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
 
         }
@@ -128,7 +128,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
 
         }
@@ -152,7 +152,7 @@ namespace SPCode.UI
                     CheckPathExists = true,
                     Filter = Constants.FileOpenFilters,
                     Multiselect = true,
-                    Title = Program.Translations.Get("OpenNewFile")
+                    Title = Translate("OpenNewFile")
                 };
                 var result = ofd.ShowDialog(this);
                 if (result.Value)
@@ -168,8 +168,8 @@ namespace SPCode.UI
                         if (!AnyFileLoaded)
                         {
                             MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
-                            this.ShowMessageAsync(Program.Translations.Get("NoFileOpened"),
-                                Program.Translations.Get("NoFileOpenedCap"), MessageDialogStyle.Affirmative,
+                            this.ShowMessageAsync(Translate("NoFileOpened"),
+                                Translate("NoFileOpenedCap"), MessageDialogStyle.Affirmative,
                                 MetroDialogOptions);
                         }
                     }
@@ -179,7 +179,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -199,7 +199,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -213,7 +213,7 @@ namespace SPCode.UI
                 var ee = GetCurrentEditorElement();
                 if (ee != null && !ee.IsTemplateEditor)
                 {
-                    var sfd = new SaveFileDialog { AddExtension = true, Filter = Constants.FileSaveFilters, OverwritePrompt = true, Title = Program.Translations.Get("SaveFileAs"), FileName = ee.Parent.Title.Trim('*') };
+                    var sfd = new SaveFileDialog { AddExtension = true, Filter = Constants.FileSaveFilters, OverwritePrompt = true, Title = Translate("SaveFileAs"), FileName = ee.Parent.Title.Trim('*') };
                     var result = sfd.ShowDialog(this);
                     if (result.Value && !string.IsNullOrWhiteSpace(sfd.FileName))
                     {
@@ -225,7 +225,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -244,7 +244,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -263,7 +263,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -298,7 +298,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -327,7 +327,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -349,7 +349,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -373,7 +373,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                await this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                await this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -395,7 +395,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -417,7 +417,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -433,7 +433,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -449,7 +449,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -465,7 +465,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -489,7 +489,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -505,7 +505,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -524,7 +524,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -544,7 +544,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -600,7 +600,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -616,7 +616,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                await this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                await this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
 
@@ -636,7 +636,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
         /// <summary>
@@ -655,7 +655,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message, settings: MetroDialogOptions);
+                this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
             }
         }
     }

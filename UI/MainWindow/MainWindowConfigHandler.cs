@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using SPCode.Interop;
 using SPCode.UI.Components;
 using SPCode.UI.Windows;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI
 {
@@ -28,7 +29,7 @@ namespace SPCode.UI
                 ConfigMenu.Items.Add(item);
             }
             ConfigMenu.Items.Add(new Separator());
-            var editItem = new MenuItem() { Header = Program.Translations.Get("EditConfig") };
+            var editItem = new MenuItem() { Header = Translate("EditConfig") };
             editItem.Click += EditItem_Click;
             ConfigMenu.Items.Add(editItem);
         }

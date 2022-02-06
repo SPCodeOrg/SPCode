@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using SPCode.UI;
+using static SPCode.Interop.TranslationProvider;
 using static SPCode.Utils.JavaInstallation;
 
 namespace SPCode.Utils
@@ -20,7 +21,7 @@ namespace SPCode.Utils
             ProgressDialogController checkingJavaDialog = null;
             if (Program.MainWindow != null)
             {
-                checkingJavaDialog = await Program.MainWindow.ShowProgressAsync(Program.Translations.Get("JavaInstallCheck") + "...",
+                checkingJavaDialog = await Program.MainWindow.ShowProgressAsync(Translate("JavaInstallCheck") + "...",
                     "", false, Program.MainWindow.MetroDialogOptions);
                 MainWindow.ProcessUITasks();
             }
@@ -30,8 +31,8 @@ namespace SPCode.Utils
                     {
                         // If java is not installed, offer to download it
                         await checkingJavaDialog.CloseAsync();
-                        if (await Program.MainWindow.ShowMessageAsync(Program.Translations.Get("JavaNotFoundTitle"),
-                            Program.Translations.Get("JavaNotFoundMessage"),
+                        if (await Program.MainWindow.ShowMessageAsync(Translate("JavaNotFoundTitle"),
+                            Translate("JavaNotFoundMessage"),
                             MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions) == MessageDialogResult.Affirmative)
                         {
                             await java.InstallJava();
@@ -42,8 +43,8 @@ namespace SPCode.Utils
                     {
                         // If java is outdated, offer to upgrade it
                         await checkingJavaDialog.CloseAsync();
-                        if (await Program.MainWindow.ShowMessageAsync(Program.Translations.Get("JavaOutdatedTitle"),
-                             Program.Translations.Get("JavaOutdatedMessage"),
+                        if (await Program.MainWindow.ShowMessageAsync(Translate("JavaOutdatedTitle"),
+                             Translate("JavaOutdatedMessage"),
                              MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions) == MessageDialogResult.Affirmative)
                         {
                             await java.InstallJava();
@@ -64,7 +65,7 @@ namespace SPCode.Utils
                 var ofd = new OpenFileDialog
                 {
                     Filter = "Sourcepawn Plugins (*.smx)|*.smx",
-                    Title = Program.Translations.Get("ChDecomp")
+                    Title = Translate("ChDecomp")
                 };
                 var result = ofd.ShowDialog();
                 fileToDecompile = result.Value && !string.IsNullOrWhiteSpace(ofd.FileName) ? ofd.FileName : null;
@@ -82,7 +83,7 @@ namespace SPCode.Utils
                     ProgressDialogController task = null;
                     if (Program.MainWindow != null)
                     {
-                        task = await Program.MainWindow.ShowProgressAsync(Program.Translations.Get("Decompiling") + "...",
+                        task = await Program.MainWindow.ShowProgressAsync(Translate("Decompiling") + "...",
                             fInfo.FullName, false, Program.MainWindow.MetroDialogOptions);
                         MainWindow.ProcessUITasks();
                     }
@@ -112,7 +113,7 @@ namespace SPCode.Utils
                     }
                     catch (Exception ex)
                     {
-                        await Program.MainWindow.ShowMessageAsync($"{fInfo.Name} {Program.Translations.Get("FailedToDecompile")}",
+                        await Program.MainWindow.ShowMessageAsync($"{fInfo.Name} {Translate("FailedToDecompile")}",
                             $"{ex.Message}", MessageDialogStyle.Affirmative,
                         Program.MainWindow.MetroDialogOptions);
                     }

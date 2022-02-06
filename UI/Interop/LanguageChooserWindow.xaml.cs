@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using MahApps.Metro.Controls;
 
@@ -12,14 +13,25 @@ namespace SPCode.UI.Interop
             InitializeComponent();
         }
 
-        public LanguageChooserWindow(string[] ids, string[] languages)
+        public LanguageChooserWindow(List<string> ids, List<string> languages)
         {
             InitializeComponent();
-            for (var i = 0; i < ids.Length; ++i)
+
+            // Reorder English item to appear first
+            languages.Remove("English");
+            languages.Insert(0, "English");
+            ids.Remove("default");
+            ids.Insert(0, "default");
+
+            for (var i = 0; i < ids.Count; i++)
             {
-                LanguageBox.Items.Add(new ComboBoxItem() { Content = languages[i], Tag = ids[i] });
+                LanguageBox.Items.Add(new ComboBoxItem
+                {
+                    Content = languages[i],
+                    Tag = ids[i]
+                });
             }
-            if (ids.Length > 0)
+            if (ids.Count > 0)
             {
                 LanguageBox.SelectedIndex = 0;
             }
@@ -27,12 +39,7 @@ namespace SPCode.UI.Interop
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var selectedObj = LanguageBox.SelectedItem;
-            if (selectedObj == null)
-            {
-                return;
-            }
-            if (selectedObj is ComboBoxItem selectedItem)
+            if (LanguageBox.SelectedItem is ComboBoxItem selectedItem)
             {
                 SelectedID = (string)selectedItem.Tag;
             }

@@ -16,6 +16,7 @@ using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using SPCode.Interop;
 using SPCode.Utils;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI.Windows
 {
@@ -127,7 +128,7 @@ namespace SPCode.UI.Windows
                                     Multiselect = false,
                                     CheckFileExists = true,
                                     CheckPathExists = true,
-                                    Title = Program.Translations.Get("SelectExe")
+                                    Title = Translate("SelectExe")
                                 };
                                 var result = dialog.ShowDialog();
 
@@ -245,7 +246,7 @@ namespace SPCode.UI.Windows
             };
             var configList = new List<Config>(Program.Configs) { c };
             Program.Configs = configList.ToArray();
-            ConfigListBox.Items.Add(new ListBoxItem { Content = Program.Translations.Get("NewConfig") });
+            ConfigListBox.Items.Add(new ListBoxItem { Content = Translate("NewConfig") });
         }
 
         private void DeleteButton_Clicked(object sender, RoutedEventArgs e)
@@ -254,8 +255,8 @@ namespace SPCode.UI.Windows
             var c = Program.Configs[index];
             if (c.Standard)
             {
-                this.ShowMessageAsync(Program.Translations.Get("CannotDelConf"),
-                    Program.Translations.Get("YCannotDelConf"), MessageDialogStyle.Affirmative,
+                this.ShowMessageAsync(Translate("CannotDelConf"),
+                    Translate("YCannotDelConf"), MessageDialogStyle.Affirmative,
                     Program.MainWindow.MetroDialogOptions);
                 return;
             }
@@ -549,8 +550,8 @@ namespace SPCode.UI.Windows
             if (configsList.Any(x => string.IsNullOrEmpty(x)))
             {
                 e.Cancel = true;
-                this.ShowMessageAsync(Program.Translations.Get("ErrorSavingConfigs"),
-                    Program.Translations.Get("EmptyConfigNames"), MessageDialogStyle.Affirmative,
+                this.ShowMessageAsync(Translate("ErrorSavingConfigs"),
+                    Translate("EmptyConfigNames"), MessageDialogStyle.Affirmative,
                     Program.MainWindow.MetroDialogOptions);
                 return;
             }
@@ -559,8 +560,8 @@ namespace SPCode.UI.Windows
             if (configsList.Count != configsList.Distinct().Count())
             {
                 e.Cancel = true;
-                this.ShowMessageAsync(Program.Translations.Get("ErrorSavingConfigs"),
-                    Program.Translations.Get("DuplicateConfigNames"), MessageDialogStyle.Affirmative,
+                this.ShowMessageAsync(Translate("ErrorSavingConfigs"),
+                    Translate("DuplicateConfigNames"), MessageDialogStyle.Affirmative,
                     Program.MainWindow.MetroDialogOptions);
                 return;
             }
@@ -627,33 +628,33 @@ namespace SPCode.UI.Windows
                 return;
             }
 
-            AddSMDirButton.Content = Program.Translations.Get("Add");
-            RemoveSMDirButton.Content = Program.Translations.Get("Remove");
-            NewButton.Content = Program.Translations.Get("New");
-            DeleteButton.Content = Program.Translations.Get("Delete");
-            NameBlock.Text = Program.Translations.Get("Name");
-            ScriptingDirBlock.Text = Program.Translations.Get("ScriptDir");
-            CopyDirBlock.Text = Program.Translations.Get("CopyDir");
-            ServerExeBlock.Text = Program.Translations.Get("ServerExe");
-            ServerStartArgBlock.Text = Program.Translations.Get("serverStartArgs");
-            PreBuildBlock.Text = Program.Translations.Get("PreBuildCom");
-            PostBuildBlock.Text = Program.Translations.Get("PostBuildCom");
-            OptimizeBlock.Text = Program.Translations.Get("OptimizeLvl");
-            VerboseBlock.Text = Program.Translations.Get("VerboseLvl");
-            C_AutoCopy.Content = Program.Translations.Get("AutoCopy");
-            C_AutoUpload.Content = Program.Translations.Get("AutoUpload");
-            C_AutoRCON.Content = Program.Translations.Get("AutoRCON");
-            C_DeleteAfterCopy.Content = Program.Translations.Get("DeleteOldSMX");
-            FTPHostBlock.Text = Program.Translations.Get("FTPHost");
-            FTPUserBlock.Text = Program.Translations.Get("FTPUser");
-            FTPPWBlock.Text = Program.Translations.Get("FTPPw");
-            FTPDirBlock.Text = Program.Translations.Get("FTPDir");
-            CMD_ItemC.Text = Program.Translations.Get("CMDLineCom");
-            RConIPBlock.Text = Program.Translations.Get("RConIP");
-            RConPortBlock.Text = Program.Translations.Get("RconPort");
-            RConPWBlock.Text = Program.Translations.Get("RconPw");
-            RConComBlock.Text = Program.Translations.Get("RconCom");
-            Rcon_MenuC.Text = Program.Translations.Get("RConCMDLineCom");
+            AddSMDirButton.Content = Translate("Add");
+            RemoveSMDirButton.Content = Translate("Remove");
+            NewButton.Content = Translate("New");
+            DeleteButton.Content = Translate("Delete");
+            NameBlock.Text = Translate("Name");
+            ScriptingDirBlock.Text = Translate("ScriptDir");
+            CopyDirBlock.Text = Translate("CopyDir");
+            ServerExeBlock.Text = Translate("ServerExe");
+            ServerStartArgBlock.Text = Translate("serverStartArgs");
+            PreBuildBlock.Text = Translate("PreBuildCom");
+            PostBuildBlock.Text = Translate("PostBuildCom");
+            OptimizeBlock.Text = Translate("OptimizeLvl");
+            VerboseBlock.Text = Translate("VerboseLvl");
+            C_AutoCopy.Content = Translate("AutoCopy");
+            C_AutoUpload.Content = Translate("AutoUpload");
+            C_AutoRCON.Content = Translate("AutoRCON");
+            C_DeleteAfterCopy.Content = Translate("DeleteOldSMX");
+            FTPHostBlock.Text = Translate("FTPHost");
+            FTPUserBlock.Text = Translate("FTPUser");
+            FTPPWBlock.Text = Translate("FTPPw");
+            FTPDirBlock.Text = Translate("FTPDir");
+            CMD_ItemC.Text = Translate("CMDLineCom");
+            RConIPBlock.Text = Translate("RConIP");
+            RConPortBlock.Text = Translate("RconPort");
+            RConPWBlock.Text = Translate("RconPw");
+            RConComBlock.Text = Translate("RconCom");
+            Rcon_MenuC.Text = Translate("RConCMDLineCom");
         }
 
 

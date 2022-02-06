@@ -14,6 +14,7 @@ using System.Windows.Threading;
 using MahApps.Metro.Controls.Dialogs;
 using SPCode.UI.Windows;
 using SPCode.Utils;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI
 {
@@ -184,7 +185,7 @@ namespace SPCode.UI
             }
             catch (Exception ex)
             {
-                this.ShowMessageAsync(Program.Translations.Get("Error"), ex.Message);
+                this.ShowMessageAsync(Translate("Error"), ex.Message);
             }
         }
 
@@ -288,7 +289,7 @@ namespace SPCode.UI
             OBExpanded = !OBExpanded;
             MoveSubContainers(ObjectBrowser, OBExpanded);
             BtExpandCollapse.Content = (Image)FindResource(OBExpanded ? "ImgCollapse" : "ImgExpand");
-            BtExpandCollapse.ToolTip = Program.Translations.Get(OBExpanded ? "CollapseAllDirs" : "ExpandAllDirs");
+            BtExpandCollapse.ToolTip = Translate(OBExpanded ? "CollapseAllDirs" : "ExpandAllDirs");
         }
 
         private void BtRefreshDir_Click(object sender, RoutedEventArgs e)
@@ -362,7 +363,7 @@ namespace SPCode.UI
                 {
                     ObjectBrowser.Items.Add(new TreeViewItem()
                     {
-                        Header = BuildTreeViewItemContent($"{Program.Translations.Get("NoResultsThisDir")}", Constants.EmptyIcon),
+                        Header = BuildTreeViewItemContent($"{Translate("NoResultsThisDir")}", Constants.EmptyIcon),
                         FontStyle = FontStyles.Italic,
                         Foreground = new SolidColorBrush(Colors.Gray),
                         Tag = new ObjectBrowserTag()
@@ -611,7 +612,7 @@ namespace SPCode.UI
             {
                 var tvi = new TreeViewItem()
                 {
-                    Header = BuildTreeViewItemContent($"({Program.Translations.Get("Empty").ToLower()})", Constants.EmptyIcon),
+                    Header = BuildTreeViewItemContent($"({Translate("Empty").ToLower()})", Constants.EmptyIcon),
                     FontStyle = FontStyles.Italic,
                     Foreground = new SolidColorBrush(Colors.Gray),
                     Tag = new ObjectBrowserTag()

@@ -36,7 +36,6 @@ SetOutPath $INSTDIR
 
 File SPCode.exe
 
-File lang_0_spcode.xml
 File License.txt
 File GPLv3.txt
 

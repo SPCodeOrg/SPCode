@@ -11,7 +11,7 @@ namespace SPCode
     [Serializable]
     public class OptionsControl
     {
-        public static int SVersion = 14;
+        public static int SVersion = 15;
         public bool Editor_AgressiveIndentation = true;
         public bool Editor_AutoCloseBrackets = true;
         public bool Editor_AutoCloseStringChars = true;
@@ -86,6 +86,9 @@ namespace SPCode
 
         // Version 14
         public ActionOnClose ActionOnClose;
+
+        // Version 15
+        public int TranslationsVersion;
 
         public int Version = 11;
 
@@ -174,9 +177,13 @@ namespace SPCode
                     SearchOptions.MultilineRegex = false;
                     SearchOptions.ReplaceType = 0;
                 }
+                if (Version < 14)
+                {
+                    TranslationsVersion = 0;
+                }
 
                 //new Optionsversion - reset new fields to default
-                Version = SVersion; //then Update Version afterwars
+                Version = SVersion; //then Update Version afterwards
             }
         }
 

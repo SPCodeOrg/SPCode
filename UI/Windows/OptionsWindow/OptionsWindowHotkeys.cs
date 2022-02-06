@@ -10,6 +10,7 @@ using System.Xml;
 using SPCode.Interop;
 using SPCode.UI.Components;
 using SPCode.Utils;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI.Windows
 {
@@ -68,7 +69,7 @@ namespace SPCode.UI.Windows
                     var hkStr = hk.Hotkey.ToString();
                     if (hkStr == HotkeyControl.DefaultHotkeys[hkControl.Name.Substring(2)] && hkStr != hkControl.Hotkey.ToString())
                     {
-                        ShowLabel(Program.Translations.Get("DefaultTaken"));
+                        ShowLabel(Translate("DefaultTaken"));
                         return;
                     }
                 }
@@ -122,7 +123,7 @@ namespace SPCode.UI.Windows
                 {
                     _ctrl.Hotkey = _currentControlHotkey;
                     _ctrl.FontStyle = _currentFontStyle;
-                    ShowLabel(Program.Translations.Get("InUse"));
+                    ShowLabel(Translate("InUse"));
                     return;
                 }
                 // Check if the attempted hotkey is not restricted
@@ -130,7 +131,7 @@ namespace SPCode.UI.Windows
                 {
                     _ctrl.Hotkey = _currentControlHotkey;
                     _ctrl.FontStyle = _currentFontStyle;
-                    ShowLabel(Program.Translations.Get("Reserved"));
+                    ShowLabel(Translate("Reserved"));
                     return;
                 }
                 else

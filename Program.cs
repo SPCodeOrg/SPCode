@@ -100,9 +100,11 @@ namespace SPCode
                         });
                     }
 
-
+                    // Set up translations
                     Translations = new TranslationProvider();
                     Translations.LoadLanguage(OptionsObject.Language, true);
+
+                    // Check startup arguments for -rcck
                     foreach (var arg in args)
                     {
                         if (arg.ToLowerInvariant() == "-rcck") //ReCreateCryptoKey
@@ -129,12 +131,12 @@ namespace SPCode
 #if !DEBUG
                         if (ProgramIsNew)
                         {
-                            if (Translations.AvailableLanguageIDs.Length > 0)
+                            if (Translations.AvailableLanguageIDs.Count> 0)
                             {
                                 splashScreen.Close(new TimeSpan(0, 0, 1));
-                                var languageWindow =
-                                    new LanguageChooserWindow(Translations.AvailableLanguageIDs,
-                                        Translations.AvailableLanguages);
+                                var langIds = Translations.AvailableLanguageIDs;
+                                var langs = Translations.AvailableLanguages;
+                                var languageWindow = new LanguageChooserWindow(langIds, langs);
                                 languageWindow.ShowDialog();
                                 var potentialSelectedLanguageID = languageWindow.SelectedID;
                                 if (!string.IsNullOrWhiteSpace(potentialSelectedLanguageID))
