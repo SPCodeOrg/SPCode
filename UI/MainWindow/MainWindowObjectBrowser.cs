@@ -142,10 +142,11 @@ namespace SPCode.UI
             var selectedItemFile = ((ObjectBrowser.SelectedItem as TreeViewItem)?.Tag as ObjectBrowserTag)?.Value;
             if (selectedItemFile != null)
             {
-                var msg = await this.ShowProgressAsync(Translate("Decompiling") + "...", selectedItemFile, false, MetroDialogOptions);
+                var fInfo = new FileInfo(selectedItemFile);
+                var msg = await this.ShowProgressAsync(Translate("Decompiling") + "...", fInfo.Name, false, MetroDialogOptions);
                 msg.SetIndeterminate();
                 ProcessUITasks();
-                TryLoadSourceFile(DecompileUtil.GetDecompiledPlugin(selectedItemFile), out _);
+                TryLoadSourceFile(DecompileUtil.GetDecompiledPlugin(fInfo), out _);
                 await msg.CloseAsync();
             }
         }
@@ -582,8 +583,8 @@ namespace SPCode.UI
         }
 
         /// <summary>
-        /// <para> Helper function to build an expanded item's contents. </para>
-        /// <para> It outs a TreeViewItem list to be used when using the Reload function to keep directories expanded after refreshing. </para>
+        /// Helper function to build an expanded item's contents. <br/>
+        /// It outs a TreeViewItem list to be used when using the Reload function to keep directories expanded after refreshing.
         /// </summary>
         /// <param name="dir">Directory to fetch contents from.</param>
         /// <param name="itemsToExpand">List of items that were expanded before calling this function to reload the Object Browser items.</param>

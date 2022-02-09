@@ -64,10 +64,5 @@ namespace SPCode.Utils
 
             return destFile;
         }
-
-        public static string GetDecompiledPlugin(string fileName)
-        {
-            return GetDecompiledPlugin(new FileInfo(fileName));
-        }
     }
 }
