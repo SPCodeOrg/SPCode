@@ -142,7 +142,11 @@ namespace SPCode.UI
             var selectedItemFile = ((ObjectBrowser.SelectedItem as TreeViewItem)?.Tag as ObjectBrowserTag)?.Value;
             if (selectedItemFile != null)
             {
-                await new DecompileUtil().DecompilePlugin(selectedItemFile);
+                var msg = await this.ShowProgressAsync(Translate("Decompiling") + "...", selectedItemFile, false, MetroDialogOptions);
+                msg.SetIndeterminate();
+                ProcessUITasks();
+                TryLoadSourceFile(DecompileUtil.GetDecompiledPlugin(selectedItemFile), out _);
+                await msg.CloseAsync();
             }
         }
 
@@ -160,26 +164,26 @@ namespace SPCode.UI
                     ObjectBrowser.ContextMenu = null;
 
                     // If we didn't receive an empty name...
-                    if (!string.IsNullOrEmpty(renameWindow.NewName))
+                    if (string.IsNullOrEmpty(renameWindow.NewName))
                     {
-                        var oldFileInfo = new FileInfo(fileTag.Value);
-                        var newFileInfo = new FileInfo(oldFileInfo.DirectoryName + @"\" + renameWindow.NewName);
+                        return;
+                    }
+                    var oldFileInfo = new FileInfo(fileTag.Value);
+                    var newFileInfo = new FileInfo(oldFileInfo.DirectoryName + @"\" + renameWindow.NewName);
 
-                        // Rename file
-                        File.Move(oldFileInfo.FullName, newFileInfo.FullName);
+                    // Rename file
+                    File.Move(oldFileInfo.FullName, newFileInfo.FullName);
 
-                        // If the new extension is not supported by SPCode, remove it from object browser
-                        // else, rename and update the item
-                        if (!FileIcons.ContainsKey(newFileInfo.Extension))
-                        {
-                            file.Visibility = Visibility.Collapsed;
-                            return;
-                        }
-                        else
-                        {
-                            fileTag.Value = newFileInfo.FullName;
-                            file.Header = BuildTreeViewItemContent(renameWindow.NewName, FileIcons[newFileInfo.Extension]);
-                        }
+                    // If the new extension is not supported by SPCode, remove it from object browser
+                    // else, rename and update the item
+                    if (!FileIcons.ContainsKey(newFileInfo.Extension))
+                    {
+                        file.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        fileTag.Value = newFileInfo.FullName;
+                        file.Header = BuildTreeViewItemContent(renameWindow.NewName, FileIcons[newFileInfo.Extension]);
                     }
                 }
             }

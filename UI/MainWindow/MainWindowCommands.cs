@@ -611,8 +611,12 @@ namespace SPCode.UI
         {
             try
             {
-                var decomp = new DecompileUtil();
-                await decomp.DecompilePlugin();
+                var file = DecompileUtil.GetFile();
+                var msg = await this.ShowProgressAsync(Translate("Decompiling") + "...", file.Name, false, MetroDialogOptions);
+                msg.SetIndeterminate();
+                ProcessUITasks();
+                TryLoadSourceFile(DecompileUtil.GetDecompiledPlugin(file), out _);
+                await msg.CloseAsync();
             }
             catch (Exception ex)
             {

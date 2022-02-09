@@ -204,7 +204,6 @@
     <Compile Include="Utils\Models\Hotkey.cs" />
     <Compile Include="Utils\Models\HotkeyInfo.cs" />
     <Compile Include="Utils\HotkeyUtils.cs" />
-    <Compile Include="Utils\JavaInstallation.cs" />
     <Compile Include="Utils\NamesHelper.cs" />
     <Compile Include="Utils\ObjectBrowserUtils.cs" />
     <Compile Include="Utils\Paths.cs" />
@@ -593,9 +592,7 @@
       <Version>1.1.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\Translations\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>cd ..\..\Deploy\
