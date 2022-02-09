@@ -2,130 +2,67 @@
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
-using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
-using SPCode.UI;
 using static SPCode.Interop.TranslationProvider;
-using static SPCode.Utils.JavaInstallation;
 
 namespace SPCode.Utils
 {
-    public class DecompileUtil
+    public static class DecompileUtil
     {
-        public async Task DecompilePlugin(string filePath = null)
+        public static FileInfo GetFile()
         {
-            var java = new JavaInstallation();
-
-            // First we check the java version of the user, and act accordingly
-            ProgressDialogController checkingJavaDialog = null;
-            if (Program.MainWindow != null)
-            {
-                checkingJavaDialog = await Program.MainWindow.ShowProgressAsync(Translate("JavaInstallCheck") + "...",
-                    "", false, Program.MainWindow.MetroDialogOptions);
-                MainWindow.ProcessUITasks();
-            }
-            switch (java.GetJavaStatus())
-            {
-                case JavaResults.Absent:
-                    {
-                        // If java is not installed, offer to download it
-                        await checkingJavaDialog.CloseAsync();
-                        if (await Program.MainWindow.ShowMessageAsync(Translate("JavaNotFoundTitle"),
-                            Translate("JavaNotFoundMessage"),
-                            MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions) == MessageDialogResult.Affirmative)
-                        {
-                            await java.InstallJava();
-                        }
-                        return;
-                    }
-                case JavaResults.Outdated:
-                    {
-                        // If java is outdated, offer to upgrade it
-                        await checkingJavaDialog.CloseAsync();
-                        if (await Program.MainWindow.ShowMessageAsync(Translate("JavaOutdatedTitle"),
-                             Translate("JavaOutdatedMessage"),
-                             MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions) == MessageDialogResult.Affirmative)
-                        {
-                            await java.InstallJava();
-                        }
-                        return;
-                    }
-                case JavaResults.Correct:
-                    {
-                        // Move on
-                        await checkingJavaDialog.CloseAsync();
-                        break;
-                    }
-            }
-
             string fileToDecompile;
-            if (filePath == null)
+
+            var ofd = new OpenFileDialog
             {
-                var ofd = new OpenFileDialog
-                {
-                    Filter = "Sourcepawn Plugins (*.smx)|*.smx",
-                    Title = Translate("ChDecomp")
-                };
-                var result = ofd.ShowDialog();
-                fileToDecompile = result.Value && !string.IsNullOrWhiteSpace(ofd.FileName) ? ofd.FileName : null;
-            }
-            else
+                Filter = Constants.DecompileFileFilters,
+                Title = Translate("ChDecomp")
+            };
+            var result = ofd.ShowDialog();
+            fileToDecompile = result.Value && !string.IsNullOrWhiteSpace(ofd.FileName) ? ofd.FileName : null;
+
+            if (fileToDecompile == null)
             {
-                fileToDecompile = filePath;
+                return null;
             }
+            return new FileInfo(fileToDecompile);
+        }
 
-            if (!string.IsNullOrWhiteSpace(fileToDecompile))
+        public static string GetDecompiledPlugin(FileInfo file)
+        {
+            var decompilerPath = Paths.GetLysisDirectory();
+            var destFile = file.FullName + ".sp";
+            var standardOutput = new StringBuilder();
+            using var process = new Process();
+            var si = new ProcessStartInfo
             {
-                var fInfo = new FileInfo(fileToDecompile);
-                if (fInfo.Exists)
-                {
-                    ProgressDialogController task = null;
-                    if (Program.MainWindow != null)
-                    {
-                        task = await Program.MainWindow.ShowProgressAsync(Translate("Decompiling") + "...",
-                            fInfo.FullName, false, Program.MainWindow.MetroDialogOptions);
-                        MainWindow.ProcessUITasks();
-                    }
+                WorkingDirectory = decompilerPath,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true,
+                FileName = "cmd.exe",
+                Arguments = $"/c LysisDecompiler.exe \"{file.FullName}\"",
+            };
+            process.StartInfo = si;
 
-                    // Prepare Lysis execution
-                    var destFile = fInfo.FullName + ".sp";
-                    var standardOutput = new StringBuilder();
-                    using var process = new Process();
-                    process.StartInfo.WorkingDirectory = Paths.GetLysisDirectory();
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.RedirectStandardOutput = true;
-                    process.StartInfo.CreateNoWindow = true;
-                    process.StartInfo.FileName = "java";
-
-                    process.StartInfo.Arguments = $"-jar lysis-java.jar \"{fInfo.FullName}\"";
-
-                    // Execute Lysis, read and store output
-                    try
-                    {
-                        process.Start();
-                        while (!process.HasExited)
-                        {
-                            standardOutput.Append(process.StandardOutput.ReadToEnd());
-                        }
-                        standardOutput.Append(process.StandardOutput.ReadToEnd());
-                        File.WriteAllText(destFile, standardOutput.ToString(), Encoding.UTF8);
-                    }
-                    catch (Exception ex)
-                    {
-                        await Program.MainWindow.ShowMessageAsync($"{fInfo.Name} {Translate("FailedToDecompile")}",
-                            $"{ex.Message}", MessageDialogStyle.Affirmative,
-                        Program.MainWindow.MetroDialogOptions);
-                    }
-
-                    // Load the decompiled file to SPCode
-                    Program.MainWindow.TryLoadSourceFile(destFile, out _, true, false, true);
-                    if (task != null)
-                    {
-                        await task.CloseAsync();
-                    }
-                }
+            if (File.Exists(destFile))
+            {
+                File.Delete(destFile);
             }
+
+            try
+            {
+                process.Start();
+                standardOutput.Append(process.StandardOutput.ReadToEnd());
+                File.WriteAllText(destFile, standardOutput.ToString(), Encoding.UTF8);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return destFile;
         }
     }
 }
