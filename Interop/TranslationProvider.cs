@@ -30,7 +30,7 @@ namespace SPCode.Interop
                 Directory.CreateDirectory(_translationsDir);
             }
 
-            if (IsUpdateAvailable())
+            if (IsUpdateAvailable() != null)
             {
                 UpdateTranslations();
             }
@@ -138,7 +138,7 @@ namespace SPCode.Interop
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"There was a problem while updating the translations file.\n" +
+                MessageBox.Show($"There was a problem while parsing the translation files.\n" +
                     $"Details: {ex.Message}");
             }
         }
@@ -148,52 +148,68 @@ namespace SPCode.Interop
         /// </summary>
         public void UpdateTranslations()
         {
-            // Clear temp folder before beggining
-            DirUtils.ClearTempFolder();
-
-            // Download latest release zip file
-            var wc = new WebClient();
-            var downloadedFile = Path.Combine(_tempDir, "langs.zip");
-            wc.Headers.Add(HttpRequestHeader.UserAgent, Constants.ProductHeaderValueName);
-            wc.DownloadFile(_latestVersion.ZipballUrl, downloadedFile);
-
-            // Decompress and replace all of its files
-            ZipFile.ExtractToDirectory(downloadedFile, _tempDir);
-            var filesDir = Directory.GetFiles(Directory.GetDirectories(_tempDir)[0]).Where(x => x.EndsWith(".xml"));
-            foreach (var file in filesDir)
+            try
             {
-                // Create wrapper
-                var fInfo = new FileInfo(file);
+                // Clear temp folder before beggining
+                DirUtils.ClearTempFolder();
 
-                // Replace current file with this one
-                var destination = Path.Combine(_translationsDir, fInfo.Name);
-                if (File.Exists(destination))
+                // Download latest release zip file
+                var wc = new WebClient();
+                var downloadedFile = Path.Combine(_tempDir, "langs.zip");
+                wc.Headers.Add(HttpRequestHeader.UserAgent, Constants.ProductHeaderValueName);
+                wc.DownloadFile(_latestVersion.ZipballUrl, downloadedFile);
+
+                // Decompress and replace all of its files
+                ZipFile.ExtractToDirectory(downloadedFile, _tempDir);
+                var filesDir = Directory.GetFiles(Directory.GetDirectories(_tempDir)[0]).Where(x => x.EndsWith(".xml"));
+                foreach (var file in filesDir)
                 {
-                    File.Delete(destination);
+                    // Create wrapper
+                    var fInfo = new FileInfo(file);
+
+                    // Replace current file with this one
+                    var destination = Path.Combine(_translationsDir, fInfo.Name);
+                    if (File.Exists(destination))
+                    {
+                        File.Delete(destination);
+                    }
+                    File.Move(fInfo.FullName, destination);
                 }
-                File.Move(fInfo.FullName, destination);
+
+                // Delete all temp folder contents
+                DirUtils.ClearTempFolder();
+
+                // Update version to options object
+                Program.OptionsObject.TranslationsVersion = int.Parse(_latestVersion.Name);
             }
-
-            // Delete all temp folder contents
-            DirUtils.ClearTempFolder();
-
-            // Update version to options object
-            Program.OptionsObject.TranslationsVersion = int.Parse(_latestVersion.Name);
+            catch (Exception ex)
+            {
+                MessageBox.Show($"There was a problem while downloading the new translation files.\n" +
+                    $"Details: {ex.Message}");
+            }
         }
 
         /// <summary>
         /// Compares the stored version of the translations release with the one from GitHub
         /// </summary>
         /// <returns>Whether there's an update available</returns>
-        public bool IsUpdateAvailable()
+        public bool? IsUpdateAvailable()
         {
-            var client = new GitHubClient(new ProductHeaderValue(Constants.ProductHeaderValueName));
-            var versionStored = Program.OptionsObject.TranslationsVersion;
+            try
+            {
+                var client = new GitHubClient(new ProductHeaderValue(Constants.ProductHeaderValueName));
+                var versionStored = Program.OptionsObject.TranslationsVersion;
 
-            _latestVersion = client.Repository.Release.GetAll(Constants.OrgName,
-                Constants.TranslationsRepoName).Result[0];
+                _latestVersion = client.Repository.Release.GetAll(Constants.OrgName,
+                    Constants.TranslationsRepoName).Result[0];
 
-            return versionStored < int.Parse(_latestVersion.Name);
+                return versionStored < int.Parse(_latestVersion.Name);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
         }
     }
 }
