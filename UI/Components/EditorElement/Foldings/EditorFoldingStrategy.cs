@@ -83,7 +83,7 @@ namespace SPCode.UI.Components
                                             }
                                             break;
                                         }
-                                    case '\"':
+                                    case '"':
                                         {
                                             CommentMode = 3;
                                             break;
@@ -117,17 +117,53 @@ namespace SPCode.UI.Components
                             }
                         case 3:
                             {
-                                if (c == '\"' && document.GetCharAt(i - 1) != '\\')
+                                // if quote found, search backwards for backslashes
+                                if (c == '"')
                                 {
-                                    CommentMode = 0;
+                                    var slashes = 0;
+                                    for (int j = i - 1; j >= 0; j--)
+                                    {
+                                        if (document.GetCharAt(j) == '\\')
+                                        {
+                                            slashes++;
+                                        }
+                                        else
+                                        {
+                                            break;
+                                        }
+                                    }
+                                    // if the total amount of subsequent backslashes found is even
+                                    // it means the quote is not escaped
+                                    if (slashes % 2 == 0)
+                                    {
+                                        CommentMode = 0;
+                                    }
                                 }
                                 break;
                             }
                         case 4:
                             {
-                                if (c == '\'' && document.GetCharAt(i - 1) != '\\')
+                                // if apostrophe found, search backwards for backslashes
+                                if (c == '\'')
                                 {
-                                    CommentMode = 0;
+                                    var slashes = 0;
+                                    for (int j = i - 1; j >= 0; j--)
+                                    {
+                                        if (document.GetCharAt(j) == '\\')
+                                        {
+                                            slashes++;
+                                        }
+                                        else
+                                        {
+                                            break;
+                                        }
+                                    }
+                                    // if the total amount of subsequent backslashes found is even
+                                    // it means the apostrophe is not escaped
+                                    if (slashes % 2 == 0)
+                                    {
+                                        CommentMode = 0;
+                                    }
                                 }
                                 break;
                             }
