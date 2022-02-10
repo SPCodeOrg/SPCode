@@ -6,13 +6,9 @@ namespace SPCode.UI.Components
 {
     public class SPFoldingStrategy
     {
-        public char OpeningBrace { get; set; }
-        public char ClosingBrace { get; set; }
-
         public SPFoldingStrategy()
         {
-            OpeningBrace = '{';
-            ClosingBrace = '}';
+
         }
 
         public void UpdateFoldings(FoldingManager manager, TextDocument document)
@@ -36,6 +32,7 @@ namespace SPCode.UI.Components
             for (var i = 0; i < document.TextLength; ++i)
             {
                 var c = document.GetCharAt(i);
+
                 if (c == '\n' || c == '\r')
                 {
                     lastNewLineOffset = i + 1;
@@ -120,7 +117,7 @@ namespace SPCode.UI.Components
                             }
                         case 3:
                             {
-                                if (c == '\"')
+                                if (c == '\"' && document.GetCharAt(i - 1) != '\\')
                                 {
                                     CommentMode = 0;
                                 }
@@ -128,7 +125,7 @@ namespace SPCode.UI.Components
                             }
                         case 4:
                             {
-                                if (c == '\'')
+                                if (c == '\'' && document.GetCharAt(i - 1) != '\\')
                                 {
                                     CommentMode = 0;
                                 }
