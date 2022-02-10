@@ -46,127 +46,127 @@ namespace SPCode.UI.Components
                     switch (CommentMode)
                     {
                         case 0:
+                        {
+                            switch (c)
                             {
-                                switch (c)
+                                case '/':
                                 {
-                                    case '/':
+                                    if ((i + 1) < document.TextLength)
+                                    {
+                                        var oneCharAfter = document.GetCharAt(i + 1);
+                                        if (oneCharAfter == '*')
                                         {
-                                            if ((i + 1) < document.TextLength)
-                                            {
-                                                var oneCharAfter = document.GetCharAt(i + 1);
-                                                if (oneCharAfter == '*')
-                                                {
-                                                    CommentMode = 2;
-                                                    startOffsets.Push(i);
-                                                }
-                                                else if (oneCharAfter == '/')
-                                                {
-                                                    CommentMode = 1;
-                                                }
-                                            }
-                                            break;
-                                        }
-                                    case '{':
-                                        {
+                                            CommentMode = 2;
                                             startOffsets.Push(i);
-                                            break;
                                         }
-                                    case '}':
+                                        else if (oneCharAfter == '/')
                                         {
-                                            if (startOffsets.Count > 0)
-                                            {
-                                                var startOffset = startOffsets.Pop();
-                                                if (startOffset < lastNewLineOffset)
-                                                {
-                                                    newFoldings.Add(new NewFolding(startOffset, i + 1));
-                                                }
-                                            }
-                                            break;
+                                            CommentMode = 1;
                                         }
-                                    case '"':
-                                        {
-                                            CommentMode = 3;
-                                            break;
-                                        }
-                                    case '\'':
-                                        {
-                                            CommentMode = 4;
-                                            break;
-                                        }
+                                    }
+                                    break;
                                 }
-                                break;
+                                case '{':
+                                {
+                                    startOffsets.Push(i);
+                                    break;
+                                }
+                                case '}':
+                                {
+                                    if (startOffsets.Count > 0)
+                                    {
+                                        var startOffset = startOffsets.Pop();
+                                        if (startOffset < lastNewLineOffset)
+                                        {
+                                            newFoldings.Add(new NewFolding(startOffset, i + 1));
+                                        }
+                                    }
+                                    break;
+                                }
+                                case '"':
+                                {
+                                    CommentMode = 3;
+                                    break;
+                                }
+                                case '\'':
+                                {
+                                    CommentMode = 4;
+                                    break;
+                                }
                             }
+                            break;
+                        }
                         case 2:
+                        {
+                            if (c == '/')
                             {
-                                if (c == '/')
+                                if (i > 0)
                                 {
-                                    if (i > 0)
+                                    if (document.GetCharAt(i - 1) == '*')
                                     {
-                                        if (document.GetCharAt(i - 1) == '*')
+                                        var startOffset = startOffsets.Pop();
+                                        CommentMode = 0;
+                                        if (startOffset < lastNewLineOffset)
                                         {
-                                            var startOffset = startOffsets.Pop();
-                                            CommentMode = 0;
-                                            if (startOffset < lastNewLineOffset)
-                                            {
-                                                newFoldings.Add(new NewFolding(startOffset, i + 1));
-                                            }
+                                            newFoldings.Add(new NewFolding(startOffset, i + 1));
                                         }
                                     }
                                 }
-                                break;
                             }
+                            break;
+                        }
                         case 3:
+                        {
+                            // if quote found, search backwards for backslashes
+                            if (c == '"')
                             {
-                                // if quote found, search backwards for backslashes
-                                if (c == '"')
+                                var slashes = 0;
+                                for (var j = i - 1; j >= 0; j--)
                                 {
-                                    var slashes = 0;
-                                    for (int j = i - 1; j >= 0; j--)
+                                    if (document.GetCharAt(j) == '\\')
                                     {
-                                        if (document.GetCharAt(j) == '\\')
-                                        {
-                                            slashes++;
-                                        }
-                                        else
-                                        {
-                                            break;
-                                        }
+                                        slashes++;
                                     }
-                                    // if the total amount of subsequent backslashes found is even
-                                    // it means the quote is not escaped
-                                    if (slashes % 2 == 0)
+                                    else
                                     {
-                                        CommentMode = 0;
+                                        break;
                                     }
                                 }
-                                break;
+                                // if the total amount of subsequent backslashes found is even
+                                // it means the quote is not escaped
+                                if (slashes % 2 == 0)
+                                {
+                                    CommentMode = 0;
+                                }
                             }
+                            break;
+                        }
                         case 4:
+                        {
+                            // if apostrophe found, search backwards for backslashes
+                            if (c == '\'')
                             {
-                                // if apostrophe found, search backwards for backslashes
-                                if (c == '\'')
+                                var slashes = 0;
+                                for (var j = i - 1; j >= 0; j--)
                                 {
-                                    var slashes = 0;
-                                    for (int j = i - 1; j >= 0; j--)
+                                    if (document.GetCharAt(j) == '\\')
                                     {
-                                        if (document.GetCharAt(j) == '\\')
-                                        {
-                                            slashes++;
-                                        }
-                                        else
-                                        {
-                                            break;
-                                        }
+                                        slashes++;
                                     }
-                                    // if the total amount of subsequent backslashes found is even
-                                    // it means the apostrophe is not escaped
-                                    if (slashes % 2 == 0)
+                                    else
                                     {
-                                        CommentMode = 0;
+                                        break;
                                     }
                                 }
-                                break;
+                                // if the total amount of subsequent backslashes found is even
+                                // it means the apostrophe is not escaped
+                                if (slashes % 2 == 0)
+                                {
+                                    CommentMode = 0;
+                                }
                             }
+                            break;
+                        }
                     }
                 }
             }

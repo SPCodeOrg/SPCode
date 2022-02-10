@@ -272,72 +272,72 @@ namespace SourcepawnCondenser.Tokenizer
                             case "public":
                             case "normal":
                             case "static":
-                                {
-                                    token.Add(new Token(identString, TokenKind.FunctionIndicator, startIndex));
-                                    break;
-                                }
+                            {
+                                token.Add(new Token(identString, TokenKind.FunctionIndicator, startIndex));
+                                break;
+                            }
                             case "enum":
-                                {
-                                    var fullString = Source.Substring(startIndex, endIndex - startIndex + 7);
-                                    token.Add(fullString == "enum struct"
-                                        ? new Token(fullString, TokenKind.EnumStruct, startIndex)
-                                        : new Token(identString, TokenKind.Enum, startIndex));
+                            {
+                                var fullString = Source.Substring(startIndex, endIndex - startIndex + 7);
+                                token.Add(fullString == "enum struct"
+                                    ? new Token(fullString, TokenKind.EnumStruct, startIndex)
+                                    : new Token(identString, TokenKind.Enum, startIndex));
 
-                                    break;
-                                }
+                                break;
+                            }
                             case "struct":
+                            {
+                                var enumStructStart = startIndex - 5;
+                                if (enumStructStart >= 0)
                                 {
-                                    var enumStructStart = startIndex - 5;
-                                    if (enumStructStart >= 0)
+                                    // Avoid double matches
+                                    var fullString = Source.Substring(enumStructStart, endIndex - enumStructStart);
+                                    if (fullString == "enum struct")
                                     {
-                                        // Avoid double matches
-                                        var fullString = Source.Substring(enumStructStart, endIndex - enumStructStart);
-                                        if (fullString == "enum struct")
-                                        {
-                                            break;
-                                        }
+                                        break;
                                     }
+                                }
 
-                                    token.Add(new Token(identString, TokenKind.Struct, startIndex));
-                                    break;
-                                }
+                                token.Add(new Token(identString, TokenKind.Struct, startIndex));
+                                break;
+                            }
                             case "const":
-                                {
-                                    token.Add(new Token(identString, TokenKind.Constant, startIndex));
-                                    break;
-                                }
+                            {
+                                token.Add(new Token(identString, TokenKind.Constant, startIndex));
+                                break;
+                            }
                             case "methodmap":
-                                {
-                                    token.Add(new Token(identString, TokenKind.MethodMap, startIndex));
-                                    break;
-                                }
+                            {
+                                token.Add(new Token(identString, TokenKind.MethodMap, startIndex));
+                                break;
+                            }
                             case "property":
-                                {
-                                    token.Add(new Token(identString, TokenKind.Property, startIndex));
-                                    break;
-                                }
+                            {
+                                token.Add(new Token(identString, TokenKind.Property, startIndex));
+                                break;
+                            }
                             case "typeset":
                             case "funcenum":
-                                {
-                                    token.Add(new Token(identString, TokenKind.TypeSet, startIndex));
-                                    break;
-                                }
+                            {
+                                token.Add(new Token(identString, TokenKind.TypeSet, startIndex));
+                                break;
+                            }
                             case "typedef":
                             case "functag":
-                                {
-                                    token.Add(new Token(identString, TokenKind.TypeDef, startIndex));
-                                    break;
-                                }
+                            {
+                                token.Add(new Token(identString, TokenKind.TypeDef, startIndex));
+                                break;
+                            }
                             case "new":
-                                {
-                                    token.Add(new Token(identString, TokenKind.New, startIndex));
-                                    break;
-                                }
+                            {
+                                token.Add(new Token(identString, TokenKind.New, startIndex));
+                                break;
+                            }
                             default:
-                                {
-                                    token.Add(new Token(identString, TokenKind.Identifier, startIndex));
-                                    break;
-                                }
+                            {
+                                token.Add(new Token(identString, TokenKind.Identifier, startIndex));
+                                break;
+                            }
                         }
 
                         i = endIndex - 1;

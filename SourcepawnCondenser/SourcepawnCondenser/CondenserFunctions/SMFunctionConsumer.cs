@@ -20,66 +20,66 @@ namespace SourcepawnCondenser
             switch (t[startPosition].Value)
             {
                 case "stock":
+                {
+                    if (startPosition + 1 < length)
                     {
-                        if (startPosition + 1 < length)
+                        if (t[startPosition + 1].Kind == TokenKind.FunctionIndicator)
                         {
-                            if (t[startPosition + 1].Kind == TokenKind.FunctionIndicator)
+                            if (t[startPosition + 1].Value == "static")
                             {
-                                if (t[startPosition + 1].Value == "static")
-                                {
-                                    kind = SMFunctionKind.StockStatic;
-                                    ++iteratePosition;
-                                    break;
-                                }
+                                kind = SMFunctionKind.StockStatic;
+                                ++iteratePosition;
+                                break;
                             }
                         }
-
-                        kind = SMFunctionKind.Stock;
-                        break;
                     }
+
+                    kind = SMFunctionKind.Stock;
+                    break;
+                }
                 case "native":
-                    {
-                        kind = SMFunctionKind.Native;
-                        break;
-                    }
+                {
+                    kind = SMFunctionKind.Native;
+                    break;
+                }
                 case "forward":
-                    {
-                        kind = SMFunctionKind.Forward;
-                        break;
-                    }
+                {
+                    kind = SMFunctionKind.Forward;
+                    break;
+                }
                 case "public":
+                {
+                    if (startPosition + 1 < length)
                     {
-                        if (startPosition + 1 < length)
+                        if (t[startPosition + 1].Kind == TokenKind.FunctionIndicator)
                         {
-                            if (t[startPosition + 1].Kind == TokenKind.FunctionIndicator)
+                            if (t[startPosition + 1].Value == "native")
                             {
-                                if (t[startPosition + 1].Value == "native")
-                                {
-                                    kind = SMFunctionKind.PublicNative;
-                                    ++iteratePosition;
-                                    break;
-                                }
+                                kind = SMFunctionKind.PublicNative;
+                                ++iteratePosition;
+                                break;
                             }
                         }
+                    }
 
-                        kind = SMFunctionKind.Public;
-                        break;
-                    }
+                    kind = SMFunctionKind.Public;
+                    break;
+                }
                 case "static":
-                    {
-                        kind = SMFunctionKind.Static;
-                        break;
-                    }
+                {
+                    kind = SMFunctionKind.Static;
+                    break;
+                }
                 case "normal":
-                    {
-                        kind = SMFunctionKind.Normal;
-                        break;
-                    }
+                {
+                    kind = SMFunctionKind.Normal;
+                    break;
+                }
                 default:
-                    {
-                        functionReturnType = t[startPosition].Value;
-                        break;
-                    }
+                {
+                    functionReturnType = t[startPosition].Value;
+                    break;
+                }
             }
 
             var functionCommentString = string.Empty;

@@ -58,7 +58,7 @@ namespace SPCode.Utils.SPSyntaxTidy
                             {
                                 // if found, count the amount of them
                                 var slashAmount = 0;
-                                for (int k = j - 1; k >= 0; k--)
+                                for (var k = j - 1; k >= 0; k--)
                                 {
                                     if (buffer[k - 1] == '\\')
                                     {

@@ -378,45 +378,45 @@ namespace SPCode.UI.Components
 
                             break;
                         case V1Param.Address:
+                        {
+                            DebugSymbolEntry sym = null;
+                            if (file_.DebugSymbols != null)
                             {
-                                DebugSymbolEntry sym = null;
-                                if (file_.DebugSymbols != null)
-                                {
-                                    sym = file_.DebugSymbols.FindDataRef(value);
-                                }
-
-                                buffer.Append(string.Format(" 0x{0:x}", value));
-                                if (sym != null)
-                                {
-                                    comment.Append(string.Format(" {0}", sym.Name));
-                                }
-                                else
-                                {
-                                    comment.Append(string.Format(" {0}", value));
-                                }
-
-                                break;
+                                sym = file_.DebugSymbols.FindDataRef(value);
                             }
+
+                            buffer.Append(string.Format(" 0x{0:x}", value));
+                            if (sym != null)
+                            {
+                                comment.Append(string.Format(" {0}", sym.Name));
+                            }
+                            else
+                            {
+                                comment.Append(string.Format(" {0}", value));
+                            }
+
+                            break;
+                        }
                         case V1Param.Stack:
+                        {
+                            DebugSymbolEntry sym = null;
+                            if (file_.DebugSymbols != null)
                             {
-                                DebugSymbolEntry sym = null;
-                                if (file_.DebugSymbols != null)
-                                {
-                                    sym = file_.DebugSymbols.FindStackRef(insn.Address, value);
-                                }
-
-                                buffer.Append(string.Format(" 0x{0:x}", value));
-                                if (sym != null)
-                                {
-                                    comment.Append(string.Format(" {0}", sym.Name));
-                                }
-                                else
-                                {
-                                    comment.Append(string.Format(" {0}", value));
-                                }
-
-                                break;
+                                sym = file_.DebugSymbols.FindStackRef(insn.Address, value);
                             }
+
+                            buffer.Append(string.Format(" 0x{0:x}", value));
+                            if (sym != null)
+                            {
+                                comment.Append(string.Format(" {0}", sym.Name));
+                            }
+                            else
+                            {
+                                comment.Append(string.Format(" {0}", value));
+                            }
+
+                            break;
+                        }
                         case V1Param.Function:
                             var fun = file_.FindFunctionName(value);
                             buffer.Append(string.Format(" 0x{0:x}", value));

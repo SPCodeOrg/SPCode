@@ -428,92 +428,92 @@ namespace SPCode.UI.Components
                 {
                     case Key.Enter:
                     case Key.Tab:
+                    {
+                        var tabToAutoc = Program.OptionsObject.Editor_TabToAutocomplete;
+                        if ((k == Key.Tab && !tabToAutoc) || (k == Key.Enter && tabToAutoc))
                         {
-                            var tabToAutoc = Program.OptionsObject.Editor_TabToAutocomplete;
-                            if ((k == Key.Tab && !tabToAutoc) || (k == Key.Enter && tabToAutoc))
-                            {
-                                return false;
-                            }
-
-                            var startOffset = editor.CaretOffset - 1;
-                            var endOffset = startOffset;
-                            for (var i = startOffset; i >= 0; --i)
-                            {
-                                if (!IsValidFunctionChar(editor.Document.GetCharAt(i)))
-                                {
-                                    break;
-                                }
-
-                                endOffset = i;
-                            }
-
-                            var length = startOffset - endOffset;
-                            string replaceString;
-                            var setCaret = false;
-                            if (AC_IsFuncC)
-                            {
-                                replaceString = ((ACNode)AutoCompleteBox.SelectedItem).EntryName;
-                                if (acEntrys[AutoCompleteBox.SelectedIndex].IsExecuteable)
-                                {
-                                    replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
-                                    setCaret = true;
-                                }
-                            }
-                            else
-                            {
-                                replaceString = ((ISNode)MethodAutoCompleteBox.SelectedItem).EntryName;
-                                if (isEntrys[MethodAutoCompleteBox.SelectedIndex].IsExecuteable)
-                                {
-                                    replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
-                                    setCaret = true;
-                                }
-                            }
-
-                            editor.Document.Replace(endOffset, length + 1, replaceString);
-                            if (setCaret)
-                            {
-                                editor.CaretOffset--;
-                            }
-
-                            return true;
+                            return false;
                         }
+
+                        var startOffset = editor.CaretOffset - 1;
+                        var endOffset = startOffset;
+                        for (var i = startOffset; i >= 0; --i)
+                        {
+                            if (!IsValidFunctionChar(editor.Document.GetCharAt(i)))
+                            {
+                                break;
+                            }
+
+                            endOffset = i;
+                        }
+
+                        var length = startOffset - endOffset;
+                        string replaceString;
+                        var setCaret = false;
+                        if (AC_IsFuncC)
+                        {
+                            replaceString = ((ACNode)AutoCompleteBox.SelectedItem).EntryName;
+                            if (acEntrys[AutoCompleteBox.SelectedIndex].IsExecuteable)
+                            {
+                                replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
+                                setCaret = true;
+                            }
+                        }
+                        else
+                        {
+                            replaceString = ((ISNode)MethodAutoCompleteBox.SelectedItem).EntryName;
+                            if (isEntrys[MethodAutoCompleteBox.SelectedIndex].IsExecuteable)
+                            {
+                                replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
+                                setCaret = true;
+                            }
+                        }
+
+                        editor.Document.Replace(endOffset, length + 1, replaceString);
+                        if (setCaret)
+                        {
+                            editor.CaretOffset--;
+                        }
+
+                        return true;
+                    }
                     case Key.Up:
+                    {
+                        if (AC_IsFuncC)
                         {
-                            if (AC_IsFuncC)
-                            {
-                                AutoCompleteBox.SelectedIndex = Math.Max(0, AutoCompleteBox.SelectedIndex - 1);
-                                AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
-                            }
-                            else
-                            {
-                                MethodAutoCompleteBox.SelectedIndex = Math.Max(0, MethodAutoCompleteBox.SelectedIndex - 1);
-                                MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
-                            }
-
-                            return true;
+                            AutoCompleteBox.SelectedIndex = Math.Max(0, AutoCompleteBox.SelectedIndex - 1);
+                            AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
                         }
+                        else
+                        {
+                            MethodAutoCompleteBox.SelectedIndex = Math.Max(0, MethodAutoCompleteBox.SelectedIndex - 1);
+                            MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+                        }
+
+                        return true;
+                    }
                     case Key.Down:
+                    {
+                        if (AC_IsFuncC)
                         {
-                            if (AC_IsFuncC)
-                            {
-                                AutoCompleteBox.SelectedIndex = Math.Min(AutoCompleteBox.Items.Count - 1,
-                                    AutoCompleteBox.SelectedIndex + 1);
-                                AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
-                            }
-                            else
-                            {
-                                MethodAutoCompleteBox.SelectedIndex = Math.Min(MethodAutoCompleteBox.Items.Count - 1,
-                                    MethodAutoCompleteBox.SelectedIndex + 1);
-                                MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
-                            }
+                            AutoCompleteBox.SelectedIndex = Math.Min(AutoCompleteBox.Items.Count - 1,
+                                AutoCompleteBox.SelectedIndex + 1);
+                            AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
+                        }
+                        else
+                        {
+                            MethodAutoCompleteBox.SelectedIndex = Math.Min(MethodAutoCompleteBox.Items.Count - 1,
+                                MethodAutoCompleteBox.SelectedIndex + 1);
+                            MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+                        }
 
-                            return true;
-                        }
+                        return true;
+                    }
                     case Key.Escape:
-                        {
-                            HideISAC();
-                            return true;
-                        }
+                    {
+                        HideISAC();
+                        return true;
+                    }
                 }
             }
 

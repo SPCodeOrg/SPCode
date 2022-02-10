@@ -38,122 +38,122 @@ namespace SourcepawnCondenser
                 switch (ct.Kind)
                 {
                     case TokenKind.FunctionIndicator:
+                    {
+                        var newIndex = ConsumeSMFunction();
+                        if (newIndex != -1)
                         {
-                            var newIndex = ConsumeSMFunction();
-                            if (newIndex != -1)
-                            {
-                                position = newIndex + 1;
-                                continue;
-                            }
-
-                            break;
+                            position = newIndex + 1;
+                            continue;
                         }
-                    case TokenKind.EnumStruct:
-                        {
-                            var newIndex = ConsumeSMEnumStruct();
-                            if (newIndex != -1)
-                            {
-                                position = newIndex + 1;
-                                continue;
-                            }
 
-                            break;
-                        }
-                    case TokenKind.Enum:
-                        {
-                            var newIndex = ConsumeSMEnum();
-                            if (newIndex != -1)
-                            {
-                                position = newIndex + 1;
-                                continue;
-                            }
-
-                            break;
-                        }
-                    case TokenKind.Struct:
-                        {
-                            var newIndex = ConsumeSMStruct();
-                            if (newIndex != -1)
-                            {
-                                position = newIndex + 1;
-                                continue;
-                            }
-
-                            break;
-                        }
-                    case TokenKind.PreprocessorDirective:
-                        {
-                            var newIndex = ConsumeSMPPDirective();
-                            if (newIndex != -1)
-                            {
-                                position = newIndex + 1;
-                                continue;
-                            }
-
-                            break;
-                        }
-                    case TokenKind.Constant:
-                        {
-                            var newIndex = ConsumeSMConstant();
-                            if (newIndex != -1)
-                            {
-                                position = newIndex + 1;
-                                continue;
-                            }
-
-                            break;
-                        }
-                    case TokenKind.MethodMap:
-                        {
-                            var newIndex = ConsumeSMMethodmap();
-                            if (newIndex != -1)
-                            {
-                                position = newIndex + 1;
-                                continue;
-                            }
-
-                            break;
-                        }
-                    case TokenKind.TypeSet:
-                        {
-                            var newIndex = ConsumeSMTypeset();
-                            if (newIndex != -1)
-                            {
-                                position = newIndex + 1;
-                                continue;
-                            }
-
-                            break;
-                        }
-                    case TokenKind.TypeDef:
-                        {
-                            var newIndex = ConsumeSMTypedef();
-                            if (newIndex != -1)
-                            {
-                                position = newIndex + 1;
-                                continue;
-                            }
-
-                            break;
-                        }
-                    case TokenKind.Identifier:
-                        {
-                            var newIndex = ConsumeSMVariable();
-                            if (newIndex != -1)
-                            {
-                                position = newIndex + 1;
-                                continue;
-                            }
-
-                            // If Variable is not found try function
-                            newIndex = ConsumeSMFunction();
-                            if (newIndex != -1)
-                            {
-                                position = newIndex + 1;
-                                continue;
-                            }
-                        }
                         break;
+                    }
+                    case TokenKind.EnumStruct:
+                    {
+                        var newIndex = ConsumeSMEnumStruct();
+                        if (newIndex != -1)
+                        {
+                            position = newIndex + 1;
+                            continue;
+                        }
+
+                        break;
+                    }
+                    case TokenKind.Enum:
+                    {
+                        var newIndex = ConsumeSMEnum();
+                        if (newIndex != -1)
+                        {
+                            position = newIndex + 1;
+                            continue;
+                        }
+
+                        break;
+                    }
+                    case TokenKind.Struct:
+                    {
+                        var newIndex = ConsumeSMStruct();
+                        if (newIndex != -1)
+                        {
+                            position = newIndex + 1;
+                            continue;
+                        }
+
+                        break;
+                    }
+                    case TokenKind.PreprocessorDirective:
+                    {
+                        var newIndex = ConsumeSMPPDirective();
+                        if (newIndex != -1)
+                        {
+                            position = newIndex + 1;
+                            continue;
+                        }
+
+                        break;
+                    }
+                    case TokenKind.Constant:
+                    {
+                        var newIndex = ConsumeSMConstant();
+                        if (newIndex != -1)
+                        {
+                            position = newIndex + 1;
+                            continue;
+                        }
+
+                        break;
+                    }
+                    case TokenKind.MethodMap:
+                    {
+                        var newIndex = ConsumeSMMethodmap();
+                        if (newIndex != -1)
+                        {
+                            position = newIndex + 1;
+                            continue;
+                        }
+
+                        break;
+                    }
+                    case TokenKind.TypeSet:
+                    {
+                        var newIndex = ConsumeSMTypeset();
+                        if (newIndex != -1)
+                        {
+                            position = newIndex + 1;
+                            continue;
+                        }
+
+                        break;
+                    }
+                    case TokenKind.TypeDef:
+                    {
+                        var newIndex = ConsumeSMTypedef();
+                        if (newIndex != -1)
+                        {
+                            position = newIndex + 1;
+                            continue;
+                        }
+
+                        break;
+                    }
+                    case TokenKind.Identifier:
+                    {
+                        var newIndex = ConsumeSMVariable();
+                        if (newIndex != -1)
+                        {
+                            position = newIndex + 1;
+                            continue;
+                        }
+
+                        // If Variable is not found try function
+                        newIndex = ConsumeSMFunction();
+                        if (newIndex != -1)
+                        {
+                            position = newIndex + 1;
+                            continue;
+                        }
+                    }
+                    break;
                 }
 
                 ++position;
