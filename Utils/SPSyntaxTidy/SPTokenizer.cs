@@ -18,14 +18,15 @@ namespace SPCode.Utils.SPSyntaxTidy
 
                 #region Newline
 
-                if (c == '\n'
-                ) //just fetch \n. \r will be killed by the whitestrip but it's reintroduced in Environment.NewLine
+                //just fetch \n. \r will be killed by the whitestrip but it's reintroduced in Environment.NewLine
+                if (c == '\n')
                 {
+                    //add them before the whitestrip-killer will get them ^^
                     token.Add(new SPToken()
                     {
                         Kind = SPTokenKind.Newline,
                         Value = Environment.NewLine
-                    }); //add them before the whitestrip-killer will get them ^^
+                    });
                     continue;
                 }
 
@@ -42,17 +43,49 @@ namespace SPCode.Utils.SPSyntaxTidy
 
                 #region Quotes
 
-                if (c == '"') //sigh...
+                if (c == '"')
                 {
                     var startIndex = i;
-                    var
-                        foundOccurence =
-                            false; //these suckers are here because we want to continue the main-for-loop but cannot do it from the for-loop in the nextline
+                    var foundOccurence = false;
+
+                    // keep searching for next quote
                     for (var j = i + 1; j < length; ++j)
                     {
+                        // if found, search for an escape slash before it
                         if (buffer[j] == '"')
                         {
-                            if (buffer[j - 1] != '\\') //is the quote not escaped?
+                            if (buffer[j - 1] == '\\')
+                            {
+                                // if found, count the amount of them
+                                var slashAmount = 0;
+                                for (int k = j - 1; k >= 0; k--)
+                                {
+                                    if (buffer[k - 1] == '\\')
+                                    {
+                                        slashAmount++;
+                                        continue;
+                                    }
+                                    break;
+                                }
+                                // if amount is even (slashAmout + 1 already counted = it's even)
+                                // quote is not escaped and counts as closing quote, we add it as token
+                                if (slashAmount % 2 != 0)
+                                {
+                                    token.Add(new SPToken()
+                                    {
+                                        Kind = SPTokenKind.Quote,
+                                        Value = source.Substring(startIndex, j - startIndex + 1)
+                                    });
+                                    foundOccurence = true;
+                                    i = j; //skip it in the main loop
+                                    break;
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+                            else
                             {
                                 token.Add(new SPToken()
                                 {
@@ -124,8 +157,8 @@ namespace SPCode.Utils.SPSyntaxTidy
                             ++i;
                             for (var j = i; j < length; ++j)
                             {
-                                if (buffer[j] == '\r' || buffer[j] == '\n'
-                                ) //different line ending specifications...horribly...
+                                //different line ending specifications...horribly...
+                                if (buffer[j] == '\r' || buffer[j] == '\n')
                                 {
                                     break;
                                 }
@@ -259,8 +292,7 @@ namespace SPCode.Utils.SPSyntaxTidy
                     }
                 }
 
-                if (c == '<' || c == '>' || c == '!' || c == '|' || c == '&' || c == '+' || c == '-' || c == '*' ||
-                    c == '/' || c == '^' || c == '%')
+                if (c is '<' or '>' or '!' or '|' or '&' or '+' or '-' or '*' or '/' or '^' or '%')
                 {
                     if ((i + 1) < length)
                     {
@@ -272,8 +304,8 @@ namespace SPCode.Utils.SPSyntaxTidy
                         }
                     }
 
-                    if (c != '!' && c != '|' && c != '&' && c != '+' && c != '-' && c != '<' && c != '>'
-                    ) //they can have another meaning so they are handled on their own
+                    //they can have another meaning so they are handled on their own
+                    if (c is not '!' and not '|' and not '&' and not '+' and not '-' and not '<' and not '>')
                     {
                         token.Add(new SPToken() { Kind = SPTokenKind.Operator, Value = source.Substring(i, 1) });
                         continue;
@@ -342,8 +374,8 @@ namespace SPCode.Utils.SPSyntaxTidy
                     }
                 }
 
-                if (c == '&'
-                ) //the & operator is a little bit problematic. It can mean bitwise AND or address of variable. This is not easy to determinate
+                //the & operator is a little bit problematic. It can mean bitwise AND or address of variable. This is not easy to determinate
+                if (c == '&')
                 {
                     var canMatchSingle = true;
                     if ((i + 1) < length)

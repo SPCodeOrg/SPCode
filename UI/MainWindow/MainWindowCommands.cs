@@ -569,9 +569,9 @@ namespace SPCode.UI
                         var line = ee.editor.Document.GetLineByOffset(currentCaret);
                         var lineNumber = line.LineNumber;
                         // 0 - start | any other - middle | -1 - EOS
-                        var curserLinePos = currentCaret == line.Offset ? 0 : currentCaret == line.EndOffset ? -1 : currentCaret - line.Offset;
+                        var cursorLinePos = currentCaret == line.Offset ? 0 : currentCaret == line.EndOffset ? -1 : currentCaret - line.Offset;
 
-                        if (curserLinePos > 0)
+                        if (cursorLinePos > 0)
                         {
                             numOfSpacesOrTabsBefore = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
                         }
@@ -585,14 +585,14 @@ namespace SPCode.UI
 
                         line = ee.editor.Document.GetLineByNumber(lineNumber);
                         var newCaretPos = line.Offset;
-                        if (curserLinePos == -1)
+                        if (cursorLinePos == -1)
                         {
                             newCaretPos += line.Length;
                         }
-                        else if (curserLinePos != 0)
+                        else if (cursorLinePos != 0)
                         {
                             var numOfSpacesOrTabsAfter = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
-                            newCaretPos += curserLinePos + (numOfSpacesOrTabsAfter - numOfSpacesOrTabsBefore);
+                            newCaretPos += cursorLinePos + (numOfSpacesOrTabsAfter - numOfSpacesOrTabsBefore);
                         }
                         ee.editor.TextArea.Caret.Offset = newCaretPos;
                     }
