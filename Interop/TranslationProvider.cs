@@ -30,7 +30,7 @@ namespace SPCode.Interop
                 Directory.CreateDirectory(_translationsDir);
             }
 
-            if (IsUpdateAvailable() != null)
+            if (IsUpdateAvailable())
             {
                 UpdateTranslations();
             }
@@ -193,7 +193,7 @@ namespace SPCode.Interop
         /// Compares the stored version of the translations release with the one from GitHub
         /// </summary>
         /// <returns>Whether there's an update available</returns>
-        public bool? IsUpdateAvailable()
+        public bool IsUpdateAvailable()
         {
             try
             {
@@ -207,7 +207,7 @@ namespace SPCode.Interop
             }
             catch (Exception)
             {
-                return null;
+                return false;
             }
 
         }
