@@ -18,28 +18,30 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor1" 
+  <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor1" 
                      Color="{DynamicResource BlackColor}"/>
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor2" 
+  <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor2" 
                      Color="{DynamicResource WhiteColor}"/>
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor3" 
-                     Color="{DynamicResource AccentColor}"/> 
-    <!--ItemLine-->
+  <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor3" 
+                     Color="{DynamicResource AccentColor}"/>
+  <!--ItemLine-->
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor4" 
-                     Color="{DynamicResource AccentColor2}"/> <!--MouseOver ItemLine-->
+  <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor4" 
+                     Color="{DynamicResource AccentColor2}"/>
+  <!--MouseOver ItemLine-->
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor5" 
-                     Color="{DynamicResource BlackColor}"/> <!--Item Foreground-->
+  <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor5" 
+                     Color="{DynamicResource BlackColor}"/>
+  <!--Item Foreground-->
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor6" 
+  <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor6" 
                      Color="{DynamicResource WhiteColor}"/>
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor7" 
+  <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor7" 
                      Color="{DynamicResource Gray1}"/>
-<!--
+  <!--
     <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor10"
                      Color="#FF333333"/>
 
@@ -55,10 +57,10 @@
     <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor30"
                      Color="#FF333333"/>-->
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor31"
+  <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor31"
                      Color="{DynamicResource WhiteColor}"/>
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor33"
+  <SolidColorBrush x:Key="AvalonDock_ThemeMetro_BaseColor33"
                      Color="{DynamicResource WhiteColor}"/>
 
 </ResourceDictionary>

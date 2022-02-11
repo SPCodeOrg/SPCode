@@ -7,7 +7,7 @@
                       GlowBrush="{DynamicResource AccentColorBrush}" 
                       WindowStartupLocation="CenterOwner" WindowStyle="None" 
                       KeyDown="MetroWindow_KeyDown">
-  
+
   <controls:MetroWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

@@ -15,7 +15,7 @@
                       UseNoneWindowStyle="False" 
                       TitlebarHeight="0" 
                       KeyDown="MetroWindow_KeyDown">
-  
+
   <controls:MetroWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

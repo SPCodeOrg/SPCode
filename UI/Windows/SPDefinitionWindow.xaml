@@ -9,7 +9,7 @@
                       GlowBrush="{DynamicResource AccentColorBrush}"
                       ShowTitleBar="False" 
                       Title="Parsed Sourcepawn Definion">
-  
+
   <controls:MetroWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
