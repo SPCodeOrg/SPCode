@@ -34,7 +34,7 @@
 
           <!-- Button style with pressed effects -->
 
-          <Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
+          <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{DynamicResource WhiteBrush}"/>
             <Setter Property="Template">
               <Setter.Value>
@@ -55,6 +55,55 @@
             </Style.Triggers>
           </Style>
 
+          <Style x:Key="ButtonStyle2" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="{DynamicResource WhiteBrush}"/>
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                  <Border Background="{TemplateBinding Background}" BorderBrush="{DynamicResource GrayBrush5}" BorderThickness="1">
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource GrayBrush7}"/>
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{DynamicResource GrayBrush8}"/>
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+
+          <Style x:Key="ToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Background" Value="{DynamicResource WhiteBrush}"/>
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                  <Border Background="{TemplateBinding Background}" BorderBrush="{DynamicResource GrayBrush5}" BorderThickness="{TemplateBinding BorderThickness}">
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                  <ControlTemplate.Triggers>
+                    <Trigger Property="IsChecked" Value="False">
+                      <Setter Property="BorderThickness" Value="0"/>
+                    </Trigger>
+                    <Trigger Property="IsChecked" Value="True">
+                      <Setter Property="BorderThickness" Value="1"/>
+                    </Trigger>
+                  </ControlTemplate.Triggers>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource GrayBrush7}"/>
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{DynamicResource GrayBrush8}"/>
+              </Trigger>
+            </Style.Triggers>
+          </Style>
           <!--Button Images-->
 
           <Image x:Key="ImgReload" Source="/SPCode;component/Resources/Icons/icon-reload.png" Width="16"/>
@@ -361,26 +410,38 @@
           </ListViewItem>
         </ListView>
 
-        <Button x:Name="BtExpandCollapse" Style="{StaticResource ButtonStyle}" Content="{StaticResource ImgExpand}" 
+        <Button x:Name="BtExpandCollapse" Style="{StaticResource ButtonStyle1}" Content="{StaticResource ImgExpand}" 
                 Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Height="22" Width="22" Margin="0,3,2,0"
                 Click="BtExpandCollapse_Click" ToolTip="Expand all directories"/>
 
-        <Button x:Name="BtRefreshDir" Style="{StaticResource ButtonStyle}" Content="{StaticResource ImgReload}" 
+        <Button x:Name="BtRefreshDir" Style="{StaticResource ButtonStyle1}" Content="{StaticResource ImgReload}" 
                 Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Height="22" Width="22" Margin="0,3,27,0"
                 Click="BtRefreshDir_Click" ToolTip="Reload current directory"/>
 
       </Grid>
+
       <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="5" Background="{DynamicResource GrayBrush5}" />
-      <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="30" Margin="0,5,0,0" Style="{DynamicResource ButtonStyle}" Click="CloseErrorResultGrid">
+
+      <!-- Begin Lower Grids -->
+
+      <!--Close Lower Grid Button-->
+      <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="30" Margin="0,5,0,0" Style="{DynamicResource ButtonStyle1}" Click="CloseErrorResultGrid">
         <Canvas Width="10" Height="10" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
           <Path Width="10" Height="10" Stretch="Fill" Fill="{DynamicResource AccentColorBrush}" Data="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z "/>
         </Canvas>
       </Button>
-      <Grid Grid.Row="1" Margin="0,5,30,0">
+
+      <!-- Lower Grid -->
+
+      <!--#region Lower Grid-->
+      <Grid Grid.Row="1" Margin="0,5,0,0">
+
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="5*" />
           <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
+
+        <!--Log TextBox-->
         <TextBox x:Name="LogTextbox" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" TextWrapping="Wrap"
                          Margin="5,0,0,0" IsReadOnly="True" AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Auto"
                          PreviewMouseRightButtonDown="LogTextbox_PreviewMouseRightButtonDown">
@@ -390,9 +451,62 @@
             </ContextMenu>
           </TextBox.Resources>
         </TextBox>
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="5" Background="LightGray" />
-        <DataGrid x:Name="ErrorResultGrid" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsReadOnly="True"
-                          SelectionMode="Single" AutoGenerateColumns="true" SelectionChanged="ErrorResultGrid_SelectionChanged">
+
+        <!--Grid Splitter between Log TextBox and Error Grid-->
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="5" Background="{DynamicResource GrayBrush5}" />
+
+        <!--New Error Status Bar-->
+        
+        <!--Errors Button-->
+        <ToggleButton x:Name="Status_ErrorButton"
+                      Style="{StaticResource ToggleButtonStyle}"
+                      HorizontalAlignment="Left" VerticalAlignment="Top"
+                      Margin="5,7,0,0"
+                      Click="Status_ErrorButton_Clicked">
+          <StackPanel Orientation="Horizontal">
+            <Image Source="/SPCode;component/Resources/Icons/icon-error.png" 
+                   Width="16" 
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Margin="5,5,3,4"/>
+            <TextBlock x:Name="Status_ErrorText"
+                       HorizontalAlignment="Left" VerticalAlignment="Top"
+                       Margin="3,4,2,2"/>
+          </StackPanel>
+        </ToggleButton>
+
+        <!--Warnings Button-->
+        <ToggleButton x:Name="Status_WarningButton"
+                      Style="{StaticResource ToggleButtonStyle}"
+                      HorizontalAlignment="Left" VerticalAlignment="Top"
+                      Margin="100,7,0,0"
+                      Click="Status_WarningButton_Clicked">
+          <StackPanel Orientation="Horizontal">
+            <Image Source="/SPCode;component/Resources/Icons/icon-warning.png" 
+                   Width="16" 
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Margin="5,5,3,4"/>
+            <TextBlock x:Name="Status_WarningText"
+                       HorizontalAlignment="Left" VerticalAlignment="Top"
+                       Margin="3,4,2,2"/>
+          </StackPanel>
+        </ToggleButton>
+
+        <!--Copy Errors Button-->
+        <Button x:Name="Status_CopyErrorsButton"
+                HorizontalAlignment="Left" VerticalAlignment="Top"
+                Margin="210,9,0,0"
+                Style="{StaticResource ButtonStyle2}"
+                Height="22"
+                Width="99"
+                Click="Status_CopyErrorsButton_Click"/>
+
+        <!--Error DataGrid-->
+        <DataGrid x:Name="ErrorResultGrid" 
+                  Grid.Column="0"
+                  IsReadOnly="True"
+                  SelectionMode="Single" 
+                  AutoGenerateColumns="true" 
+                  SelectionChanged="ErrorResultGrid_SelectionChanged" Margin="0,40,0,0">
 
           <DataGrid.ItemContainerStyle>
             <Style TargetType="DataGridRow">
@@ -407,7 +521,9 @@
             <DataGridTextColumn x:Name="MenuC_Details" Header="Details" Width="9*" Binding="{Binding Details}" />
           </DataGrid.Columns>
         </DataGrid>
+
       </Grid>
+      <!--#endregion-->
     </Grid>
 
     <Rectangle Grid.Row="2" x:Name="BlendEffectPlane" IsHitTestVisible="False" Opacity="0" Fill="{DynamicResource AccentColorBrush4}" Grid.ColumnSpan="3" />

@@ -127,7 +127,7 @@ namespace SPCode.UI
             ChangeObjectBrowserToDirectory(Program.OptionsObject.Program_ObjectBrowserDirectory);
 
             // Translate
-            Language_Translate(true);
+            Language_Translate();
 
             // Load previously opened files
             if (Program.OptionsObject.LastOpenFiles != null)
@@ -192,6 +192,10 @@ namespace SPCode.UI
 
             // Passes the Logging Box to the LoggingControl class
             LoggingControl.LogBox = LogTextbox;
+
+            // Set error status buttons state
+            Status_ErrorButton.IsChecked = true;
+            Status_WarningButton.IsChecked = true;
         }
         #endregion
 
@@ -253,7 +257,11 @@ namespace SPCode.UI
 
                     // Build list of unsaved files to show
                     var sb = new StringBuilder();
-                    editors.Where(x => x.NeedsSave).ToList().ForEach(y => sb.AppendLine($"  - {y.Parent.Title.Substring(1)}"));
+
+                    foreach (var editor in editors.Where(x => x.NeedsSave))
+                    {
+                        sb.AppendLine($"  - {editor.Parent.Title.Substring(1)}");
+                    }
 
                     var result = await this.ShowMessageAsync("Save all files?", $"Unsaved files:\n{sb}",
                         MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, ClosingDialogOptions);

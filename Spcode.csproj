@@ -154,6 +154,7 @@
       <DependentUpon>LanguageChooserWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\MainWindow\MainWindowErrorResultGrid.cs" />
+    <Compile Include="UI\MainWindow\MainWindowErrorStatus.cs" />
     <Compile Include="UI\MainWindow\MainWindowLogBox.cs" />
     <Compile Include="UI\MainWindow\MainWindowServerQuery.cs" />
     <Compile Include="UI\MainWindow\MainWindowSPCompiler.cs" />
@@ -461,6 +462,8 @@
     <ClInclude Include="Resources\Misc\Templates\Template_Generic.sp" />
     <ClInclude Include="Resources\Misc\Templates\Template_TF2.sp" />
     <Content Include="Deploy\nsis-plugins\DotNetChecker.dll" />
+    <Resource Include="Resources\Icons\icon-error.png" />
+    <Resource Include="Resources\Icons\icon-warning.png" />
     <Content Include="Resources\License.txt" />
     <Content Include="Resources\Misc\Configurations\sm_1_10_0_6509\include\admin.inc" />
     <Content Include="Resources\Misc\Configurations\sm_1_10_0_6509\include\adminmenu.inc" />

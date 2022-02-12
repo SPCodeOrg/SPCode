@@ -368,8 +368,8 @@ namespace SPCode.UI
                     return;
                 }
 
-                editors.ToList().ForEach(x => x.Close());
-                dasm?.ToList().ForEach(y => y.Close());
+                foreach (var editor in editors) editor.Close();
+                foreach (var editor in dasm) editor.Close();
             }
             catch (Exception ex)
             {

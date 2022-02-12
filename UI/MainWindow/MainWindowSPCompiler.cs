@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -21,6 +22,11 @@ namespace SPCode.UI
         private readonly List<string> CompiledFileNames = new();
         private readonly List<string> CompiledFiles = new();
         private readonly List<string> NonUploadedFiles = new();
+        private List<ErrorDataGridRow> CurrentErrors = new();
+        private List<ErrorDataGridRow> CurrentWarnings = new();
+
+        public int TotalErrors;
+        public int TotalWarnings;
 
         private bool InCompiling;
         private Thread ServerCheckThread;
@@ -29,6 +35,8 @@ namespace SPCode.UI
 
         private bool ServerIsRunning;
         private Process ServerProcess;
+
+        private string CurrentErrorString;
 
         /// <summary>
         /// Compiles the specified scripts.
@@ -49,6 +57,8 @@ namespace SPCode.UI
             CompiledFiles.Clear();
             CompiledFileNames.Clear();
             NonUploadedFiles.Clear();
+            CurrentErrors.Clear();
+            CurrentWarnings.Clear();
 
             // Grabs current config
             var currentConfig = Program.Configs[Program.SelectedConfig];
@@ -58,7 +68,8 @@ namespace SPCode.UI
             var SpCompFound = false;
             var PressedEscape = false;
             var hadError = false;
-            var warnings = 0;
+            TotalErrors = 0;
+            TotalWarnings = 0;
 
             // Searches for the spcomp.exe compiler
             foreach (var dir in currentConfig.SMDirectories)
@@ -218,27 +229,45 @@ namespace SPCode.UI
 
                         if (File.Exists(errorFile))
                         {
-                            warnings = 0;
                             hadError = false;
                             var errorStr = File.ReadAllText(errorFile);
+                            CurrentErrorString = errorStr;
                             stringOutput.AppendLine(errorStr.Trim('\n', '\r'));
                             var mc = errorFilterRegex.Matches(errorStr);
                             for (var j = 0; j < mc.Count; ++j)
                             {
-                                ErrorResultGrid.Items.Add(new ErrorDataGridRow
-                                {
-                                    File = mc[j].Groups["File"].Value.Trim(),
-                                    Line = mc[j].Groups["Line"].Value.Trim(),
-                                    Type = mc[j].Groups["Type"].Value.Trim(),
-                                    Details = mc[j].Groups["Details"].Value.Trim()
-                                });
                                 if (mc[j].Groups["Type"].Value.Contains("error"))
                                 {
                                     hadError = true;
+                                    TotalErrors++;
+                                    var item = new ErrorDataGridRow
+                                    {
+                                        File = mc[j].Groups["File"].Value.Trim(),
+                                        Line = mc[j].Groups["Line"].Value.Trim(),
+                                        Type = mc[j].Groups["Type"].Value.Trim(),
+                                        Details = mc[j].Groups["Details"].Value.Trim()
+                                    };
+                                    if (!HideErrors)
+                                    {
+                                        ErrorResultGrid.Items.Add(item);
+                                    }
+                                    CurrentErrors.Add(item);
                                 }
                                 if (mc[j].Groups["Type"].Value.Contains("warning"))
                                 {
-                                    warnings++;
+                                    TotalWarnings++;
+                                    var item = new ErrorDataGridRow
+                                    {
+                                        File = mc[j].Groups["File"].Value.Trim(),
+                                        Line = mc[j].Groups["Line"].Value.Trim(),
+                                        Type = mc[j].Groups["Type"].Value.Trim(),
+                                        Details = mc[j].Groups["Details"].Value.Trim()
+                                    };
+                                    if (!HideWarnings)
+                                    {
+                                        ErrorResultGrid.Items.Add(item);
+                                    }
+                                    CurrentWarnings.Add(item);
                                 }
                             }
                             File.Delete(errorFile);
@@ -250,7 +279,7 @@ namespace SPCode.UI
                         }
                         else
                         {
-                            LoggingControl.LogAction($"{fileInfo.Name}{(warnings > 0 ? $" ({warnings} warnings)" : "")}");
+                            LoggingControl.LogAction($"{fileInfo.Name}{(TotalWarnings > 0 ? $" ({TotalWarnings} warnings)" : "")}");
                             compiledSuccess++;
                         }
 
@@ -273,6 +302,9 @@ namespace SPCode.UI
                 {
                     LoggingControl.LogAction($"Compiled {compiledSuccess} {(compiledSuccess > 1 ? "plugins" : "plugin")}.", 2);
                 }
+
+                Status_ErrorText.Text = $"{TotalErrors} {(TotalErrors == 1 ? $"{Translate("Error")}" : $"{Translate("Errors")}").ToLowerInvariant()} ";
+                Status_WarningText.Text = $"{TotalWarnings} {(TotalWarnings == 1 ? $"{Translate("Warning")}" : $"{Translate("Warnings")}").ToLowerInvariant()} ";
 
                 if (!PressedEscape)
                 {
