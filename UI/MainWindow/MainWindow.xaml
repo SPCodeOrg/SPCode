@@ -456,49 +456,53 @@
         <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="5" Background="{DynamicResource GrayBrush5}" />
 
         <!--New Error Status Bar-->
-        
-        <!--Errors Button-->
-        <ToggleButton x:Name="Status_ErrorButton"
+        <StackPanel Orientation="Horizontal">
+          <ToggleButton x:Name="Status_ErrorButton"
                       Style="{StaticResource ToggleButtonStyle}"
                       HorizontalAlignment="Left" VerticalAlignment="Top"
                       Margin="5,7,0,0"
                       Click="Status_ErrorButton_Clicked">
-          <StackPanel Orientation="Horizontal">
-            <Image Source="/SPCode;component/Resources/Icons/icon-error.png" 
+            <StackPanel Orientation="Horizontal">
+              <Image Source="/SPCode;component/Resources/Icons/icon-error.png" 
                    Width="16" 
                    HorizontalAlignment="Center" VerticalAlignment="Center"
                    Margin="5,5,3,4"/>
-            <TextBlock x:Name="Status_ErrorText"
+              <TextBlock x:Name="Status_ErrorText"
                        HorizontalAlignment="Left" VerticalAlignment="Top"
                        Margin="3,4,2,2"/>
-          </StackPanel>
-        </ToggleButton>
+            </StackPanel>
+          </ToggleButton>
 
-        <!--Warnings Button-->
-        <ToggleButton x:Name="Status_WarningButton"
+          <!--Warnings Button-->
+          <ToggleButton x:Name="Status_WarningButton"
                       Style="{StaticResource ToggleButtonStyle}"
                       HorizontalAlignment="Left" VerticalAlignment="Top"
-                      Margin="100,7,0,0"
+                      Margin="10,7,0,0"
                       Click="Status_WarningButton_Clicked">
-          <StackPanel Orientation="Horizontal">
-            <Image Source="/SPCode;component/Resources/Icons/icon-warning.png" 
+            <StackPanel Orientation="Horizontal">
+              <Image Source="/SPCode;component/Resources/Icons/icon-warning.png" 
                    Width="16" 
                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Margin="5,5,3,4"/>
-            <TextBlock x:Name="Status_WarningText"
+                   Margin="10,5,3,4"/>
+              <TextBlock x:Name="Status_WarningText"
                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                       Margin="3,4,2,2"/>
-          </StackPanel>
-        </ToggleButton>
+                       Margin="3,4,2,2"
+                       Text="65 avertissements"/>
+            </StackPanel>
+          </ToggleButton>
 
-        <!--Copy Errors Button-->
-        <Button x:Name="Status_CopyErrorsButton"
+          <!--Copy Errors Button-->
+          <Button x:Name="Status_CopyErrorsButton"
                 HorizontalAlignment="Left" VerticalAlignment="Top"
-                Margin="210,9,0,0"
+                Margin="10,9,0,0"
                 Style="{StaticResource ButtonStyle2}"
                 Height="22"
                 Width="99"
-                Click="Status_CopyErrorsButton_Click"/>
+                Click="Status_CopyErrorsButton_Click"
+                Content="Copier les erreurs"/>
+        </StackPanel>
+        <!--Errors Button-->
+        
 
         <!--Error DataGrid-->
         <DataGrid x:Name="ErrorResultGrid" 
