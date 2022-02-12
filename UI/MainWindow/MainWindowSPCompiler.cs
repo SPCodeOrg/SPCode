@@ -22,8 +22,8 @@ namespace SPCode.UI
         private readonly List<string> CompiledFileNames = new();
         private readonly List<string> CompiledFiles = new();
         private readonly List<string> NonUploadedFiles = new();
-        private List<ErrorDataGridRow> CurrentErrors = new();
-        private List<ErrorDataGridRow> CurrentWarnings = new();
+        private readonly List<ErrorDataGridRow> CurrentErrors = new();
+        private readonly List<ErrorDataGridRow> CurrentWarnings = new();
 
         public int TotalErrors;
         public int TotalWarnings;
@@ -70,6 +70,7 @@ namespace SPCode.UI
             var hadError = false;
             TotalErrors = 0;
             TotalWarnings = 0;
+            CurrentErrorString = string.Empty;
 
             // Searches for the spcomp.exe compiler
             foreach (var dir in currentConfig.SMDirectories)

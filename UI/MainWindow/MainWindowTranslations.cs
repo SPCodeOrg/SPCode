@@ -88,6 +88,7 @@ namespace SPCode.UI
             BtExpandCollapse.ToolTip = Translate(OBExpanded ? "ExpandAllDirs" : "CollapseAllDirs");
             BtRefreshDir.ToolTip = Translate("RefreshOB");
 
+            // Leaving a space at the end here because it makes the button look better
             Status_ErrorText.Text = $"0 {Translate("Errors")} ";
             Status_WarningText.Text = $"0 {Translate("Warnings")} ";
             Status_CopyErrorsButton.Content = Translate("CopyErrors");

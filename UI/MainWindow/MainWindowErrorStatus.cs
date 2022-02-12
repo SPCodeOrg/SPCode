@@ -42,7 +42,7 @@ namespace SPCode.UI
 
         private void Status_CopyErrorsButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CurrentErrorString != null)
+            if (!string.IsNullOrEmpty(CurrentErrorString))
             {
                 Clipboard.SetText(CurrentErrorString);
             }
