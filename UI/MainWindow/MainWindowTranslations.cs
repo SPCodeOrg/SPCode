@@ -30,6 +30,7 @@ namespace SPCode.UI
             MenuI_New.Header = Translate("New");
             MenuI_NewTemplate.Header = Translate("NewTemplate");
             MenuI_Open.Header = Translate("Open");
+            MenuI_ReopenLastClosedTab.Header = Translate("ReopenLastClosedTab");
             MenuI_Save.Header = Translate("Save");
             MenuI_SaveAll.Header = Translate("SaveAll");
             MenuI_SaveAs.Header = Translate("SaveAs");

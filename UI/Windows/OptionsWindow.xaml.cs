@@ -33,7 +33,6 @@ namespace SPCode.UI.Windows
             { ActionOnClose.Save, Translate("Save") },
             { ActionOnClose.DontSave, Translate("DontSave") }
         };
-        private bool RestartTextIsShown;
         private readonly bool AllowChanging;
         #endregion
 
@@ -100,7 +99,6 @@ namespace SPCode.UI.Windows
 
             Debug.Assert(HardwareAcc.IsChecked != null, "HardwareAcc.IsChecked != null");
             Program.OptionsObject.Program_UseHardwareAcceleration = HardwareAcc.IsChecked.Value;
-            ToggleRestartText();
         }
 
         private void UIAnimation_Changed(object sender, RoutedEventArgs e)
@@ -112,7 +110,6 @@ namespace SPCode.UI.Windows
 
             Debug.Assert(UIAnimation.IsChecked != null, "UIAnimation.IsChecked != null");
             Program.OptionsObject.UI_Animations = UIAnimation.IsChecked.Value;
-            ToggleRestartText();
         }
 
         private void AutoOpenInclude_Changed(object sender, RoutedEventArgs e)
@@ -188,7 +185,6 @@ namespace SPCode.UI.Windows
             ThemeManager.ChangeAppStyle(Program.MainWindow,
                 ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
                 ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
-            ToggleRestartText(true);
         }
 
         private void AccentColor_Changed(object sender, RoutedEventArgs e)
@@ -407,7 +403,6 @@ namespace SPCode.UI.Windows
 
             Debug.Assert(HighlightDeprecateds.IsChecked != null, "HighlightDeprecateds.IsChecked != null");
             Program.OptionsObject.SH_HighlightDeprecateds = HighlightDeprecateds.IsChecked.Value;
-            ToggleRestartText();
         }
 
         private void LanguageBox_Changed(object sender, RoutedEventArgs e)
@@ -426,7 +421,6 @@ namespace SPCode.UI.Windows
                 Program.OptionsObject.Language = lang;
                 Program.MainWindow.Language_Translate();
                 Language_Translate();
-                ToggleRestartText(true);
             }
             catch (Exception ex)
             {
@@ -702,20 +696,6 @@ namespace SPCode.UI.Windows
             DiscordPresenceFile.IsChecked = Program.OptionsObject.Program_DiscordPresenceFile;
             DiscordPresenceTime.IsEnabled = Program.OptionsObject.Program_DiscordPresence;
             DiscordPresenceFile.IsEnabled = Program.OptionsObject.Program_DiscordPresence;
-        }
-
-        private void ToggleRestartText(bool FullEffect = false)
-        {
-            if (AllowChanging)
-            {
-                if (!RestartTextIsShown)
-                {
-                    StatusTextBlock.Content = FullEffect
-                        ? Translate("RestartEdiFullEff")
-                        : Translate("RestartEdiEff");
-                    RestartTextIsShown = true;
-                }
-            }
         }
 
         private void LoadHotkeysSection()

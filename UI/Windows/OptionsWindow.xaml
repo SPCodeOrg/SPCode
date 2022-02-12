@@ -9,12 +9,20 @@
                       WindowStartupLocation="CenterOwner" 
                       GlowBrush="{DynamicResource AccentColorBrush}" 
                       Background="{DynamicResource WhiteBrush}"
-                      Title="Options" 
-                      ShowTitleBar="False" 
+                      ShowTitleBar="False"
                       KeyDown="MetroWindow_KeyDown">
 
   <controls:MetroWindow.Resources>
     <ResourceDictionary>
+
+      <Style BasedOn="{StaticResource {x:Type CheckBox}}" x:Key="IndentedCheckBox" TargetType="{x:Type CheckBox}">
+        <Setter Property="Margin" Value="25,7,0,0"/>
+      </Style>
+
+      <Style BasedOn="{StaticResource {x:Type CheckBox}}" x:Key="ParentCheckBox" TargetType="{x:Type CheckBox}">
+        <Setter Property="Margin" Value="5,7,0,0"/>
+      </Style>
+
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
@@ -22,40 +30,74 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
       </ResourceDictionary.MergedDictionaries>
+
     </ResourceDictionary>
   </controls:MetroWindow.Resources>
-  <controls:MetroWindow.RightWindowCommands>
-    <controls:WindowCommands>
-      <Button Name="ResetButton" Content="Reset options" Click="RestoreButton_Clicked" />
-      <Label Name="StatusTextBlock" Foreground="LightGray" FontSize="15" />
-    </controls:WindowCommands>
-  </controls:MetroWindow.RightWindowCommands>
+  
   <Grid>
+    
     <controls:MetroAnimatedSingleRowTabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,15,0,0" controls:TabControlHelper.IsUnderlined="True">
+      
+      <!-- Program Tab -->
       <controls:MetroTabItem Name="ProgramHeader" Header=" Program ">
         <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Visible">
+          
           <Grid>
-            <CheckBox Name="HardwareAcc" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Content="Use Hardware Acceleration (if available)" Checked="HardwareAcc_Changed" Unchecked="HardwareAcc_Changed" />
-            <CheckBox Name="UIAnimation" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,30,0,0" Content="UI Animations" Checked="UIAnimation_Changed" Unchecked="UIAnimation_Changed" />
-            <CheckBox Name="OpenIncludes" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,55,0,0" Content="Auto Open Includes" Checked="AutoOpenInclude_Changed" Unchecked="AutoOpenInclude_Changed" />
-            <CheckBox Name="OpenIncludesRecursive" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,80,0,0" Content="Open Includes Recursively" Checked="OpenIncludeRecursively_Changed" Unchecked="OpenIncludeRecursively_Changed" />
-            <CheckBox Name="AutoUpdate" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,105,0,0" Content="Search automatically for Updates" Checked="AutoUpdate_Changed" Unchecked="AutoUpdate_Changed" />
-            <CheckBox Name="ShowToolBar" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,130,0,0" Content="Show Toolbar" Checked="ShowToolbar_Changed" Unchecked="ShowToolbar_Changed" />
-            <CheckBox Name="DynamicISAC" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,155,0,0" Content="Dynamic Autocomplete/Intellisense" Checked="DynamicISAC_Changed" Unchecked="DynamicISAC_Changed" />
-            <CheckBox Name="DarkTheme" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,180,0,0" Content="Dark Theme" Checked="DarkTheme_Changed" Unchecked="DarkTheme_Changed" />
-            <CheckBox Name="HardwareSalts" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,205,0,0" Content="Hardware Encryption" Checked="HardwareSalts_Changed" Unchecked="HardwareSalts_Changed" />
-            <CheckBox Name="DiscordPresence" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,230,0,0" Content="Enable Discord Rich Presence" Checked="DiscordPresence_Changed" Unchecked="DiscordPresence_Changed" />
-            <CheckBox Name="DiscordPresenceTime" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,255,0,0" Content="Show elapsed time" Checked="DiscordPresenceTime_Changed" Unchecked="DiscordPresenceTime_Changed" />
-            <CheckBox Name="DiscordPresenceFile" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,280,0,0" Content="Show current file" Checked="DiscordPresenceFile_Changed" Unchecked="DiscordPresenceFile_Changed" />
-            <Label Name="ThemeColorLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="333,5,0,0" Content="Theme Color:" />
-            <ComboBox Name="AccentColor" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="425,5,0,0" Width="200" SelectionChanged="AccentColor_Changed" />
-            <Label Name="LanguageLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="333,37,0,0" Content="Language:" />
-            <ComboBox Name="LanguageBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="425,37,0,0" Width="200" SelectionChanged="LanguageBox_Changed" />
-            <Label Name="ActionOnCloseLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="333,69,0,0" Content="On close:" />
-            <ComboBox Name="ActionOnCloseBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="425,69,0,0" Width="200" SelectionChanged="ActionOnCloseBox_Changed" />
+
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="340"/>
+              <ColumnDefinition Width="340"/>
+              <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left side checkboxes -->
+            <StackPanel Grid.Column="0">
+              
+              <StackPanel.Resources>
+                <Style BasedOn="{StaticResource ParentCheckBox}" TargetType="{x:Type CheckBox}"/>
+              </StackPanel.Resources>
+              
+              <CheckBox Name="HardwareAcc" Content="Use Hardware Acceleration (if available)" Checked="HardwareAcc_Changed" Unchecked="HardwareAcc_Changed" />
+              <CheckBox Name="UIAnimation" Content="UI Animations" Checked="UIAnimation_Changed" Unchecked="UIAnimation_Changed" />
+              <CheckBox Name="OpenIncludes" Content="Auto Open Includes" Checked="AutoOpenInclude_Changed" Unchecked="AutoOpenInclude_Changed" />
+              <CheckBox Name="OpenIncludesRecursive" Style="{StaticResource IndentedCheckBox}" Content="Open Includes Recursively" Checked="OpenIncludeRecursively_Changed" Unchecked="OpenIncludeRecursively_Changed" />
+              <CheckBox Name="AutoUpdate" Content="Search automatically for Updates" Checked="AutoUpdate_Changed" Unchecked="AutoUpdate_Changed" />
+              <CheckBox Name="ShowToolBar" Content="Show Toolbar" Checked="ShowToolbar_Changed" Unchecked="ShowToolbar_Changed" />
+              <CheckBox Name="DynamicISAC" Content="Dynamic Autocomplete/Intellisense" Checked="DynamicISAC_Changed" Unchecked="DynamicISAC_Changed" />
+              <CheckBox Name="DarkTheme" Content="Dark Theme" Checked="DarkTheme_Changed" Unchecked="DarkTheme_Changed" />
+              <CheckBox Name="HardwareSalts" Content="Hardware Encryption" Checked="HardwareSalts_Changed" Unchecked="HardwareSalts_Changed" />
+              <CheckBox Name="DiscordPresence" Content="Enable Discord Rich Presence" Checked="DiscordPresence_Changed" Unchecked="DiscordPresence_Changed" />
+              <CheckBox Name="DiscordPresenceTime" Style="{StaticResource IndentedCheckBox}" Content="Show elapsed time" Checked="DiscordPresenceTime_Changed" Unchecked="DiscordPresenceTime_Changed" />
+              <CheckBox Name="DiscordPresenceFile" Style="{StaticResource IndentedCheckBox}" Content="Show current file" Checked="DiscordPresenceFile_Changed" Unchecked="DiscordPresenceFile_Changed" />
+              
+            </StackPanel>
+
+            <!-- Right side comboboxes -->
+            <StackPanel Grid.Column="1">
+
+              <StackPanel Orientation="Horizontal">
+                <Label Name="ThemeColorLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Theme Color:" Margin="0,0,10,0"/>
+                <ComboBox Name="AccentColor" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" SelectionChanged="AccentColor_Changed" />
+              </StackPanel>
+
+              <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <Label Name="LanguageLabel" Content="Language:" Margin="0,0,10,0" />
+                <ComboBox Name="LanguageBox" Width="120" SelectionChanged="LanguageBox_Changed" />
+              </StackPanel>
+
+              <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <Label Name="ActionOnCloseLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Content="On close:" Margin="0,0,10,0"/>
+                <ComboBox Name="ActionOnCloseBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="180" SelectionChanged="ActionOnCloseBox_Changed" />
+              </StackPanel>
+
+            </StackPanel>
+
           </Grid>
+          
         </ScrollViewer>
       </controls:MetroTabItem>
+      
+      <!-- Editor Tab -->
       <controls:MetroTabItem Name="EditorHeader" Header=" Editor ">
         <ScrollViewer>
           <Grid>
