@@ -23,6 +23,11 @@
         <Setter Property="Margin" Value="5,7,0,0"/>
       </Style>
 
+      <Style x:Key="ColorChangeControlStyle" TargetType="{x:Type components:ColorChangeControl}">
+        <Setter Property="Margin" Value="0,10,0,0"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+      </Style>
+
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
@@ -33,30 +38,29 @@
 
     </ResourceDictionary>
   </controls:MetroWindow.Resources>
-  
+
   <Grid>
-    
+
     <controls:MetroAnimatedSingleRowTabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,15,0,0" controls:TabControlHelper.IsUnderlined="True">
-      
+
       <!-- Program Tab -->
       <controls:MetroTabItem Name="ProgramHeader" Header=" Program ">
         <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Visible">
-          
+
           <Grid>
 
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="340"/>
-              <ColumnDefinition Width="340"/>
+              <ColumnDefinition/>
               <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
             <!-- Left side checkboxes -->
             <StackPanel Grid.Column="0">
-              
+
               <StackPanel.Resources>
                 <Style BasedOn="{StaticResource ParentCheckBox}" TargetType="{x:Type CheckBox}"/>
               </StackPanel.Resources>
-              
+
               <CheckBox Name="HardwareAcc" Content="Use Hardware Acceleration (if available)" Checked="HardwareAcc_Changed" Unchecked="HardwareAcc_Changed" />
               <CheckBox Name="UIAnimation" Content="UI Animations" Checked="UIAnimation_Changed" Unchecked="UIAnimation_Changed" />
               <CheckBox Name="OpenIncludes" Content="Auto Open Includes" Checked="AutoOpenInclude_Changed" Unchecked="AutoOpenInclude_Changed" />
@@ -69,7 +73,7 @@
               <CheckBox Name="DiscordPresence" Content="Enable Discord Rich Presence" Checked="DiscordPresence_Changed" Unchecked="DiscordPresence_Changed" />
               <CheckBox Name="DiscordPresenceTime" Style="{StaticResource IndentedCheckBox}" Content="Show elapsed time" Checked="DiscordPresenceTime_Changed" Unchecked="DiscordPresenceTime_Changed" />
               <CheckBox Name="DiscordPresenceFile" Style="{StaticResource IndentedCheckBox}" Content="Show current file" Checked="DiscordPresenceFile_Changed" Unchecked="DiscordPresenceFile_Changed" />
-              
+
             </StackPanel>
 
             <!-- Right side comboboxes -->
@@ -93,94 +97,143 @@
             </StackPanel>
 
           </Grid>
-          
+
         </ScrollViewer>
       </controls:MetroTabItem>
-      
+
       <!-- Editor Tab -->
       <controls:MetroTabItem Name="EditorHeader" Header=" Editor ">
         <ScrollViewer>
           <Grid>
-            <TextBlock Name="FontSizeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Text="Font Size:" IsHitTestVisible="False" />
-            <Slider Name="FontSizeD" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,25,0,0" Width="280" Minimum="5" Maximum="30" AutoToolTipPlacement="TopLeft" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" ValueChanged="FontSize_Changed" />
+            <StackPanel>
 
-            <TextBlock Name="ScrollSpeedBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,5,0,0" Text="Scroll Speed:" IsHitTestVisible="False" />
-            <Slider Name="ScrollSpeed" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,25,0,0" Width="280" Minimum="1" Maximum="20" AutoToolTipPlacement="TopLeft" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" ValueChanged="ScrollSpeed_Changed" />
-            <CheckBox Name="WordWrap" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,60,0,0" Content="Word Wrap" Checked="WordWrap_Changed" Unchecked="WordWrap_Changed" />
-            <CheckBox Name="AgressiveIndentation" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,80,0,0" Content="Agressive Indentation" Checked="AIndentation_Changed" Unchecked="AIndentation_Changed" />
-            <CheckBox Name="LineReformatting" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,100,0,0" Content="Reformatting Line after semicolon" Checked="LineReformat_Changed" Unchecked="LineReformat_Changed" />
-            <CheckBox Name="TabToSpace" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,120,0,0" Content="Replace tabs with spaces" Checked="TabToSpace_Changed" Unchecked="TabToSpace_Changed" />
-            <CheckBox Name="AutoCloseBrackets" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,140,0,0" Content="Auto close Brackets [], {}, ()" Checked="AutoCloseBrackets_Changed" Unchecked="AutoCloseBrackets_Changed" />
-            <CheckBox Name="AutoCloseStringChars" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,160,0,0" Content="Auto close Strings, Chars &quot;&quot;, ''" Checked="AutoCloseStringChars_Changed" Unchecked="AutoCloseStringChars_Changed" />
-            <CheckBox Name="ShowSpaces" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,180,0,0" Content="Show Spaces" Checked="ShowSpaces_Changed" Unchecked="ShowSpaces_Changed" />
-            <CheckBox Name="ShowTabs" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,200,0,0" Content="Show Tabs" Checked="ShowTabs_Changed" Unchecked="ShowTabs_Changed" />
-            <CheckBox Name="UseTabToAutocomplete" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="350,220,0,0" Content="Use Tab to Autocomplete" Checked="TabToAutocomplete_Changed" Unchecked="TabToAutocomplete_Changed" />
+              <!-- Upper grid -->
+              <Grid>
 
-            <TextBlock Name="IndentationSizeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,165,0,0" Text="Indentation Size:" IsHitTestVisible="False" />
-            <Slider Name="IndentationSize" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,185,0,0" Width="280" Minimum="1" Maximum="10" AutoToolTipPlacement="TopLeft" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" ValueChanged="IndentationSize_Changed" />
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition/>
+                  <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Name="FontFamilyTB" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,55,5,5" Text="Font (Consolas):" IsHitTestVisible="False" />
-            <ComboBox Name="FontFamilyCB" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,75,5,5" Width="250" xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase" ItemTemplate="{DynamicResource FontTemplate}" SelectionChanged="FontFamily_Changed">
-              <ComboBox.Resources>
-                <CollectionViewSource x:Key="myFonts" Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}">
-                  <CollectionViewSource.SortDescriptions>
-                    <ComponentModel:SortDescription PropertyName="Source" />
-                  </CollectionViewSource.SortDescriptions>
-                </CollectionViewSource>
-                <Style x:Key="FontStyle">
-                  <Setter Property="Control.FontFamily" Value="{Binding Source}" />
-                  <Setter Property="Control.FontSize" Value="16" />
-                </Style>
-                <DataTemplate x:Key="FontTemplate">
-                  <StackPanel VirtualizingStackPanel.IsVirtualizing="True">
-                    <TextBlock Style="{StaticResource FontStyle}" Text="{Binding Source}" ToolTip="{Binding Source}" />
+                <StackPanel Grid.Column="0" Margin="5,5,0,0">
+
+                  <TextBlock Name="FontSizeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Text="Font Size:" IsHitTestVisible="False" />
+                  <Slider Name="FontSizeD" HorizontalAlignment="Left" Margin="0,5,0,0" VerticalAlignment="Top" Width="280" Minimum="5" Maximum="30" AutoToolTipPlacement="TopLeft" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" ValueChanged="FontSize_Changed" />
+
+                  <TextBlock Name="FontFamilyTB" Margin="0,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Text="Font (Consolas):" IsHitTestVisible="False" />
+                  <ComboBox Name="FontFamilyCB" HorizontalAlignment="Left" VerticalAlignment="Top" Width="250" xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase" ItemTemplate="{DynamicResource FontTemplate}" SelectionChanged="FontFamily_Changed">
+                    <ComboBox.Resources>
+                      <CollectionViewSource x:Key="myFonts" Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}">
+                        <CollectionViewSource.SortDescriptions>
+                          <ComponentModel:SortDescription PropertyName="Source" />
+                        </CollectionViewSource.SortDescriptions>
+                      </CollectionViewSource>
+                      <Style x:Key="FontStyle">
+                        <Setter Property="Control.FontFamily" Value="{Binding Source}" />
+                        <Setter Property="Control.FontSize" Value="16" />
+                      </Style>
+                      <DataTemplate x:Key="FontTemplate">
+                        <StackPanel VirtualizingStackPanel.IsVirtualizing="True">
+                          <TextBlock Style="{StaticResource FontStyle}" Text="{Binding Source}" ToolTip="{Binding Source}" />
+                        </StackPanel>
+                      </DataTemplate>
+                    </ComboBox.Resources>
+                    <ComboBox.ItemsSource>
+                      <Binding Source="{StaticResource myFonts}" />
+                    </ComboBox.ItemsSource>
+                  </ComboBox>
+
+                  <TextBlock Name="AutoSaveBlock" Margin="0,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Text="Auto save (min):" IsHitTestVisible="False" />
+                  <ComboBox Name="AutoSave" HorizontalAlignment="Left" VerticalAlignment="Top" Width="250" SelectionChanged="AutoSave_Changed">
+                    <ComboBoxItem Content="None" />
+                    <ComboBoxItem Content="0.5" />
+                    <ComboBoxItem Content="1" />
+                    <ComboBoxItem Content="2" />
+                    <ComboBoxItem Content="3" />
+                    <ComboBoxItem Content="4" />
+                    <ComboBoxItem Content="5" />
+                    <ComboBoxItem Content="10" />
+                    <ComboBoxItem Content="15" />
+                  </ComboBox>
+
+                  <TextBlock Name="IndentationSizeBlock" Margin="0,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Text="Indentation Size:" IsHitTestVisible="False" />
+                  <Slider Name="IndentationSize" Margin="0,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="280" Minimum="1" Maximum="10" AutoToolTipPlacement="TopLeft" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" ValueChanged="IndentationSize_Changed" />
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="1">
+
+                  <TextBlock Name="ScrollSpeedBlock" Margin="5,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Text="Scroll Speed:" IsHitTestVisible="False" />
+                  <Slider Name="ScrollSpeed" Margin="5,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="280" Minimum="1" Maximum="20" AutoToolTipPlacement="TopLeft" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" ValueChanged="ScrollSpeed_Changed" />
+
+                  <StackPanel Margin="0,10,0,0">
+                    <StackPanel.Resources>
+                      <Style BasedOn="{StaticResource ParentCheckBox}" TargetType="{x:Type CheckBox}"/>
+                    </StackPanel.Resources>
+                    <CheckBox Name="WordWrap" Content="Word Wrap" Checked="WordWrap_Changed" Unchecked="WordWrap_Changed" />
+                    <CheckBox Name="AgressiveIndentation" Content="Agressive Indentation" Checked="AIndentation_Changed" Unchecked="AIndentation_Changed" />
+                    <CheckBox Name="LineReformatting" Content="Reformatting Line after semicolon" Checked="LineReformat_Changed" Unchecked="LineReformat_Changed" />
+                    <CheckBox Name="TabToSpace" Content="Replace tabs with spaces" Checked="TabToSpace_Changed" Unchecked="TabToSpace_Changed" />
+                    <CheckBox Name="AutoCloseBrackets" Content="Auto close Brackets [], {}, ()" Checked="AutoCloseBrackets_Changed" Unchecked="AutoCloseBrackets_Changed" />
+                    <CheckBox Name="AutoCloseStringChars" Content="Auto close Strings, Chars &quot;&quot;, ''" Checked="AutoCloseStringChars_Changed" Unchecked="AutoCloseStringChars_Changed" />
+                    <CheckBox Name="ShowSpaces" Content="Show Spaces" Checked="ShowSpaces_Changed" Unchecked="ShowSpaces_Changed" />
+                    <CheckBox Name="ShowTabs" Content="Show Tabs" Checked="ShowTabs_Changed" Unchecked="ShowTabs_Changed" />
+                    <CheckBox Name="UseTabToAutocomplete" Content="Use Tab to Autocomplete" Checked="TabToAutocomplete_Changed" Unchecked="TabToAutocomplete_Changed" />
                   </StackPanel>
-                </DataTemplate>
-              </ComboBox.Resources>
-              <ComboBox.ItemsSource>
-                <Binding Source="{StaticResource myFonts}" />
-              </ComboBox.ItemsSource>
-            </ComboBox>
-            <TextBlock Name="AutoSaveBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,110,5,5" Text="Auto save (min):" IsHitTestVisible="False" />
-            <ComboBox Name="AutoSave" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,130,5,5" Width="250" SelectionChanged="AutoSave_Changed">
-              <ComboBoxItem Content="None" />
-              <ComboBoxItem Content="0.5" />
-              <ComboBoxItem Content="1" />
-              <ComboBoxItem Content="2" />
-              <ComboBoxItem Content="3" />
-              <ComboBoxItem Content="4" />
-              <ComboBoxItem Content="5" />
-              <ComboBoxItem Content="10" />
-              <ComboBoxItem Content="15" />
-            </ComboBox>
-            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,255,0,5">
 
-              <CheckBox Name="HighlightDeprecateds" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Content="Highlight Deprecated (&lt;1.7) Syntax" Checked="HighlightDeprecateds_Changed" Unchecked="HighlightDeprecateds_Changed" />
-              <Button x:Name="DefaultButton" Margin="480,10,30,852" Click="DefaultButton_Click" Content="Default values" FontWeight="Bold"/>
-              <components:ColorChangeControl x:Name="SH_Comments" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,40,0,0" Height="105" Width="300" ColorChanged="Comments_Changed" />
-              <components:ColorChangeControl x:Name="SH_CommentMarkers" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="335,40,5,0" Height="105" Width="300" ColorChanged="CommentMarker_Changed" />
+                </StackPanel>
 
-              <components:ColorChangeControl x:Name="SH_PreProcessor" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,150,0,0" Height="105" Width="300" ColorChanged="PreProcessor_Changed" />
-              <components:ColorChangeControl x:Name="SH_Strings" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="335,150,5,0" Height="105" Width="300" ColorChanged="String_Changed" />
+              </Grid>
 
-              <components:ColorChangeControl x:Name="SH_Types" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,260,0,0" Height="105" Width="300" ColorChanged="Types_Changed" />
-              <components:ColorChangeControl x:Name="SH_TypesValues" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="335,260,5,0" Height="105" Width="300" ColorChanged="TypeValues_Changed" />
+              <!-- Lower grid -->
+              <Grid Margin="0,10,0,0">
 
-              <components:ColorChangeControl x:Name="SH_Keywords" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,370,0,0" Height="105" Width="300" ColorChanged="Keywords_Changed" />
-              <components:ColorChangeControl x:Name="SH_ContextKeywords" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="335,370,5,0" Height="105" Width="300" ColorChanged="ContextKeywords_Changed" />
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition/>
+                  <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
 
-              <components:ColorChangeControl x:Name="SH_Chars" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,480,0,0" Height="105" Width="300" ColorChanged="Chars_Changed" />
-              <components:ColorChangeControl x:Name="SH_UnknownFunctions" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="335,480,5,0" Height="105" Width="300" ColorChanged="UFunctions_Changed" />
+                <CheckBox Name="HighlightDeprecateds" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Highlight Deprecated (&lt;1.7) Syntax" Checked="HighlightDeprecateds_Changed" Unchecked="HighlightDeprecateds_Changed" />
 
-              <components:ColorChangeControl x:Name="SH_Numbers" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,580,0,0" Height="105" Width="300" ColorChanged="Numbers_Changed" />
-              <components:ColorChangeControl x:Name="SH_SpecialCharacters" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="335,580,5,0" Height="105" Width="300" ColorChanged="SpecialCharacters_Changed" />
+                <StackPanel Grid.Column="0" Margin="0,30,0,0">
 
-              <components:ColorChangeControl x:Name="SH_Deprecated" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,680,0,0" Height="105" Width="300" ColorChanged="Deprecated_Changed" />
-              <components:ColorChangeControl x:Name="SH_Constants" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="335,680,5,0" Height="105" Width="300" ColorChanged="Constants_Changed" />
+                  <StackPanel.Resources>
+                    <Style BasedOn="{StaticResource ColorChangeControlStyle}" TargetType="{x:Type components:ColorChangeControl}"/>
+                  </StackPanel.Resources>
 
-              <components:ColorChangeControl x:Name="SH_Functions" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,780,0,0" Height="105" Width="300" ColorChanged="Functions_Changed" />
-              <components:ColorChangeControl x:Name="SH_Methods" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="335,780,5,0" Height="105" Width="300" ColorChanged="Methods_Changed" />
-            </Grid>
+                  <components:ColorChangeControl x:Name="SH_Comments" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Comments_Changed" />
+                  <components:ColorChangeControl x:Name="SH_PreProcessor" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="PreProcessor_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Types" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Types_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Keywords" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Keywords_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Chars" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Chars_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Numbers" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Numbers_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Deprecated" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Deprecated_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Functions" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Functions_Changed" />
+                  
+                </StackPanel>
+
+                <Button Grid.Column="1" Margin="0,0,5,0" Width="150" Height="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Top" x:Name="DefaultButton" Click="DefaultButton_Click" Content="Default values" FontWeight="Bold"/>
+
+                <StackPanel Grid.Column="1" Margin="0,30,0,0">
+
+                  <StackPanel.Resources>
+                    <Style BasedOn="{StaticResource ColorChangeControlStyle}" TargetType="{x:Type components:ColorChangeControl}"/>
+                  </StackPanel.Resources>
+
+                  <components:ColorChangeControl x:Name="SH_CommentMarkers" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="CommentMarker_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Strings" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="String_Changed" />
+                  <components:ColorChangeControl x:Name="SH_TypesValues" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="TypeValues_Changed" />
+                  <components:ColorChangeControl x:Name="SH_ContextKeywords" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="ContextKeywords_Changed" />
+                  <components:ColorChangeControl x:Name="SH_UnknownFunctions" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="UFunctions_Changed" />
+                  <components:ColorChangeControl x:Name="SH_SpecialCharacters" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="SpecialCharacters_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Constants" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Constants_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Methods" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Methods_Changed" />
+
+                </StackPanel>
+
+              </Grid>
+            </StackPanel>
+
           </Grid>
         </ScrollViewer>
       </controls:MetroTabItem>

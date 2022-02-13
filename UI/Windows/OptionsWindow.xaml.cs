@@ -381,8 +381,7 @@ namespace SPCode.UI.Windows
                 return;
             }
 
-            var indentationSizeValue =
-                Program.OptionsObject.Editor_IndentationSize = (int)Math.Round(IndentationSize.Value);
+            var indentationSizeValue = Program.OptionsObject.Editor_IndentationSize = (int)Math.Round(IndentationSize.Value);
             var editors = Program.MainWindow.GetAllEditorElements();
             if (editors != null)
             {
@@ -788,13 +787,9 @@ namespace SPCode.UI.Windows
 
             foreach (var item in HotkeysGrid.Children)
             {
-                if (item is TextBlock)
+                if (item is TextBlock tbx && !string.IsNullOrEmpty(tbx.Name))
                 {
-                    var cItem = item as TextBlock;
-                    if (!string.IsNullOrEmpty(cItem.Name))
-                    {
-                        cItem.Text = Translate(cItem.Name.Substring(3));
-                    }
+                    tbx.Text = Translate(tbx.Name.Substring(3));
                 }
             }
         }
