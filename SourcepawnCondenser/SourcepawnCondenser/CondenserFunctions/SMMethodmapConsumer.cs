@@ -215,7 +215,7 @@ namespace SourcepawnCondenser
                                     Parameters = parameters.ToArray(),
                                     FullName = TrimFullname(source.Substring(mStartIndex, mEndIndex - mStartIndex + 1)),
                                     Length = mEndIndex - mStartIndex + 1,
-                                    CommentString = Condenser.TrimComments(functionCommentString),
+                                    CommentString = TrimComments(functionCommentString),
                                     MethodmapName = methodMapName,
                                     File = FileName
                                 });

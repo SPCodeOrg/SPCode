@@ -37,7 +37,7 @@ namespace SPCode.UI.Components
             if (!RaiseEventAllowed) { return; }
             var c = Color.FromArgb(0xFF, (byte)(int)RSlider.Value, (byte)(int)GSlider.Value, (byte)(int)BSlider.Value);
             UpdateColor(c, true, false);
-            var raiseEvent = new RoutedEventArgs(ColorChangeControl.ColorChangedEvent);
+            var raiseEvent = new RoutedEventArgs(ColorChangedEvent);
             RaiseEvent(raiseEvent);
         }
 
@@ -57,7 +57,7 @@ namespace SPCode.UI.Components
                 GSlider.Value = c.G;
                 BSlider.Value = c.B;
             }
-            var raiseEvent = new RoutedEventArgs(ColorChangeControl.ColorChangedEvent);
+            var raiseEvent = new RoutedEventArgs(ColorChangedEvent);
             RaiseEvent(raiseEvent);
             RaiseEventAllowed = true;
         }
@@ -72,7 +72,9 @@ namespace SPCode.UI.Components
                 parseString = parseString.Substring(2);
             }
             if (int.TryParse(parseString, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out var result))
-            { cVal = result; }
+            { 
+                cVal = result; 
+            }
             UpdateColor(Color.FromArgb(0xFF, (byte)((cVal >> 16) & 0xFF), (byte)((cVal >> 8) & 0xFF), (byte)(cVal & 0xFF)), false, true);
         }
     }

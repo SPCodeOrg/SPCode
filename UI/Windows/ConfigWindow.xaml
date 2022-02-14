@@ -9,10 +9,18 @@
                       IsMaxRestoreButtonEnabled="False"
                       WindowStartupLocation="CenterOwner" 
                       GlowBrush="{DynamicResource AccentColorBrush}"
-                      Title="Configurations" 
-                      ShowTitleBar="False" 
+                      Title="Configurations"
+                      TitleCaps="False"
+                      ShowTitleBar="true" 
                       Closing="MetroWindow_Closing">
 
+  <controls:MetroWindow.RightWindowCommands>
+    <controls:WindowCommands>
+      <Button Name="BackupConfigsButton" Content="Backup configs" Click="BackupConfigsButton_Click"/>
+      <Button Name="LoadConfigsButton" Content="Load configs" Click="LoadConfigsButton_Click"/>
+    </controls:WindowCommands>
+  </controls:MetroWindow.RightWindowCommands>
+  
   <controls:MetroWindow.Resources>
     <ResourceDictionary>
 
