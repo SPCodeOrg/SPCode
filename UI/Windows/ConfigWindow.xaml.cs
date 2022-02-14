@@ -32,20 +32,20 @@ namespace SPCode.UI.Windows
 
         private readonly string[] CompileMacros =
         {
-            "{editordir} - Directory of the SPCode binary",
-            "{scriptdir} - Directory of the compiling script",
-            "{copydir} - Directory where the .smx should be copied",
-            "{scriptfile} - Full directory and name of the script",
-            "{scriptname} - File name of the script",
-            "{pluginfile} - Full directory and name of the compiled script",
-            "{pluginname} - File name of the compiled script"
+            $"{{editordir}} {Translate("macro_editordir")}",
+            $"{{scriptdir}} {Translate("macro_scriptdir")}",
+            $"{{copydir}} {Translate("macro_copydir")}",
+            $"{{scriptfile}} {Translate("macro_scriptfile")}",
+            $"{{scriptname}} {Translate("macro_scriptname")}",
+            $"{{pluginfile}} {Translate("macro_pluginfile")}",
+            $"{{pluginname}} {Translate("macro_pluginname")}"
         };
 
         private readonly string[] CommandMacros =
         {
-            "{plugins_reload} - Reloads all compiled plugins",
-            "{plugins_load} - Loads all compiled plugins",
-            "{plugins_unload} - Unloads all compiled plugins"
+            $"{{plugins_reload}} {Translate("macro_plugins_reload")}",
+            $"{{plugins_load}} {Translate("macro_plugins_load")}",
+            $"{{plugins_unload}} {Translate("macro_plugins_unload")}"
         };
 
         public ConfigWindow()
@@ -295,8 +295,8 @@ namespace SPCode.UI.Windows
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    this.ShowMessageAsync("Access error",
-                        "The directory you just specified could not be accessed properly by SPCode. You may have trouble using the includes from this directory.",
+                    this.ShowMessageAsync(Translate("PermissionAccessError"),
+                        Translate("PermissionAcessErrorMessage"),
                         MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
                 }
 
@@ -655,8 +655,9 @@ namespace SPCode.UI.Windows
             RConPWBlock.Text = Translate("RconPw");
             RConComBlock.Text = Translate("RconCom");
             Rcon_MenuC.Text = Translate("RConCMDLineCom");
+            BackupConfigsButton.Content = Translate("BackupConfigs");
+            LoadConfigsButton.Content = Translate("LoadConfigs");
         }
-
 
         private class SimpleCommand : ICommand
         {
