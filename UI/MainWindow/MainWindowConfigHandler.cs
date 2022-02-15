@@ -2,6 +2,7 @@
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using SPCode.Interop;
 using SPCode.UI.Components;
 using SPCode.UI.Windows;
@@ -37,7 +38,9 @@ namespace SPCode.UI
         private void EditItem_Click(object sender, RoutedEventArgs e)
         {
             var configWindow = new ConfigWindow() { Owner = this, ShowInTaskbar = false };
+            DimmMainWindow();
             configWindow.ShowDialog();
+            RestoreMainWindow();
         }
 
         private void Item_Click(object sender, RoutedEventArgs e)

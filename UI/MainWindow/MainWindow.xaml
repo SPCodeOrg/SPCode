@@ -104,6 +104,7 @@
               </Trigger>
             </Style.Triggers>
           </Style>
+          
           <!--Button Images-->
 
           <Image x:Key="ImgReload" Source="/SPCode;component/Resources/Icons/icon-reload.png" Width="16"/>
@@ -120,12 +121,20 @@
             </DoubleAnimationUsingKeyFrames>
           </Storyboard>
 
-          <Storyboard x:Key="FadeFindReplaceGridIn" Duration="00:00:00.2" Storyboard.TargetName="FindReplaceGrid">
-            <DoubleAnimation To="1" Duration="00:00:00.2" Storyboard.TargetProperty="Opacity" />
+          <Storyboard x:Key="DimmMainWindow" Duration="00:00:00.5" Storyboard.TargetName="BlendEffectPlane" Storyboard.TargetProperty="Opacity">
+            <DoubleAnimationUsingKeyFrames>
+              <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00"/>
+              <SplineDoubleKeyFrame Value="0.5" KeyTime="00:00:00.5"/>
+            </DoubleAnimationUsingKeyFrames>
           </Storyboard>
-          <Storyboard x:Key="FadeFindReplaceGridOut" Duration="00:00:00.2" Storyboard.TargetName="FindReplaceGrid">
-            <DoubleAnimation To="0" Duration="00:00:00.2" Storyboard.TargetProperty="Opacity" />
+
+          <Storyboard x:Key="RestoreMainWindow" Duration="00:00:00.5" Storyboard.TargetName="BlendEffectPlane" Storyboard.TargetProperty="Opacity">
+            <DoubleAnimationUsingKeyFrames>
+              <SplineDoubleKeyFrame Value="0.5" KeyTime="00:00:00"/>
+              <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.5"/>
+            </DoubleAnimationUsingKeyFrames>
           </Storyboard>
+
           <Storyboard x:Key="EnableServerAnim">
             <DoubleAnimation Duration="00:00:00.5" To="5" Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="Height" />
             <BooleanAnimationUsingKeyFrames Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="IsIndeterminate">
@@ -136,6 +145,7 @@
               </BooleanAnimationUsingKeyFrames.KeyFrames>
             </BooleanAnimationUsingKeyFrames>
           </Storyboard>
+          
           <Storyboard x:Key="DisableServerAnim">
             <DoubleAnimation Duration="00:00:00.5" To="0" Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="Height" />
             <BooleanAnimationUsingKeyFrames Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="IsIndeterminate">
@@ -146,6 +156,7 @@
               </BooleanAnimationUsingKeyFrames.KeyFrames>
             </BooleanAnimationUsingKeyFrames>
           </Storyboard>
+          
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>

@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using DiscordRPC;
@@ -29,6 +30,8 @@ namespace SPCode.UI
     {
         #region Variables
         private readonly Storyboard BlendOverEffect;
+        private readonly Storyboard DimmMainWindowEffect;
+        private readonly Storyboard RestoreMainWindowEffect;
         private readonly Storyboard DisableServerAnim;
         public readonly List<EditorElement> EditorReferences = new();
         public readonly List<DASMElement> DASMReferences = new();
@@ -122,6 +125,8 @@ namespace SPCode.UI
             BlendOverEffect = (Storyboard)Resources["BlendOverEffect"];
             EnableServerAnim = (Storyboard)Resources["EnableServerAnim"];
             DisableServerAnim = (Storyboard)Resources["DisableServerAnim"];
+            DimmMainWindowEffect = (Storyboard)Resources["DimmMainWindow"];
+            RestoreMainWindowEffect = (Storyboard)Resources["RestoreMainWindow"];
 
             // Start OB
             ChangeObjectBrowserToDirectory(Program.OptionsObject.Program_ObjectBrowserDirectory);
@@ -561,6 +566,21 @@ namespace SPCode.UI
                 var updateWin = new UpdateWindow(Program.UpdateStatus) { Owner = this };
                 updateWin.ShowDialog();
             }
+        }
+
+        public void DimmMainWindow()
+        {
+            BlendEffectPlane.Fill = new SolidColorBrush(Colors.Black);
+            DimmMainWindowEffect.Begin();
+        }
+
+        public void RestoreMainWindow()
+        {
+            RestoreMainWindowEffect.Begin();
+            RestoreMainWindowEffect.Completed += delegate
+            {
+                BlendEffectPlane.Fill = (SolidColorBrush)FindResource("AccentColorBrush4");
+            };
         }
         #endregion
     }

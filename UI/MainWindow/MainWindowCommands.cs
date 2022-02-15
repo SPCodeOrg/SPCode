@@ -123,7 +123,9 @@ namespace SPCode.UI
                     Owner = this,
                     ShowInTaskbar = false
                 };
+                DimmMainWindow();
                 nfWindow.ShowDialog();
+                RestoreMainWindow();
                 UpdateWindowTitle();
             }
             catch (Exception ex)
@@ -640,7 +642,9 @@ namespace SPCode.UI
                     Owner = this,
                     ShowInTaskbar = false
                 };
+                DimmMainWindow();
                 spDefinitionWindow.ShowDialog();
+                RestoreMainWindow();
             }
             catch (Exception ex)
             {

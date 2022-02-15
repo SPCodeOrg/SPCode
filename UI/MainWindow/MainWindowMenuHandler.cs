@@ -210,7 +210,9 @@ namespace SPCode.UI
         private void Menu_About(object sender, RoutedEventArgs e)
         {
             var aboutWindow = new AboutWindow { Owner = this, ShowInTaskbar = false };
+            DimmMainWindow();
             aboutWindow.ShowDialog();
+            RestoreMainWindow();
         }
 
         private void Menu_Help(object sender, RoutedEventArgs e)
@@ -227,7 +229,9 @@ namespace SPCode.UI
         private void Menu_OpenOptions(object sender, RoutedEventArgs e)
         {
             var optionsWindow = new OptionsWindow { Owner = this, ShowInTaskbar = false };
+            DimmMainWindow();
             optionsWindow.ShowDialog();
+            RestoreMainWindow();
         }
 
         private void Menu_ReFormatCurrent(object sender, RoutedEventArgs e)
@@ -261,6 +265,7 @@ namespace SPCode.UI
             {
                 await updatingWindow.CloseAsync();
                 var uWindow = new UpdateWindow(status) { Owner = this };
+                DimmMainWindow();
                 uWindow.ShowDialog();
                 if (uWindow.Succeeded)
                 {
@@ -297,6 +302,7 @@ namespace SPCode.UI
                         message, MessageDialogStyle.Affirmative, MetroDialogOptions);
                 }
             }
+            RestoreMainWindow();
         }
 
         private async void Changelog_Click(object sender, RoutedEventArgs e)
@@ -312,7 +318,9 @@ namespace SPCode.UI
 
             await dialog.CloseAsync();
             var uw = new UpdateWindow(status, true) { Owner = this };
+            DimmMainWindow();
             uw.ShowDialog();
+            RestoreMainWindow();
         }
 
         private void MenuButton_Compile(object sender, RoutedEventArgs e)
