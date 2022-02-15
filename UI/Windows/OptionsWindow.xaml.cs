@@ -77,7 +77,7 @@ namespace SPCode.UI.Windows
         private async void RestoreButton_Clicked(object sender, RoutedEventArgs e)
         {
             var result = await this.ShowMessageAsync(Translate("ResetOptions"),
-                Translate("ResetOptQues"), MessageDialogStyle.AffirmativeAndNegative);
+                Translate("ResetOptQues"), MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions);
             if (result == MessageDialogResult.Affirmative)
             {
                 Program.OptionsObject = new OptionsControl();
@@ -85,7 +85,7 @@ namespace SPCode.UI.Windows
                 Program.MainWindow.OptionMenuEntry.IsEnabled = false;
                 await this.ShowMessageAsync(Translate("RestartEditor"),
                     Translate("YRestartEditor"), MessageDialogStyle.Affirmative,
-                    MetroDialogOptions);
+                    Program.MainWindow.MetroDialogOptions);
                 Close();
             }
         }

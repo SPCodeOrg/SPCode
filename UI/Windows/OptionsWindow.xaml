@@ -9,7 +9,9 @@
                       WindowStartupLocation="CenterOwner" 
                       GlowBrush="{DynamicResource AccentColorBrush}" 
                       Background="{DynamicResource WhiteBrush}"
-                      ShowTitleBar="False"
+                      ShowTitleBar="True"
+                      Title="Options"
+                      TitleCharacterCasing="Normal"
                       KeyDown="MetroWindow_KeyDown">
 
   <controls:MetroWindow.Resources>
@@ -39,9 +41,15 @@
     </ResourceDictionary>
   </controls:MetroWindow.Resources>
 
+  <controls:MetroWindow.RightWindowCommands>
+    <controls:WindowCommands>
+      <Button Name="ResetButton" Content="Reset options to default" Click="RestoreButton_Clicked" />
+    </controls:WindowCommands>
+  </controls:MetroWindow.RightWindowCommands>
+  
   <Grid>
 
-    <controls:MetroAnimatedSingleRowTabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,15,0,0" controls:TabControlHelper.IsUnderlined="True">
+    <controls:MetroAnimatedSingleRowTabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,5,0,0" controls:TabControlHelper.IsUnderlined="True">
 
       <!-- Program Tab -->
       <controls:MetroTabItem Name="ProgramHeader" Header=" Program ">
