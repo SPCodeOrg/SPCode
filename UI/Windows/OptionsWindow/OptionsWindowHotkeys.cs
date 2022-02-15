@@ -56,7 +56,7 @@ namespace SPCode.UI.Windows
 
             var mi = new MenuItem
             {
-                Header = "Reset to default"
+                Header = Translate("DefaultValues")
             };
             var cm = new ContextMenu();
             cm.Items.Add(mi);

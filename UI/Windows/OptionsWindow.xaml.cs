@@ -752,7 +752,7 @@ namespace SPCode.UI.Windows
             {
                 return;
             }
-
+            Title = Translate("Options");
             HardwareSalts.Content = Translate("HardwareEncryption");
             ProgramHeader.Header = $" {Translate("Program")}";
             DefaultButton.Content = Translate("DefaultValues");
