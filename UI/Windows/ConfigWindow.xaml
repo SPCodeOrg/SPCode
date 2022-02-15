@@ -13,7 +13,7 @@
                       TitleCaps="False"
                       ShowTitleBar="true" 
                       Closing="MetroWindow_Closing">
-
+ 
   <controls:MetroWindow.RightWindowCommands>
     <controls:WindowCommands>
       <Button Name="BackupConfigsButton" Content="Backup configs" Click="BackupConfigsButton_Click"/>
@@ -25,8 +25,13 @@
     <ResourceDictionary>
 
       <Style x:Key="ListBoxStyle" BasedOn="{StaticResource {x:Type ListBox}}" TargetType="{x:Type ListBox}">
-        <Setter Property="BorderBrush" Value="LightGray"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource TextBoxBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="{DynamicResource GrayBrush10}"/>
+      </Style>
+
+      <Style TargetType="ListBoxItem" BasedOn="{StaticResource MetroListBoxItem}">
+        <Setter Property="Background" Value="{DynamicResource GrayBrush10}" />
       </Style>
 
       <Style x:Key="DockPanelStyle" TargetType="DockPanel">
@@ -40,6 +45,22 @@
 
       <Style x:Key="SpacedTextBlock" BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
         <Setter Property="Margin" Value="0,5,0,5"/>
+      </Style>
+
+      <Style TargetType="TextBox" BasedOn="{StaticResource MetroTextBox}">
+        <Setter Property="Background" Value="{DynamicResource GrayBrush10}"/>
+      </Style>
+
+      <Style TargetType="PasswordBox" BasedOn="{StaticResource MetroPasswordBox}">
+        <Setter Property="Background" Value="{DynamicResource GrayBrush10}"/>
+      </Style>
+
+      <Style x:Key="SearchMetroTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource SearchMetroTextBox}">
+        <Setter Property="Background" Value="{DynamicResource GrayBrush10}"/>
+      </Style>
+
+      <Style TargetType="ComboBox" BasedOn="{StaticResource MetroComboBox}">
+        <Setter Property="Background" Value="{DynamicResource GrayBrush10}"/>
       </Style>
 
       <Style TargetType="Separator">
@@ -67,19 +88,9 @@
     <Button Name="NewButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Width="75" Content="New" Click="NewButton_Clicked" />
     <Button Name="DeleteButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="120,5,0,0" Width="75" Content="Delete" Click="DeleteButton_Clicked" />
     <ListBox Name="ConfigListBox" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,35,0,0" Width="200" SelectionChanged="ConfigListBox_SelectionChanged" />
-    <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="200,30,0,0" Height="5" IsHitTestVisible="False">
-      <Rectangle.Fill>
-        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-          <GradientStopCollection>
-            <GradientStop Offset="0" Color="Transparent" />
-            <GradientStop Offset="1" Color="#44000000" />
-          </GradientStopCollection>
-        </LinearGradientBrush>
-      </Rectangle.Fill>
-    </Rectangle>
     <Line X1="200" X2="200" Y2="1000" VerticalAlignment="Stretch" Stroke="{DynamicResource BlackColorBrush}" StrokeThickness="1" />
-    <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="201,35,0,0">
-      <Grid Margin="0,5,0,5">
+    <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="201,5,0,0">
+      <Grid Margin="0,0,0,5">
         <StackPanel>
 
           <!-- Section 1 -->
@@ -118,14 +129,14 @@
             <DockPanel>
               <TextBlock Name="CopyDirBlock" Text="Copy Directory: " IsHitTestVisible="False" />
               <TextBox Name="C_CopyDir" Margin="50,0,0,0" TextChanged="C_CopyDir_TextChanged"
-                       Style="{DynamicResource SearchMetroTextBox}" 
+                       Style="{DynamicResource SearchMetroTextBoxStyle}" 
                        controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFolderCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
             </DockPanel>
 
             <DockPanel>
               <TextBlock Name="ServerExeBlock" Text="Server Executable: " IsHitTestVisible="False" />
               <TextBox Name="C_ServerFile" Margin="50,0,0,0" TextChanged="C_ServerFile_TextChanged"
-                       Style="{StaticResource SearchMetroTextBox}"
+                       Style="{StaticResource SearchMetroTextBoxStyle}"
                        controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFileCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
             </DockPanel>
 
@@ -145,9 +156,7 @@
           <StackPanel Margin="5">
             <DockPanel>
               <TextBlock Name="PreBuildBlock" Text="Pre-Build Commandline: " IsHitTestVisible="False" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-              <ComboBox Name="CMD_ItemC" Width="200" SelectedIndex="0" HorizontalAlignment="Right" Margin="0,0,0,5">
-                <ComboBoxItem Visibility="Collapsed">Macros</ComboBoxItem>
-              </ComboBox>
+              <ComboBox Name="CMD_ItemC" Width="200" HorizontalAlignment="Right" Margin="0,0,0,5"/>
             </DockPanel>
             <TextBox Name="C_PreBuildCmd" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PreBuildCmd_TextChanged" GotFocus="BuildCommandsBoxes_OnFocus" />
           </StackPanel>
@@ -240,9 +249,7 @@
               <StackPanel Margin="5">
                 <DockPanel LastChildFill="True">
                   <TextBlock Name="RConComBlock" Text="RCon Commands:" IsHitTestVisible="False" />
-                  <ComboBox Name="Rcon_MenuC" Width="200" SelectedIndex="0" HorizontalAlignment="Right" Margin="0,0,0,5">
-                    <ComboBoxItem Visibility="Collapsed">Macros</ComboBoxItem>
-                  </ComboBox>
+                  <ComboBox Name="Rcon_MenuC" Width="200" HorizontalAlignment="Right" Margin="0,0,0,5"/>
                 </DockPanel>
                 <TextBox Name="C_RConCmds" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_RConCmds_TextChanged" Height="100"/>
               </StackPanel>

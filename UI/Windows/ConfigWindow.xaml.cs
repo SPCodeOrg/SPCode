@@ -71,6 +71,21 @@ namespace SPCode.UI.Windows
             CMD_ItemC.SelectionChanged += CompileMacros_OnClickedItem;
             CommandMacros.ToList().ForEach(x => Rcon_MenuC.Items.Add(x));
             Rcon_MenuC.SelectionChanged += CommandMacros_OnClickedItem;
+
+            var item1 = new ComboBoxItem()
+            {
+                Visibility = Visibility.Collapsed,
+                Content = "Macros",
+            };
+            var item2 = new ComboBoxItem()
+            {
+                Visibility = Visibility.Collapsed,
+                Content = "Macros",
+            };
+            CMD_ItemC.Items.Insert(0, item1);
+            Rcon_MenuC.Items.Insert(0, item2);
+            CMD_ItemC.SelectedIndex = 0;
+            Rcon_MenuC.SelectedIndex = 0;
         }
 
         public ICommand TextBoxButtonFolderCmd
@@ -628,6 +643,7 @@ namespace SPCode.UI.Windows
                 return;
             }
 
+            Title = Translate("Configs");
             AddSMDirButton.Content = Translate("Add");
             RemoveSMDirButton.Content = Translate("Remove");
             NewButton.Content = Translate("New");
