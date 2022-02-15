@@ -361,7 +361,7 @@ namespace SPCode.UI.Components
             var result = bracketSearcher.SearchBracket(editor.Document, editor.CaretOffset);
             bracketHighlightRenderer.SetHighlight(result);
 
-            if (Program.OptionsObject.Program_DynamicISAC)
+            if (Program.OptionsObject.Program_DynamicISAC && editor.SelectionLength == 0)
             {
                 EvaluateIntelliSense();
             }
