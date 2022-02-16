@@ -172,6 +172,7 @@
       <DependentUpon>ConfigWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Windows\ConfigWindow\ConfigWindowConfigsManager.cs" />
+    <Compile Include="UI\Windows\OptionsWindow\OptionsWindowOptionsManager.cs" />
     <Compile Include="UI\Windows\RenameWindow.xaml.cs">
       <DependentUpon>RenameWindow.xaml</DependentUpon>
     </Compile>

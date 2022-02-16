@@ -221,6 +221,11 @@ namespace SPCode
 
         public static void Save()
         {
+            if (Program.PreventOptionsSaving)
+            {
+                return;
+            }
+
             try
             {
                 var formatter = new BinaryFormatter();

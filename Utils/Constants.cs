@@ -41,6 +41,7 @@
         public const string FileSaveFilters = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|All Files (*.*)|*.*";
         public const string FileOpenFilters = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|Sourcemod Plugins (*.smx)|*.smx|All Files (*.*)|*.*";
         public static string DecompileFileFilters = "Sourcepawn Plugins (*.smx)|*.smx";
+        public const string DatFilesFilter = "Dat files (.dat)|*.dat";
         #endregion
 
         #region Other

@@ -74,22 +74,6 @@ namespace SPCode.UI.Windows
             }
         }
 
-        private async void RestoreButton_Clicked(object sender, RoutedEventArgs e)
-        {
-            var result = await this.ShowMessageAsync(Translate("ResetOptions"),
-                Translate("ResetOptQues"), MessageDialogStyle.AffirmativeAndNegative, Program.MainWindow.MetroDialogOptions);
-            if (result == MessageDialogResult.Affirmative)
-            {
-                Program.OptionsObject = new OptionsControl();
-                Program.OptionsObject.ReCreateCryptoKey();
-                Program.MainWindow.OptionMenuEntry.IsEnabled = false;
-                await this.ShowMessageAsync(Translate("RestartEditor"),
-                    Translate("YRestartEditor"), MessageDialogStyle.Affirmative,
-                    Program.MainWindow.MetroDialogOptions);
-                Close();
-            }
-        }
-
         private void HardwareAcc_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging)
@@ -755,7 +739,6 @@ namespace SPCode.UI.Windows
             Title = Translate("Options");
             HardwareSalts.Content = Translate("HardwareEncryption");
             ProgramHeader.Header = $" {Translate("Program")}";
-            DefaultButton.Content = Translate("DefaultValues");
             HardwareAcc.Content = Translate("HardwareAcc");
             UIAnimation.Content = Translate("UIAnim");
             OpenIncludes.Content = Translate("OpenInc");
@@ -784,6 +767,9 @@ namespace SPCode.UI.Windows
             DiscordPresence.Content = Translate("EnableRPC");
             DiscordPresenceTime.Content = Translate("EnableRPCTime");
             DiscordPresenceFile.Content = Translate("EnableRPCFile");
+            DefaultButton.Content = Translate("DefaultValues");
+            BackupButton.Content = Translate("BackupOptions");
+            LoadButton.Content = Translate("LoadOptions");
 
             foreach (var item in HotkeysGrid.Children)
             {

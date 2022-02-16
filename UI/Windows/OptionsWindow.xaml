@@ -43,6 +43,8 @@
 
   <controls:MetroWindow.RightWindowCommands>
     <controls:WindowCommands>
+      <Button Name="BackupButton" Content="Backup options" Click="BackupButton_Clicked" />
+      <Button Name="LoadButton" Content="Load options" Click="LoadButton_Clicked" />
       <Button Name="ResetButton" Content="Reset options to default" Click="RestoreButton_Clicked" />
     </controls:WindowCommands>
   </controls:MetroWindow.RightWindowCommands>
