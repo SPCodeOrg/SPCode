@@ -5,9 +5,11 @@ namespace SPCode.Utils
 {
     public class Paths
     {
-        public Paths() { }
-
+#if BETA
+        private static readonly string SPCodeAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\spcodebeta";
+#else
         private static readonly string SPCodeAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\spcode";
+#endif
         private static bool LocalInstallation;
 
         public static bool IsLocalInstallation()
