@@ -98,11 +98,6 @@ namespace SPCode.UI.Windows
             Count();
         }
 
-        private void SearchBoxTextChanged(object sender, RoutedEventArgs e)
-        {
-            FindResultBlock.Text = string.Empty;
-        }
-
         private void SearchBoxKeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -143,6 +138,7 @@ namespace SPCode.UI.Windows
         private void SearchBoxTextChanged(object sender, TextChangedEventArgs e)
         {
             Program.OptionsObject.SearchOptions.FindText = FindBox.Text;
+            FindResultBlock.Text = string.Empty;
         }
 
         private void ReplaceBoxTextChanged(object sender, TextChangedEventArgs e)
