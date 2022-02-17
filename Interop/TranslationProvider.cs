@@ -112,10 +112,10 @@ namespace SPCode.Interop
         /// </summary>
         public void ParseTranslationFiles()
         {
-            try
+            var filesDir = Directory.GetFiles(_translationsDir).Where(x => x.EndsWith(".xml"));
+            foreach (var file in filesDir)
             {
-                var filesDir = Directory.GetFiles(_translationsDir).Where(x => x.EndsWith(".xml"));
-                foreach (var file in filesDir)
+                try
                 {
                     // Create wrapper
                     var fInfo = new FileInfo(file);
@@ -135,11 +135,12 @@ namespace SPCode.Interop
                     AvailableLanguages.Add(langName);
                     AvailableLanguageIDs.Add(langID);
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"There was a problem while parsing the translation files.\n" +
-                    $"Details: {ex.Message}");
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"There was a problem while parsing the translation file '{file}'.\n" +
+                        $"Details: {ex.Message}");
+                    continue;
+                }
             }
         }
 
