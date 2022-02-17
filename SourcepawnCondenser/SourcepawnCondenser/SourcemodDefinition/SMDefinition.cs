@@ -20,8 +20,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public List<string> TypeStrings = new();
 
         // Top-level variables
-        public List<SMVariable> Variables = new();
-
+        public readonly List<SMVariable> Variables = new();
         public readonly List<SMEnum> Enums = new();
         public readonly List<SMEnumStruct> EnumStructs = new();
         public readonly List<SMMethodmap> Methodmaps = new();
