@@ -44,6 +44,20 @@ namespace SPCode.UI.Components
 
         private readonly Regex multilineCommentRegex = new(@"/\*.*?\*/",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
+        
+        // Used to keep track if we are inside a pre-processor statment
+        private bool _inPreProc;
+
+        // Pre-processor statements
+        static private readonly string[] _prepArr =
+        {
+            "assert", "define", "else", "elseif", "endif", "endinput", "endscript", "error", "warning", "if",
+            "include", "line", "pragma", "tryinclude", "undef"
+        };
+
+        static private readonly List<string> _prep = _prepArr.ToList();
+
+        static private readonly Regex _PreprocessorRegex = new("#\\w+");
 
         //private string[] methodNames;
         public void LoadAutoCompletes()
@@ -88,20 +102,6 @@ namespace SPCode.UI.Components
                 methodMaps = newMethodMaps;
             });
         }
-
-
-        private bool _inPreProc = false;
-
-        // Pre-processor statments
-        static private readonly string[] _prepArr =
-        {
-            "assert", "define", "else", "elseif", "endif", "endinput", "endscript", "error", "warning", "if",
-            "include", "line", "pragma", "tryinclude", "undef"
-        };
-
-        static private readonly List<string> _prep = _prepArr.ToList();
-
-        static private readonly Regex _whitespaceExp = new("#\\w+");
 
         //private readonly Regex methodExp = new Regex(@"(?<=\.)[A-Za-z_]\w*", RegexOptions.RightToLeft);
         private void EvaluateIntelliSense(out bool refresh)
@@ -159,7 +159,7 @@ namespace SPCode.UI.Components
             //TODO: Check for multi-line strings.
             // Auto-complete for preprocessor statments.
 
-            var defMatch = _whitespaceExp.Match(text);
+            var defMatch = _PreprocessorRegex.Match(text);
             var matchIndex = defMatch.Index;
             var matchLen = defMatch.Length;
             if (text.Trim() == "#" || (text.Trim().StartsWith("#") && matchIndex + matchLen >= lineOffset &&
