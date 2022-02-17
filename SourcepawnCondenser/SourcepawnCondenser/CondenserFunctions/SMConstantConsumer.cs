@@ -27,7 +27,7 @@ namespace SourcepawnCondenser
 
                         if (!string.IsNullOrWhiteSpace(constantName))
                         {
-                            def.Constants.Add(new SMConstant
+                            def.ConstVariables.Add(new SMConstant
                             {
                                 Index = startIndex,
                                 Length = t[i].Index - startIndex,

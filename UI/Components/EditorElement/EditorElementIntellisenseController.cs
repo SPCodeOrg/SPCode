@@ -453,7 +453,7 @@ namespace SPCode.UI.Components
                         if (AC_IsFuncC)
                         {
                             replaceString = ((ACNode)AutoCompleteBox.SelectedItem).EntryName;
-                            if (acEntrys[AutoCompleteBox.SelectedIndex].IsExecuteable)
+                            if (acEntrys[AutoCompleteBox.SelectedIndex].IsExecutable)
                             {
                                 replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
                                 setCaret = true;

@@ -688,7 +688,7 @@ namespace SPCode.UI.Components
                             {
                                 currentSmDef = definitions[i];
                                 var caret1 = caret;
-                                currentSmDef.currentFunction = currentFunctions.FirstOrDefault(func => func.Index <= caret1 && caret1 <= func.EndPos);
+                                currentSmDef.CurrentFunction = currentFunctions.FirstOrDefault(func => func.Index <= caret1 && caret1 <= func.EndPos);
                             }
                         }
                     }

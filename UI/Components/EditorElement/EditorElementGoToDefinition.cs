@@ -115,7 +115,7 @@ namespace SPCode.UI.Components
             sm ??= smDef.Variables.FirstOrDefault(i => i.Name.Equals(word));
 
             // constants
-            sm ??= smDef.Constants.FirstOrDefault(i => i.Name.Equals(word));
+            sm ??= smDef.ConstVariables.FirstOrDefault(i => i.Name.Equals(word));
 
             // defines
             sm ??= smDef.Defines.FirstOrDefault(i => i.Name.Equals(word));

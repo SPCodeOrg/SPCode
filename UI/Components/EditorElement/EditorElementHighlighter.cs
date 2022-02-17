@@ -166,6 +166,7 @@ namespace SPCode.UI.Components
                     }),
                     Color = new HighlightingColor { Foreground = mainKeywordsBrush }
                 });
+                
                 rs.Rules.Add(new HighlightingRule // context keywords
                 {
                     Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
@@ -209,19 +210,18 @@ namespace SPCode.UI.Components
                 });
 
                 // Apply particular rules from the current SM Definition
+                var def = smDef ?? Program.Configs[Program.SelectedConfig].GetSMDef();
 
-                if (smDef != null && smDef.Defines.Count > 0)
+                if (def.Defines.Count > 0)
                 {
                     rs.Rules.Add(new HighlightingRule // defines
                     {
-                        Regex = new Regex("\\b(?:" + string.Join("|", smDef.Defines.Select(x => Regex.Match(x.Name, @"\w+").Value).ToArray()) + ")(?=\\W|$)"),
+                        Regex = new Regex("\\b(?:" + string.Join("|", def.Defines.Select(x => Regex.Match(x.Name, @"\w+").Value).ToArray()) + ")(?=\\W|$)"),
                         Color = new HighlightingColor { Foreground = constantBrush }
                     });
                 }
-
-                var def = Program.Configs[Program.SelectedConfig].GetSMDef();
-
-                if (def.TypeStrings.Length > 0)
+                
+                if (def.TypeStrings.Count > 0)
                 {
                     rs.Rules.Add(new HighlightingRule // types
                     {
@@ -230,11 +230,11 @@ namespace SPCode.UI.Components
                     });
                 }
 
-                if (def.ConstantsStrings.Length > 0)
+                if (def.Constants.Count > 0)
                 {
                     rs.Rules.Add(new HighlightingRule // constants
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.ConstantsStrings, true),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.Constants, true),
                         Color = new HighlightingColor { Foreground = constantBrush }
                     });
                 }
@@ -248,39 +248,20 @@ namespace SPCode.UI.Components
                     });
                 }
 
-                if (def.MethodsStrings.Length > 0)
+                if (def.ObjectMethods.Count > 0)
                 {
                     rs.Rules.Add(new HighlightingRule // Methods
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.MethodsStrings),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.ObjectMethods),
                         Color = new HighlightingColor { Foreground = methodBrush }
                     });
                 }
-
-                if (def.FieldStrings.Length > 0)
+                
+                if (def.ObjectFields.Count > 0)
                 {
                     rs.Rules.Add(new HighlightingRule // Methods
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.FieldStrings),
-                        Color = new HighlightingColor { Foreground = methodBrush }
-                    });
-                }
-
-                if (def.StructFieldStrings.Length > 0)
-                {
-                    rs.Rules.Add(new HighlightingRule // Methods
-                    {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.StructFieldStrings),
-                        Color = new HighlightingColor { Foreground = methodBrush }
-                    });
-                }
-
-                if (def.StructMethodStrings.Length > 0)
-                {
-                    rs.Rules.Add(new HighlightingRule // Methods
-                    {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(
-                            def.StructMethodStrings),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.ObjectFields),
                         Color = new HighlightingColor { Foreground = methodBrush }
                     });
                 }

@@ -46,7 +46,7 @@ namespace SPCode.UI.Windows
 
             var defList = new List<SMBaseDefinition>();
             defList.AddRange(def.Functions);
-            defList.AddRange(def.Constants);
+            defList.AddRange(def.ConstVariables);
             defList.AddRange(def.Enums);
             defList.AddRange(def.Defines);
             defList.AddRange(def.Structs);

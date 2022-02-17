@@ -7,37 +7,39 @@ namespace SourcepawnCondenser.SourcemodDefinition
 {
     public class SMDefinition
     {
-        public List<SMConstant> Constants = new();
+        // This contains Enum values, Constant variables, Defines.
+        public List<string> Constants;
 
-        public string[]
-            ConstantsStrings = new string[0]; //ATTENTION: THIS IS NOT THE LIST OF ALL CONSTANTS - IT INCLUDES MUCH MORE
+        public List<SMConstant> ConstVariables = new();
 
-        public List<string> currentVariables = new();
+        // The function variables (where the cursor is in)
+        private readonly List<string>
+            _functionVariables = new();
 
-        public List<SMDefine> Defines = new();
-        public List<SMEnum> Enums = new();
-        public List<SMEnumStruct> EnumStructs = new();
+        // This contains Enum, Structs, Methodmaps, Typedefs, Enum structs' names.
+        public List<string> TypeStrings = new();
 
-        /* Enum structs */
-        public string[] EnumStructStrings = new string[0];
-        public string[] FieldStrings = new string[0];
-        public List<SMFunction> Functions = new();
+        // Top-level variables
+        public List<SMVariable> Variables = new();
 
-        /* Other */
+        public readonly List<SMEnum> Enums = new();
+        public readonly List<SMEnumStruct> EnumStructs = new();
+        public readonly List<SMMethodmap> Methodmaps = new();
+
         public string[] FunctionStrings = new string[0];
-        public List<SMMethodmap> Methodmaps = new();
 
 
-        /* Methodmaps */
-        public string[] MethodmapsStrings = new string[0];
-        public string[] MethodsStrings = new string[0];
-        public string[] StructFieldStrings = new string[0];
-        public string[] StructMethodStrings = new string[0];
+        // This contains method map and enum structs' methods.
+        public List<string> ObjectMethods;
+        // This contains method map and enum structs' fields.
+        public List<string> ObjectFields;
+
+        public List<SMFunction> Functions = new();
+        public List<SMDefine> Defines = new();
         public List<SMStruct> Structs = new();
         public List<SMTypedef> Typedefs = new();
-        public string[] TypeStrings = new string[0];
-        public List<SMVariable> Variables = new();
-        public SMFunction currentFunction;
+
+        public SMFunction CurrentFunction;
 
         public void Sort()
         {
@@ -51,8 +53,8 @@ namespace SourcepawnCondenser.SourcemodDefinition
                 Structs.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
                 Defines = Defines.Distinct(new SMDefineComparer()).ToList();
                 Defines.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
-                Constants = Constants.Distinct(new SMConstantComparer()).ToList();
-                Constants.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
+                ConstVariables = ConstVariables.Distinct(new SMConstantComparer()).ToList();
+                ConstVariables.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
             }
             catch (Exception)
             {
@@ -79,7 +81,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
                             Enums.AddRange(subDefinition.Enums);
                             Structs.AddRange(subDefinition.Structs);
                             Defines.AddRange(subDefinition.Defines);
-                            Constants.AddRange(subDefinition.Constants);
+                            ConstVariables.AddRange(subDefinition.ConstVariables);
                             Methodmaps.AddRange(subDefinition.Methodmaps);
                             Typedefs.AddRange(subDefinition.Typedefs);
                             EnumStructs.AddRange(subDefinition.EnumStructs);
@@ -104,43 +106,42 @@ namespace SourcepawnCondenser.SourcemodDefinition
                 FunctionStrings[i] = Functions[i].Name;
             }
 
-            var methodNames = new List<string>();
-            var fieldNames = new List<string>();
-            var methodmapNames = new List<string>();
-            var enumStructNames = new List<string>();
-            var structMethodNames = new List<string>();
-            var structFieldNames = new List<string>();
+
+            ObjectMethods = new List<string>();
+            ObjectFields = new List<string>();
 
             foreach (var mm in Methodmaps)
             {
-                methodmapNames.Add(mm.Name);
-                methodNames.AddRange(mm.Methods.Select(m => m.Name));
-                fieldNames.AddRange(mm.Fields.Select(f => f.Name));
+                ObjectMethods.AddRange(mm.Methods.Select(m => m.Name));
+                ObjectFields.AddRange(mm.Fields.Select(f => f.Name));
             }
 
             foreach (var sm in EnumStructs)
             {
-                enumStructNames.Add(sm.Name);
-                structMethodNames.AddRange(sm.Methods.Select(m => m.Name));
-                structFieldNames.AddRange(sm.Fields.Select(f => f.Name));
+                ObjectMethods.AddRange(sm.Methods.Select(m => m.Name));
+                ObjectFields.AddRange(sm.Fields.Select(f => f.Name));
             }
 
-            MethodsStrings = methodNames.ToArray();
-            FieldStrings = fieldNames.ToArray();
-            StructFieldStrings = structFieldNames.ToArray();
-            StructMethodStrings = structMethodNames.ToArray();
-            MethodmapsStrings = methodmapNames.ToArray();
-            EnumStructStrings = enumStructNames.ToArray();
+            Constants = new List<string>();
 
-            var constantNames = Constants.Select(i => i.Name).ToList();
+            // Add Enum values
             foreach (var e in Enums)
             {
-                constantNames.AddRange(e.Entries);
+                Constants.AddRange(e.Entries);
             }
 
-            constantNames.AddRange(Defines.Select(i => i.Name));
-            constantNames.AddRange(Variables.Select(v => v.Name));
+            Constants.AddRange(ConstVariables.Select(i => i.Name).ToList());
+            Constants.AddRange(Defines.Select(i => i.Name).ToList());
 
+            Constants.Sort(string.Compare);
+
+            TypeStrings = Enums.Select(e => e.Name).Concat(Structs.Select(e => e.Name))
+                .Concat(Methodmaps.Select(e => e.Name)).Concat(Typedefs.Select(e => e.Name))
+                .Concat(EnumStructs.Select(e => e.Name)).Where(e => !string.IsNullOrWhiteSpace(e)).ToList();
+            TypeStrings.Sort(string.Compare);
+
+
+            // Parse local function variables.
             if (caret != -1 && currentFunctions != null)
             {
                 // TODO: This somewhat works, but somethings when in the end of a function it's buggy and doesnt find
@@ -149,44 +150,33 @@ namespace SourcepawnCondenser.SourcemodDefinition
                     e.Index < caret && caret <= e.EndPos);
                 if (currentFunc != null)
                 {
-                    constantNames.AddRange(currentFunc.FuncVariables.Select(v => v.Name));
+                    _functionVariables.AddRange(currentFunc.FuncVariables.Select(v => v.Name));
                     var stringParams = currentFunc.Parameters.Select(e => e.Split('=').First().Trim())
                         .Select(e => e.Split(' ').Last()).Where(e => !string.IsNullOrWhiteSpace(e)).ToList();
-                    constantNames.AddRange(stringParams);
-                    currentVariables.AddRange(stringParams);
+                    _functionVariables.AddRange(stringParams);
                 }
                 else
                 {
-                    currentVariables.Clear();
+                    _functionVariables.Clear();
                 }
             }
-
-            constantNames.Sort(string.Compare);
-            ConstantsStrings = constantNames.ToArray();
-            var typeNames = new List<string>
-            {
-                Capacity = Enums.Count + Structs.Count + Methodmaps.Count + EnumStructs.Count
-            };
-            typeNames.AddRange(Enums.Select(i => i.Name));
-            typeNames.AddRange(Structs.Select(i => i.Name));
-            typeNames.AddRange(Methodmaps.Select(i => i.Name));
-            typeNames.AddRange(Typedefs.Select(i => i.Name));
-            typeNames.AddRange(EnumStructs.Select(i => i.Name));
-            typeNames.Sort(string.Compare);
-            TypeStrings = typeNames.Where(e => !string.IsNullOrWhiteSpace(e)).ToArray();
         }
 
         public ACNode[] ProduceACNodes()
         {
             var nodes = new List<ACNode>
             {
-                Capacity = Enums.Count + Structs.Count + Constants.Count + Functions.Count + EnumStructs.Count
+                Capacity = Enums.Count + Structs.Count + ConstVariables.Count + Functions.Count + EnumStructs.Count
             };
             nodes.AddRange(ACNode.ConvertFromStringArray(FunctionStrings, true, "▲ "));
-            nodes.AddRange(ACNode.ConvertFromStringArray(TypeStrings, false, "♦ "));
-            nodes.AddRange(ACNode.ConvertFromStringArray(ConstantsStrings, false, "• "));
-            nodes.AddRange(ACNode.ConvertFromStringArray(MethodmapsStrings, false, "↨ "));
-            nodes.AddRange(ACNode.ConvertFromStringArray(EnumStructStrings, false, "↩ "));
+            nodes.AddRange(ACNode.ConvertFromStringList(TypeStrings, false, "♦ "));
+            nodes.AddRange(ACNode.ConvertFromStringList(Constants, false, "• "));
+            nodes.AddRange(ACNode.ConvertFromStringList(Methodmaps.Select(e => e.Name), false, "↨ "));
+            nodes.AddRange(ACNode.ConvertFromStringList(EnumStructs.Select(e => e.Name), false, "↩ "));
+
+            nodes.AddRange(ACNode.ConvertFromStringList(Variables.Select(e => e.Name), false, "• "));
+            nodes.AddRange(ACNode.ConvertFromStringList(_functionVariables, false, "• "));
+            
             //nodes = nodes.Distinct(new ACNodeEqualityComparer()).ToList(); Methodmaps and Functions can and will be the same.
             nodes.Sort((a, b) => string.CompareOrdinal(a.EntryName, b.EntryName));
 
@@ -196,11 +186,8 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public ISNode[] ProduceISNodes()
         {
             var nodes = new List<ISNode>();
-            nodes.AddRange(ISNode.ConvertFromStringArray(MethodsStrings, true, "▲ "));
-            nodes.AddRange(ISNode.ConvertFromStringArray(StructMethodStrings, true, "▲ "));
-
-            nodes.AddRange(ISNode.ConvertFromStringArray(FieldStrings, false, "• "));
-            nodes.AddRange(ISNode.ConvertFromStringArray(StructFieldStrings, false, "• "));
+            nodes.AddRange(ISNode.ConvertFromStringList(ObjectMethods, true, "▲ "));
+            nodes.AddRange(ISNode.ConvertFromStringList(ObjectFields, false, "• "));
 
             // nodes.AddRange(ISNode.ConvertFromStringArray(VariableStrings, false, "v "));
 
@@ -218,7 +205,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
                 Enums.AddRange(def.Enums);
                 Structs.AddRange(def.Structs);
                 Defines.AddRange(def.Defines);
-                Constants.AddRange(def.Constants);
+                ConstVariables.AddRange(def.ConstVariables);
                 Methodmaps.AddRange(def.Methodmaps);
                 EnumStructs.AddRange(def.EnumStructs);
                 Variables.AddRange(def.Variables);
@@ -350,20 +337,26 @@ namespace SourcepawnCondenser.SourcemodDefinition
     public class ACNode
     {
         public string EntryName;
-        public bool IsExecuteable;
+        public bool IsExecutable;
         public string Name;
 
-        public static List<ACNode> ConvertFromStringArray(string[] strings, bool Executable, string prefix = "")
+        public static List<ACNode> ConvertFromStringArray(string[] strings, bool executable, string prefix = "")
         {
             var nodeList = new List<ACNode>();
             var length = strings.Length;
             for (var i = 0; i < length; ++i)
             {
                 nodeList.Add(
-                    new ACNode { Name = prefix + strings[i], EntryName = strings[i], IsExecuteable = Executable });
+                    new ACNode {Name = prefix + strings[i], EntryName = strings[i], IsExecutable = executable});
             }
 
             return nodeList;
+        }
+
+        public static IEnumerable<ACNode> ConvertFromStringList(IEnumerable<string> strings, bool executable,
+            string prefix = "")
+        {
+            return strings.Select(e => new ACNode {Name = prefix + e, EntryName = e, IsExecutable = executable});
         }
 
         public override string ToString()
@@ -378,17 +371,24 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public bool IsExecuteable;
         public string Name;
 
-        public static List<ISNode> ConvertFromStringArray(string[] strings, bool Executable, string prefix = "")
+        public static IEnumerable<ISNode> ConvertFromStringArray(string[] strings, bool Executable, string prefix = "")
         {
             var nodeList = new List<ISNode>();
             var length = strings.Length;
             for (var i = 0; i < length; ++i)
             {
                 nodeList.Add(
-                    new ISNode { Name = prefix + strings[i], EntryName = strings[i], IsExecuteable = Executable });
+                    new ISNode {Name = prefix + strings[i], EntryName = strings[i], IsExecuteable = Executable});
             }
 
             return nodeList;
+        }
+
+        public static IEnumerable<ISNode> ConvertFromStringList(IEnumerable<string> strings, bool Executable,
+            string prefix = "")
+        {
+            return strings.Select(t => new ISNode {Name = prefix + t, EntryName = t, IsExecuteable = Executable})
+                .ToList();
         }
 
         public override string ToString()
