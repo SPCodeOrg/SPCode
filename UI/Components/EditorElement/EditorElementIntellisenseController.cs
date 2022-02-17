@@ -12,13 +12,16 @@ using SourcepawnCondenser.SourcemodDefinition;
 
 namespace SPCode.UI.Components
 {
+    /// @note
+    // AC stands for AutoComplete and ShowAC is used to show a the autocomplete dialog.
+    // IS stands for IntelliSense and ShowACIS is used to show an object documentation.
     public partial class EditorElement
     {
         private bool AC_IsFuncC = true;
         private bool AC_Open;
-        private List<ACNode> acEntries;
+        private List<ACNode> _acEntries;
 
-        private bool AnimationsLoaded;
+        private bool _animationsLoaded;
 
         private Storyboard FadeAC_FuncC_In;
         private Storyboard FadeAC_MethodC_In;
@@ -44,7 +47,7 @@ namespace SPCode.UI.Components
 
         private readonly Regex multilineCommentRegex = new(@"/\*.*?\*/",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
-        
+
         // Used to keep track if we are inside a pre-processor statment
         private bool _inPreProc;
 
@@ -62,17 +65,21 @@ namespace SPCode.UI.Components
         //private string[] methodNames;
         public void LoadAutoCompletes()
         {
-            if (!AnimationsLoaded)
+            if (!_animationsLoaded)
             {
                 FadeISACIn = (Storyboard)Resources["FadeISACIn"];
                 FadeISACOut = (Storyboard)Resources["FadeISACOut"];
+
                 FadeACIn = (Storyboard)Resources["FadeACIn"];
                 FadeACOut = (Storyboard)Resources["FadeACOut"];
+
                 FadeAC_FuncC_In = (Storyboard)Resources["FadeAC_FuncC_In"];
                 FadeAC_MethodC_In = (Storyboard)Resources["FadeAC_MethodC_In"];
+
                 FadeISACOut.Completed += FadeISACOut_Completed;
                 FadeACOut.Completed += FadeACOut_Completed;
-                AnimationsLoaded = true;
+
+                _animationsLoaded = true;
             }
 
             if (ISAC_Open)
@@ -82,10 +89,10 @@ namespace SPCode.UI.Components
 
             var def = Program.Configs[Program.SelectedConfig].GetSMDef();
             funcs = def.Functions.ToArray();
-            acEntries = def.ProduceACNodes();
+            _acEntries = def.ProduceACNodes();
             isEntries = def.ProduceISNodes();
             methodMaps = def.Methodmaps.ToArray();
-            AutoCompleteBox.ItemsSource = acEntries;
+            AutoCompleteBox.ItemsSource = _acEntries;
             MethodAutoCompleteBox.ItemsSource = isEntries;
         }
 
@@ -95,9 +102,9 @@ namespace SPCode.UI.Components
             Dispatcher?.Invoke(() =>
             {
                 funcs = FunctionArray;
-                acEntries = acNodes;
+                _acEntries = acNodes;
                 isEntries = isNodes;
-                AutoCompleteBox.ItemsSource = acEntries;
+                AutoCompleteBox.ItemsSource = _acEntries;
                 MethodAutoCompleteBox.ItemsSource = isEntries;
                 methodMaps = newMethodMaps;
             });
@@ -119,18 +126,34 @@ namespace SPCode.UI.Components
             var text = editor.Document.GetText(line.Offset, line.Length);
             var lineOffset = editor.TextArea.Caret.Column - 1;
             var caretOffset = editor.CaretOffset;
-            var ForwardShowAC = false;
-            var ForwardShowIS = false;
-            var ISFuncNameStr = string.Empty;
-            var ISFuncDescriptionStr = string.Empty;
+            
+            // Used to Show to call ShowAC and the function end.
+            var showAC = false;
+
+            // Used to Show to call ShowIS and the function end.
+            var showIS = false;
+            
+            // The object signature
+            var functionName = string.Empty;
+            
+            // The object documentation
+            var functionDescription = string.Empty;
+            
+            // Used to trigger the AC dialog only when clicking twice in the same line.
             var ForceReSet = currentLineIndex != LastShowedLine;
             var ForceISKeepsClosed = ForceReSet;
-            var xPos = int.MaxValue;
+            
+            
+            // Keep track of the last line
             LastShowedLine = currentLineIndex;
-            var quotationCount = 0;
+            
             var MethodAC = false;
 
+            var xPos = int.MaxValue;
 
+            var quotationCount = 0;
+
+            
             // Hide ISAC if inside an in-line comments.
             for (var i = 0; i < lineOffset; ++i)
             {
@@ -157,26 +180,25 @@ namespace SPCode.UI.Components
 
 
             //TODO: Check for multi-line strings.
-            // Auto-complete for preprocessor statments.
-
+            // Auto-complete for preprocessor statements.
             var defMatch = _PreprocessorRegex.Match(text);
             var matchIndex = defMatch.Index;
             var matchLen = defMatch.Length;
             if (text.Trim() == "#" || (text.Trim().StartsWith("#") && matchIndex + matchLen >= lineOffset &&
                                        lineOffset > matchIndex))
             {
+                // Refresh the AC items only the first time when enter the pre-processor
                 if (!_inPreProc)
-                {
-                    _inPreProc = true;
-
-
-                    acEntries.Clear();
-                    acEntries.AddRange(ACNode.ConvertFromStringList(_prep, false, "#", true));
-
                     refresh = true;
-                }
+                
+                _inPreProc = true;
+                
+                _acEntries.Clear();
+                _acEntries.AddRange(ACNode.ConvertFromStringList(_prep, false, "#", true));
 
-
+         
+                
+                // Get only the preprocessor statement and not the full line 
                 var endIndex = text.IndexOf(" ", StringComparison.Ordinal);
                 var statement = text.Substring(1);
                 if (endIndex != -1)
@@ -184,7 +206,8 @@ namespace SPCode.UI.Components
                     statement = text.Substring(1, endIndex).ToLower();
                 }
 
-                if (_prep.Contains(statement))
+                // If the pro-processor is found close the dialog.
+                if (statement.Length != 0 && _prep.Contains(statement.Trim()))
                 {
                     HideAC();
                 }
@@ -208,7 +231,7 @@ namespace SPCode.UI.Components
                     AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
 
 
-                    ForwardShowAC = true;
+                    showAC = true;
                 }
             }
             else if (_inPreProc)
@@ -280,9 +303,9 @@ namespace SPCode.UI.Components
                                 {
                                     xPos = ISMatches[j].Groups["method"].Index +
                                            ISMatches[j].Groups["method"].Length;
-                                    ForwardShowIS = true;
-                                    ISFuncNameStr = staticMethod.FullName;
-                                    ISFuncDescriptionStr = staticMethod.CommentString;
+                                    showIS = true;
+                                    functionName = staticMethod.FullName;
+                                    functionDescription = staticMethod.CommentString;
                                     ForceReSet = true;
                                     found = true;
                                 }
@@ -304,9 +327,9 @@ namespace SPCode.UI.Components
                                         {
                                             xPos = ISMatches[j].Groups["method"].Index +
                                                    ISMatches[j].Groups["method"].Length;
-                                            ForwardShowIS = true;
-                                            ISFuncNameStr = method.FullName;
-                                            ISFuncDescriptionStr = method.CommentString;
+                                            showIS = true;
+                                            functionName = method.FullName;
+                                            functionDescription = method.CommentString;
                                             ForceReSet = true;
                                             found = true;
                                         }
@@ -329,9 +352,9 @@ namespace SPCode.UI.Components
 
                                         xPos = ISMatches[j].Groups["method"].Index +
                                                ISMatches[j].Groups["method"].Length;
-                                        ForwardShowIS = true;
-                                        ISFuncNameStr = method.FullName;
-                                        ISFuncDescriptionStr = method.CommentString;
+                                        showIS = true;
+                                        functionName = method.FullName;
+                                        functionDescription = method.CommentString;
                                         ForceReSet = true;
                                     }
                                 }
@@ -343,9 +366,9 @@ namespace SPCode.UI.Components
                                 {
                                     xPos = ISMatches[j].Groups["name"].Index +
                                            ISMatches[j].Groups["name"].Length;
-                                    ForwardShowIS = true;
-                                    ISFuncNameStr = func.FullName;
-                                    ISFuncDescriptionStr = func.CommentString;
+                                    showIS = true;
+                                    functionName = func.FullName;
+                                    functionDescription = func.CommentString;
                                     ForceReSet = true;
                                 }
                             }
@@ -412,7 +435,7 @@ namespace SPCode.UI.Components
                                     }
 
 
-                                    ForwardShowAC = true;
+                                    showAC = true;
                                     MethodAutoCompleteBox.SelectedIndex = i;
                                     MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
                                     break;
@@ -420,16 +443,16 @@ namespace SPCode.UI.Components
                             }
                             else
                             {
-                                for (var i = 0; i < acEntries.Count; ++i)
+                                for (var i = 0; i < _acEntries.Count; ++i)
                                 {
-                                    if (!acEntries[i].EntryName.StartsWith(testString,
+                                    if (!_acEntries[i].EntryName.StartsWith(testString,
                                             StringComparison.InvariantCultureIgnoreCase) ||
-                                        testString == acEntries[i].EntryName)
+                                        testString == _acEntries[i].EntryName)
                                     {
                                         continue;
                                     }
 
-                                    ForwardShowAC = true;
+                                    showAC = true;
                                     AutoCompleteBox.SelectedIndex = i;
                                     AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
                                     break;
@@ -442,17 +465,17 @@ namespace SPCode.UI.Components
                 #endregion
             }
 
-            if (!ForwardShowAC)
+            if (!showAC)
             {
                 if (ForceISKeepsClosed)
                 {
-                    ForwardShowIS = false;
+                    showIS = false;
                 }
             }
 
-            if (ForwardShowAC || ForwardShowIS)
+            if (showAC || showIS)
             {
-                if (ForwardShowAC)
+                if (showAC)
                 {
                     ShowAC(!MethodAC);
                 }
@@ -461,9 +484,9 @@ namespace SPCode.UI.Components
                     HideAC();
                 }
 
-                if (ForwardShowIS)
+                if (showIS)
                 {
-                    ShowIS(ISFuncNameStr, ISFuncDescriptionStr);
+                    ShowIS(functionName, functionDescription);
                 }
                 else
                 {
@@ -516,10 +539,16 @@ namespace SPCode.UI.Components
                         if (AC_IsFuncC)
                         {
                             replaceString = ((ACNode)AutoCompleteBox.SelectedItem).EntryName;
-                            if (acEntries[AutoCompleteBox.SelectedIndex].IsExecutable)
+                            if (_acEntries[AutoCompleteBox.SelectedIndex].IsExecutable)
                             {
                                 replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
                                 setCaret = true;
+                            }
+
+                            if (_acEntries[AutoCompleteBox.SelectedIndex].addSpace)
+                            {
+                                replaceString = ((ACNode)AutoCompleteBox.SelectedItem).EntryName;
+                                replaceString += " ";
                             }
                         }
                         else
@@ -530,12 +559,6 @@ namespace SPCode.UI.Components
                                 replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
                                 setCaret = true;
                             }
-                        }
-
-                        if (acEntries[AutoCompleteBox.SelectedIndex].addSpace)
-                        {
-                            replaceString = ((ACNode)AutoCompleteBox.SelectedItem).EntryName;
-                            replaceString += " ";
                         }
 
 
@@ -602,6 +625,7 @@ namespace SPCode.UI.Components
             SetISACPosition(forcedXPos);
             if (Program.OptionsObject.UI_Animations)
             {
+                // Clicking inside function 
                 FadeISACIn.Begin();
             }
             else
@@ -635,6 +659,7 @@ namespace SPCode.UI.Components
                 ACBorder.Height = 175.0;
                 if (Program.OptionsObject.UI_Animations)
                 {
+                    // Starting to write - Show function list
                     FadeACIn.Begin();
                 }
                 else
@@ -644,39 +669,42 @@ namespace SPCode.UI.Components
                 }
             }
 
-            if (!(IsFunc && AC_IsFuncC) && AC_Open)
+            if ((IsFunc && AC_IsFuncC) || !AC_Open)
             {
-                if (IsFunc)
+                return;
+            }
+
+            if (IsFunc)
+            {
+                if (AC_IsFuncC)
                 {
-                    if (!AC_IsFuncC)
-                    {
-                        AC_IsFuncC = true;
-                        if (Program.OptionsObject.UI_Animations)
-                        {
-                            FadeAC_FuncC_In.Begin();
-                        }
-                        else
-                        {
-                            AutoCompleteBox.Opacity = 1.0;
-                            MethodAutoCompleteBox.Opacity = 0.0;
-                        }
-                    }
+                    return;
+                }
+
+                AC_IsFuncC = true;
+                if (Program.OptionsObject.UI_Animations)
+                {
+                    // When typing "#"
+                    FadeAC_FuncC_In.Begin();
                 }
                 else
                 {
-                    if (AC_IsFuncC)
-                    {
-                        AC_IsFuncC = false;
-                        if (Program.OptionsObject.UI_Animations)
-                        {
-                            FadeAC_MethodC_In.Begin();
-                        }
-                        else
-                        {
-                            AutoCompleteBox.Opacity = 0.0;
-                            MethodAutoCompleteBox.Opacity = 1.0;
-                        }
-                    }
+                    AutoCompleteBox.Opacity = 1.0;
+                    MethodAutoCompleteBox.Opacity = 0.0;
+                }
+            }
+            else if (AC_IsFuncC)
+            {
+                AC_IsFuncC = false;
+                if (Program.OptionsObject.UI_Animations)
+                {
+                    // When show the autocomplete for an object like: hello.<something>.
+                    FadeAC_MethodC_In.Begin();
+                }
+                else
+                {
+                    AutoCompleteBox.Opacity = 0.0;
+                    MethodAutoCompleteBox.Opacity = 1.0;
                 }
             }
         }
