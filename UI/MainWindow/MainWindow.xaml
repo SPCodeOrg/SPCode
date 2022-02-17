@@ -435,13 +435,6 @@
 
       <!-- Begin Lower Grids -->
 
-      <!--Close Lower Grid Button-->
-      <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Width="30" Height="30" Margin="0,5,0,0" Style="{DynamicResource ButtonStyle1}" Click="CloseErrorResultGrid">
-        <Canvas Width="10" Height="10" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
-          <Path Width="10" Height="10" Stretch="Fill" Fill="{DynamicResource AccentColorBrush}" Data="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z "/>
-        </Canvas>
-      </Button>
-
       <!-- Lower Grid -->
 
       <!--#region Lower Grid-->
@@ -450,7 +443,15 @@
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="5*" />
           <ColumnDefinition Width="2*" />
+          <ColumnDefinition Width="35" />
         </Grid.ColumnDefinitions>
+
+        <!--Close Lower Grid Button-->
+        <Button Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" Width="30" Height="30" Margin="0,5,0,0" Style="{DynamicResource ButtonStyle1}" Click="CloseErrorResultGrid">
+          <Canvas Width="10" Height="10" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">
+            <Path Width="10" Height="10" Stretch="Fill" Fill="{DynamicResource AccentColorBrush}" Data="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z "/>
+          </Canvas>
+        </Button>
 
         <!--Log TextBox-->
         <TextBox x:Name="LogTextbox" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" TextWrapping="Wrap"
@@ -480,7 +481,7 @@
                    Margin="5,5,3,4"/>
               <TextBlock x:Name="Status_ErrorText"
                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                       Margin="3,4,2,2"/>
+                       Margin="3,4,2,2" />
             </StackPanel>
           </ToggleButton>
 
@@ -497,8 +498,7 @@
                    Margin="10,5,3,4"/>
               <TextBlock x:Name="Status_WarningText"
                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                       Margin="3,4,2,2"
-                       Text="65 avertissements"/>
+                       Margin="3,4,2,2" />
             </StackPanel>
           </ToggleButton>
 
@@ -509,8 +509,7 @@
                 Style="{StaticResource ButtonStyle2}"
                 Height="22"
                 Width="99"
-                Click="Status_CopyErrorsButton_Click"
-                Content="Copier les erreurs"/>
+                Click="Status_CopyErrorsButton_Click"/>
         </StackPanel>
         <!--Errors Button-->
         
@@ -530,10 +529,10 @@
           </DataGrid.ItemContainerStyle>
 
           <DataGrid.Columns>
-            <DataGridTextColumn x:Name="MenuC_FileName" Header="File Name" Width="7*" Binding="{Binding File}" />
-            <DataGridTextColumn x:Name="MenuC_Line" Header="Line" Width="1*" Binding="{Binding Line}" />
-            <DataGridTextColumn x:Name="MenuC_Type" Header="Type" Width="2*" Binding="{Binding Type}" />
-            <DataGridTextColumn x:Name="MenuC_Details" Header="Details" Width="9*" Binding="{Binding Details}" />
+            <DataGridTextColumn x:Name="MenuC_FileName" Width="7*" Binding="{Binding File}" />
+            <DataGridTextColumn x:Name="MenuC_Line" Width="1*" Binding="{Binding Line}" />
+            <DataGridTextColumn x:Name="MenuC_Type" Width="2*" Binding="{Binding Type}" />
+            <DataGridTextColumn x:Name="MenuC_Details" Width="9*" Binding="{Binding Details}" />
           </DataGrid.Columns>
         </DataGrid>
 
