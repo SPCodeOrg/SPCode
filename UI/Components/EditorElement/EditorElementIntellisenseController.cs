@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -15,7 +16,7 @@ namespace SPCode.UI.Components
     {
         private bool AC_IsFuncC = true;
         private bool AC_Open;
-        private ACNode[] acEntrys;
+        private List<ACNode> acEntries;
 
         private bool AnimationsLoaded;
 
@@ -29,8 +30,8 @@ namespace SPCode.UI.Components
 
         private SMFunction[] funcs;
         private bool IS_Open;
-        public bool ISAC_Open;
-        private ISNode[] isEntrys;
+        private bool ISAC_Open;
+        private List<ISNode> isEntries;
 
         private readonly Regex ISFindRegex = new(
             @"\b((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+)\.(?<method>[a-zA-Z_]([a-zA-Z0-9_]?)+)\()|((?<name>[a-zA-Z_]([a-zA-Z0-9_]?)+)\()",
@@ -67,30 +68,46 @@ namespace SPCode.UI.Components
 
             var def = Program.Configs[Program.SelectedConfig].GetSMDef();
             funcs = def.Functions.ToArray();
-            acEntrys = def.ProduceACNodes();
-            isEntrys = def.ProduceISNodes();
+            acEntries = def.ProduceACNodes();
+            isEntries = def.ProduceISNodes();
             methodMaps = def.Methodmaps.ToArray();
-            AutoCompleteBox.ItemsSource = acEntrys;
-            MethodAutoCompleteBox.ItemsSource = isEntrys;
+            AutoCompleteBox.ItemsSource = acEntries;
+            MethodAutoCompleteBox.ItemsSource = isEntries;
         }
 
-        public void InterruptLoadAutoCompletes(SMFunction[] FunctionArray, ACNode[] acNodes,
-            ISNode[] isNodes, SMMethodmap[] newMethodMaps)
+        public void InterruptLoadAutoCompletes(SMFunction[] FunctionArray, List<ACNode> acNodes,
+            List<ISNode> isNodes, SMMethodmap[] newMethodMaps)
         {
             Dispatcher?.Invoke(() =>
             {
                 funcs = FunctionArray;
-                acEntrys = acNodes;
-                isEntrys = isNodes;
-                AutoCompleteBox.ItemsSource = acEntrys;
-                MethodAutoCompleteBox.ItemsSource = isEntrys;
+                acEntries = acNodes;
+                isEntries = isNodes;
+                AutoCompleteBox.ItemsSource = acEntries;
+                MethodAutoCompleteBox.ItemsSource = isEntries;
                 methodMaps = newMethodMaps;
             });
         }
 
-        //private readonly Regex methodExp = new Regex(@"(?<=\.)[A-Za-z_]\w*", RegexOptions.RightToLeft);
-        private void EvaluateIntelliSense()
+
+        private bool _inPreProc = false;
+
+        // Pre-processor statments
+        static private readonly string[] _prepArr =
         {
+            "assert", "define", "else", "elseif", "endif", "endinput", "endscript", "error", "warning", "if",
+            "include", "line", "pragma", "tryinclude", "undef"
+        };
+
+        static private readonly List<string> _prep = _prepArr.ToList();
+
+        static private readonly Regex _whitespaceExp = new("#\\w+");
+
+        //private readonly Regex methodExp = new Regex(@"(?<=\.)[A-Za-z_]\w*", RegexOptions.RightToLeft);
+        private void EvaluateIntelliSense(out bool refresh)
+        {
+            refresh = false;
+
             if (editor.SelectionLength > 0)
             {
                 HideISAC();
@@ -112,8 +129,12 @@ namespace SPCode.UI.Components
             LastShowedLine = currentLineIndex;
             var quotationCount = 0;
             var MethodAC = false;
+
+
+            // Hide ISAC if inside an in-line comments.
             for (var i = 0; i < lineOffset; ++i)
             {
+                // Exclude the cases where there are two "//" inside a string.
                 if (text[i] == '"')
                 {
                     if (i != 0)
@@ -125,36 +146,75 @@ namespace SPCode.UI.Components
                     }
                 }
 
-                if (quotationCount % 2 == 0)
+                if (quotationCount % 2 != 0 || text[i] != '/' || i == 0 || text[i - 1] != '/')
                 {
-                    if (text[i] == '/')
-                    {
-                        if (i != 0)
-                        {
-                            if (text[i - 1] == '/')
-                            {
-                                HideISAC();
-                                return;
-                            }
-                        }
-                    }
+                    continue;
                 }
+
+                HideISAC();
+                return;
             }
 
-            foreach (var c in text)
+
+            //TODO: Check for multi-line strings.
+            // Auto-complete for preprocessor statments.
+
+            var defMatch = _whitespaceExp.Match(text);
+            var matchIndex = defMatch.Index;
+            var matchLen = defMatch.Length;
+            if (text.Trim() == "#" || (text.Trim().StartsWith("#") && matchIndex + matchLen >= lineOffset &&
+                                       lineOffset > matchIndex))
             {
-                if (c == '#')
+                if (!_inPreProc)
                 {
-                    string[] prep = { "define", "pragma", "file", "if" };
-                    acEntrys = ACNode.ConvertFromStringArray(prep, false, "#").ToArray();
-                    // HideISAC();
-                    break;
+                    _inPreProc = true;
+
+
+                    acEntries.Clear();
+                    acEntries.AddRange(ACNode.ConvertFromStringList(_prep, false, "#", true));
+
+                    refresh = true;
                 }
 
-                if (!char.IsWhiteSpace(c))
+
+                var endIndex = text.IndexOf(" ", StringComparison.Ordinal);
+                var statement = text.Substring(1);
+                if (endIndex != -1)
                 {
-                    break;
+                    statement = text.Substring(1, endIndex).ToLower();
                 }
+
+                if (_prep.Contains(statement))
+                {
+                    HideAC();
+                }
+                else
+                {
+                    // Try to find a stmt that starts with the text
+                    var selectedIndex = _prep.FindIndex(e => e.StartsWith(statement));
+
+                    if (selectedIndex == -1)
+                    {
+                        // Find a stmt that contains the text
+                        selectedIndex = _prep.FindIndex(e => e.Contains(statement));
+                        if (selectedIndex == -1)
+                        {
+                            selectedIndex = 0;
+                        }
+                    }
+
+
+                    AutoCompleteBox.SelectedIndex = selectedIndex;
+                    AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
+
+
+                    ForwardShowAC = true;
+                }
+            }
+            else if (_inPreProc)
+            {
+                _inPreProc = false;
+                refresh = true;
             }
 
             var mc = multilineCommentRegex.Matches(editor.Text,
@@ -164,16 +224,16 @@ namespace SPCode.UI.Components
             {
                 if (caretOffset >= mc[i].Index)
                 {
-                    if (caretOffset <= mc[i].Index + mc[i].Length)
+                    if (caretOffset > mc[i].Index + mc[i].Length)
                     {
-                        HideISAC();
-                        return;
+                        continue;
                     }
+
+                    HideISAC();
+                    return;
                 }
-                else
-                {
-                    break;
-                }
+
+                break;
             }
 
             if (lineOffset > 0)
@@ -196,109 +256,111 @@ namespace SPCode.UI.Components
                             continue;
                         }
 
-                        var FoundMatch = false;
-                        var searchIndex = i;
+                        var foundMatch = false;
                         for (var j = 0; j < ISMatches.Count; ++j)
                         {
-                            if (searchIndex >= ISMatches[j].Index &&
-                                searchIndex <= ISMatches[j].Index + ISMatches[j].Length)
+                            if (i < ISMatches[j].Index || i > ISMatches[j].Index + ISMatches[j].Length)
                             {
-                                FoundMatch = true;
-                                var testString = ISMatches[j].Groups["name"].Value;
-                                var classString = ISMatches[j].Groups["class"].Value;
-                                if (classString.Length > 0)
+                                continue;
+                            }
+
+                            foundMatch = true;
+                            var testString = ISMatches[j].Groups["name"].Value;
+                            var classString = ISMatches[j].Groups["class"].Value;
+                            if (classString.Length > 0)
+                            {
+                                var methodString = ISMatches[j].Groups["method"].Value;
+                                var found = false;
+
+                                // Match for static methods.
+                                var staticMethodMap = methodMaps.FirstOrDefault(e => e.Name == classString);
+                                var staticMethod =
+                                    staticMethodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
+                                if (staticMethod != null)
                                 {
-                                    var methodString = ISMatches[j].Groups["method"].Value;
-                                    var found = false;
+                                    xPos = ISMatches[j].Groups["method"].Index +
+                                           ISMatches[j].Groups["method"].Length;
+                                    ForwardShowIS = true;
+                                    ISFuncNameStr = staticMethod.FullName;
+                                    ISFuncDescriptionStr = staticMethod.CommentString;
+                                    ForceReSet = true;
+                                    found = true;
+                                }
 
-                                    // Match for static methods.
-                                    var staticMethodMap = methodMaps.FirstOrDefault(e => e.Name == classString);
-                                    var staticMethod =
-                                        staticMethodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
-                                    if (staticMethod != null)
+                                // Try to find declaration
+                                if (!found)
+                                {
+                                    var pattern =
+                                        $@"\b((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+))\s+({classString})\s*(;|=)";
+                                    var findDecl = new Regex(pattern, RegexOptions.Compiled);
+                                    var match = findDecl.Match(editor.Text);
+                                    var classMatch = match.Groups["class"].Value;
+                                    if (classMatch.Length > 0)
                                     {
-                                        xPos = ISMatches[j].Groups["method"].Index +
-                                               ISMatches[j].Groups["method"].Length;
-                                        ForwardShowIS = true;
-                                        ISFuncNameStr = staticMethod.FullName;
-                                        ISFuncDescriptionStr = staticMethod.CommentString;
-                                        ForceReSet = true;
-                                        found = true;
-                                    }
-
-                                    // Try to find declaration
-                                    if (!found)
-                                    {
-                                        var pattern =
-                                            $@"\b((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+))\s+({classString})\s*(;|=)";
-                                        var findDecl = new Regex(pattern, RegexOptions.Compiled);
-                                        var match = findDecl.Match(editor.Text);
-                                        var classMatch = match.Groups["class"].Value;
-                                        if (classMatch.Length > 0)
+                                        var methodMap = methodMaps.FirstOrDefault(e => e.Name == classMatch);
+                                        var method =
+                                            methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
+                                        if (method != null)
                                         {
-                                            var methodMap = methodMaps.FirstOrDefault(e => e.Name == classMatch);
-                                            var method =
-                                                methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
-                                            if (method != null)
-                                            {
-                                                xPos = ISMatches[j].Groups["method"].Index +
-                                                       ISMatches[j].Groups["method"].Length;
-                                                ForwardShowIS = true;
-                                                ISFuncNameStr = method.FullName;
-                                                ISFuncDescriptionStr = method.CommentString;
-                                                ForceReSet = true;
-                                                found = true;
-                                            }
-                                        }
-                                    }
-
-                                    // Match the first found
-                                    if (!found)
-                                    {
-                                        // Match any methodmap, since the ide is not aware of the types
-                                        foreach (var methodMap in methodMaps)
-                                        {
-                                            var method =
-                                                methodMap.Methods.FirstOrDefault(e => e.Name == methodString);
-
-                                            if (method == null)
-                                            {
-                                                continue;
-                                            }
-
                                             xPos = ISMatches[j].Groups["method"].Index +
                                                    ISMatches[j].Groups["method"].Length;
                                             ForwardShowIS = true;
                                             ISFuncNameStr = method.FullName;
                                             ISFuncDescriptionStr = method.CommentString;
                                             ForceReSet = true;
+                                            found = true;
                                         }
                                     }
                                 }
-                                else
+
+                                // Match the first found
+                                if (!found)
                                 {
-                                    var func = funcs.FirstOrDefault(e => e.Name == testString);
-                                    if (func != null)
+                                    // Match any methodmap, since the ide is not aware of the types
+                                    foreach (var methodMap in methodMaps)
                                     {
-                                        xPos = ISMatches[j].Groups["name"].Index +
-                                               ISMatches[j].Groups["name"].Length;
+                                        var method =
+                                            methodMap.Methods.FirstOrDefault(e => e.Name == methodString);
+
+                                        if (method == null)
+                                        {
+                                            continue;
+                                        }
+
+                                        xPos = ISMatches[j].Groups["method"].Index +
+                                               ISMatches[j].Groups["method"].Length;
                                         ForwardShowIS = true;
-                                        ISFuncNameStr = func.FullName;
-                                        ISFuncDescriptionStr = func.CommentString;
+                                        ISFuncNameStr = method.FullName;
+                                        ISFuncDescriptionStr = method.CommentString;
                                         ForceReSet = true;
                                     }
                                 }
-
-                                break;
                             }
-                        }
+                            else
+                            {
+                                var func = funcs.FirstOrDefault(e => e.Name == testString);
+                                if (func != null)
+                                {
+                                    xPos = ISMatches[j].Groups["name"].Index +
+                                           ISMatches[j].Groups["name"].Length;
+                                    ForwardShowIS = true;
+                                    ISFuncNameStr = func.FullName;
+                                    ISFuncDescriptionStr = func.CommentString;
+                                    ForceReSet = true;
+                                }
+                            }
 
-                        if (FoundMatch)
-                        {
-                            // ReSharper disable once RedundantAssignment
-                            scopeLevel--; //i have no idea why this works...
                             break;
                         }
+
+                        if (!foundMatch)
+                        {
+                            continue;
+                        }
+
+                        // ReSharper disable once RedundantAssignment
+                        scopeLevel--; //i have no idea why this works...
+                        break;
                     }
                 }
 
@@ -308,16 +370,16 @@ namespace SPCode.UI.Components
 
                 if (IsValidFunctionChar(text[lineOffset - 1]) && quotationCount % 2 == 0)
                 {
-                    var IsNextCharValid = true;
+                    var isNextCharValid = true;
                     if (text.Length > lineOffset)
                     {
                         if (IsValidFunctionChar(text[lineOffset]) || text[lineOffset] == '(')
                         {
-                            IsNextCharValid = false;
+                            isNextCharValid = false;
                         }
                     }
 
-                    if (IsNextCharValid)
+                    if (isNextCharValid)
                     {
                         var endOffset = lineOffset - 1;
                         for (var i = endOffset; i >= 0; --i)
@@ -340,36 +402,37 @@ namespace SPCode.UI.Components
                         {
                             if (MethodAC)
                             {
-                                for (var i = 0; i < isEntrys.Length; ++i)
+                                for (var i = 0; i < isEntries.Count; ++i)
                                 {
-                                    if (isEntrys[i].EntryName.StartsWith(testString,
-                                        StringComparison.InvariantCultureIgnoreCase))
+                                    if (!isEntries[i].EntryName.StartsWith(testString,
+                                            StringComparison.InvariantCultureIgnoreCase) ||
+                                        testString == isEntries[i].EntryName)
                                     {
-                                        if (testString != isEntrys[i].EntryName)
-                                        {
-                                            ForwardShowAC = true;
-                                            MethodAutoCompleteBox.SelectedIndex = i;
-                                            MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
-                                            break;
-                                        }
+                                        continue;
                                     }
+
+
+                                    ForwardShowAC = true;
+                                    MethodAutoCompleteBox.SelectedIndex = i;
+                                    MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+                                    break;
                                 }
                             }
                             else
                             {
-                                for (var i = 0; i < acEntrys.Length; ++i)
+                                for (var i = 0; i < acEntries.Count; ++i)
                                 {
-                                    if (acEntrys[i].EntryName.StartsWith(testString,
-                                        StringComparison.InvariantCultureIgnoreCase))
+                                    if (!acEntries[i].EntryName.StartsWith(testString,
+                                            StringComparison.InvariantCultureIgnoreCase) ||
+                                        testString == acEntries[i].EntryName)
                                     {
-                                        if (testString != acEntrys[i].EntryName)
-                                        {
-                                            ForwardShowAC = true;
-                                            AutoCompleteBox.SelectedIndex = i;
-                                            AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
-                                            break;
-                                        }
+                                        continue;
                                     }
+
+                                    ForwardShowAC = true;
+                                    AutoCompleteBox.SelectedIndex = i;
+                                    AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
+                                    break;
                                 }
                             }
                         }
@@ -387,7 +450,7 @@ namespace SPCode.UI.Components
                 }
             }
 
-            if (ForwardShowAC | ForwardShowIS)
+            if (ForwardShowAC || ForwardShowIS)
             {
                 if (ForwardShowAC)
                 {
@@ -453,7 +516,7 @@ namespace SPCode.UI.Components
                         if (AC_IsFuncC)
                         {
                             replaceString = ((ACNode)AutoCompleteBox.SelectedItem).EntryName;
-                            if (acEntrys[AutoCompleteBox.SelectedIndex].IsExecutable)
+                            if (acEntries[AutoCompleteBox.SelectedIndex].IsExecutable)
                             {
                                 replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
                                 setCaret = true;
@@ -462,12 +525,19 @@ namespace SPCode.UI.Components
                         else
                         {
                             replaceString = ((ISNode)MethodAutoCompleteBox.SelectedItem).EntryName;
-                            if (isEntrys[MethodAutoCompleteBox.SelectedIndex].IsExecuteable)
+                            if (isEntries[MethodAutoCompleteBox.SelectedIndex].IsExecuteable)
                             {
                                 replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
                                 setCaret = true;
                             }
                         }
+
+                        if (acEntries[AutoCompleteBox.SelectedIndex].addSpace)
+                        {
+                            replaceString = ((ACNode)AutoCompleteBox.SelectedItem).EntryName;
+                            replaceString += " ";
+                        }
+
 
                         editor.Document.Replace(endOffset, length + 1, replaceString);
                         if (setCaret)
@@ -522,19 +592,21 @@ namespace SPCode.UI.Components
 
         private void ShowISAC(int forcedXPos = int.MaxValue)
         {
-            if (!ISAC_Open)
+            if (ISAC_Open)
             {
-                ISAC_Open = true;
-                ISAC_Grid.Visibility = Visibility.Visible;
-                SetISACPosition(forcedXPos);
-                if (Program.OptionsObject.UI_Animations)
-                {
-                    FadeISACIn.Begin();
-                }
-                else
-                {
-                    ISAC_Grid.Opacity = 1.0;
-                }
+                return;
+            }
+
+            ISAC_Open = true;
+            ISAC_Grid.Visibility = Visibility.Visible;
+            SetISACPosition(forcedXPos);
+            if (Program.OptionsObject.UI_Animations)
+            {
+                FadeISACIn.Begin();
+            }
+            else
+            {
+                ISAC_Grid.Opacity = 1.0;
             }
         }
 
