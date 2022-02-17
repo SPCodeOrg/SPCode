@@ -13,8 +13,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public List<SMConstant> ConstVariables = new();
 
         // The function variables (where the cursor is in)
-        private readonly List<string>
-            _functionVariables = new();
+        private readonly List<string> _functionVariables = new();
 
         // This contains Enum, Structs, Methodmaps, Typedefs, Enum structs' names.
         public List<string> TypeStrings = new();
