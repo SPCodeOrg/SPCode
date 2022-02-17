@@ -172,7 +172,7 @@ namespace SPCode.UI.Components
                     Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
                     {
                         "stock", "normal", "native", "public", "static", "const", "methodmap", "enum", "forward",
-                        "function", "struct", "property", "get", "set", "typeset", "typedef", "this"
+                        "function", "struct", "property", "get", "set", "typeset", "typedef", "this", "operator"
                     }),
                     Color = new HighlightingColor { Foreground = contextKeywordsBrush }
                 });
