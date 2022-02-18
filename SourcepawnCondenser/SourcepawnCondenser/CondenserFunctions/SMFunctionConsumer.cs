@@ -315,6 +315,11 @@ namespace SourcepawnCondenser
             {
                 while (position < length)
                 {
+                    if (t[position].Kind != TokenKind.Identifier)
+                    {
+                        position++;
+                        continue;
+                    }
                     var startIndex = t[position].Index;
 
                     var varType = t[position].Value;

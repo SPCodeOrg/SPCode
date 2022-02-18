@@ -15,6 +15,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         // The function variables (where the cursor is in)
         private readonly List<string> _functionVariables = new();
 
+        // TODO: Typedefs are not added correctly.
         // This contains Enum, Structs, Methodmaps, Typedefs, Enum structs' names.
         public List<string> TypeStrings = new();
 
@@ -144,12 +145,12 @@ namespace SourcepawnCondenser.SourcemodDefinition
             {
                 // TODO: This somewhat works, but somethings when in the end of a function it's buggy and doesnt find
                 // the correct function or it finds nothing at all. The addition is a small hack that sometimes works 
-                var currentFunc = currentFunctions.FirstOrDefault(e =>
+                CurrentFunction = currentFunctions.FirstOrDefault(e =>
                     e.Index < caret && caret <= e.EndPos);
-                if (currentFunc != null)
+                if (CurrentFunction != null)
                 {
-                    _functionVariables.AddRange(currentFunc.FuncVariables.Select(v => v.Name));
-                    var stringParams = currentFunc.Parameters.Select(e => e.Split('=').First().Trim())
+                    _functionVariables.AddRange(CurrentFunction.FuncVariables.Select(v => v.Name));
+                    var stringParams = CurrentFunction.Parameters.Select(e => e.Split('=').First().Trim())
                         .Select(e => e.Split(' ').Last()).Where(e => !string.IsNullOrWhiteSpace(e)).ToList();
                     _functionVariables.AddRange(stringParams);
                 }

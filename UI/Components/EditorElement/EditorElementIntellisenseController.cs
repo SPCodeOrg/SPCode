@@ -9,20 +9,26 @@ using System.Windows.Media.Animation;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Rendering;
-using Microsoft.SqlServer.Server;
 using SourcepawnCondenser.SourcemodDefinition;
 
 namespace SPCode.UI.Components
 {
     /// @note
-    // AC stands for AutoComplete and ShowAC is used to show a the autocomplete dialog.
-    // IS stands for IntelliSense and ShowIS is used to show an object documentation.
-    // You always need to call ShowTooltip to actually Show the dialog.
+    // AC stands for AutoComplete
+    // IS stands for IntelliSense and is often replaced with "Doc"/"Documentation"
+    //
+    // _smDef is the SMDefinition that contains all the symbols of the include directory and open file,
+    // currentSmDef contains only the current file symbols.
     public partial class EditorElement
     {
-        private bool AC_IsFuncC = true;
         private bool _isAcOpen;
         private List<ACNode> _acEntries;
+
+        private bool _isDocOpen;
+        private List<ISNode> _docEntries;
+
+        private bool _isTooltipOpen;
+
 
         private bool _animationsLoaded;
 
@@ -35,23 +41,17 @@ namespace SPCode.UI.Components
         private Storyboard _fadeTooltipIn;
         private Storyboard _fadeTooltipOut;
 
-        private SMFunction[] _func;
-        private bool _isDocOpen;
-        private bool _isTooltipOpen;
-        private List<ISNode> _docEntries;
 
         // Used to keep track of the current autocomplete type (ie. toplevel, class or preprocessor)
         private ACType _acType = ACType.Toplevel;
 
+        private SMDefinition _smDef;
 
         private readonly Regex ISFindRegex = new(
-            @"\b((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+)\.(?<method>[a-zA-Z_]([a-zA-Z0-9_]?)+)\()|((?<name>[a-zA-Z_]([a-zA-Z0-9_]?)+)\()",
+            @"\b(((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+)\.)?(?<method>[a-zA-Z_]([a-zA-Z0-9_]?)+)\()",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
-        private int LastShowedLine = -1;
-
         // TODO Add EnumStructs
-        private SMMethodmap[] methodMaps;
 
         private readonly Regex multilineCommentRegex = new(@"/\*.*?\*/",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
@@ -65,9 +65,17 @@ namespace SPCode.UI.Components
 
         static private readonly List<string> PreProcList = PreProcArr.ToList();
 
-        static private readonly Regex PreprocessorRegex = new("#\\w+");
+        static private readonly IEnumerable<ACNode>
+            _preProcNodes = ACNode.ConvertFromStringList(PreProcList, false, "#", true);
 
-        //private string[] methodNames;
+
+        static private readonly Regex PreprocessorRegex = new("#\\w+", RegexOptions.Compiled);
+
+        static private readonly Regex MatchTypeRegex = new("\\w+", RegexOptions.Compiled);
+
+        /// <summary>
+        ///  This is called only one time when the program first opens.
+        /// </summary>
         public void LoadAutoCompletes()
         {
             if (!_animationsLoaded)
@@ -93,29 +101,31 @@ namespace SPCode.UI.Components
                 HideTooltip();
             }
 
-            var def = Program.Configs[Program.SelectedConfig].GetSMDef();
-            _func = def.Functions.ToArray();
-            _acEntries = def.ProduceACNodes();
-            _docEntries = def.ProduceISNodes();
-            methodMaps = def.Methodmaps.ToArray();
+            _smDef = Program.Configs[Program.SelectedConfig].GetSMDef();
+            _acEntries = _smDef.ProduceACNodes();
+            _docEntries = _smDef.ProduceISNodes();
 
             AutoCompleteBox.ItemsSource = _acEntries;
             MethodAutoCompleteBox.ItemsSource = _docEntries;
             PreProcAutocompleteBox.ItemsSource = ACNode.ConvertFromStringList(PreProcList, false, "#", true);
         }
 
-        private void InterruptLoadAutoCompletes(SMFunction[] FunctionArray, List<ACNode> acNodes,
-            List<ISNode> isNodes, SMMethodmap[] newMethodMaps)
+        /// <summary>
+        ///  This is called several times. Mostly when the caret position changes.
+        /// </summary>
+        /// <param name="smDef"> The SMDefinition </param>
+        private void InterruptLoadAutoCompletes(SMDefinition smDef)
         {
+            var acNodes = smDef.ProduceACNodes();
+            var isNodes = smDef.ProduceISNodes();
             Dispatcher?.Invoke(() =>
             {
-                _func = FunctionArray;
                 _acEntries = acNodes;
                 _docEntries = isNodes;
                 AutoCompleteBox.ItemsSource = _acEntries;
                 MethodAutoCompleteBox.ItemsSource = _docEntries;
-                PreProcAutocompleteBox.ItemsSource = ACNode.ConvertFromStringList(PreProcList, false, "#", true);
-                methodMaps = newMethodMaps;
+                PreProcAutocompleteBox.ItemsSource = _preProcNodes;
+                _smDef = smDef;
             });
         }
 
@@ -135,13 +145,6 @@ namespace SPCode.UI.Components
             var text = editor.Document.GetText(line.Offset, line.Length);
             var lineOffset = editor.TextArea.Caret.Column - 1;
             var caretOffset = editor.CaretOffset;
-
-            // Keep track of the last line
-            LastShowedLine = currentLineIndex;
-            //todo: Implement ForceIsKeepsClosed
-
-            var xPos = int.MaxValue;
-
             var quotationCount = 0;
 
 
@@ -189,10 +192,10 @@ namespace SPCode.UI.Components
 
                 break;
             }
-            
+
             var showDoc = false;
             var showAC = false;
-            
+
             if (lineOffset > 0)
             {
                 showDoc = ComputeIntelliSense(text, lineOffset);
@@ -201,17 +204,17 @@ namespace SPCode.UI.Components
 
             if (!showDoc)
                 HideDoc();
-            
+
             if (!showAC)
                 HideAC();
-            
+
             if (!showDoc && !showAC)
                 HideTooltip();
         }
 
         bool ComputeIntelliSense(string text, int lineOffset)
         {
-            int xPos = int.MaxValue;
+            int xPos;
 
             #region IS
 
@@ -241,63 +244,53 @@ namespace SPCode.UI.Components
                         }
 
                         foundMatch = true;
-                        var testString = ISMatches[j].Groups["name"].Value;
+
                         var classString = ISMatches[j].Groups["class"].Value;
-                        var methodString = ISMatches[j].Groups["method"]?.Value;
+                        var methodString =
+                            ISMatches[j].Groups["method"]
+                                .Value; // If we are not inside a method call this is a classic function call (eg. "PrintToChat(...)")
+
                         if (classString.Length > 0)
                         {
-                            var found = false;
-
                             // Match for static methods. Like MyClass.StaticMethod().
-                            var staticMethodMap = methodMaps.FirstOrDefault(e => e.Name == classString);
+                            var methodMap = _smDef.Methodmaps.FirstOrDefault(e => e.Name == classString);
                             var staticMethod =
-                                staticMethodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
+                                methodMap?.Methods.FirstOrDefault(
+                                    e => e.Name == methodString /*&& e.MethodKind.Contains("static")*/);
+
+                            // If the staticMethod is found show it.
                             if (staticMethod != null)
                             {
                                 xPos = ISMatches[j].Groups["method"].Index +
                                        ISMatches[j].Groups["method"].Length;
 
                                 ShowTooltip(xPos, staticMethod.FullName, staticMethod.CommentString);
-                                // return;
+                                return true;
                             }
 
                             // Try to find declaration
-                            if (!found)
+                            var pattern =
+                                $@"\b((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+))\s+({classString})\s*(;|=)";
+
+
+                            // Try to match it in the current function parameters.
+                            var varDecl =
+                                _smDef?.CurrentFunction?.FuncVariables.FirstOrDefault(e => e.Name == classString);
+
+                            //TODO: Add FunctionParameters matching.
+                            /*varDecl ??= _smDef?.CurrentFunction?.Parameters.FirstOrDefault(e =>
+                                MatchTypeRegex.Match(e).Groups[0].Value == classString);*/
+                            
+                            // Try to match it in the current file.
+                            varDecl ??= _smDef.Variables.FirstOrDefault(e => e.Name == classString);
+
+                            if (varDecl != null)
                             {
-                                var pattern =
-                                    $@"\b((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+))\s+({classString})\s*(;|=)";
-                                var findDecl = new Regex(pattern, RegexOptions.Compiled);
-                                var match = findDecl.Match(editor.Text);
-                                var classMatch = match.Groups["class"].Value;
-                                if (classMatch.Length > 0)
+                                methodMap = _smDef.Methodmaps.FirstOrDefault(e => e.Name == varDecl.Type);
+                                var method =
+                                    methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
+                                if (method != null)
                                 {
-                                    var methodMap = methodMaps.FirstOrDefault(e => e.Name == classMatch);
-                                    var method =
-                                        methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
-                                    if (method != null)
-                                    {
-                                        xPos = ISMatches[j].Groups["method"].Index +
-                                               ISMatches[j].Groups["method"].Length;
-                                        ShowTooltip(xPos, method.FullName, method.CommentString);
-                                        // return;
-                                    }
-                                }
-                            }
-
-                            // Match the first found
-                            if (!found)
-                            {
-                                // Match any methodmap, since the ide is not aware of the types
-                                foreach (var methodMap in methodMaps)
-                                {
-                                    var method =
-                                        methodMap.Methods.FirstOrDefault(e => e.Name == methodString);
-
-                                    if (method == null)
-                                    {
-                                        continue;
-                                    }
-
                                     xPos = ISMatches[j].Groups["method"].Index +
                                            ISMatches[j].Groups["method"].Length;
                                     ShowTooltip(xPos, method.FullName, method.CommentString);
@@ -307,7 +300,7 @@ namespace SPCode.UI.Components
                         }
                         else
                         {
-                            var func = _func.FirstOrDefault(e => e.Name == testString);
+                            var func = _smDef.Functions.FirstOrDefault(e => e.Name == methodString);
                             if (func != null)
                             {
                                 xPos = ISMatches[j].Groups["name"].Index +
@@ -350,6 +343,8 @@ namespace SPCode.UI.Components
                                        lineOffset > matchIndex))
             {
                 // Get only the preprocessor statement and not the full line 
+
+
                 var endIndex = text.IndexOf(" ", StringComparison.Ordinal);
                 var statement = text.Substring(1);
                 if (endIndex != -1)
@@ -386,7 +381,7 @@ namespace SPCode.UI.Components
                     return true;
                 }
             }
-            
+
             if (IsValidFunctionChar(text[lineOffset - 1]) && quoteCount % 2 == 0)
             {
                 var isNextCharValid = true;
@@ -461,6 +456,16 @@ namespace SPCode.UI.Components
             return false;
         }
 
+
+        /*public string Type
+        {
+            get { return _type; }
+            set { _type = value; }
+        }*/
+        /*List<SMMethodmap> GetMethodmaps()
+        {
+            // return currentSmDef.Methodmaps.Concat()
+        }*/
         /// Show the object documentation tooltip.
         void ShowTooltip(int xPos, string name, string desc)
         {
@@ -613,6 +618,9 @@ namespace SPCode.UI.Components
             }
         }
 
+        /// <summary>
+        /// Hello there
+        /// </summary>
         private void HideTooltip()
         {
             if (!_isTooltipOpen)
@@ -621,7 +629,7 @@ namespace SPCode.UI.Components
             }
 
             _isTooltipOpen = false;
-            
+
             if (Program.OptionsObject.UI_Animations)
             {
                 _fadeTooltipOut.Begin();

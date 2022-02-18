@@ -699,9 +699,6 @@ namespace SPCode.UI.Components
 
                 var smDef = Program.Configs[Program.SelectedConfig].GetSMDef()
                     .ProduceTemporaryExpandedDefinition(definitions, caret, currentFunctions);
-                var smFunctions = smDef.Functions.ToArray();
-                var acNodes = smDef.ProduceACNodes();
-                var isNodes = smDef.ProduceISNodes();
 
                 // Lags the hell out when typing a lot.
                 ce.editor.SyntaxHighlighting = new AeonEditorHighlighting(smDef);
@@ -717,8 +714,7 @@ namespace SPCode.UI.Components
                         }
                     }
 
-                    el.InterruptLoadAutoCompletes(smFunctions, acNodes,
-                        isNodes, smDef.Methodmaps.ToArray());
+                    el.InterruptLoadAutoCompletes(smDef);
                 }
             });
         }
