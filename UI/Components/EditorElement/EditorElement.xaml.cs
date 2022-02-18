@@ -572,13 +572,13 @@ namespace SPCode.UI.Components
                 e.Handled = true;
             }
 
-            HideISAC();
+            HideTooltip();
         }
 
         private void Editor_MouseDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
-            HideISAC();
+            HideTooltip();
         }
 
         private void TextArea_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -711,7 +711,7 @@ namespace SPCode.UI.Components
                     if (el == ce)
                     {
                         Debug.Assert(ce != null, nameof(ce) + " != null");
-                        if (ce.ISAC_Open)
+                        if (ce._isTooltipOpen)
                         {
                             continue;
                         }
