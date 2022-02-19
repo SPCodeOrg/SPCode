@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -78,8 +77,7 @@ namespace SPCode.UI.Components
 
         static private readonly IEnumerable<ACNode>
             PreProcNodes = ACNode.ConvertFromStringList(PreProcList, false, "#", true);
-
-
+        
         static private readonly Regex PreprocessorRegex = new("#\\w+", RegexOptions.Compiled);
 
         /// <summary>
