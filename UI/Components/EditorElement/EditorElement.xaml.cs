@@ -363,9 +363,7 @@ namespace SPCode.UI.Components
 
             if (Program.OptionsObject.Program_DynamicISAC && editor.SelectionLength == 0)
             {
-                EvaluateIntelliSense(out var refresh);
-                if (refresh)
-                    AutoCompleteBox.Items.Refresh();
+                EvaluateIntelliSense();
             }
             
 

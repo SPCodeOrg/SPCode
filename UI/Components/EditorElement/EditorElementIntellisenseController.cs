@@ -11,8 +11,16 @@ using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Rendering;
 using SourcepawnCondenser.SourcemodDefinition;
 
+// ReSharper disable once CheckNamespace
 namespace SPCode.UI.Components
 {
+    enum ACType
+    {
+        Toplevel,
+        Class,
+        PreProc
+    }
+
     /// @note
     // AC stands for AutoComplete
     // IS stands for IntelliSense and is often replaced with "Doc"/"Documentation"
@@ -42,18 +50,19 @@ namespace SPCode.UI.Components
         private Storyboard _fadeTooltipOut;
 
 
-        // Used to keep track of the current autocomplete type (ie. toplevel, class or preprocessor)
+        /// Used to keep track of the current autocomplete type (ie. toplevel, class or preprocessor)
         private ACType _acType = ACType.Toplevel;
 
         private SMDefinition _smDef;
 
-        private readonly Regex ISFindRegex = new(
+        /// Matches either a function call ("PrintToChat(...)") or a method call ("arrayList.Push(...)")
+        private readonly Regex _isFindRegex = new(
             @"\b(((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+)\.)?(?<method>[a-zA-Z_]([a-zA-Z0-9_]?)+)\()",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         // TODO Add EnumStructs
 
-        private readonly Regex multilineCommentRegex = new(@"/\*.*?\*/",
+        private readonly Regex _multilineCommentRegex = new(@"/\*.*?\*/",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
 
         // Pre-processor statements
@@ -66,12 +75,10 @@ namespace SPCode.UI.Components
         static private readonly List<string> PreProcList = PreProcArr.ToList();
 
         static private readonly IEnumerable<ACNode>
-            _preProcNodes = ACNode.ConvertFromStringList(PreProcList, false, "#", true);
+            PreProcNodes = ACNode.ConvertFromStringList(PreProcList, false, "#", true);
 
 
         static private readonly Regex PreprocessorRegex = new("#\\w+", RegexOptions.Compiled);
-
-        static private readonly Regex MatchTypeRegex = new("\\w+", RegexOptions.Compiled);
 
         /// <summary>
         ///  This is called only one time when the program first opens.
@@ -90,7 +97,7 @@ namespace SPCode.UI.Components
                 _fadeMethodACIn = (Storyboard)Resources["FadeAC_MethodC_In"];
                 _fadePreProcACIn = (Storyboard)Resources["FadeAC_PreProc_In"];
 
-                _fadeTooltipOut.Completed += FadeTooltipOutCompleted;
+                // _fadeTooltipOut.Completed += FadeTooltipOutCompleted;
                 _fadeACOut.Completed += FadeACOut_Completed;
 
                 _animationsLoaded = true;
@@ -124,16 +131,13 @@ namespace SPCode.UI.Components
                 _docEntries = isNodes;
                 AutoCompleteBox.ItemsSource = _acEntries;
                 MethodAutoCompleteBox.ItemsSource = _docEntries;
-                PreProcAutocompleteBox.ItemsSource = _preProcNodes;
+                PreProcAutocompleteBox.ItemsSource = PreProcNodes;
                 _smDef = smDef;
             });
         }
 
-        //private readonly Regex methodExp = new Regex(@"(?<=\.)[A-Za-z_]\w*", RegexOptions.RightToLeft);
-        private void EvaluateIntelliSense(out bool refresh)
+        private void EvaluateIntelliSense()
         {
-            refresh = false;
-
             if (editor.SelectionLength > 0)
             {
                 HideTooltip();
@@ -174,7 +178,7 @@ namespace SPCode.UI.Components
 
 
             // Hide Tooltip if inside a multiline comment.
-            var mc = multilineCommentRegex.Matches(editor.Text,
+            var mc = _multilineCommentRegex.Matches(editor.Text,
                 0);
             var mlcCount = mc.Count;
             for (var i = 0; i < mlcCount; ++i)
@@ -202,6 +206,7 @@ namespace SPCode.UI.Components
                 showAC = ComputeAutoComplete(text, lineOffset, quotationCount);
             }
 
+            // If the Doc or the Autocomplete is not shown we need to hide them.
             if (!showDoc)
                 HideDoc();
 
@@ -212,14 +217,17 @@ namespace SPCode.UI.Components
                 HideTooltip();
         }
 
+        /// <summary>
+        /// Triggers the Documentation tooltip to be shown if a matching symbol is found.
+        /// </summary>
+        /// <returns>True if a the IntelliSense matched a symbol false otherwise</returns>
         bool ComputeIntelliSense(string text, int lineOffset)
         {
-            int xPos;
-
-            #region IS
-
-            var ISMatches = ISFindRegex.Matches(text);
+            //TODO: Add support for EnumStructs
+            var isMatches = _isFindRegex.Matches(text);
             var scopeLevel = 0;
+
+            // Iterate the line characters in reverse starting from the caret position.
             for (var i = lineOffset - 1; i >= 0; --i)
             {
                 if (text[i] == ')')
@@ -229,27 +237,27 @@ namespace SPCode.UI.Components
                 else if (text[i] == '(')
                 {
                     scopeLevel--;
+
+                    // Check that we are inside a scope (eg. "PrintToChat(--HERE--)" )
                     if (scopeLevel >= 0)
                     {
                         continue;
                     }
 
-                    var foundMatch = false;
-                    for (var j = 0; j < ISMatches.Count; ++j)
+                    for (var j = 0; j < isMatches.Count; ++j)
                     {
                         // Check that the cursor inside the match.
-                        if (i < ISMatches[j].Index || i > ISMatches[j].Index + ISMatches[j].Length)
+                        if (i < isMatches[j].Index || i > isMatches[j].Index + isMatches[j].Length)
                         {
                             continue;
                         }
 
-                        foundMatch = true;
-
-                        var classString = ISMatches[j].Groups["class"].Value;
+                        var classString = isMatches[j].Groups["class"].Value;
                         var methodString =
-                            ISMatches[j].Groups["method"]
+                            isMatches[j].Groups["method"]
                                 .Value; // If we are not inside a method call this is a classic function call (eg. "PrintToChat(...)")
 
+                        int xPos;
                         if (classString.Length > 0)
                         {
                             // Match for static methods. Like MyClass.StaticMethod().
@@ -261,90 +269,84 @@ namespace SPCode.UI.Components
                             // If the staticMethod is found show it.
                             if (staticMethod != null)
                             {
-                                xPos = ISMatches[j].Groups["method"].Index +
-                                       ISMatches[j].Groups["method"].Length;
+                                xPos = isMatches[j].Groups["method"].Index +
+                                       isMatches[j].Groups["method"].Length;
 
                                 ShowTooltip(xPos, staticMethod.FullName, staticMethod.CommentString);
                                 return true;
                             }
-
-                            // Try to find declaration
-                            var pattern =
-                                $@"\b((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+))\s+({classString})\s*(;|=)";
-
-
-                            // Try to match it in the current function parameters.
+                            // Find variable declaration to see of what type it is -->
+                            // Try to match it in the local variables (of the current function).
                             var varDecl =
                                 _smDef?.CurrentFunction?.FuncVariables.FirstOrDefault(e => e.Name == classString);
 
                             //TODO: Add FunctionParameters matching.
                             /*varDecl ??= _smDef?.CurrentFunction?.Parameters.FirstOrDefault(e =>
                                 MatchTypeRegex.Match(e).Groups[0].Value == classString);*/
-                            
+
                             // Try to match it in the current file.
                             varDecl ??= _smDef.Variables.FirstOrDefault(e => e.Name == classString);
 
-                            if (varDecl != null)
-                            {
-                                methodMap = _smDef.Methodmaps.FirstOrDefault(e => e.Name == varDecl.Type);
-                                var method =
-                                    methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
-                                if (method != null)
-                                {
-                                    xPos = ISMatches[j].Groups["method"].Index +
-                                           ISMatches[j].Groups["method"].Length;
-                                    ShowTooltip(xPos, method.FullName, method.CommentString);
-                                    return true;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            var func = _smDef.Functions.FirstOrDefault(e => e.Name == methodString);
-                            if (func != null)
-                            {
-                                xPos = ISMatches[j].Groups["name"].Index +
-                                       ISMatches[j].Groups["name"].Length;
-                                ShowTooltip(xPos, func.FullName, func.CommentString);
-                                return true;
-                            }
+                            if (varDecl == null)
+                                continue;
+
+                            // If we found the declaration get the Variable Type and look for a methodmap matching its type.
+                            methodMap = _smDef.Methodmaps.FirstOrDefault(e => e.Name == varDecl.Type);
+                            var method =
+                                methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
+
+                            if (method == null)
+                                continue;
+
+                            xPos = isMatches[j].Groups["method"].Index +
+                                   isMatches[j].Groups["method"].Length;
+                            ShowTooltip(xPos, method.FullName, method.CommentString);
+                            return true;
                         }
 
-                        break;
+                        // Try to find the function definition.
+                        var func = _smDef.Functions.FirstOrDefault(e => e.Name == methodString);
+                        if (func == null)
+                            continue;
+
+                        xPos = isMatches[j].Groups["name"].Index +
+                               isMatches[j].Groups["name"].Length;
+                        ShowTooltip(xPos, func.FullName, func.CommentString);
+                        return true;
                     }
 
-                    if (!foundMatch)
-                    {
-                        continue;
-                    }
-
-                    // ReSharper disable once RedundantAssignment
-                    scopeLevel--; //i have no idea why this works...
                     break;
                 }
             }
 
-            #endregion
-
             return false;
         }
 
+        /// <summary>
+        /// Triggers the AutoComplete tooltip to be shown if a suggestion is found.
+        /// </summary>
+        /// <returns>True if a the AutoComplete matched a symbol false otherwise</returns>
         bool ComputeAutoComplete(string text, int lineOffset, int quoteCount)
         {
+            // Return if we are inside a string.
+            if (quoteCount % 2 != 0)
+                return false;
+
             var acType = ACType.Toplevel;
-            var xPos = int.MaxValue;
+            const int xPos = int.MaxValue;
 
             //TODO: Check for multi-line strings.
+
             // Auto-complete for preprocessor statements.
             var defMatch = PreprocessorRegex.Match(text);
             var matchIndex = defMatch.Index;
             var matchLen = defMatch.Length;
+
+            // Check that we are inside a preprocessor statement and that the caret is on the definition, eg. "#<here>" and not "#define <here>".
             if (text.Trim() == "#" || (text.Trim().StartsWith("#") && matchIndex + matchLen >= lineOffset &&
                                        lineOffset > matchIndex))
             {
                 // Get only the preprocessor statement and not the full line 
-
-
                 var endIndex = text.IndexOf(" ", StringComparison.Ordinal);
                 var statement = text.Substring(1);
                 if (endIndex != -1)
@@ -352,140 +354,130 @@ namespace SPCode.UI.Components
                     statement = text.Substring(1, endIndex).ToLower();
                 }
 
-                // If the pro-processor is found close the dialog.
+                // If the preprocessor stmt found close the dialog.
                 if (statement.Length != 0 && PreProcList.Contains(statement.Trim()))
                 {
                     HideAC();
+                    return true;
                 }
-                else
-                {
-                    // Try to find a stmt that starts with the text
-                    var selectedIndex = PreProcList.FindIndex(e => e.StartsWith(statement));
 
+                // Try to find a stmt that starts with the text
+                var selectedIndex = PreProcList.FindIndex(e => e.StartsWith(statement));
+
+                if (selectedIndex == -1)
+                {
+                    // If no stmt starts with the text find one try to find one that contains it.
+                    selectedIndex = PreProcList.FindIndex(e => e.Contains(statement));
                     if (selectedIndex == -1)
                     {
-                        // Find a stmt that contains the text
-                        selectedIndex = PreProcList.FindIndex(e => e.Contains(statement));
-                        if (selectedIndex == -1)
-                        {
-                            selectedIndex = 0;
-                        }
+                        selectedIndex = 0;
+                    }
+                }
+
+
+                PreProcAutocompleteBox.SelectedIndex = selectedIndex;
+                PreProcAutocompleteBox.ScrollIntoView(PreProcAutocompleteBox.SelectedItem);
+
+                ShowTooltip(xPos, ACType.PreProc);
+                return true;
+            }
+
+
+            if (!IsValidFunctionChar(text[lineOffset - 1]))
+                return false;
+
+            var isNextCharValid = true;
+            if (text.Length > lineOffset)
+            {
+                if (IsValidFunctionChar(text[lineOffset]) || text[lineOffset] == '(')
+                {
+                    isNextCharValid = false;
+                }
+            }
+
+            if (!isNextCharValid)
+            {
+                return false;
+            }
+
+            
+            // Check if we are calling a Method.
+            var endOffset = lineOffset - 1;
+            for (var i = endOffset; i >= 0; --i)
+            {
+                if (!IsValidFunctionChar(text[i]))
+                {
+                    if (text[i] == '.')
+                    {
+                        acType = ACType.Class;
+                    }
+
+                    break;
+                }
+
+                endOffset = i;
+            }
+
+            var testString = text.Substring(endOffset, lineOffset - 1 - endOffset + 1);
+            if (testString.Length <= 0)
+            {
+                return false;
+            }
+
+            if (acType == ACType.Class)
+            {
+                for (var i = 0; i < _docEntries.Count; ++i)
+                {
+                    if (!_docEntries[i].EntryName.StartsWith(testString,
+                            StringComparison.InvariantCultureIgnoreCase) ||
+                        testString == _docEntries[i].EntryName)
+                    {
+                        continue;
                     }
 
 
-                    PreProcAutocompleteBox.SelectedIndex = selectedIndex;
-                    PreProcAutocompleteBox.ScrollIntoView(PreProcAutocompleteBox.SelectedItem);
+                    MethodAutoCompleteBox.SelectedIndex = i;
+                    MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+                    ShowTooltip(xPos, ACType.Class);
+                    return true;
+                }
+            }
+            else
+            {
+                for (var i = 0; i < _acEntries.Count; ++i)
+                {
+                    if (!_acEntries[i].EntryName.StartsWith(testString,
+                            StringComparison.InvariantCultureIgnoreCase) ||
+                        testString == _acEntries[i].EntryName)
+                    {
+                        continue;
+                    }
 
-
-                    ShowTooltip(xPos, ACType.PreProc);
+                    AutoCompleteBox.SelectedIndex = i;
+                    AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
+                    ShowTooltip(xPos, ACType.Toplevel);
                     return true;
                 }
             }
 
-            if (IsValidFunctionChar(text[lineOffset - 1]) && quoteCount % 2 == 0)
-            {
-                var isNextCharValid = true;
-                if (text.Length > lineOffset)
-                {
-                    if (IsValidFunctionChar(text[lineOffset]) || text[lineOffset] == '(')
-                    {
-                        isNextCharValid = false;
-                    }
-                }
-
-                if (isNextCharValid)
-                {
-                    var endOffset = lineOffset - 1;
-                    for (var i = endOffset; i >= 0; --i)
-                    {
-                        if (!IsValidFunctionChar(text[i]))
-                        {
-                            if (text[i] == '.')
-                            {
-                                acType = ACType.Class;
-                            }
-
-                            break;
-                        }
-
-                        endOffset = i;
-                    }
-
-                    var testString = text.Substring(endOffset, lineOffset - 1 - endOffset + 1);
-                    if (testString.Length > 0)
-                    {
-                        if (acType == ACType.Class)
-                        {
-                            for (var i = 0; i < _docEntries.Count; ++i)
-                            {
-                                if (!_docEntries[i].EntryName.StartsWith(testString,
-                                        StringComparison.InvariantCultureIgnoreCase) ||
-                                    testString == _docEntries[i].EntryName)
-                                {
-                                    continue;
-                                }
-
-
-                                MethodAutoCompleteBox.SelectedIndex = i;
-                                MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
-                                ShowTooltip(xPos, ACType.Class);
-                                return true;
-                            }
-                        }
-                        else
-                        {
-                            for (var i = 0; i < _acEntries.Count; ++i)
-                            {
-                                if (!_acEntries[i].EntryName.StartsWith(testString,
-                                        StringComparison.InvariantCultureIgnoreCase) ||
-                                    testString == _acEntries[i].EntryName)
-                                {
-                                    continue;
-                                }
-
-                                AutoCompleteBox.SelectedIndex = i;
-                                AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
-                                ShowTooltip(xPos, ACType.Toplevel);
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
 
             return false;
         }
 
-
-        /*public string Type
-        {
-            get { return _type; }
-            set { _type = value; }
-        }*/
-        /*List<SMMethodmap> GetMethodmaps()
-        {
-            // return currentSmDef.Methodmaps.Concat()
-        }*/
-        /// Show the object documentation tooltip.
-        void ShowTooltip(int xPos, string name, string desc)
-        {
-            ShowDoc(name, desc);
-            ShowTooltip(xPos);
-        }
-
-
-        /// Show the autocomplete tooltip
-        void ShowTooltip(int xPos, ACType acType)
-        {
-            _acType = acType;
-            ShowAC(acType);
-            ShowTooltip(xPos);
-        }
-
-
         private bool ISAC_EvaluateKeyDownEvent(Key k)
         {
-            if (!_isTooltipOpen || !_isAcOpen)
+            if (!_isTooltipOpen)
+            {
+                return false;
+            }
+
+            if (k == Key.Escape)
+            {
+                HideTooltip();
+                return true;
+            }
+
+            if (!_isAcOpen)
             {
                 return false;
             }
@@ -563,11 +555,6 @@ namespace SPCode.UI.Components
                     ScrollBox(GetListBox(), -1);
                     return true;
                 }
-                case Key.Escape:
-                {
-                    HideTooltip();
-                    return true;
-                }
                 default:
                 {
                     return false;
@@ -575,7 +562,7 @@ namespace SPCode.UI.Components
             }
         }
 
-        // Scroll the ListBox UP amount times.
+        /// Scroll the ListBox UP amount times.
         static private void ScrollBox(ListBox box, int amount)
         {
             amount = box.SelectedIndex - amount; // Minus since we need to invert the amount.
@@ -584,7 +571,7 @@ namespace SPCode.UI.Components
             box.ScrollIntoView(box.SelectedItem);
         }
 
-        // Get the current list box from the current _acType.
+        /// Get the current list box from the current _acType.
         private ListBox GetListBox()
         {
             return _acType switch
@@ -596,6 +583,11 @@ namespace SPCode.UI.Components
             };
         }
 
+        /// <summary>
+        /// Actually shows the tooltip.
+        /// Should only be called using <see cref="ShowTooltip(int, string, string)"/> or <see cref="ShowTooltip(int, ACType)"/>
+        /// </summary>
+        /// <param name="forcedXPos"></param>
         private void ShowTooltip(int forcedXPos)
         {
             SetTooltipPosition(forcedXPos);
@@ -619,35 +611,35 @@ namespace SPCode.UI.Components
         }
 
         /// <summary>
-        /// Hello there
+        /// Shows the Documentation tooltip.
         /// </summary>
-        private void HideTooltip()
+        /// <param name="xPos">Tooltip position.</param>
+        /// <param name="name">The first line. Usually the function signature</param>
+        /// <param name="desc">The function documentation.</param>
+        void ShowTooltip(int xPos, string name, string desc)
         {
-            if (!_isTooltipOpen)
-            {
-                return;
-            }
-
-            _isTooltipOpen = false;
-
-            if (Program.OptionsObject.UI_Animations)
-            {
-                _fadeTooltipOut.Begin();
-            }
-            else
-            {
-                TooltipGrid.Opacity = 0.0;
-                TooltipGrid.Visibility = Visibility.Collapsed;
-            }
+            ShowDoc(name, desc);
+            ShowTooltip(xPos);
         }
 
-        enum ACType
+
+        /// <summary>
+        /// Shows the Autocomplete tooltip.
+        /// </summary>
+        /// <param name="xPos">Tooltip position</param>
+        /// <param name="acType">Autocomplete type</param>
+        void ShowTooltip(int xPos, ACType acType)
         {
-            Toplevel,
-            Class,
-            PreProc
+            _acType = acType;
+            ShowAC(acType);
+            ShowTooltip(xPos);
         }
 
+        /// <summary>
+        /// Shows the Autocomplete tooltip.
+        /// This should be shown with <see cref="ShowTooltip(int, ACType)"/>
+        /// </summary>
+        /// <param name="acType">The autocomplete type</param>
         private void ShowAC(ACType acType)
         {
             if (!_isAcOpen)
@@ -715,25 +707,12 @@ namespace SPCode.UI.Components
             }
         }
 
-        private void HideAC()
-        {
-            if (_isAcOpen)
-            {
-                _isAcOpen = false;
-                if (Program.OptionsObject.UI_Animations)
-                {
-                    _fadeACOut.Begin();
-                }
-                else
-                {
-                    AutoCompleteBox.Width = 0.0;
-                    MethodAutoCompleteBox.Width = 0.0;
-                    PreProcAutocompleteBox.Width = 0.0;
-                    ACBorder.Height = 0.0;
-                }
-            }
-        }
-
+        /// <summary>
+        /// Shows the Documentation tooltip.
+        /// This should be shown with <see cref="ShowTooltip(int,string,string)"/>
+        /// </summary>
+        /// <param name="signature">The first line. Usually the function signature</param>
+        /// <param name="documentation">The function documentation.</param>
         private void ShowDoc(string signature, string documentation)
         {
             if (!_isDocOpen)
@@ -746,6 +725,56 @@ namespace SPCode.UI.Components
             DocFuncDescription.Text = documentation;
         }
 
+        /// <summary>
+        /// Hides the tooltip
+        /// </summary>
+        private void HideTooltip()
+        {
+            if (!_isTooltipOpen)
+            {
+                return;
+            }
+
+            _isTooltipOpen = false;
+
+            if (Program.OptionsObject.UI_Animations)
+            {
+                _fadeTooltipOut.Begin();
+            }
+            else
+            {
+                TooltipGrid.Opacity = 0.0;
+                TooltipGrid.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        /// <summary>
+        /// Hides the AutoComplete tooltip
+        /// </summary>
+        private void HideAC()
+        {
+            if (!_isAcOpen)
+            {
+                return;
+            }
+
+            _isAcOpen = false;
+            if (Program.OptionsObject.UI_Animations)
+            {
+                _fadeACOut.Begin();
+            }
+            else
+            {
+                AutoCompleteBox.Width = 0.0;
+                MethodAutoCompleteBox.Width = 0.0;
+                PreProcAutocompleteBox.Width = 0.0;
+                ACBorder.Height = 0.0;
+            }
+        }
+
+        /// <summary>
+        /// Hides the Documentation(IS) tooltip
+        /// </summary>
         private void HideDoc()
         {
             if (_isDocOpen)
@@ -758,6 +787,11 @@ namespace SPCode.UI.Components
             DocFuncSignature.Text = string.Empty;
         }
 
+        /// <summary>
+        /// Sets the tooltip position.
+        /// This is done automatically in ShowTooltip.
+        /// </summary>
+        /// <param name="forcedXPos"></param>
         private void SetTooltipPosition(int forcedXPos = int.MaxValue)
         {
             Point p;
@@ -775,36 +809,33 @@ namespace SPCode.UI.Components
 
             DocFuncDescription.Measure(new Size(double.MaxValue, double.MaxValue));
             var y = p.Y;
-            var ISACHeight = 0.0;
+            var tooltipHeight = 0.0;
+
+            // ReSharper disable once ConvertIfStatementToSwitchStatement
             if (_isAcOpen && _isDocOpen)
             {
-                var ISHeight = DocFuncDescription.DesiredSize.Height;
-                ISACHeight = Math.Max(175.0, ISHeight);
+                var isHeight = DocFuncDescription.DesiredSize.Height;
+                tooltipHeight = Math.Max(175.0, isHeight);
             }
             else if (_isAcOpen)
             {
-                ISACHeight = 175.0;
+                tooltipHeight = 175.0;
             }
             else if (_isDocOpen)
             {
-                ISACHeight = DocFuncDescription.DesiredSize.Height;
+                tooltipHeight = DocFuncDescription.DesiredSize.Height;
             }
 
-            if (y + ISACHeight > editor.ActualHeight)
+            if (y + tooltipHeight > editor.ActualHeight)
             {
                 y = (editor.TextArea.TextView.GetVisualPosition(editor.TextArea.Caret.Position,
                     VisualYPosition.LineTop) - editor.TextArea.TextView.ScrollOffset).Y;
-                y -= ISACHeight;
+                y -= tooltipHeight;
             }
 
             TooltipGrid.Margin =
                 new Thickness(p.X + ((LineNumberMargin)editor.TextArea.LeftMargins[0]).ActualWidth + 20.0, y, 0.0,
                     0.0);
-        }
-
-        private void FadeTooltipOutCompleted(object sender, EventArgs e)
-        {
-            // TooltipGrid.Visibility = Visibility.Collapsed;
         }
 
         private void FadeACOut_Completed(object sender, EventArgs e)
@@ -816,14 +847,7 @@ namespace SPCode.UI.Components
         }
 
         // Check if char is between a-z A-Z 0-9 or _.
-        private static bool IsValidFunctionChar(char c)
-        {
-            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_')
-            {
-                return true;
-            }
-
-            return false;
-        }
+        private static bool IsValidFunctionChar(char c) =>
+            (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_';
     }
 }
