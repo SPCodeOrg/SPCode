@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,8 +33,9 @@ namespace SPCode.UI.Components
         private bool _isAcOpen;
         private List<ACNode> _acEntries;
 
+        private readonly List<ISNode> _methodACEntries = new();
+
         private bool _isDocOpen;
-        private List<ISNode> _docEntries;
 
         private bool _isTooltipOpen;
 
@@ -110,10 +112,10 @@ namespace SPCode.UI.Components
 
             _smDef = Program.Configs[Program.SelectedConfig].GetSMDef();
             _acEntries = _smDef.ProduceACNodes();
-            _docEntries = _smDef.ProduceISNodes();
+
 
             AutoCompleteBox.ItemsSource = _acEntries;
-            MethodAutoCompleteBox.ItemsSource = _docEntries;
+            MethodAutoCompleteBox.ItemsSource = _methodACEntries;
             PreProcAutocompleteBox.ItemsSource = ACNode.ConvertFromStringList(PreProcList, false, "#", true);
         }
 
@@ -124,13 +126,10 @@ namespace SPCode.UI.Components
         private void InterruptLoadAutoCompletes(SMDefinition smDef)
         {
             var acNodes = smDef.ProduceACNodes();
-            var isNodes = smDef.ProduceISNodes();
             Dispatcher?.Invoke(() =>
             {
                 _acEntries = acNodes;
-                _docEntries = isNodes;
                 AutoCompleteBox.ItemsSource = _acEntries;
-                MethodAutoCompleteBox.ItemsSource = _docEntries;
                 PreProcAutocompleteBox.ItemsSource = PreProcNodes;
                 _smDef = smDef;
             });
@@ -257,49 +256,18 @@ namespace SPCode.UI.Components
                             isMatches[j].Groups["method"]
                                 .Value; // If we are not inside a method call this is a classic function call (eg. "PrintToChat(...)")
 
-                        int xPos;
+                        var xPos = isMatches[j].Groups["method"].Index +
+                                   isMatches[j].Groups["method"].Length;
+
                         if (classString.Length > 0)
                         {
-                            // Match for static methods. Like MyClass.StaticMethod().
-                            var methodMap = _smDef.Methodmaps.FirstOrDefault(e => e.Name == classString);
-                            var staticMethod =
-                                methodMap?.Methods.FirstOrDefault(
-                                    e => e.Name == methodString /*&& e.MethodKind.Contains("static")*/);
+                            var methodMap = FindMethodMap(classString);
 
-                            // If the staticMethod is found show it.
-                            if (staticMethod != null)
-                            {
-                                xPos = isMatches[j].Groups["method"].Index +
-                                       isMatches[j].Groups["method"].Length;
-
-                                ShowTooltip(xPos, staticMethod.FullName, staticMethod.CommentString);
-                                return true;
-                            }
-                            // Find variable declaration to see of what type it is -->
-                            // Try to match it in the local variables (of the current function).
-                            var varDecl =
-                                _smDef?.CurrentFunction?.FuncVariables.FirstOrDefault(e => e.Name == classString);
-
-                            //TODO: Add FunctionParameters matching.
-                            /*varDecl ??= _smDef?.CurrentFunction?.Parameters.FirstOrDefault(e =>
-                                MatchTypeRegex.Match(e).Groups[0].Value == classString);*/
-
-                            // Try to match it in the current file.
-                            varDecl ??= _smDef.Variables.FirstOrDefault(e => e.Name == classString);
-
-                            if (varDecl == null)
-                                continue;
-
-                            // If we found the declaration get the Variable Type and look for a methodmap matching its type.
-                            methodMap = _smDef.Methodmaps.FirstOrDefault(e => e.Name == varDecl.Type);
-                            var method =
-                                methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
+                            var method = methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
 
                             if (method == null)
                                 continue;
 
-                            xPos = isMatches[j].Groups["method"].Index +
-                                   isMatches[j].Groups["method"].Length;
                             ShowTooltip(xPos, method.FullName, method.CommentString);
                             return true;
                         }
@@ -309,8 +277,6 @@ namespace SPCode.UI.Components
                         if (func == null)
                             continue;
 
-                        xPos = isMatches[j].Groups["name"].Index +
-                               isMatches[j].Groups["name"].Length;
                         ShowTooltip(xPos, func.FullName, func.CommentString);
                         return true;
                     }
@@ -320,6 +286,35 @@ namespace SPCode.UI.Components
             }
 
             return false;
+        }
+
+
+        SMMethodmap? FindMethodMap(string classStr)
+        {
+            // Match for static methods. Like MyClass.StaticMethod(). Look for a MethodMap that is named as our classStr.
+            var methodMap = _smDef.Methodmaps.FirstOrDefault(e => e.Name == classStr);
+
+            // If the staticMethod is found show it.
+            if (methodMap != null)
+            {
+                return methodMap;
+            }
+
+            // Find variable declaration to see of what type it is -->
+            // Try to match it in the local variables (of the current function).
+            var varDecl =
+                _smDef?.CurrentFunction?.FuncVariables.FirstOrDefault(e => e.Name == classStr);
+
+            //TODO: Add FunctionParameters matching.
+            /*varDecl ??= _smDef?.CurrentFunction?.Parameters.FirstOrDefault(e =>
+                MatchTypeRegex.Match(e).Groups[0].Value == classString);*/
+
+            // Try to match it in the current file.
+            varDecl ??= _smDef.Variables.FirstOrDefault(e => e.Name == classStr);
+
+            return varDecl == null ? null : _smDef.Methodmaps.FirstOrDefault(e => e.Name == varDecl.Type);
+
+            // If we found the declaration get the Variable Type and look for a methodmap matching its type.
         }
 
         /// <summary>
@@ -335,9 +330,9 @@ namespace SPCode.UI.Components
             var acType = ACType.Toplevel;
             const int xPos = int.MaxValue;
 
-            //TODO: Check for multi-line strings.
+            //TODO: Check for multi-line strings. (Actually currently the Program doesn't support the declarations split between two lines).
 
-            // Auto-complete for preprocessor statements.
+            /*** Auto-complete for preprocessor statements. ***/
             var defMatch = PreprocessorRegex.Match(text);
             var matchIndex = defMatch.Index;
             var matchLen = defMatch.Length;
@@ -400,10 +395,12 @@ namespace SPCode.UI.Components
                 return false;
             }
 
-            
+
             // Check if we are calling a Method.
-            var endOffset = lineOffset - 1;
-            for (var i = endOffset; i >= 0; --i)
+            var dotOffset = lineOffset - 1;
+
+            // Try to find the "." index from the caret position.
+            for (var i = dotOffset; i >= 0; --i)
             {
                 if (!IsValidFunctionChar(text[i]))
                 {
@@ -415,49 +412,82 @@ namespace SPCode.UI.Components
                     break;
                 }
 
-                endOffset = i;
+                // Save the "." index.
+                dotOffset = i;
             }
 
-            var testString = text.Substring(endOffset, lineOffset - 1 - endOffset + 1);
-            if (testString.Length <= 0)
+            var methodString = text.Substring(dotOffset, lineOffset - 1 - dotOffset + 1);
+
+            if (methodString.Length <= 0)
             {
                 return false;
             }
 
+            int classOffset = dotOffset - 2;
+
             if (acType == ACType.Class)
             {
-                for (var i = 0; i < _docEntries.Count; ++i)
+                int len = 0;
+                for (var i = classOffset; i >= 0; --i)
                 {
-                    if (!_docEntries[i].EntryName.StartsWith(testString,
-                            StringComparison.InvariantCultureIgnoreCase) ||
-                        testString == _docEntries[i].EntryName)
+                    if (!IsValidFunctionChar(text[i]))
                     {
-                        continue;
+                        break;
                     }
 
+                    // Save the index where the method call begins, eg. ArrayList.Push().
+                    //                                                  ^HERE
+                    classOffset = i;
+                    len++;
+                }
+
+                var classString = text.Substring(classOffset, len);
+                var mm = FindMethodMap(classString);
+                if (mm == null)
+                {
+                    return false;
+                }
+
+                var isNodes = mm.ProduceISNodes();
+
+                _methodACEntries.Clear();
+                _methodACEntries.AddRange(isNodes);
+
+                for (var i = 0; i < isNodes.Count; i++)
+                {
+                    var node = isNodes[i];
+
+                    if (node.EntryName == methodString)
+                        return false;
+
+                    if (!node.EntryName.StartsWith(methodString))
+                        continue;
+
+                    // We need to hide the doc (and then re-show it) to properly update the list.
+                    HideDoc();
 
                     MethodAutoCompleteBox.SelectedIndex = i;
                     MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
                     ShowTooltip(xPos, ACType.Class);
                     return true;
                 }
-            }
-            else
-            {
-                for (var i = 0; i < _acEntries.Count; ++i)
-                {
-                    if (!_acEntries[i].EntryName.StartsWith(testString,
-                            StringComparison.InvariantCultureIgnoreCase) ||
-                        testString == _acEntries[i].EntryName)
-                    {
-                        continue;
-                    }
 
-                    AutoCompleteBox.SelectedIndex = i;
-                    AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
-                    ShowTooltip(xPos, ACType.Toplevel);
-                    return true;
+                return false;
+            }
+
+            for (var i = 0; i < _acEntries.Count; ++i)
+            {
+                if (!_acEntries[i].EntryName.StartsWith(methodString,
+                        StringComparison.InvariantCultureIgnoreCase) ||
+                    methodString == _acEntries[i].EntryName)
+                {
+                    continue;
                 }
+
+                AutoCompleteBox.SelectedIndex = i;
+                AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
+                ShowTooltip(xPos, ACType.Toplevel);
+                return true;
             }
 
 
@@ -522,7 +552,7 @@ namespace SPCode.UI.Components
                             break;
                         case ACType.Class:
                             replaceString = ((ISNode)MethodAutoCompleteBox.SelectedItem).EntryName;
-                            if (_docEntries[MethodAutoCompleteBox.SelectedIndex].IsExecuteable)
+                            if (_methodACEntries[MethodAutoCompleteBox.SelectedIndex].IsExecuteable)
                             {
                                 replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
                                 setCaret = true;

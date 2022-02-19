@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SourcepawnCondenser.SourcemodDefinition
 {
@@ -6,8 +7,21 @@ namespace SourcepawnCondenser.SourcemodDefinition
     {
         public string Type = string.Empty;
         public string InheritedType = string.Empty;
-        public List<SMMethodmapField> Fields = new();
-        public List<SMMethodmapMethod> Methods = new();
+        public readonly List<SMMethodmapField> Fields = new();
+        public readonly List<SMMethodmapMethod> Methods = new();
+        
+        public List<ISNode> ProduceISNodes()
+        {
+            var nodes = new List<ISNode>();
+            nodes.AddRange(ISNode.ConvertFromStringList(Methods.Select(e => e.Name), true, "▲ "));
+            nodes.AddRange(ISNode.ConvertFromStringList(Fields.Select(e => e.Name), false, "• "));
+
+            // nodes.AddRange(ISNode.ConvertFromStringArray(VariableStrings, false, "v "));
+
+            nodes.Sort((a, b) => string.CompareOrdinal(a.EntryName, b.EntryName));
+
+            return nodes;
+        }
     }
 
     public class SMMethodmapField : SMBaseDefinition
