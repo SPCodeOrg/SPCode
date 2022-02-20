@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+// ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace SourcepawnCondenser.SourcemodDefinition
 {
@@ -13,7 +14,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public List<SMConstant> ConstVariables = new();
 
         // The function variables (where the cursor is in)
-        private readonly List<string> _functionVariables = new();
+        private readonly List<string> FunctionVariableStrings = new();
 
         // TODO: Typedefs are not added correctly.
         // This contains Enum, Structs, Methodmaps, Typedefs, Enum structs' names.
@@ -143,20 +144,16 @@ namespace SourcepawnCondenser.SourcemodDefinition
             // Parse local function variables.
             if (caret != -1 && currentFunctions != null)
             {
-                // TODO: This somewhat works, but somethings when in the end of a function it's buggy and doesnt find
-                // the correct function or it finds nothing at all. The addition is a small hack that sometimes works 
-                CurrentFunction = currentFunctions.FirstOrDefault(e =>
-                    e.Index < caret && caret <= e.EndPos);
                 if (CurrentFunction != null)
                 {
-                    _functionVariables.AddRange(CurrentFunction.FuncVariables.Select(v => v.Name));
+                    FunctionVariableStrings.AddRange(CurrentFunction.FuncVariables.Select(v => v.Name));
                     var stringParams = CurrentFunction.Parameters.Select(e => e.Split('=').First().Trim())
                         .Select(e => e.Split(' ').Last()).Where(e => !string.IsNullOrWhiteSpace(e)).ToList();
-                    _functionVariables.AddRange(stringParams);
+                    FunctionVariableStrings.AddRange(stringParams);
                 }
                 else
                 {
-                    _functionVariables.Clear();
+                    FunctionVariableStrings.Clear();
                 }
             }
         }
@@ -174,7 +171,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
             nodes.AddRange(ACNode.ConvertFromStringList(EnumStructs.Select(e => e.Name), false, "↩ "));
 
             nodes.AddRange(ACNode.ConvertFromStringList(Variables.Select(e => e.Name), false, "• "));
-            nodes.AddRange(ACNode.ConvertFromStringList(_functionVariables, false, "• "));
+            nodes.AddRange(ACNode.ConvertFromStringList(FunctionVariableStrings, false, "• "));
             
             //nodes = nodes.Distinct(new ACNodeEqualityComparer()).ToList(); Methodmaps and Functions can and will be the same.
             nodes.Sort((a, b) => string.CompareOrdinal(a.EntryName, b.EntryName));
@@ -201,6 +198,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
             try
             {
                 Functions.AddRange(def.Functions);
+                Typedefs.AddRange(def.Typedefs);
                 Enums.AddRange(def.Enums);
                 Structs.AddRange(def.Structs);
                 Defines.AddRange(def.Defines);
@@ -215,17 +213,18 @@ namespace SourcepawnCondenser.SourcemodDefinition
             }
         }
 
-        public SMDefinition ProduceTemporaryExpandedDefinition(SMDefinition[] definitions, int caret,
+        public SMDefinition ProduceTemporaryExpandedDefinition(IEnumerable<SMDefinition> definitions, int caret,
             List<SMFunction> currentFunctions)
         {
             var def = new SMDefinition();
             def.MergeDefinitions(this);
             foreach (var definition in definitions)
             {
-                if (definition != null)
-                {
-                    def.MergeDefinitions(definition);
-                }
+                if (definition == null)
+                    continue;
+
+                def.MergeDefinitions(definition);
+                def.CurrentFunction ??= definition.CurrentFunction;
             }
 
             def.Sort();
@@ -395,6 +394,36 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public override string ToString()
         {
             return Name;
+        }
+    }
+    
+    
+    class ISNodeComparer : IEqualityComparer<ISNode>
+    {
+        // Products are equal if their names and product numbers are equal.
+        public bool Equals(ISNode x, ISNode y)
+        {
+
+            //Check whether the compared objects reference the same data.
+            if (ReferenceEquals(x, y)) return true;
+
+            //Check whether any of the compared objects is null.
+            if (ReferenceEquals(x, null) || ReferenceEquals(y, null))
+                return false;
+
+            //Check whether the products' properties are equal.
+            return x.EntryName == y.EntryName && x.IsExecuteable == y.IsExecuteable;
+        }
+        
+
+        public int GetHashCode(ISNode isNode)
+        {
+            //Get hash code for the Name field if it is not null.
+            int nameHash = isNode.Name == null ? 0 : isNode.Name.GetHashCode();
+            int isExecutableHash = isNode.IsExecuteable.GetHashCode();
+
+            //Calculate the hash code for the product.
+            return nameHash ^ isExecutableHash;
         }
     }
 }

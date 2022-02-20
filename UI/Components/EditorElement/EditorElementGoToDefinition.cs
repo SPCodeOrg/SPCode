@@ -14,9 +14,9 @@ namespace SPCode.UI.Components
     public partial class EditorElement
     {
 
-        private SMDefinition currentSmDef;
+        private SMDefinition _currentSMDef;
 
-        public async Task GoToDefinition(MouseButtonEventArgs e)
+        private async Task GoToDefinition(MouseButtonEventArgs e)
         {
             try
             {
@@ -52,17 +52,12 @@ namespace SPCode.UI.Components
                             newEditor.editor.TextArea.Selection = Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
                             return;
                         }
-                        else
-                        {
-                            continue;
-                        }
                     }
                 }
 
                 // If not, try to match variables in the current file 
                 // (shit solution to fix some symbols getting read first inside of the file inaproppiately)
-
-                sm = MatchDefinition(currentSmDef, word, e, true);
+                sm = MatchDefinition(_currentSMDef, word, e, true);
                 if (sm != null)
                 {
                     editor.TextArea.Caret.Offset = sm.Index;

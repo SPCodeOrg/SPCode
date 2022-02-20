@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -32,6 +33,9 @@ namespace SPCode.UI.Components
         private bool _isAcOpen;
         private List<ACNode> _acEntries;
 
+        /// We use this just to keep track of the current isNodes for the equality check.
+        /// Seems like that using this as ItemsSource for the MethodAutoCompleteBox causes it to not update the UI
+        /// when ScrollIntoView is called.
         private readonly List<ISNode> _methodACEntries = new();
 
         private bool _isDocOpen;
@@ -50,6 +54,7 @@ namespace SPCode.UI.Components
         private Storyboard _fadeTooltipIn;
         private Storyboard _fadeTooltipOut;
 
+        static private readonly SMDefinition.ISNodeEqualityComparer ISEqualityComparer = new();
 
         /// Used to keep track of the current autocomplete type (ie. toplevel, class or preprocessor)
         private ACType _acType = ACType.Toplevel;
@@ -77,7 +82,7 @@ namespace SPCode.UI.Components
 
         static private readonly IEnumerable<ACNode>
             PreProcNodes = ACNode.ConvertFromStringList(PreProcList, false, "#", true);
-        
+
         static private readonly Regex PreprocessorRegex = new("#\\w+", RegexOptions.Compiled);
 
         /// <summary>
@@ -113,7 +118,7 @@ namespace SPCode.UI.Components
 
 
             AutoCompleteBox.ItemsSource = _acEntries;
-            MethodAutoCompleteBox.ItemsSource = _methodACEntries;
+            // MethodAutoCompleteBox.ItemsSource = _methodACEntries;
             PreProcAutocompleteBox.ItemsSource = ACNode.ConvertFromStringList(PreProcList, false, "#", true);
         }
 
@@ -448,9 +453,17 @@ namespace SPCode.UI.Components
 
                 var isNodes = mm.ProduceISNodes();
 
-                _methodACEntries.Clear();
-                _methodACEntries.AddRange(isNodes);
+                if (!isNodes.SequenceEqual(_methodACEntries, ISEqualityComparer))
+                {
+                    MethodAutoCompleteBox.Items.Clear();
+                    isNodes.ForEach(e => MethodAutoCompleteBox.Items.Add(e));
+                    
+                    _methodACEntries.Clear();
+                    _methodACEntries.AddRange(isNodes);
 
+                    MethodAutoCompleteBox.UpdateLayout();
+                }
+                
                 for (var i = 0; i < isNodes.Count; i++)
                 {
                     var node = isNodes[i];
@@ -466,11 +479,26 @@ namespace SPCode.UI.Components
 
                     MethodAutoCompleteBox.SelectedIndex = i;
                     MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+                    
                     ShowTooltip(xPos, ACType.Class);
                     return true;
                 }
 
-                return false;
+                // If no method starts with the methodString look for one that contains it.
+                var method = isNodes.FindIndex(e => e.EntryName.Contains(methodString));
+
+                if (method == -1)
+                    return false;
+
+                // We need to hide the doc (and then re-show it) to properly update the list.
+                HideDoc();
+                
+                MethodAutoCompleteBox.SelectedIndex = method;
+                MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+                
+                ShowTooltip(xPos, ACType.Class);
+
+                return true;
             }
 
             for (var i = 0; i < _acEntries.Count; ++i)
@@ -575,12 +603,12 @@ namespace SPCode.UI.Components
                 }
                 case Key.Up:
                 {
-                    ScrollBox(GetListBox(), 1);
+                    ScrollBox(1);
                     return true;
                 }
                 case Key.Down:
                 {
-                    ScrollBox(GetListBox(), -1);
+                    ScrollBox(-1);
                     return true;
                 }
                 default:
@@ -591,11 +619,19 @@ namespace SPCode.UI.Components
         }
 
         /// Scroll the ListBox UP amount times.
-        static private void ScrollBox(ListBox box, int amount)
+        private void ScrollBox(int amount, ListBox? box = null)
         {
+            box ??= GetListBox();
             amount = box.SelectedIndex - amount; // Minus since we need to invert the amount.
             box.SelectedIndex =
                 Math.Max(0, Math.Min(box.Items.Count - 1, amount)); // Clamp the value between 0 and the items count.
+            box.ScrollIntoView(box.SelectedItem);
+        }
+        
+        private void ScrollBoxTo(int pos, ListBox? box = null)
+        {
+            box ??= GetListBox();
+            box.SelectedIndex = pos;
             box.ScrollIntoView(box.SelectedItem);
         }
 
