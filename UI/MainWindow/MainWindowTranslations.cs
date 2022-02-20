@@ -6,24 +6,17 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
-        public void Language_Translate(bool Initial = false)
+        public void Language_Translate()
         {
-            if (Initial && Program.Translations.IsDefault)
+            CompileButtonDict = new ObservableCollection<string>() { Translate("CompileAll"), Translate("CompileCurrent") };
+            ActionButtonDict = new ObservableCollection<string>() { Translate("Copy"), Translate("UploadFTP"), Translate("StartServer") };
+            ((MenuItem)ConfigMenu.Items[ConfigMenu.Items.Count - 1]).Header = Translate("EditConfig");
+            var ee = GetAllEditorElements();
+            if (ee != null)
             {
-                return;
-            }
-            if (!Initial)
-            {
-                CompileButtonDict = new ObservableCollection<string>() { Translate("CompileAll"), Translate("CompileCurrent") };
-                ActionButtonDict = new ObservableCollection<string>() { Translate("Copy"), Translate("UploadFTP"), Translate("StartServer") };
-                ((MenuItem)ConfigMenu.Items[ConfigMenu.Items.Count - 1]).Header = Translate("EditConfig");
-                var ee = GetAllEditorElements();
-                if (ee != null)
+                foreach (var t in ee)
                 {
-                    foreach (var t in ee)
-                    {
-                        t?.Language_Translate();
-                    }
+                    t?.Language_Translate();
                 }
             }
             MenuI_File.Header = Translate("FileStr");

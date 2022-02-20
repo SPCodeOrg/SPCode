@@ -981,11 +981,6 @@ namespace SPCode.UI.Components
 
         public void Language_Translate(bool Initial = false)
         {
-            if (Program.Translations.IsDefault)
-            {
-                return;
-            }
-
             MenuC_Undo.Header = Translate("Undo");
             MenuC_Redo.Header = Translate("Redo");
             MenuC_Cut.Header = Translate("Cut");

@@ -732,10 +732,6 @@ namespace SPCode.UI.Windows
 
         private void Language_Translate()
         {
-            if (Program.Translations.IsDefault)
-            {
-                return;
-            }
             Title = Translate("Options");
             HardwareSalts.Content = Translate("HardwareEncryption");
             ProgramHeader.Header = $" {Translate("Program")}";

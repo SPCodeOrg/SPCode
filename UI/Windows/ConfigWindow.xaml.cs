@@ -638,11 +638,6 @@ namespace SPCode.UI.Windows
 
         private void Language_Translate()
         {
-            if (Program.Translations.IsDefault)
-            {
-                return;
-            }
-
             Title = Translate("Configs");
             AddSMDirButton.Content = Translate("Add");
             RemoveSMDirButton.Content = Translate("Remove");

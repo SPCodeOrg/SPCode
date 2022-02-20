@@ -47,10 +47,6 @@ namespace SPCode.UI.Windows
 
         private void Language_Translate()
         {
-            if (Program.Translations.IsDefault)
-            {
-                return;
-            }
             WrittenByBlock.Text = string.Format(Translate("WrittenBy"), "Julien Kluge (Julien.Kluge@gmail.com");
             LicenseBlock.Text = Translate("License");
             PeopleInvolvedBlock.Text = Translate("PeopleInv");

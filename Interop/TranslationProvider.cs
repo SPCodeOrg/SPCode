@@ -15,7 +15,6 @@ namespace SPCode.Interop
     {
         public List<string> AvailableLanguageIDs = new();
         public List<string> AvailableLanguages = new();
-        public bool IsDefault = true;
 
         private readonly string _tempDir = Paths.GetTempDirectory();
         private readonly string _translationsDir = Paths.GetTranslationsDirectory();
@@ -62,7 +61,6 @@ namespace SPCode.Interop
                 Program.OptionsObject.Language = lang;
             }
             lang = lang.Trim().ToLowerInvariant();
-            IsDefault = (string.IsNullOrEmpty(lang) || lang.ToLowerInvariant() == Constants.DefaultLanguageID) && initial;
             var doc = new XmlDocument();
 
             try
@@ -74,12 +72,6 @@ namespace SPCode.Interop
                     foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
                     {
                         _langDictionary.Add(node.Name, node.InnerText);
-                    }
-
-                    // Return if the attempted language to load is the default one
-                    if (lang == Constants.DefaultLanguageID)
-                    {
-                        return;
                     }
                 }
 

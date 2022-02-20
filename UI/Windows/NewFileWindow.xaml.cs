@@ -370,11 +370,8 @@ namespace SPCode.UI.Windows
 
         private void Language_Translate()
         {
-            if (!Program.Translations.IsDefault)
-            {
-                PreviewBlock.Text = $"{Translate("Preview")}:";
-                SaveButton.Content = Translate("Save");
-            }
+            PreviewBlock.Text = $"{Translate("Preview")}:";
+            SaveButton.Content = Translate("Save");
         }
 
         private void GoToSelectedTemplate()

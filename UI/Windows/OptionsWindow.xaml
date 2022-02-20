@@ -43,9 +43,9 @@
 
   <controls:MetroWindow.RightWindowCommands>
     <controls:WindowCommands>
-      <Button Name="BackupButton" Content="Backup options" Click="BackupButton_Clicked" />
-      <Button Name="LoadButton" Content="Load options" Click="LoadButton_Clicked" />
-      <Button Name="ResetButton" Content="Reset options to default" Click="RestoreButton_Clicked" />
+      <Button Name="BackupButton" Click="BackupButton_Clicked" />
+      <Button Name="LoadButton" Click="LoadButton_Clicked" />
+      <Button Name="ResetButton" Click="RestoreButton_Clicked" />
     </controls:WindowCommands>
   </controls:MetroWindow.RightWindowCommands>
   
@@ -71,18 +71,18 @@
                 <Style BasedOn="{StaticResource ParentCheckBox}" TargetType="{x:Type CheckBox}"/>
               </StackPanel.Resources>
 
-              <CheckBox Name="HardwareAcc" Content="Use Hardware Acceleration (if available)" Checked="HardwareAcc_Changed" Unchecked="HardwareAcc_Changed" />
-              <CheckBox Name="UIAnimation" Content="UI Animations" Checked="UIAnimation_Changed" Unchecked="UIAnimation_Changed" />
-              <CheckBox Name="OpenIncludes" Content="Auto Open Includes" Checked="AutoOpenInclude_Changed" Unchecked="AutoOpenInclude_Changed" />
-              <CheckBox Name="OpenIncludesRecursive" Style="{StaticResource IndentedCheckBox}" Content="Open Includes Recursively" Checked="OpenIncludeRecursively_Changed" Unchecked="OpenIncludeRecursively_Changed" />
-              <CheckBox Name="AutoUpdate" Content="Search automatically for Updates" Checked="AutoUpdate_Changed" Unchecked="AutoUpdate_Changed" />
-              <CheckBox Name="ShowToolBar" Content="Show Toolbar" Checked="ShowToolbar_Changed" Unchecked="ShowToolbar_Changed" />
-              <CheckBox Name="DynamicISAC" Content="Dynamic Autocomplete/Intellisense" Checked="DynamicISAC_Changed" Unchecked="DynamicISAC_Changed" />
-              <CheckBox Name="DarkTheme" Content="Dark Theme" Checked="DarkTheme_Changed" Unchecked="DarkTheme_Changed" />
-              <CheckBox Name="HardwareSalts" Content="Hardware Encryption" Checked="HardwareSalts_Changed" Unchecked="HardwareSalts_Changed" />
-              <CheckBox Name="DiscordPresence" Content="Enable Discord Rich Presence" Checked="DiscordPresence_Changed" Unchecked="DiscordPresence_Changed" />
-              <CheckBox Name="DiscordPresenceTime" Style="{StaticResource IndentedCheckBox}" Content="Show elapsed time" Checked="DiscordPresenceTime_Changed" Unchecked="DiscordPresenceTime_Changed" />
-              <CheckBox Name="DiscordPresenceFile" Style="{StaticResource IndentedCheckBox}" Content="Show current file" Checked="DiscordPresenceFile_Changed" Unchecked="DiscordPresenceFile_Changed" />
+              <CheckBox Name="HardwareAcc" Checked="HardwareAcc_Changed" Unchecked="HardwareAcc_Changed" />
+              <CheckBox Name="UIAnimation" Checked="UIAnimation_Changed" Unchecked="UIAnimation_Changed" />
+              <CheckBox Name="OpenIncludes" Checked="AutoOpenInclude_Changed" Unchecked="AutoOpenInclude_Changed" />
+              <CheckBox Name="OpenIncludesRecursive" Style="{StaticResource IndentedCheckBox}" Checked="OpenIncludeRecursively_Changed" Unchecked="OpenIncludeRecursively_Changed" />
+              <CheckBox Name="AutoUpdate" Checked="AutoUpdate_Changed" Unchecked="AutoUpdate_Changed" />
+              <CheckBox Name="ShowToolBar" Checked="ShowToolbar_Changed" Unchecked="ShowToolbar_Changed" />
+              <CheckBox Name="DynamicISAC" Checked="DynamicISAC_Changed" Unchecked="DynamicISAC_Changed" />
+              <CheckBox Name="DarkTheme" Checked="DarkTheme_Changed" Unchecked="DarkTheme_Changed" />
+              <CheckBox Name="HardwareSalts" Checked="HardwareSalts_Changed" Unchecked="HardwareSalts_Changed" />
+              <CheckBox Name="DiscordPresence" Checked="DiscordPresence_Changed" Unchecked="DiscordPresence_Changed" />
+              <CheckBox Name="DiscordPresenceTime" Style="{StaticResource IndentedCheckBox}" Checked="DiscordPresenceTime_Changed" Unchecked="DiscordPresenceTime_Changed" />
+              <CheckBox Name="DiscordPresenceFile" Style="{StaticResource IndentedCheckBox}" Checked="DiscordPresenceFile_Changed" Unchecked="DiscordPresenceFile_Changed" />
 
             </StackPanel>
 
@@ -90,17 +90,17 @@
             <StackPanel Grid.Column="1">
 
               <StackPanel Orientation="Horizontal">
-                <Label Name="ThemeColorLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Theme Color:" Margin="0,0,10,0"/>
+                <Label Name="ThemeColorLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,10,0"/>
                 <ComboBox Name="AccentColor" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" SelectionChanged="AccentColor_Changed" />
               </StackPanel>
 
               <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                <Label Name="LanguageLabel" Content="Language:" Margin="0,0,10,0" />
+                <Label Name="LanguageLabel" Margin="0,0,10,0" />
                 <ComboBox Name="LanguageBox" Width="120" SelectionChanged="LanguageBox_Changed" />
               </StackPanel>
 
               <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                <Label Name="ActionOnCloseLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Content="On close:" Margin="0,0,10,0"/>
+                <Label Name="ActionOnCloseLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,10,0"/>
                 <ComboBox Name="ActionOnCloseBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="180" SelectionChanged="ActionOnCloseBox_Changed" />
               </StackPanel>
 
@@ -127,10 +127,10 @@
 
                 <StackPanel Grid.Column="0" Margin="5,5,0,0">
 
-                  <TextBlock Name="FontSizeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Text="Font Size:" IsHitTestVisible="False" />
+                  <TextBlock Name="FontSizeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" IsHitTestVisible="False" />
                   <Slider Name="FontSizeD" HorizontalAlignment="Left" Margin="0,5,0,0" VerticalAlignment="Top" Width="280" Minimum="5" Maximum="30" AutoToolTipPlacement="TopLeft" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" ValueChanged="FontSize_Changed" />
 
-                  <TextBlock Name="FontFamilyTB" Margin="0,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Text="Font (Consolas):" IsHitTestVisible="False" />
+                  <TextBlock Name="FontFamilyTB" Margin="0,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" IsHitTestVisible="False" />
                   <ComboBox Name="FontFamilyCB" HorizontalAlignment="Left" VerticalAlignment="Top" Width="250" xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase" ItemTemplate="{DynamicResource FontTemplate}" SelectionChanged="FontFamily_Changed">
                     <ComboBox.Resources>
                       <CollectionViewSource x:Key="myFonts" Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}">
@@ -153,7 +153,7 @@
                     </ComboBox.ItemsSource>
                   </ComboBox>
 
-                  <TextBlock Name="AutoSaveBlock" Margin="0,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Text="Auto save (min):" IsHitTestVisible="False" />
+                  <TextBlock Name="AutoSaveBlock" Margin="0,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" IsHitTestVisible="False" />
                   <ComboBox Name="AutoSave" HorizontalAlignment="Left" VerticalAlignment="Top" Width="250" SelectionChanged="AutoSave_Changed">
                     <ComboBoxItem Content="None" />
                     <ComboBoxItem Content="0.5" />
@@ -166,29 +166,29 @@
                     <ComboBoxItem Content="15" />
                   </ComboBox>
 
-                  <TextBlock Name="IndentationSizeBlock" Margin="0,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Text="Indentation Size:" IsHitTestVisible="False" />
+                  <TextBlock Name="IndentationSizeBlock" Margin="0,15,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" IsHitTestVisible="False" />
                   <Slider Name="IndentationSize" Margin="0,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="280" Minimum="1" Maximum="10" AutoToolTipPlacement="TopLeft" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" ValueChanged="IndentationSize_Changed" />
 
                 </StackPanel>
 
                 <StackPanel Grid.Column="1">
 
-                  <TextBlock Name="ScrollSpeedBlock" Margin="5,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Text="Scroll Speed:" IsHitTestVisible="False" />
+                  <TextBlock Name="ScrollSpeedBlock" Margin="5,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" IsHitTestVisible="False" />
                   <Slider Name="ScrollSpeed" Margin="5,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="280" Minimum="1" Maximum="20" AutoToolTipPlacement="TopLeft" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" ValueChanged="ScrollSpeed_Changed" />
 
                   <StackPanel Margin="0,10,0,0">
                     <StackPanel.Resources>
                       <Style BasedOn="{StaticResource ParentCheckBox}" TargetType="{x:Type CheckBox}"/>
                     </StackPanel.Resources>
-                    <CheckBox Name="WordWrap" Content="Word Wrap" Checked="WordWrap_Changed" Unchecked="WordWrap_Changed" />
-                    <CheckBox Name="AgressiveIndentation" Content="Agressive Indentation" Checked="AIndentation_Changed" Unchecked="AIndentation_Changed" />
-                    <CheckBox Name="LineReformatting" Content="Reformatting Line after semicolon" Checked="LineReformat_Changed" Unchecked="LineReformat_Changed" />
-                    <CheckBox Name="TabToSpace" Content="Replace tabs with spaces" Checked="TabToSpace_Changed" Unchecked="TabToSpace_Changed" />
-                    <CheckBox Name="AutoCloseBrackets" Content="Auto close Brackets [], {}, ()" Checked="AutoCloseBrackets_Changed" Unchecked="AutoCloseBrackets_Changed" />
-                    <CheckBox Name="AutoCloseStringChars" Content="Auto close Strings, Chars &quot;&quot;, ''" Checked="AutoCloseStringChars_Changed" Unchecked="AutoCloseStringChars_Changed" />
-                    <CheckBox Name="ShowSpaces" Content="Show Spaces" Checked="ShowSpaces_Changed" Unchecked="ShowSpaces_Changed" />
-                    <CheckBox Name="ShowTabs" Content="Show Tabs" Checked="ShowTabs_Changed" Unchecked="ShowTabs_Changed" />
-                    <CheckBox Name="UseTabToAutocomplete" Content="Use Tab to Autocomplete" Checked="TabToAutocomplete_Changed" Unchecked="TabToAutocomplete_Changed" />
+                    <CheckBox Name="WordWrap" Checked="WordWrap_Changed" Unchecked="WordWrap_Changed" />
+                    <CheckBox Name="AgressiveIndentation" Checked="AIndentation_Changed" Unchecked="AIndentation_Changed" />
+                    <CheckBox Name="LineReformatting" Checked="LineReformat_Changed" Unchecked="LineReformat_Changed" />
+                    <CheckBox Name="TabToSpace" Checked="TabToSpace_Changed" Unchecked="TabToSpace_Changed" />
+                    <CheckBox Name="AutoCloseBrackets" Checked="AutoCloseBrackets_Changed" Unchecked="AutoCloseBrackets_Changed" />
+                    <CheckBox Name="AutoCloseStringChars" Checked="AutoCloseStringChars_Changed" Unchecked="AutoCloseStringChars_Changed" />
+                    <CheckBox Name="ShowSpaces" Checked="ShowSpaces_Changed" Unchecked="ShowSpaces_Changed" />
+                    <CheckBox Name="ShowTabs" Checked="ShowTabs_Changed" Unchecked="ShowTabs_Changed" />
+                    <CheckBox Name="UseTabToAutocomplete" Checked="TabToAutocomplete_Changed" Unchecked="TabToAutocomplete_Changed" />
                   </StackPanel>
 
                 </StackPanel>
@@ -203,7 +203,7 @@
                   <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <CheckBox Name="HighlightDeprecateds" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Highlight Deprecated (&lt;1.7) Syntax" Checked="HighlightDeprecateds_Changed" Unchecked="HighlightDeprecateds_Changed" />
+                <CheckBox Name="HighlightDeprecateds" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="HighlightDeprecateds_Changed" Unchecked="HighlightDeprecateds_Changed" />
 
                 <StackPanel Grid.Column="0" Margin="0,30,0,0">
 
@@ -222,7 +222,11 @@
                   
                 </StackPanel>
 
-                <Button Grid.Column="1" Margin="0,0,5,0" Width="150" Height="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Top" x:Name="DefaultButton" Click="DefaultButton_Click" Content="Default values" FontWeight="Bold"/>
+                <Button Grid.Column="1" Margin="0,0,5,0" 
+                        Width="150" Height="30" VerticalContentAlignment="Center" 
+                        HorizontalContentAlignment="Center" HorizontalAlignment="Right" 
+                        VerticalAlignment="Top" x:Name="DefaultButton" Click="DefaultButton_Click" 
+                        FontWeight="Bold"/>
 
                 <StackPanel Grid.Column="1" Margin="0,30,0,0">
 
@@ -254,10 +258,10 @@
               <ColumnDefinition/>
               <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <TextBlock Name="TxtCommand" Text="Command" HorizontalAlignment="Left" Margin="93,9,0,0" VerticalAlignment="Top" Width="185" FontSize="20" TextAlignment="Center"/>
-            <TextBlock Name="TxtHotkey" Text="HotKey" HorizontalAlignment="Left" Margin="86,9,0,0" VerticalAlignment="Top" Width="141" FontSize="20" Grid.Column="1" TextAlignment="Center"/>
+            <TextBlock Name="TxtCommand" HorizontalAlignment="Left" Margin="93,9,0,0" VerticalAlignment="Top" Width="185" FontSize="20" TextAlignment="Center"/>
+            <TextBlock Name="TxtHotkey" HorizontalAlignment="Left" Margin="86,9,0,0" VerticalAlignment="Top" Width="141" FontSize="20" Grid.Column="1" TextAlignment="Center"/>
             <Separator Margin="30,21,30,0" Height="41" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-            <Label Name="LblDisallowed" Grid.Column="1" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Red"/>
+            <Label Name="LblDisallowed" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Red"/>
           </Grid>
         </ScrollViewer>
       </controls:MetroTabItem>

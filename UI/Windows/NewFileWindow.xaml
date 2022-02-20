@@ -51,7 +51,7 @@
 
     </ListBox>
 
-    <TextBlock Name="PreviewBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="192,10,0,0" Text="Preview:" IsHitTestVisible="False" Grid.Column="1" />
+    <TextBlock Name="PreviewBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="192,10,0,0" IsHitTestVisible="False" Grid.Column="1" />
 
     <uc:EditorElement 
       x:Name="PreviewBox" 
@@ -62,8 +62,8 @@
     <TextBox Name="PathBox" VerticalAlignment="Bottom" Margin="5,0,215,5" 
                  Style="{StaticResource SearchMetroTextBox}"
                  controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFileCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" Grid.ColumnSpan="2" />
-    <Button Name="SaveButton" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5" Content="Save" Width="100" Click="SaveButton_Click" Grid.Column="1" />
-    <Button Name="CancelButton" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,110,5" Content="Cancel" Width="100" Click="CancelButton_Click" Grid.Column="1" />
+    <Button Name="SaveButton" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,5" Width="100" Click="SaveButton_Click" Grid.Column="1" />
+    <Button Name="CancelButton" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,110,5" Width="100" Click="CancelButton_Click" Grid.Column="1" />
     <TextBox x:Name="TbxRenameTemplate" Grid.Column="1" Visibility="Collapsed" HorizontalAlignment="Left" Margin="245,6,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="343" Height="21"/>
     <Label x:Name="LblError" Grid.Column="1" FontWeight="Bold" FontSize="12" Visibility="Collapsed" Foreground="Red" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Margin="375,5,0,0" VerticalAlignment="Top" Width="208" Height="26"/>
   </Grid>
