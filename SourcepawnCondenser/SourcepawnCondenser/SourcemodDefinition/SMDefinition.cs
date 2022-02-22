@@ -162,14 +162,13 @@ namespace SourcepawnCondenser.SourcemodDefinition
         {
             var nodes = new List<ACNode>
             {
-                Capacity = Enums.Count + Structs.Count + ConstVariables.Count + Functions.Count + EnumStructs.Count
+                Capacity = Enums.Count + Structs.Count + ConstVariables.Count + Functions.Count
             };
             nodes.AddRange(ACNode.ConvertFromStringArray(FunctionStrings, true, "▲ "));
             nodes.AddRange(ACNode.ConvertFromStringList(TypeStrings, false, "♦ "));
             nodes.AddRange(ACNode.ConvertFromStringList(Constants, false, "• "));
-            nodes.AddRange(ACNode.ConvertFromStringList(Methodmaps.Select(e => e.Name), false, "↨ "));
-            nodes.AddRange(ACNode.ConvertFromStringList(EnumStructs.Select(e => e.Name), false, "↩ "));
-
+            // nodes.AddRange(ACNode.ConvertFromStringList(Methodmaps.Select(e => e.Name), false, "↨ "));
+            // nodes.AddRange(ACNode.ConvertFromStringList(EnumStructs.Select(e => e.Name), false, "↩ "));
             nodes.AddRange(ACNode.ConvertFromStringList(Variables.Select(e => e.Name), false, "• "));
             nodes.AddRange(ACNode.ConvertFromStringList(FunctionVariableStrings, false, "• "));
             

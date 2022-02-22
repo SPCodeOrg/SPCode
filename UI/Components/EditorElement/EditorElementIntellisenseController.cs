@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -41,7 +40,7 @@ namespace SPCode.UI.Components
         private bool _isDocOpen;
 
         private bool _isTooltipOpen;
-
+        private bool _keepTooltipClosed;
 
         private bool _animationsLoaded;
 
@@ -138,22 +137,31 @@ namespace SPCode.UI.Components
             });
         }
 
+        private int _lastLine = -1;
+        
         private void EvaluateIntelliSense()
         {
-            if (editor.SelectionLength > 0)
+            // Check if ESC was pressed and we still are in the same line.
+            var currentLineIndex = editor.TextArea.Caret.Line - 1;
+            
+            if (_lastLine != currentLineIndex)
+            {
+                _keepTooltipClosed = false;
+            }
+            _lastLine = currentLineIndex;
+            
+            if (editor.SelectionLength > 0 || _keepTooltipClosed)
             {
                 HideTooltip();
                 return;
             }
-
-            var currentLineIndex = editor.TextArea.Caret.Line - 1;
+            
             var line = editor.Document.Lines[currentLineIndex];
-            var text = editor.Document.GetText(line.Offset, line.Length);
             var lineOffset = editor.TextArea.Caret.Column - 1;
+            var text = editor.Document.GetText(line.Offset, line.Length);
             var caretOffset = editor.CaretOffset;
             var quotationCount = 0;
-
-
+            
             // Hide tooltip if inside in-line comments.
             for (var i = 0; i < lineOffset; ++i)
             {
@@ -317,7 +325,7 @@ namespace SPCode.UI.Components
 
             return varDecl == null ? null : _smDef.Methodmaps.FirstOrDefault(e => e.Name == varDecl.Type);
 
-            // If we found the declaration get the Variable Type and look for a methodmap matching its type.
+            // If we found the declaration get the Variable Type and look for a method-map matching its type.
         }
 
         /// <summary>
@@ -381,7 +389,7 @@ namespace SPCode.UI.Components
             }
 
 
-            if (!IsValidFunctionChar(text[lineOffset - 1]))
+            if (!IsValidFunctionChar(text[lineOffset - 1]) && text[lineOffset - 1] != '.')
                 return false;
 
             var isNextCharValid = true;
@@ -419,8 +427,12 @@ namespace SPCode.UI.Components
                 dotOffset = i;
             }
 
-            var methodString = text.Substring(dotOffset, lineOffset - 1 - dotOffset + 1);
-
+            var methodString = text.Substring(dotOffset, lineOffset - dotOffset);
+            if (methodString == ".")
+            {
+                dotOffset++;
+            }
+            
             if (methodString.Length <= 0)
             {
                 return false;
@@ -463,7 +475,15 @@ namespace SPCode.UI.Components
 
                     MethodAutoCompleteBox.UpdateLayout();
                 }
-                
+
+                if (methodString == ".")
+                {
+                    MethodAutoCompleteBox.SelectedIndex = 0;
+                    MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+                    
+                    ShowTooltip(xPos, ACType.Class);
+                    return true;
+                }
                 for (var i = 0; i < isNodes.Count; i++)
                 {
                     var node = isNodes[i];
@@ -473,10 +493,7 @@ namespace SPCode.UI.Components
 
                     if (!node.EntryName.StartsWith(methodString))
                         continue;
-
-                    // We need to hide the doc (and then re-show it) to properly update the list.
-                    HideDoc();
-
+                    
                     MethodAutoCompleteBox.SelectedIndex = i;
                     MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
                     
@@ -489,9 +506,6 @@ namespace SPCode.UI.Components
 
                 if (method == -1)
                     return false;
-
-                // We need to hide the doc (and then re-show it) to properly update the list.
-                HideDoc();
                 
                 MethodAutoCompleteBox.SelectedIndex = method;
                 MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
@@ -522,6 +536,19 @@ namespace SPCode.UI.Components
 
         private bool ISAC_EvaluateKeyDownEvent(Key k)
         {
+            if ((Keyboard.Modifiers & ModifierKeys.Control) != 0 && k == Key.Space)
+            {
+                _keepTooltipClosed = false;
+                var currentLineIndex = editor.TextArea.Caret.Line - 1;
+                var line = editor.Document.Lines[currentLineIndex];
+                var text = editor.Document.GetText(line.Offset, line.Length);
+                var lineOffset = editor.TextArea.Caret.Column - 1;
+                
+                ComputeAutoComplete(text, lineOffset, 0);
+                return true;
+            }
+            
+            
             if (!_isTooltipOpen)
             {
                 return false;
@@ -530,9 +557,10 @@ namespace SPCode.UI.Components
             if (k == Key.Escape)
             {
                 HideTooltip();
+                _keepTooltipClosed = true;
                 return true;
             }
-
+            
             if (!_isAcOpen)
             {
                 return false;
@@ -543,8 +571,8 @@ namespace SPCode.UI.Components
                 case Key.Enter:
                 case Key.Tab:
                 {
-                    var tabToAutoc = Program.OptionsObject.Editor_TabToAutocomplete;
-                    if ((k == Key.Tab && !tabToAutoc) || (k == Key.Enter && tabToAutoc))
+                    var tabToAutoC = Program.OptionsObject.Editor_TabToAutocomplete;
+                    if ((k == Key.Tab && !tabToAutoC) || (k == Key.Enter && tabToAutoC))
                     {
                         return false;
                     }
@@ -582,6 +610,11 @@ namespace SPCode.UI.Components
                             {
                                 replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
                                 setCaret = true;
+                            }
+
+                            if (editor.Document.GetCharAt(endOffset) == '.')
+                            {
+                                endOffset++;
                             }
 
                             break;
@@ -625,13 +658,6 @@ namespace SPCode.UI.Components
             amount = box.SelectedIndex - amount; // Minus since we need to invert the amount.
             box.SelectedIndex =
                 Math.Max(0, Math.Min(box.Items.Count - 1, amount)); // Clamp the value between 0 and the items count.
-            box.ScrollIntoView(box.SelectedItem);
-        }
-        
-        private void ScrollBoxTo(int pos, ListBox? box = null)
-        {
-            box ??= GetListBox();
-            box.SelectedIndex = pos;
             box.ScrollIntoView(box.SelectedItem);
         }
 
