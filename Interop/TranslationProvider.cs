@@ -71,7 +71,10 @@ namespace SPCode.Interop
                     doc.Load(Path.Combine(_translationsDir, Constants.DefaultTranslationsFile));
                     foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
                     {
-                        _langDictionary.Add(node.Name, node.InnerText);
+                        if (node.NodeType != XmlNodeType.Comment)
+                        {
+                            _langDictionary.Add(node.Name, node.InnerText);
+                        }
                     }
                 }
 
