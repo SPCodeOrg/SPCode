@@ -14,9 +14,8 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public List<SMConstant> ConstVariables = new();
 
         // The function variables (where the cursor is in)
-        private readonly List<string> FunctionVariableStrings = new();
+        private readonly List<string> _functionVariableStrings = new();
 
-        // TODO: Typedefs are not added correctly.
         // This contains Enum, Structs, Methodmaps, Typedefs, Enum structs' names.
         public List<string> TypeStrings = new();
 
@@ -146,14 +145,14 @@ namespace SourcepawnCondenser.SourcemodDefinition
             {
                 if (CurrentFunction != null)
                 {
-                    FunctionVariableStrings.AddRange(CurrentFunction.FuncVariables.Select(v => v.Name));
+                    _functionVariableStrings.AddRange(CurrentFunction.FuncVariables.Select(v => v.Name));
                     var stringParams = CurrentFunction.Parameters.Select(e => e.Split('=').First().Trim())
                         .Select(e => e.Split(' ').Last()).Where(e => !string.IsNullOrWhiteSpace(e)).ToList();
-                    FunctionVariableStrings.AddRange(stringParams);
+                    _functionVariableStrings.AddRange(stringParams);
                 }
                 else
                 {
-                    FunctionVariableStrings.Clear();
+                    _functionVariableStrings.Clear();
                 }
             }
         }
@@ -170,28 +169,14 @@ namespace SourcepawnCondenser.SourcemodDefinition
             // nodes.AddRange(ACNode.ConvertFromStringList(Methodmaps.Select(e => e.Name), false, "↨ "));
             // nodes.AddRange(ACNode.ConvertFromStringList(EnumStructs.Select(e => e.Name), false, "↩ "));
             nodes.AddRange(ACNode.ConvertFromStringList(Variables.Select(e => e.Name), false, "• "));
-            nodes.AddRange(ACNode.ConvertFromStringList(FunctionVariableStrings, false, "• "));
+            nodes.AddRange(ACNode.ConvertFromStringList(_functionVariableStrings, false, "• "));
             
             //nodes = nodes.Distinct(new ACNodeEqualityComparer()).ToList(); Methodmaps and Functions can and will be the same.
             nodes.Sort((a, b) => string.CompareOrdinal(a.EntryName, b.EntryName));
 
             return nodes;
         }
-
-        public List<ISNode> ProduceISNodes()
-        {
-            var nodes = new List<ISNode>();
-            nodes.AddRange(ISNode.ConvertFromStringList(ObjectMethods, true, "▲ "));
-            nodes.AddRange(ISNode.ConvertFromStringList(ObjectFields, false, "• "));
-
-            // nodes.AddRange(ISNode.ConvertFromStringArray(VariableStrings, false, "v "));
-
-            nodes = nodes.Distinct(new ISNodeEqualityComparer()).ToList();
-            nodes.Sort((a, b) => string.CompareOrdinal(a.EntryName, b.EntryName));
-
-            return nodes;
-        }
-
+        
         public void MergeDefinitions(SMDefinition def)
         {
             try
@@ -317,14 +302,14 @@ namespace SourcepawnCondenser.SourcemodDefinition
             public int GetHashCode(ACNode node)
             { return node.EntryName.GetHashCode(); }
         }*/
-        public class ISNodeEqualityComparer : IEqualityComparer<ISNode>
+        public class ISNodeEqualityComparer : IEqualityComparer<ACNode>
         {
-            public bool Equals(ISNode nodeA, ISNode nodeB)
+            public bool Equals(ACNode nodeA, ACNode nodeB)
             {
                 return nodeA?.EntryName == nodeB?.EntryName;
             }
 
-            public int GetHashCode(ISNode node)
+            public int GetHashCode(ACNode node)
             {
                 return node.EntryName.GetHashCode();
             }
@@ -335,18 +320,16 @@ namespace SourcepawnCondenser.SourcemodDefinition
     {
         public string EntryName;
         public bool IsExecutable;
-        public string Name;
-        // Used for pre-processor statments.
-        public bool addSpace;
+        private string _name;
 
-        public static List<ACNode> ConvertFromStringArray(string[] strings, bool executable, string prefix = "", bool addSpace = false)
+        public static List<ACNode> ConvertFromStringArray(string[] strings, bool executable, string prefix = "")
         {
             var nodeList = new List<ACNode>();
             var length = strings.Length;
             for (var i = 0; i < length; ++i)
             {
                 nodeList.Add(
-                    new ACNode {Name = prefix + strings[i], EntryName = strings[i], IsExecutable = executable});
+                    new ACNode {_name = prefix + strings[i], EntryName = strings[i], IsExecutable = executable});
             }
 
             return nodeList;
@@ -355,74 +338,9 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public static IEnumerable<ACNode> ConvertFromStringList(IEnumerable<string> strings, bool executable,
             string prefix = "", bool addSpace = false)
         {
-            return strings.Select(e => new ACNode {Name = prefix + e, EntryName = e, IsExecutable = executable, addSpace = addSpace});
+            return strings.Select(e => new ACNode {_name = prefix + e, EntryName = e, IsExecutable = executable});
         }
 
-        public override string ToString()
-        {
-            return Name;
-        }
-    }
-
-    public class ISNode
-    {
-        public string EntryName;
-        public bool IsExecuteable;
-        public string Name;
-
-        public static IEnumerable<ISNode> ConvertFromStringArray(string[] strings, bool Executable, string prefix = "")
-        {
-            var nodeList = new List<ISNode>();
-            var length = strings.Length;
-            for (var i = 0; i < length; ++i)
-            {
-                nodeList.Add(
-                    new ISNode {Name = prefix + strings[i], EntryName = strings[i], IsExecuteable = Executable});
-            }
-
-            return nodeList;
-        }
-
-        public static IEnumerable<ISNode> ConvertFromStringList(IEnumerable<string> strings, bool executable,
-            string prefix = "")
-        {
-            return strings.Select(t => new ISNode {Name = prefix + t, EntryName = t, IsExecuteable = executable})
-                .ToList();
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-    }
-    
-    
-    class ISNodeComparer : IEqualityComparer<ISNode>
-    {
-        // Products are equal if their names and product numbers are equal.
-        public bool Equals(ISNode x, ISNode y)
-        {
-
-            //Check whether the compared objects reference the same data.
-            if (ReferenceEquals(x, y)) return true;
-
-            //Check whether any of the compared objects is null.
-            if (ReferenceEquals(x, null) || ReferenceEquals(y, null))
-                return false;
-
-            //Check whether the products' properties are equal.
-            return x.EntryName == y.EntryName && x.IsExecuteable == y.IsExecuteable;
-        }
-        
-
-        public int GetHashCode(ISNode isNode)
-        {
-            //Get hash code for the Name field if it is not null.
-            int nameHash = isNode.Name == null ? 0 : isNode.Name.GetHashCode();
-            int isExecutableHash = isNode.IsExecuteable.GetHashCode();
-
-            //Calculate the hash code for the product.
-            return nameHash ^ isExecutableHash;
-        }
+        public override string ToString() => _name;
     }
 }

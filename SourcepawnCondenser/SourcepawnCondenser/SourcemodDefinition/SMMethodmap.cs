@@ -10,13 +10,13 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public readonly List<SMMethodmapField> Fields = new();
         public readonly List<SMMethodmapMethod> Methods = new();
         
-        public List<ISNode> ProduceISNodes()
+        public List<ACNode> ProduceISNodes()
         {
-            var nodes = new List<ISNode>();
-            nodes.AddRange(ISNode.ConvertFromStringList(Methods.Select(e => e.Name), true, "▲ "));
-            nodes.AddRange(ISNode.ConvertFromStringList(Fields.Select(e => e.Name), false, "• "));
+            var nodes = new List<ACNode>();
+            nodes.AddRange(ACNode.ConvertFromStringList(Methods.Select(e => e.Name), true, "▲ "));
+            nodes.AddRange(ACNode.ConvertFromStringList(Fields.Select(e => e.Name), false, "• "));
 
-            // nodes.AddRange(ISNode.ConvertFromStringArray(VariableStrings, false, "v "));
+            // nodes.AddRange(ACNode.ConvertFromStringArray(VariableStrings, false, "v "));
 
             nodes.Sort((a, b) => string.CompareOrdinal(a.EntryName, b.EntryName));
 

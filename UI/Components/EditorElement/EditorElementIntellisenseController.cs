@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,9 +17,14 @@ namespace SPCode.UI.Components
 {
     enum ACType
     {
+        /// Top level objects, such as Functions, Variables, Types.
         Toplevel,
+
+        /// Class Methods and Fields. Also used for MethodMap list.
         Class,
-        PreProc
+
+        /// Pre-processor statments.
+        PreProc,
     }
 
     /// @note
@@ -35,7 +41,7 @@ namespace SPCode.UI.Components
         /// We use this just to keep track of the current isNodes for the equality check.
         /// Seems like that using this as ItemsSource for the MethodAutoCompleteBox causes it to not update the UI
         /// when ScrollIntoView is called.
-        private readonly List<ISNode> _methodACEntries = new();
+        private readonly List<ACNode> _methodACEntries = new();
 
         private bool _isDocOpen;
 
@@ -61,13 +67,14 @@ namespace SPCode.UI.Components
         private SMDefinition _smDef;
 
         /// Matches either a function call ("PrintToChat(...)") or a method call ("arrayList.Push(...)")
-        private readonly Regex _isFindRegex = new(
+        static private readonly Regex ISFindRegex = new(
             @"\b(((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+)\.)?(?<method>[a-zA-Z_]([a-zA-Z0-9_]?)+)\()",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
+        static private readonly Regex NewRegex = new(@"(?:(\w+)\s+\w+\s+=\s+)?new\s+(\w+)?$", RegexOptions.Compiled);
         // TODO Add EnumStructs
 
-        private readonly Regex _multilineCommentRegex = new(@"/\*.*?\*/",
+        static private readonly Regex MultilineCommentRegex = new(@"/\*.*?\*/",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
 
         // Pre-processor statements
@@ -117,7 +124,6 @@ namespace SPCode.UI.Components
 
 
             AutoCompleteBox.ItemsSource = _acEntries;
-            // MethodAutoCompleteBox.ItemsSource = _methodACEntries;
             PreProcAutocompleteBox.ItemsSource = ACNode.ConvertFromStringList(PreProcList, false, "#", true);
         }
 
@@ -138,30 +144,31 @@ namespace SPCode.UI.Components
         }
 
         private int _lastLine = -1;
-        
+
         private void EvaluateIntelliSense()
         {
             // Check if ESC was pressed and we still are in the same line.
             var currentLineIndex = editor.TextArea.Caret.Line - 1;
-            
+
             if (_lastLine != currentLineIndex)
             {
                 _keepTooltipClosed = false;
             }
+
             _lastLine = currentLineIndex;
-            
+
             if (editor.SelectionLength > 0 || _keepTooltipClosed)
             {
                 HideTooltip();
                 return;
             }
-            
+
             var line = editor.Document.Lines[currentLineIndex];
             var lineOffset = editor.TextArea.Caret.Column - 1;
             var text = editor.Document.GetText(line.Offset, line.Length);
             var caretOffset = editor.CaretOffset;
             var quotationCount = 0;
-            
+
             // Hide tooltip if inside in-line comments.
             for (var i = 0; i < lineOffset; ++i)
             {
@@ -188,7 +195,7 @@ namespace SPCode.UI.Components
 
 
             // Hide Tooltip if inside a multiline comment.
-            var mc = _multilineCommentRegex.Matches(editor.Text,
+            var mc = MultilineCommentRegex.Matches(editor.Text,
                 0);
             var mlcCount = mc.Count;
             for (var i = 0; i < mlcCount; ++i)
@@ -234,7 +241,7 @@ namespace SPCode.UI.Components
         bool ComputeIntelliSense(string text, int lineOffset)
         {
             //TODO: Add support for EnumStructs
-            var isMatches = _isFindRegex.Matches(text);
+            var isMatches = ISFindRegex.Matches(text);
             var scopeLevel = 0;
 
             // Iterate the line characters in reverse starting from the caret position.
@@ -323,9 +330,8 @@ namespace SPCode.UI.Components
             // Try to match it in the current file.
             varDecl ??= _smDef.Variables.FirstOrDefault(e => e.Name == classStr);
 
-            return varDecl == null ? null : _smDef.Methodmaps.FirstOrDefault(e => e.Name == varDecl.Type);
-
             // If we found the declaration get the Variable Type and look for a method-map matching its type.
+            return varDecl == null ? null : _smDef.Methodmaps.FirstOrDefault(e => e.Name == varDecl.Type);
         }
 
         /// <summary>
@@ -389,7 +395,8 @@ namespace SPCode.UI.Components
             }
 
 
-            if (!IsValidFunctionChar(text[lineOffset - 1]) && text[lineOffset - 1] != '.')
+            if (!IsValidFunctionChar(text[lineOffset - 1]) &&
+                text[lineOffset - 1] != '.' && text[lineOffset - 1] != ' ' && text[lineOffset - 1] != '\t')
                 return false;
 
             var isNextCharValid = true;
@@ -432,7 +439,7 @@ namespace SPCode.UI.Components
             {
                 dotOffset++;
             }
-            
+
             if (methodString.Length <= 0)
             {
                 return false;
@@ -469,7 +476,7 @@ namespace SPCode.UI.Components
                 {
                     MethodAutoCompleteBox.Items.Clear();
                     isNodes.ForEach(e => MethodAutoCompleteBox.Items.Add(e));
-                    
+
                     _methodACEntries.Clear();
                     _methodACEntries.AddRange(isNodes);
 
@@ -480,58 +487,99 @@ namespace SPCode.UI.Components
                 {
                     MethodAutoCompleteBox.SelectedIndex = 0;
                     MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
-                    
-                    ShowTooltip(xPos, ACType.Class);
-                    return true;
-                }
-                for (var i = 0; i < isNodes.Count; i++)
-                {
-                    var node = isNodes[i];
 
-                    if (node.EntryName == methodString)
-                        return false;
-
-                    if (!node.EntryName.StartsWith(methodString))
-                        continue;
-                    
-                    MethodAutoCompleteBox.SelectedIndex = i;
-                    MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
-                    
                     ShowTooltip(xPos, ACType.Class);
                     return true;
                 }
 
-                // If no method starts with the methodString look for one that contains it.
-                var method = isNodes.FindIndex(e => e.EntryName.Contains(methodString));
+                var index = isNodes.FindNode(methodString);
 
-                if (method == -1)
+                if (index == null)
                     return false;
-                
-                MethodAutoCompleteBox.SelectedIndex = method;
+
+                MethodAutoCompleteBox.SelectedIndex = (int)index;
                 MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
-                
+
                 ShowTooltip(xPos, ACType.Class);
 
                 return true;
             }
 
-            for (var i = 0; i < _acEntries.Count; ++i)
+            // Match MethodMap initializations.
+            var match = NewRegex.Match(text.Substring(0, lineOffset));
+            if (match.Success)
             {
-                if (!_acEntries[i].EntryName.StartsWith(methodString,
-                        StringComparison.InvariantCultureIgnoreCase) ||
-                    methodString == _acEntries[i].EntryName)
+                var isNodes = ACNode.ConvertFromStringList(_smDef.Methodmaps.Select(e => e.Name), true, "• ").ToList();
+
+                if (!isNodes.SequenceEqual(_methodACEntries, ISEqualityComparer))
                 {
-                    continue;
+                    MethodAutoCompleteBox.Items.Clear();
+                    isNodes.ForEach(e => MethodAutoCompleteBox.Items.Add(e));
+
+                    _methodACEntries.Clear();
+                    _methodACEntries.AddRange(isNodes);
+
+                    MethodAutoCompleteBox.UpdateLayout();
                 }
 
-                AutoCompleteBox.SelectedIndex = i;
-                AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
-                ShowTooltip(xPos, ACType.Toplevel);
+                var methodMapName = match.Groups[2].Value;
+
+                if (methodMapName == "")
+                {
+                    var boxIndex = 0;
+                    var varType = match.Groups[1].Value;
+                    if (varType != "")
+                    {
+                        var mmIndex = _methodACEntries.FindIndex(e => e.EntryName.StartsWith(varType));
+                        if (mmIndex != -1)
+                        {
+                            boxIndex = mmIndex;
+                        }
+                    }
+
+                    MethodAutoCompleteBox.SelectedIndex = boxIndex;
+                    MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+
+                    ShowTooltip(xPos, ACType.Class);
+                    return true;
+                }
+
+                var index = isNodes.FindNode(methodMapName);
+
+                if (index == null)
+                {
+                    return false;
+                }
+
+                MethodAutoCompleteBox.SelectedIndex = (int)index;
+                MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+
+                ShowTooltip(xPos, ACType.Class);
+
                 return true;
             }
 
+            // Match functions and other symbols like Variables, Types, ...
+            var funcIndex =
+                _acEntries.FindIndex(e => e.EntryName.StartsWith(methodString) && methodString != e.EntryName);
+            if (funcIndex == -1)
+            {
+                // Re-try without case sensitivity.
+                funcIndex = _acEntries.FindIndex(e =>
+                    e.EntryName.StartsWith(methodString, StringComparison.InvariantCultureIgnoreCase) &&
+                    methodString != e.EntryName);
+            }
 
-            return false;
+            // If not found
+            if (funcIndex == -1)
+            {
+                return false;
+            }
+
+            AutoCompleteBox.SelectedIndex = funcIndex;
+            AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
+            ShowTooltip(xPos, ACType.Toplevel);
+            return true;
         }
 
         private bool ISAC_EvaluateKeyDownEvent(Key k)
@@ -543,12 +591,12 @@ namespace SPCode.UI.Components
                 var line = editor.Document.Lines[currentLineIndex];
                 var text = editor.Document.GetText(line.Offset, line.Length);
                 var lineOffset = editor.TextArea.Caret.Column - 1;
-                
+
                 ComputeAutoComplete(text, lineOffset, 0);
                 return true;
             }
-            
-            
+
+
             if (!_isTooltipOpen)
             {
                 return false;
@@ -560,7 +608,7 @@ namespace SPCode.UI.Components
                 _keepTooltipClosed = true;
                 return true;
             }
-            
+
             if (!_isAcOpen)
             {
                 return false;
@@ -577,12 +625,20 @@ namespace SPCode.UI.Components
                         return false;
                     }
 
+                    // HideTooltip();
+
                     var startOffset = editor.CaretOffset - 1;
                     var endOffset = startOffset;
                     for (var i = startOffset; i >= 0; --i)
                     {
-                        if (!IsValidFunctionChar(editor.Document.GetCharAt(i)))
+                        var charAt = editor.Document.GetCharAt(i);
+                        if (!IsValidFunctionChar(charAt))
                         {
+                            if (i == startOffset && (charAt is '.' or ' ' or '\t'))
+                            {
+                                endOffset = i + 1;
+                            }
+
                             break;
                         }
 
@@ -591,46 +647,32 @@ namespace SPCode.UI.Components
 
                     var length = startOffset - endOffset;
                     string replaceString;
-                    var setCaret = false;
+                    var setCaret = 0;
 
+
+                    var item = (ACNode)CurrentBox.SelectedItem;
                     switch (_acType)
                     {
                         case ACType.Toplevel:
-                            replaceString = ((ACNode)AutoCompleteBox.SelectedItem).EntryName;
-                            if (_acEntries[AutoCompleteBox.SelectedIndex].IsExecutable)
-                            {
-                                replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
-                                setCaret = true;
-                            }
-
-                            break;
                         case ACType.Class:
-                            replaceString = ((ISNode)MethodAutoCompleteBox.SelectedItem).EntryName;
-                            if (_methodACEntries[MethodAutoCompleteBox.SelectedIndex].IsExecuteable)
+                            replaceString = item.EntryName;
+                            if (item.IsExecutable)
                             {
                                 replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
-                                setCaret = true;
-                            }
-
-                            if (editor.Document.GetCharAt(endOffset) == '.')
-                            {
-                                endOffset++;
+                                setCaret = -1;
                             }
 
                             break;
+
                         case ACType.PreProc:
-                            replaceString = ((ACNode)PreProcAutocompleteBox.SelectedItem).EntryName;
-                            replaceString += " ";
+                            replaceString = item.EntryName + " ";
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
 
                     editor.Document.Replace(endOffset, length + 1, replaceString);
-                    if (setCaret)
-                    {
-                        editor.CaretOffset--;
-                    }
+                    editor.CaretOffset += setCaret;
 
                     return true;
                 }
@@ -654,7 +696,7 @@ namespace SPCode.UI.Components
         /// Scroll the ListBox UP amount times.
         private void ScrollBox(int amount, ListBox? box = null)
         {
-            box ??= GetListBox();
+            box ??= CurrentBox;
             amount = box.SelectedIndex - amount; // Minus since we need to invert the amount.
             box.SelectedIndex =
                 Math.Max(0, Math.Min(box.Items.Count - 1, amount)); // Clamp the value between 0 and the items count.
@@ -662,15 +704,19 @@ namespace SPCode.UI.Components
         }
 
         /// Get the current list box from the current _acType.
-        private ListBox GetListBox()
+        /// The MethodAutoCompleteBox is also used for MethodMaps "new statments".
+        private ListBox CurrentBox
         {
-            return _acType switch
+            get
             {
-                ACType.Toplevel => AutoCompleteBox,
-                ACType.Class => MethodAutoCompleteBox,
-                ACType.PreProc => PreProcAutocompleteBox,
-                _ => throw new ArgumentOutOfRangeException()
-            };
+                return _acType switch
+                {
+                    ACType.Toplevel => AutoCompleteBox,
+                    ACType.Class => MethodAutoCompleteBox,
+                    ACType.PreProc => PreProcAutocompleteBox,
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+            }
         }
 
         /// <summary>
@@ -820,6 +866,16 @@ namespace SPCode.UI.Components
         /// </summary>
         private void HideTooltip()
         {
+            if (_isAcOpen)
+            {
+                HideAC();
+            }
+
+            if (_isDocOpen)
+            {
+                HideDoc();
+            }
+
             if (!_isTooltipOpen)
             {
                 return;
@@ -939,5 +995,31 @@ namespace SPCode.UI.Components
         // Check if char is between a-z A-Z 0-9 or _.
         private static bool IsValidFunctionChar(char c) =>
             (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_';
+    }
+
+    public static class ACNodeExt
+    {
+        public static int? FindNode(this List<ACNode> nodes, string query)
+        {
+            for (var i = 0; i < nodes.Count; i++)
+            {
+                var node = nodes[i];
+
+                if (node.EntryName == query)
+                    return null;
+
+                if (!node.EntryName.StartsWith(query))
+                    continue;
+
+                return i;
+            }
+
+            var index = nodes.FindIndex(node => node.EntryName.StartsWith(query, StringComparison.InvariantCultureIgnoreCase));
+            if (index == -1)
+            {
+                index = nodes.FindIndex(node => node.EntryName.Contains(query));
+            }
+            return index == -1 ? null : index;
+        }
     }
 }
