@@ -62,7 +62,8 @@
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </controls:MetroWindow.Resources>
-  <Grid>
+  
+  <Grid x:Name="GoToLineMainGrid">
     <TextBox Name="JumpNumber" VerticalAlignment="Top" Text="1" KeyDown="JumpNumberKeyDown" Foreground="{DynamicResource BlackColorBrush}" Margin="5,5,5,0" TextChanged="JumpNumber_TextChanged" />
     <RadioButton Name="rbLineJump" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" IsChecked="True" Foreground="{DynamicResource BlackColorBrush}" Checked="RbLineJump_Checked" />
     <RadioButton Name="rbOffsetJump" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,55,0,0" IsChecked="False" Foreground="{DynamicResource BlackColorBrush}" Checked="RbOffsetJump_Checked" />

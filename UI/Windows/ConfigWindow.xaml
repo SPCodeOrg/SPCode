@@ -84,7 +84,8 @@
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </controls:MetroWindow.Resources>
-  <Grid>
+
+  <Grid x:Name="ConfigsWindowMainGrid">
     <Button Name="NewButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Width="75" Click="NewButton_Clicked" />
     <Button Name="DeleteButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="120,5,0,0" Width="75" Click="DeleteButton_Clicked" />
     <ListBox Name="ConfigListBox" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,35,0,0" Width="200" SelectionChanged="ConfigListBox_SelectionChanged" />

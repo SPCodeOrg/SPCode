@@ -7,8 +7,8 @@
                       ResizeMode="CanResize" 
                       WindowStartupLocation="CenterOwner" 
                       GlowBrush="{DynamicResource AccentColorBrush}"
-                      ShowTitleBar="False" 
-                      Title="Parsed Sourcepawn Definion">
+                      ShowTitleBar="True"
+                      TitleCharacterCasing="Normal">
 
   <controls:MetroWindow.Resources>
     <ResourceDictionary>

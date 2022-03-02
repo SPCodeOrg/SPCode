@@ -104,86 +104,86 @@ namespace SPCode.UI.Windows
             var TagValue = item.Tag;
             if (TagValue != null)
             {
-                if (TagValue is SMFunction sm1)
+                if (TagValue is SMFunction fn)
                 {
-                    SPNameBlock.Text = sm1.Name;
-                    SPFullNameBlock.Text = sm1.FullName;
-                    SPFileBlock.Text = sm1.File + ".inc" +
-                                       $" {string.Format(Translate("PosLen"), sm1.Index, sm1.Length)}";
+                    SPNameBlock.Text = fn.Name;
+                    SPFullNameBlock.Text = fn.FullName;
+                    SPFileBlock.Text = fn.File + ".inc" +
+                                       $" {string.Format(Translate("PosLen"), fn.Index, fn.Length)}";
                     SPTypeBlock.Text = "Function";
-                    SPCommentBox.Text = "Comment: " + sm1.CommentString + "\nType: " + sm1.FunctionKind;
+                    SPCommentBox.Text = "Comment: " + fn.CommentString + "\nType: " + fn.FunctionKind;
                     return;
                 }
 
-                if (TagValue is SMConstant sm2)
+                if (TagValue is SMConstant constant)
                 {
-                    SPNameBlock.Text = sm2.Name;
+                    SPNameBlock.Text = constant.Name;
                     SPFullNameBlock.Text = string.Empty;
-                    SPFileBlock.Text = sm2.File + ".inc" +
-                                       $" {string.Format(Translate("PosLen"), sm2.Index, sm2.Length)}";
+                    SPFileBlock.Text = constant.File + ".inc" +
+                                       $" {string.Format(Translate("PosLen"), constant.Index, constant.Length)}";
                     SPTypeBlock.Text = "Constant";
                     SPCommentBox.Text = string.Empty;
                     return;
                 }
 
-                if (TagValue is SMEnum sm3)
+                if (TagValue is SMEnum en)
                 {
-                    SPNameBlock.Text = sm3.Name;
+                    SPNameBlock.Text = en.Name;
                     SPFullNameBlock.Text = string.Empty;
-                    SPFileBlock.Text = sm3.File + ".inc" +
-                                       $" {string.Format(Translate("PosLen"), sm3.Index, sm3.Length)}";
-                    SPTypeBlock.Text = "Enum " + sm3.Entries.Length + " entries";
+                    SPFileBlock.Text = en.File + ".inc" +
+                                       $" {string.Format(Translate("PosLen"), en.Index, en.Length)}";
+                    SPTypeBlock.Text = "Enum " + en.Entries.Length + " entries";
                     var outString = new StringBuilder();
-                    for (var i = 0; i < sm3.Entries.Length; ++i)
+                    for (var i = 0; i < en.Entries.Length; ++i)
                     {
                         outString.Append((i + ".").PadRight(5, ' '));
-                        outString.AppendLine(sm3.Entries[i]);
+                        outString.AppendLine(en.Entries[i]);
                     }
 
                     SPCommentBox.Text = outString.ToString();
                     return;
                 }
 
-                if (TagValue is SMStruct sm4)
+                if (TagValue is SMStruct str)
                 {
-                    SPNameBlock.Text = sm4.Name;
+                    SPNameBlock.Text = str.Name;
                     SPFullNameBlock.Text = string.Empty;
-                    SPFileBlock.Text = sm4.File + ".inc" +
-                                       $" {string.Format(Translate("PosLen"), sm4.Index, sm4.Length)}";
+                    SPFileBlock.Text = str.File + ".inc" +
+                                       $" {string.Format(Translate("PosLen"), str.Index, str.Length)}";
                     SPTypeBlock.Text = "Struct";
                     SPCommentBox.Text = string.Empty;
                     return;
                 }
 
-                if (TagValue is SMDefine sm5)
+                if (TagValue is SMDefine define)
                 {
-                    SPNameBlock.Text = sm5.Name;
+                    SPNameBlock.Text = define.Name;
                     SPFullNameBlock.Text = string.Empty;
-                    SPFileBlock.Text = sm5.File + ".inc" +
-                                       $" {string.Format(Translate("PosLen"), sm5.Index, sm5.Length)}";
+                    SPFileBlock.Text = define.File + ".inc" +
+                                       $" {string.Format(Translate("PosLen"), define.Index, define.Length)}";
                     SPTypeBlock.Text = "Definition";
                     SPCommentBox.Text = string.Empty;
                     return;
                 }
 
-                if (TagValue is SMMethodmap sm6)
+                if (TagValue is SMMethodmap methodmap)
                 {
-                    SPNameBlock.Text = sm6.Name;
-                    SPFullNameBlock.Text = $"{Translate("TypeStr")}: " + sm6.Type +
-                                           $" - {Translate("InheritedFrom")}: {sm6.InheritedType}";
-                    SPFileBlock.Text = sm6.File + ".inc" +
-                                       $" ({string.Format(Translate("PosLen"), sm6.Index, sm6.Length)})";
-                    SPTypeBlock.Text = "Methodmap " + sm6.Methods.Count + " methods - " + sm6.Fields.Count + " fields";
+                    SPNameBlock.Text = methodmap.Name;
+                    SPFullNameBlock.Text = $"Type: " + methodmap.Type +
+                                           $" - {Translate("InheritedFrom")}: {methodmap.InheritedType}";
+                    SPFileBlock.Text = methodmap.File + ".inc" +
+                                       $" ({string.Format(Translate("PosLen"), methodmap.Index, methodmap.Length)})";
+                    SPTypeBlock.Text = "Methodmap " + methodmap.Methods.Count + " methods - " + methodmap.Fields.Count + " fields";
                     var outString = new StringBuilder();
                     outString.AppendLine("Methods:");
-                    foreach (var m in sm6.Methods)
+                    foreach (var m in methodmap.Methods)
                     {
                         outString.AppendLine(m.FullName);
                     }
 
                     outString.AppendLine();
                     outString.AppendLine("Fields:");
-                    foreach (var f in sm6.Fields)
+                    foreach (var f in methodmap.Fields)
                     {
                         outString.AppendLine(f.FullName);
                     }
@@ -192,36 +192,36 @@ namespace SPCode.UI.Windows
                     return;
                 }
 
-                if (TagValue is SMMethodmapMethod sm7)
+                if (TagValue is SMMethodmapMethod method)
                 {
-                    SPNameBlock.Text = sm7.Name;
-                    SPFullNameBlock.Text = sm7.FullName;
-                    SPFileBlock.Text = sm7.File + ".inc" +
-                                       $" {string.Format(Translate("PosLen"), sm7.Index, sm7.Length)}";
-                    SPTypeBlock.Text = $"{Translate("MethodFrom")} {sm7.MethodmapName}";
-                    SPCommentBox.Text = sm7.CommentString;
+                    SPNameBlock.Text = method.Name;
+                    SPFullNameBlock.Text = method.FullName;
+                    SPFileBlock.Text = method.File + ".inc" +
+                                       $" {string.Format(Translate("PosLen"), method.Index, method.Length)}";
+                    SPTypeBlock.Text = $"{Translate("MethodFrom")} {method.MethodmapName}";
+                    SPCommentBox.Text = method.CommentString;
                     return;
                 }
 
-                if (TagValue is SMMethodmapField sm8)
+                if (TagValue is SMMethodmapField field)
                 {
-                    SPNameBlock.Text = sm8.Name;
-                    SPFullNameBlock.Text = sm8.FullName;
-                    SPFileBlock.Text = sm8.File + ".inc" +
-                                       $" {string.Format(Translate("PosLen"), sm8.Index, sm8.Length)}";
-                    SPTypeBlock.Text = $"{Translate("PropertyFrom")} {sm8.MethodmapName}";
+                    SPNameBlock.Text = field.Name;
+                    SPFullNameBlock.Text = field.FullName;
+                    SPFileBlock.Text = field.File + ".inc" +
+                                       $" {string.Format(Translate("PosLen"), field.Index, field.Length)}";
+                    SPTypeBlock.Text = $"{Translate("PropertyFrom")} {field.MethodmapName}";
                     SPCommentBox.Text = string.Empty;
                     return;
                 }
 
-                if (TagValue is SMTypedef sm)
+                if (TagValue is SMTypedef typedef)
                 {
-                    SPNameBlock.Text = sm.Name;
+                    SPNameBlock.Text = typedef.Name;
                     SPFullNameBlock.Text = string.Empty;
-                    SPFileBlock.Text = sm.File + ".inc" +
-                                       $" {string.Format(Translate("PosLen"), sm.Index, sm.Length)}";
+                    SPFileBlock.Text = typedef.File + ".inc" +
+                                       $" {string.Format(Translate("PosLen"), typedef.Index, typedef.Length)}";
                     SPTypeBlock.Text = "Typedef/Typeset";
-                    SPCommentBox.Text = sm.FullName;
+                    SPCommentBox.Text = typedef.FullName;
                     return;
                 }
 
@@ -312,11 +312,8 @@ namespace SPCode.UI.Windows
 
         private void Language_Translate()
         {
+            Title = Translate("ParsedDefWindow");
             TextBoxHelper.SetWatermark(SPSearchBox, Translate("Search"));
-            /*if (TranslateLanguage("IsDefault)
-            {
-                return;
-            }*/
         }
         #endregion
     }

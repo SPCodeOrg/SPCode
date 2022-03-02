@@ -109,6 +109,8 @@ namespace SPCode.UI.Windows
             }
 
             TemplateListBox.SelectedIndex = 0;
+
+            // Some tweaking for this editor element to be used as template preview
             PreviewBox.editor.IsReadOnly = true;
             PreviewBox.editor.FontSize = 12;
             PreviewBox.CompileBox.Visibility = Visibility.Collapsed;
@@ -117,7 +119,6 @@ namespace SPCode.UI.Windows
             PreviewBox.StatusLine_Offset.Visibility = Visibility.Collapsed;
             PreviewBox.StatusLine_Line.Visibility = Visibility.Collapsed;
             PreviewBox.StatusLine_SelectionLength.Visibility = Visibility.Collapsed;
-
         }
         #endregion
 
@@ -237,7 +238,7 @@ namespace SPCode.UI.Windows
             TemplateNewMode = true;
             TemplateListBox.Items.Add(new ListBoxItem()
             {
-                Content = "New Template"
+                Content = Translate("NewTemplate")
             });
             TemplateListBox.SelectedIndex = TemplateListBox.Items.Count - 1;
             PreviewBox.editor.IsReadOnly = false;
@@ -370,8 +371,13 @@ namespace SPCode.UI.Windows
 
         private void Language_Translate()
         {
-            PreviewBlock.Text = $"{Translate("Preview")}:";
+            Title = Translate("NewFromTemplate");
+            PreviewBlock.Text = Translate("Preview");
             SaveButton.Content = Translate("Save");
+            CancelButton.Content = Translate("Cancel");
+            AddTemplateButton.Header = Translate("Add");
+            EditTemplateButton.Header = Translate("Edit");
+            DeleteTemplateButton.Header = Translate("Delete");
         }
 
         private void GoToSelectedTemplate()

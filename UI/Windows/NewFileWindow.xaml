@@ -11,8 +11,8 @@
                       ResizeMode="CanResizeWithGrip" 
                       WindowStartupLocation="CenterOwner" 
                       GlowBrush="{DynamicResource AccentColorBrush}"
-                      Title="New" 
-                      ShowTitleBar="False" 
+                      TitleCharacterCasing="Normal"
+                      ShowTitleBar="True" 
                       KeyDown="NewFileWind_KeyDown"
                       Closing="NewFileWind_Closing">
 
@@ -27,7 +27,8 @@
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </controls:MetroWindow.Resources>
-  <Grid>
+  
+  <Grid x:Name="NewFileWindowMainGrid">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="17*"/>
       <ColumnDefinition Width="183*"/>
@@ -43,9 +44,9 @@
 
       <ListBox.ContextMenu>
         <ContextMenu>
-          <MenuItem Header="Add" Click="TemplateListItem_Context_Add"/>
-          <MenuItem Header="Edit" Click="TemplateListItem_Context_Edit"/>
-          <MenuItem Header="Delete" Click="TemplateListItem_Context_Delete"/>
+          <MenuItem x:Name="AddTemplateButton" Click="TemplateListItem_Context_Add"/>
+          <MenuItem x:Name="EditTemplateButton" Click="TemplateListItem_Context_Edit"/>
+          <MenuItem x:Name="DeleteTemplateButton" Click="TemplateListItem_Context_Delete"/>
         </ContextMenu>
       </ListBox.ContextMenu>
 

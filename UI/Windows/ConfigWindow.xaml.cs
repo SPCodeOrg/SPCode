@@ -75,12 +75,12 @@ namespace SPCode.UI.Windows
             var item1 = new ComboBoxItem()
             {
                 Visibility = Visibility.Collapsed,
-                Content = "Macros",
+                Content = Translate("Macros"),
             };
             var item2 = new ComboBoxItem()
             {
                 Visibility = Visibility.Collapsed,
-                Content = "Macros",
+                Content = Translate("Macros"),
             };
             CMD_ItemC.Items.Insert(0, item1);
             Rcon_MenuC.Items.Insert(0, item2);
@@ -139,7 +139,7 @@ namespace SPCode.UI.Windows
                             {
                                 var dialog = new OpenFileDialog
                                 {
-                                    Filter = "Executables *.exe|*.exe|All Files *.*|*.*",
+                                    Filter = Constants.ServerExecutableFilter,
                                     Multiselect = false,
                                     CheckFileExists = true,
                                     CheckPathExists = true,
@@ -183,7 +183,7 @@ namespace SPCode.UI.Windows
             var item = new ComboBoxItem()
             {
                 Visibility = Visibility.Collapsed,
-                Content = "Macros",
+                Content = Translate("Macros"),
             };
             CMD_ItemC.Items.Insert(0, item);
             CMD_ItemC.SelectedIndex = 0;
@@ -202,7 +202,7 @@ namespace SPCode.UI.Windows
             var item = new ComboBoxItem()
             {
                 Visibility = Visibility.Collapsed,
-                Content = "Macros",
+                Content = Translate("Macros"),
             };
             Rcon_MenuC.Items.Insert(0, item);
             Rcon_MenuC.SelectedIndex = 0;

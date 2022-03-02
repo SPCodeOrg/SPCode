@@ -19,6 +19,7 @@ namespace SPCode.Interop
         private readonly string _tempDir = Paths.GetTempDirectory();
         private readonly string _translationsDir = Paths.GetTranslationsDirectory();
         private static readonly Dictionary<string, string> _langDictionary = new(StringComparer.OrdinalIgnoreCase);
+        private static readonly Dictionary<string, string> _defaultDictionary = new(StringComparer.OrdinalIgnoreCase);
         private Release _latestVersion;
 
         public TranslationProvider()
@@ -44,7 +45,18 @@ namespace SPCode.Interop
         /// <returns></returns>
         public static string Translate(string phrase)
         {
-            return _langDictionary.ContainsKey(phrase) ? _langDictionary[phrase] : "<empty>";
+            if (_langDictionary.ContainsKey(phrase))
+            {
+                return _langDictionary[phrase];
+            }
+            else if (_defaultDictionary.ContainsKey(phrase))
+            {
+                return _defaultDictionary[phrase];
+            }
+            else
+            {
+                return $"<{phrase}>";
+            }
         }
 
         /// <summary>
@@ -54,9 +66,10 @@ namespace SPCode.Interop
         /// <param name="initial">Whether this was the startup initial method call</param>
         public void LoadLanguage(string lang, bool initial = false)
         {
-            // This is probably the first boot ever
+            _langDictionary.Clear();
             if (lang == string.Empty)
             {
+                // This is probably the first boot ever
                 lang = Constants.DefaultLanguageID;
                 Program.OptionsObject.Language = lang;
             }
@@ -73,7 +86,7 @@ namespace SPCode.Interop
                     {
                         if (node.NodeType != XmlNodeType.Comment)
                         {
-                            _langDictionary.Add(node.Name, node.InnerText);
+                            _defaultDictionary.Add(node.Name, node.InnerText);
                         }
                     }
                 }
@@ -92,7 +105,10 @@ namespace SPCode.Interop
                     // Replace existing keys with the ones available in this file
                     foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
                     {
-                        _langDictionary[node.Name] = node.InnerText;
+                        if (node.NodeType != XmlNodeType.Comment)
+                        {
+                            _langDictionary.Add(node.Name, node.InnerText);
+                        }
                     }
                 }
             }

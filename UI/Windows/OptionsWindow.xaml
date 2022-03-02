@@ -17,6 +17,29 @@
   <controls:MetroWindow.Resources>
     <ResourceDictionary>
 
+      <Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{DynamicResource WhiteBrush}"/>
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="{x:Type Button}">
+              <Border Background="{TemplateBinding Background}" BorderBrush="{DynamicResource AccentColorBrush}">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Border>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+          <Trigger Property="IsMouseOver" Value="True">
+            <Setter Property="Background" Value="{DynamicResource AccentColorBrush4}"/>
+          </Trigger>
+          <Trigger Property="IsPressed" Value="True">
+            <Setter Property="Background" Value="{DynamicResource AccentColorBrush2}"/>
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+
+      <Image x:Key="ImgReload" Source="/SPCode;component/Resources/Icons/icon-reload.png" Width="16"/>
+
       <Style BasedOn="{StaticResource {x:Type CheckBox}}" x:Key="IndentedCheckBox" TargetType="{x:Type CheckBox}">
         <Setter Property="Margin" Value="25,7,0,0"/>
       </Style>
@@ -48,13 +71,13 @@
       <Button Name="ResetButton" Click="RestoreButton_Clicked" />
     </controls:WindowCommands>
   </controls:MetroWindow.RightWindowCommands>
-  
-  <Grid>
+
+  <Grid x:Name="OptionsWindowMainGrid">
 
     <controls:MetroAnimatedSingleRowTabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,5,0,0" controls:TabControlHelper.IsUnderlined="True">
 
       <!-- Program Tab -->
-      <controls:MetroTabItem Name="ProgramHeader" Header=" Program ">
+      <controls:MetroTabItem Name="ProgramHeader">
         <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Visible">
 
           <Grid>
@@ -97,6 +120,7 @@
               <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                 <Label Name="LanguageLabel" Margin="0,0,10,0" />
                 <ComboBox Name="LanguageBox" Width="120" SelectionChanged="LanguageBox_Changed" />
+                <Button x:Name="ReloadLanguageButton" Style="{StaticResource ButtonStyle}" Content="{StaticResource ImgReload}" Click="ReloadLanguageButton_Click" Height="22" Width="22" Margin="5,0,0,0"/>
               </StackPanel>
 
               <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
@@ -112,7 +136,7 @@
       </controls:MetroTabItem>
 
       <!-- Editor Tab -->
-      <controls:MetroTabItem Name="EditorHeader" Header=" Editor ">
+      <controls:MetroTabItem Name="EditorHeader">
         <ScrollViewer>
           <Grid>
             <StackPanel>
@@ -251,7 +275,7 @@
           </Grid>
         </ScrollViewer>
       </controls:MetroTabItem>
-      <controls:MetroTabItem Name="HotkeysHeader" Header=" Hotkeys ">
+      <controls:MetroTabItem Name="HotkeysHeader">
         <ScrollViewer>
           <Grid Name="HotkeysGrid">
             <Grid.ColumnDefinitions>

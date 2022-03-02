@@ -435,10 +435,10 @@ namespace SourcepawnCondenser
                             continueNext = true;
                             break;
                         // Assign var match: "int x = 5"
-                        case TokenKind.Assignment when (t[position + 3].Kind == TokenKind.Number ||
+                        case TokenKind.Assignment when t[position + 3].Kind == TokenKind.Number ||
                                                         t[position + 3].Kind == TokenKind.Quote ||
                                                         t[position + 3].Kind == TokenKind.Identifier ||
-                                                        t[position + 3].Kind == TokenKind.New):
+                                                        t[position + 3].Kind == TokenKind.New:
                             variables.Add(new SMVariable
                             {
                                 Index = startIndex,

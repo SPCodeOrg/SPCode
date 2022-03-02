@@ -304,8 +304,8 @@ namespace SPCode.UI
                     LoggingControl.LogAction($"Compiled {compiledSuccess} {(compiledSuccess > 1 ? "plugins" : "plugin")}.", 2);
                 }
 
-                Status_ErrorText.Text = $"{TotalErrors} {(TotalErrors == 1 ? $"{Translate("Error")}" : $"{Translate("Errors")}").ToLowerInvariant()} ";
-                Status_WarningText.Text = $"{TotalWarnings} {(TotalWarnings == 1 ? $"{Translate("Warning")}" : $"{Translate("Warnings")}").ToLowerInvariant()} ";
+                Status_ErrorText.Text = (TotalErrors == 1 ? string.Format(Translate("status_error"), "1") : string.Format(Translate("status_errors"), TotalErrors)).ToLowerInvariant();
+                Status_WarningText.Text = (TotalWarnings == 1 ? string.Format(Translate("status_warning"), "1") : string.Format(Translate("status_warnings"), TotalWarnings)).ToLowerInvariant();
 
                 if (!PressedEscape)
                 {

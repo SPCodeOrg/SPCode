@@ -28,7 +28,8 @@
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </controls:MetroWindow.Resources>
-  <Grid>
+  
+  <Grid x:Name="RenameWindowMainGrid">
     <TextBox Name="TxtName" VerticalAlignment="Top" Foreground="{DynamicResource BlackColorBrush}" Margin="5,8,5,0" TextChanged="TxtName_TextChanged"/>
     <Button Name="BtAccept" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,48,10,0" Click="BtAccept_Click"/>
     <Button Name="BtCancel" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,48,145,0" Click="BtCancel_Click"/>
