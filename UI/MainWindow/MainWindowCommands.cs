@@ -615,18 +615,18 @@ namespace SPCode.UI
             try
             {
                 var file = DecompileUtil.GetFile();
-                msg = await this.ShowProgressAsync(Translate("Decompiling") + "...", file.Name, false, MetroDialogOptions);
-                msg.SetIndeterminate();
-                ProcessUITasks();
-                TryLoadSourceFile(DecompileUtil.GetDecompiledPlugin(file), out _);
+                if (file != null)
+                {
+                    msg = await this.ShowProgressAsync(Translate("Decompiling") + "...", file.Name, false, MetroDialogOptions);
+                    msg.SetIndeterminate();
+                    ProcessUITasks();
+                    TryLoadSourceFile(DecompileUtil.GetDecompiledPlugin(file), out _);
+                    await msg.CloseAsync();
+                }
             }
             catch (Exception ex)
             {
                 await this.ShowMessageAsync(Translate("Error"), ex.Message, settings: MetroDialogOptions);
-            }
-            finally
-            {
-                await msg.CloseAsync();
             }
         }
 
