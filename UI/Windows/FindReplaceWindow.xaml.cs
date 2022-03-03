@@ -23,6 +23,7 @@ namespace SPCode.UI.Windows
         private bool IsSearchFieldOpen;
         private readonly string Selection;
         private readonly SearchOptions _searchOptions;
+        private readonly bool AllowChanging = false;
 
         private readonly ObservableCollection<string> FindReplaceButtonItems = new()
         {
@@ -40,8 +41,8 @@ namespace SPCode.UI.Windows
 
         private enum DocumentType
         {
-            MenuFR_CurrDoc = 1,
-            MenuFR_AllDoc = 2
+            MenuFR_CurrDoc = 0,
+            MenuFR_AllDoc = 1
         }
         #endregion
 
@@ -67,6 +68,7 @@ namespace SPCode.UI.Windows
             Language_Translate();
 
             FindBox.SelectAll();
+            AllowChanging = true;
         }
         #endregion
 
@@ -96,11 +98,6 @@ namespace SPCode.UI.Windows
         private void CountButtonClicked(object sender, RoutedEventArgs e)
         {
             Count();
-        }
-
-        private void SearchBoxTextChanged(object sender, RoutedEventArgs e)
-        {
-            FindResultBlock.Text = string.Empty;
         }
 
         private void SearchBoxKeyUp(object sender, KeyEventArgs e)
@@ -142,40 +139,48 @@ namespace SPCode.UI.Windows
 
         private void SearchBoxTextChanged(object sender, TextChangedEventArgs e)
         {
+            if (!AllowChanging) return;
             Program.OptionsObject.SearchOptions.FindText = FindBox.Text;
+            FindResultBlock.Text = string.Empty;
         }
 
         private void ReplaceBoxTextChanged(object sender, TextChangedEventArgs e)
         {
+            if (!AllowChanging) return;
             Program.OptionsObject.SearchOptions.ReplaceText = ReplaceBox.Text;
         }
 
         private void RadioButtonsChanged(object sender, RoutedEventArgs e)
         {
+            if (!AllowChanging) return;
             var button = sender as RadioButton;
             Program.OptionsObject.SearchOptions.SearchType = (int)Enum.Parse(typeof(RadioButtons), button.Name);
         }
 
         private void DocumentChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!AllowChanging) return;
             var item = (sender as ComboBox).SelectedItem as ComboBoxItem;
             Program.OptionsObject.SearchOptions.Document = (int)Enum.Parse(typeof(DocumentType), item.Name);
         }
 
         private void MultilineRegexChanged(object sender, RoutedEventArgs e)
         {
+            if (!AllowChanging) return;
             var checkbox = sender as CheckBox;
             Program.OptionsObject.SearchOptions.MultilineRegex = checkbox.IsChecked.Value;
         }
 
         private void CaseSensitiveChanged(object sender, RoutedEventArgs e)
         {
+            if (!AllowChanging) return;
             var checkbox = sender as CheckBox;
             Program.OptionsObject.SearchOptions.CaseSensitive = checkbox.IsChecked.Value;
         }
 
         private void ReplaceChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!AllowChanging) return;
             Program.OptionsObject.SearchOptions.ReplaceType = ReplaceButton.SelectedIndex;
         }
         #endregion
@@ -270,7 +275,6 @@ namespace SPCode.UI.Windows
                         editors[index].editor.Select(m.Index + addToOffset, m.Length);
                         var location = editors[index].editor.Document.GetLocation(m.Index + addToOffset);
                         editors[index].editor.ScrollTo(location.Line, location.Column);
-                        FindResultBlock.Text = "Found in offset " + (m.Index + addToOffset).ToString() + " with length " + m.Length.ToString();
                         FindResultBlock.Text = string.Format(Translate("FoundInOff"), m.Index + addToOffset, m.Length);
                         break;
                     }
@@ -372,7 +376,6 @@ namespace SPCode.UI.Windows
                     editor.NeedsSave = true;
                 }
             }
-            FindResultBlock.Text = "Replaced " + count.ToString() + " occurences in " + fileCount.ToString() + " documents";
             FindResultBlock.Text = string.Format(Translate("ReplacedOcc"), count, fileCount);
         }
 
@@ -529,14 +532,16 @@ namespace SPCode.UI.Windows
 
         public void Language_Translate()
         {
+            Title = Translate("Search");
             NSearch_RButton.Content = Translate("NormalSearch");
             WSearch_RButton.Content = Translate("MatchWholeWords");
-            ASearch_RButton.Content = $"{Translate("AdvancSearch")} (\\r, \\n, \\t, ...)";
+            ASearch_RButton.Content = Translate("AdvancSearch");
+            ASearch_RButton.ToolTip = Translate("AdvancSearchDetails");
             RSearch_RButton.Content = Translate("RegexSearch");
             MenuFR_CurrDoc.Content = Translate("CurrDoc");
             MenuFR_AllDoc.Content = Translate("AllDoc");
 
-            Find_Button.Content = $"{Translate("Find")} (F3)";
+            Find_Button.Content = Translate("Find");
             Count_Button.Content = Translate("Count");
             CCBox.Content = Translate("CaseSen");
             MLRBox.Content = Translate("MultilineRegex");

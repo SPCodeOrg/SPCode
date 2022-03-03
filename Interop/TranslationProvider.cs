@@ -15,11 +15,11 @@ namespace SPCode.Interop
     {
         public List<string> AvailableLanguageIDs = new();
         public List<string> AvailableLanguages = new();
-        public bool IsDefault = true;
 
         private readonly string _tempDir = Paths.GetTempDirectory();
         private readonly string _translationsDir = Paths.GetTranslationsDirectory();
         private static readonly Dictionary<string, string> _langDictionary = new(StringComparer.OrdinalIgnoreCase);
+        private static readonly Dictionary<string, string> _defaultDictionary = new(StringComparer.OrdinalIgnoreCase);
         private Release _latestVersion;
 
         public TranslationProvider()
@@ -45,7 +45,18 @@ namespace SPCode.Interop
         /// <returns></returns>
         public static string Translate(string phrase)
         {
-            return _langDictionary.ContainsKey(phrase) ? _langDictionary[phrase] : "<empty>";
+            if (_langDictionary.ContainsKey(phrase))
+            {
+                return _langDictionary[phrase];
+            }
+            else if (_defaultDictionary.ContainsKey(phrase))
+            {
+                return _defaultDictionary[phrase];
+            }
+            else
+            {
+                return $"<{phrase}>";
+            }
         }
 
         /// <summary>
@@ -55,14 +66,14 @@ namespace SPCode.Interop
         /// <param name="initial">Whether this was the startup initial method call</param>
         public void LoadLanguage(string lang, bool initial = false)
         {
-            // This is probably the first boot ever
+            _langDictionary.Clear();
             if (lang == string.Empty)
             {
+                // This is probably the first boot ever
                 lang = Constants.DefaultLanguageID;
                 Program.OptionsObject.Language = lang;
             }
             lang = lang.Trim().ToLowerInvariant();
-            IsDefault = (string.IsNullOrEmpty(lang) || lang.ToLowerInvariant() == Constants.DefaultLanguageID) && initial;
             var doc = new XmlDocument();
 
             try
@@ -73,13 +84,10 @@ namespace SPCode.Interop
                     doc.Load(Path.Combine(_translationsDir, Constants.DefaultTranslationsFile));
                     foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
                     {
-                        _langDictionary.Add(node.Name, node.InnerText);
-                    }
-
-                    // Return if the attempted language to load is the default one
-                    if (lang == Constants.DefaultLanguageID)
-                    {
-                        return;
+                        if (node.NodeType != XmlNodeType.Comment)
+                        {
+                            _defaultDictionary.Add(node.Name, node.InnerText);
+                        }
                     }
                 }
 
@@ -97,7 +105,10 @@ namespace SPCode.Interop
                     // Replace existing keys with the ones available in this file
                     foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
                     {
-                        _langDictionary[node.Name] = node.InnerText;
+                        if (node.NodeType != XmlNodeType.Comment)
+                        {
+                            _langDictionary.Add(node.Name, node.InnerText);
+                        }
                     }
                 }
             }
@@ -112,10 +123,10 @@ namespace SPCode.Interop
         /// </summary>
         public void ParseTranslationFiles()
         {
-            try
+            var filesDir = Directory.GetFiles(_translationsDir).Where(x => x.EndsWith(".xml"));
+            foreach (var file in filesDir)
             {
-                var filesDir = Directory.GetFiles(_translationsDir).Where(x => x.EndsWith(".xml"));
-                foreach (var file in filesDir)
+                try
                 {
                     // Create wrapper
                     var fInfo = new FileInfo(file);
@@ -135,11 +146,12 @@ namespace SPCode.Interop
                     AvailableLanguages.Add(langName);
                     AvailableLanguageIDs.Add(langID);
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"There was a problem while parsing the translation files.\n" +
-                    $"Details: {ex.Message}");
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"There was a problem while parsing the translation file '{file}'.\n" +
+                        $"Details: {ex.Message}");
+                    continue;
+                }
             }
         }
 

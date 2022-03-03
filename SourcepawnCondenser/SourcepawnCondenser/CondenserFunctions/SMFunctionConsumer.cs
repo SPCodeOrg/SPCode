@@ -315,6 +315,11 @@ namespace SourcepawnCondenser
             {
                 while (position < length)
                 {
+                    if (t[position].Kind != TokenKind.Identifier)
+                    {
+                        position++;
+                        continue;
+                    }
                     var startIndex = t[position].Index;
 
                     var varType = t[position].Value;
@@ -430,10 +435,10 @@ namespace SourcepawnCondenser
                             continueNext = true;
                             break;
                         // Assign var match: "int x = 5"
-                        case TokenKind.Assignment when (t[position + 3].Kind == TokenKind.Number ||
+                        case TokenKind.Assignment when t[position + 3].Kind == TokenKind.Number ||
                                                         t[position + 3].Kind == TokenKind.Quote ||
-                                                        t[position + 3].Kind == TokenKind.Identifier)
-                                                        && t[position + 4].Kind == TokenKind.Semicolon:
+                                                        t[position + 3].Kind == TokenKind.Identifier ||
+                                                        t[position + 3].Kind == TokenKind.New:
                             variables.Add(new SMVariable
                             {
                                 Index = startIndex,

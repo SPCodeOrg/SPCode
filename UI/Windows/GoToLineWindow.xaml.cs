@@ -128,7 +128,7 @@ namespace SPCode.UI.Windows
             if (!int.TryParse(textStr, out var text) || string.IsNullOrEmpty(textStr))
             {
                 btJump.IsEnabled = false;
-                lblError.Content = "Invalid input!";
+                lblError.Content = Translate("InvalidInput");
                 valid = false;
                 return;
             }
@@ -137,7 +137,7 @@ namespace SPCode.UI.Windows
             {
                 btJump.IsEnabled = false;
                 valid = false;
-                lblError.Content = "Out of bounds!";
+                lblError.Content = Translate("OutOfBounds");
                 return;
             }
             else

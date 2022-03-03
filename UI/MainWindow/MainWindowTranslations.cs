@@ -1,35 +1,30 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Controls;
+using MahApps.Metro.Controls;
 using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI
 {
     public partial class MainWindow
     {
-        public void Language_Translate(bool Initial = false)
+        public void Language_Translate()
         {
-            if (Initial && Program.Translations.IsDefault)
+            CompileButtonDict = new () { Translate("CompileAll"), Translate("CompileCurrent") };
+            ActionButtonDict = new () { Translate("Copy"), Translate("UploadFTP"), Translate("StartServer") };
+            ((MenuItem)ConfigMenu.Items[ConfigMenu.Items.Count - 1]).Header = Translate("EditConfig");
+            var ee = GetAllEditorElements();
+            if (ee != null)
             {
-                return;
-            }
-            if (!Initial)
-            {
-                CompileButtonDict = new ObservableCollection<string>() { Translate("CompileAll"), Translate("CompileCurrent") };
-                ActionButtonDict = new ObservableCollection<string>() { Translate("Copy"), Translate("UploadFTP"), Translate("StartServer") };
-                ((MenuItem)ConfigMenu.Items[ConfigMenu.Items.Count - 1]).Header = Translate("EditConfig");
-                var ee = GetAllEditorElements();
-                if (ee != null)
+                foreach (var t in ee)
                 {
-                    foreach (var t in ee)
-                    {
-                        t?.Language_Translate();
-                    }
+                    t?.Language_Translate();
                 }
             }
-            MenuI_File.Header = Translate("FileStr");
             MenuI_New.Header = Translate("New");
-            MenuI_NewTemplate.Header = Translate("NewTemplate");
+            MenuI_NewTemplate.Header = Translate("NewFromTemplate");
             MenuI_Open.Header = Translate("Open");
+            MenuI_Recent.Header = Translate("RecentFiles");
+            MenuI_ClearRecent.Header = Translate("ClearRecent");
             MenuI_ReopenLastClosedTab.Header = Translate("ReopenLastClosedTab");
             MenuI_Save.Header = Translate("Save");
             MenuI_SaveAll.Header = Translate("SaveAll");
@@ -49,6 +44,7 @@ namespace SPCode.UI
             MenuI_FoldingsCollapse.Header = Translate("FoldingsCollapse");
             MenuI_GoToLine.Header = Translate("GoToLine");
             MenuI_CommentLine.Header = Translate("CommentLine");
+            MenuI_UncommentLine.Header = Translate("UncommentLine");
             MenuI_SelectAll.Header = Translate("SelectAll");
             MenuI_SearchReplace.Header = Translate("SearchReplace");
 
@@ -64,34 +60,54 @@ namespace SPCode.UI
 
             MenuI_Tools.Header = Translate("Tools");
             OptionMenuEntry.Header = Translate("Options");
+            MenuI_SPAPI.Header = Translate("SourcepawnAPI");
             MenuI_SearchDefinition.Header = Translate("SearchDefinition");
             MenuI_NewApiWeb.Header = Translate("NewAPIWeb");
             MenuI_BetaApiWeb.Header = Translate("BetaAPIWeb");
             MenuI_Reformatter.Header = Translate("Reformatter");
             MenuI_ReformatCurrent.Header = Translate("ReformatCurrent");
             MenuI_ReformatAll.Header = Translate("ReformatAll");
-            MenuI_Decompile.Header = $"{Translate("Decompile")} .smx (Lysis)";
+            MenuI_Decompile.Header = Translate("Decompile");
             MenuI_ReportBugGit.Header = Translate("ReportBugGit");
+            MenuI_Changelog.Header = Translate("OpenChangelog");
             UpdateCheckItem.Header = Translate("CheckUpdates");
+            MenuI_Help.Header = Translate("Help");
             MenuI_About.Header = Translate("About");
 
             MenuC_FileName.Header = Translate("FileName");
             MenuC_Line.Header = Translate("Line");
-            MenuC_Type.Header = Translate("TypeStr");
+            MenuC_Type.Header = Translate("Type");
             MenuC_Details.Header = Translate("Details");
 
             OBItemText_File.Text = Translate("OBTextFile");
             OBItemText_Config.Text = Translate("OBTextConfig");
 
-            TxtSearchFiles.Text = Translate("SearchFiles") + "...";
+            ((LogTextbox.Resources["LogContextMenu"] as ContextMenu).Items[0] as MenuItem).Header = Translate("ClearLogs");
+
+            foreach (var child in FirstToolbar.Items)
+            {
+                if (child is Button btn)
+                {
+                    btn.ToolTip = Translate(btn.Name.Substring(3));
+                }
+            }
+
+            foreach (var child in SecondToolbar.Items)
+            {
+                if (child is Button btn)
+                {
+                    btn.ToolTip = Translate(btn.Name.Substring(3));
+                }
+            }
+
+            TextBoxHelper.SetWatermark(OBSearch, Translate("SearchFiles"));
             TxtSearchResults.Text = Translate("SearchResults");
 
             BtExpandCollapse.ToolTip = Translate(OBExpanded ? "ExpandAllDirs" : "CollapseAllDirs");
             BtRefreshDir.ToolTip = Translate("RefreshOB");
 
-            // Leaving a space at the end here because it makes the button look better
-            Status_ErrorText.Text = $"0 {Translate("Errors")} ";
-            Status_WarningText.Text = $"0 {Translate("Warnings")} ";
+            Status_ErrorText.Text = string.Format(Translate("status_errors"), "0");
+            Status_WarningText.Text = string.Format(Translate("status_warnings"), "0");
             Status_CopyErrorsButton.Content = Translate("CopyErrors");
         }
     }

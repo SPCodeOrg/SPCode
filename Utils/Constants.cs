@@ -40,8 +40,9 @@
         public const string ErrorFilterRegex = @"^(?<File>.+?)\((?<Line>[0-9]+(\s*--\s*[0-9]+)?)\)\s*:\s*(?<Type>[a-zA-Z]+\s+([a-zA-Z]+\s+)?[0-9]+)\s*:(?<Details>.+)";
         public const string FileSaveFilters = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|All Files (*.*)|*.*";
         public const string FileOpenFilters = @"Sourcepawn Files (*.sp *.inc)|*.sp;*.inc|Sourcemod Plugins (*.smx)|*.smx|All Files (*.*)|*.*";
-        public static string DecompileFileFilters = "Sourcepawn Plugins (*.smx)|*.smx";
+        public const string DecompileFileFilters = "Sourcepawn Plugins (*.smx)|*.smx";
         public const string DatFilesFilter = "Dat files (.dat)|*.dat";
+        public const string ServerExecutableFilter = "Executables *.exe|*.exe|All Files *.*|*.*";
         #endregion
 
         #region Other

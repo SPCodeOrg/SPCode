@@ -11,6 +11,7 @@ namespace SourcepawnCondenser.Tokenizer
             var sArray = Source.ToCharArray();
             var sArrayLength = sArray.Length;
             var token = new List<Token>((int)Math.Ceiling(sArrayLength * 0.20f));
+            
             //the reservation of the capacity is an empirical measured optimization. The average token to text length is 0.19 (with multiple EOL)
             //To hopefully never extend the inner array, we use 2.3  |  performance gain: around 20%
             char c;
@@ -212,13 +213,10 @@ namespace SourcepawnCondenser.Tokenizer
                     var endIndex = -1;
                     for (var j = i + 1; j < sArrayLength; ++j)
                     {
-                        if (sArray[j] == '\'')
+                        if (sArray[j] == '\'' && sArray[j - 1] != '\\')
                         {
-                            if (sArray[j - 1] != '\\')
-                            {
-                                endIndex = j;
-                                break;
-                            }
+                            endIndex = j;
+                            break;
                         }
                     }
 

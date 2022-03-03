@@ -29,7 +29,7 @@ namespace SPCode.UI.Windows
                 Close();
             }
         }
-
+        
         private async void BackupButton_Clicked(object sender, RoutedEventArgs e)
         {
             var optionsFile = new FileInfo(Paths.GetOptionsFilePath());

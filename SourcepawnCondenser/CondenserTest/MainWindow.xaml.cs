@@ -125,8 +125,8 @@ namespace CondenserTest
             }
             termTree.Items.Add(dItem);
 
-            var cItem = new TreeViewItem() { Header = "constants (" + def.Constants.Count + ")", IsExpanded = expand };
-            foreach (var cn in def.Constants)
+            var cItem = new TreeViewItem() { Header = "constants (" + def.ConstVariables.Count + ")", IsExpanded = expand };
+            foreach (var cn in def.ConstVariables)
             {
                 var item = new TreeViewItem() { Header = cn.Name, IsExpanded = expand };
                 item.Tag = cn;
@@ -226,7 +226,7 @@ namespace CondenserTest
             }
             termTree.Items.Add(eItem);
 
-            var vItem = new TreeViewItem() { Header = "Variables (" + def.Constants.Count + ")", IsExpanded = expand };
+            var vItem = new TreeViewItem() { Header = "Variables (" + def.ConstVariables.Count + ")", IsExpanded = expand };
             foreach (var v in def.Variables)
             {
                 var item = new TreeViewItem() { Header = v.Name, IsExpanded = expand };

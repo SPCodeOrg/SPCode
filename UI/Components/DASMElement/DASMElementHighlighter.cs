@@ -52,7 +52,7 @@ namespace SPCode.UI.Components
                     Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_Numbers) }
                 });
                 var def = Program.Configs[Program.SelectedConfig].GetSMDef();
-                if (def.TypeStrings.Length > 0)
+                if (def.TypeStrings.Count > 0)
                 {
                     rs.Rules.Add(new HighlightingRule() //Types
                     {
@@ -60,11 +60,11 @@ namespace SPCode.UI.Components
                         Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
                     });
                 }
-                if (def.ConstantsStrings.Length > 0)
+                if (def.Constants.Count > 0)
                 {
                     rs.Rules.Add(new HighlightingRule() //constants
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.ConstantsStrings, true),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.Constants, true),
                         Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
                     });
                 }
@@ -76,11 +76,20 @@ namespace SPCode.UI.Components
                         Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
                     });
                 }
-                if (def.MethodsStrings.Length > 0)
+                if (def.ObjectMethods.Count > 0)
                 {
                     rs.Rules.Add(new HighlightingRule() //Methods
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.MethodsStrings, true),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.ObjectMethods, true),
+                        Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
+                    });
+                }
+                
+                if (def.ObjectFields.Count > 0)
+                {
+                    rs.Rules.Add(new HighlightingRule() //Methods
+                    {
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.ObjectFields, true),
                         Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
                     });
                 }

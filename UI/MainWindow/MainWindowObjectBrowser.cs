@@ -66,32 +66,10 @@ namespace SPCode.UI
         private void TreeViewOBItem_RightClicked(object sender, MouseButtonEventArgs e)
         {
             var treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
-            var itemTag = treeViewItem?.Tag as ObjectBrowserTag;
 
             if (treeViewItem != null)
             {
-                switch (itemTag.Kind)
-                {
-                    case ObjectBrowserItemKind.Directory:
-                        treeViewItem.Focus();
-                        ObjectBrowser.ContextMenu = ObjectBrowser.Resources["TVIContextMenuDir"] as ContextMenu;
-                        break;
-
-                    case ObjectBrowserItemKind.File when itemTag.Value.Substring(itemTag.Value.LastIndexOf('.')) == ".smx":
-                        treeViewItem.Focus();
-                        ObjectBrowser.ContextMenu = ObjectBrowser.Resources["TVIContextMenuSmx"] as ContextMenu;
-                        break;
-
-                    case ObjectBrowserItemKind.File:
-                        treeViewItem.Focus();
-                        ObjectBrowser.ContextMenu = ObjectBrowser.Resources["TVIContextMenu"] as ContextMenu;
-                        break;
-
-                    case ObjectBrowserItemKind.ParentDirectory:
-                    case ObjectBrowserItemKind.Empty:
-                        ObjectBrowser.ContextMenu = null;
-                        break;
-                }
+                ObjectBrowser.ContextMenu = GetContextMenu(treeViewItem);
             }
             e.Handled = true;
         }
@@ -760,6 +738,65 @@ namespace SPCode.UI
             }
         }
 
+        /// <summary>
+        /// Gets the appropiate context menu for the type of file right-clicked in the Object Browser.
+        /// </summary>
+        /// <param name="tvItem">The right-clicked item</param>
+        /// <returns></returns>
+        private ContextMenu GetContextMenu(TreeViewItem tvItem)
+        {
+            if ((tvItem.Tag as ObjectBrowserTag).Kind is ObjectBrowserItemKind.Empty or ObjectBrowserItemKind.ParentDirectory)
+            {
+                return null;
+            }
+            tvItem.Focus();
+            var menu = new ContextMenu();
+            var items = GetMenuItems(tvItem);
+            foreach (var item in items)
+            {
+                menu.Items.Add(item);
+            }
+            return menu;
+        }
+
+        /// <summary>
+        /// Gets the contex menu items based on the kind of file given.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        private List<MenuItem> GetMenuItems(TreeViewItem item)
+        {
+            var items = new List<MenuItem>();
+            var itemTag = item.Tag as ObjectBrowserTag;
+            if (itemTag.Kind == ObjectBrowserItemKind.Directory)
+            {
+                var dirItem = new MenuItem { Header = Translate("OpenDirLocation") };
+                dirItem.Click += OBItemOpenFileLocation_Click;
+                items.Add(dirItem);
+            }
+            else if (itemTag.Kind == ObjectBrowserItemKind.File)
+            {
+                var fileItem = new MenuItem { Header = Translate("OpenFileLocation") };
+                fileItem.Click += OBItemOpenFileLocation_Click;
+                items.Add(fileItem);
+
+                var renItem = new MenuItem { Header = Translate("Rename") };
+                renItem.Click += OBItemRename_Click;
+                items.Add(renItem);
+
+                var delItem = new MenuItem { Header = Translate("Delete") };
+                delItem.Click += OBItemDelete_Click;
+                items.Add(delItem);
+
+                if (itemTag.Value.EndsWith(".smx"))
+                {
+                    var decompItem = new MenuItem { Header = Translate("Decompile") };
+                    decompItem.Click += OBItemDecompile_Click;
+                    items.Insert(1, decompItem);
+                }
+            }
+            return items;
+        }
         #endregion
     }
 }

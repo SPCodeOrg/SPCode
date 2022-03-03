@@ -17,12 +17,17 @@ namespace SPCode.UI.Windows
             InitializeComponent();
             Language_Translate();
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
-            { ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor), ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme)); }
+            {
+                ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
+                    ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
+            }
 
             Brush gridBrush = Program.OptionsObject.Program_Theme == "BaseDark" ?
               new SolidColorBrush(Color.FromArgb(0xC0, 0x10, 0x10, 0x10)) :
               new SolidColorBrush(Color.FromArgb(0xC0, 0xE0, 0xE0, 0xE0));
+
             gridBrush.Freeze();
+
             foreach (var c in ContentStackPanel.Children)
             {
                 if (c is Grid g)
@@ -31,7 +36,10 @@ namespace SPCode.UI.Windows
                 }
             }
             TitleBox.Text = $"SPCode ({NamesHelper.VersionString}) - {Translate("SPCodeCap")}";
-            LicenseField.Text = File.ReadAllText(Constants.LicenseFile);
+            if (File.Exists(Constants.LicenseFile))
+            {
+                FlyoutTextBox.Text = File.ReadAllText(Constants.LicenseFile);
+            }
         }
 
         private void OpenLicenseFlyout(object sender, RoutedEventArgs e)
@@ -47,12 +55,8 @@ namespace SPCode.UI.Windows
 
         private void Language_Translate()
         {
-            if (Program.Translations.IsDefault)
-            {
-                return;
-            }
-            WrittenByBlock.Text = string.Format(Translate("WrittenBy"), "Julien Kluge (Julien.Kluge@gmail.com");
-            LicenseBlock.Text = Translate("License");
+            Title = Translate("About");
+            OpenLicenseButton.Content = Translate("License");
             PeopleInvolvedBlock.Text = Translate("PeopleInv");
         }
     }

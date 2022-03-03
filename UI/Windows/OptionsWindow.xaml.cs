@@ -27,13 +27,8 @@ namespace SPCode.UI.Windows
             "Pink", "Magenta", "Crimson", "Amber",
             "Yellow", "Brown", "Olive", "Steel", "Mauve", "Taupe", "Sienna"
         };
-        private readonly Dictionary<ActionOnClose, string> ActionOnCloseMessages = new()
-        {
-            { ActionOnClose.Prompt, Translate("ActionClosePrompt") },
-            { ActionOnClose.Save, Translate("Save") },
-            { ActionOnClose.DontSave, Translate("DontSave") }
-        };
-        private readonly bool AllowChanging;
+
+        private bool AllowChanging;
         #endregion
 
         #region Constructors
@@ -347,7 +342,6 @@ namespace SPCode.UI.Windows
             var family = (FontFamily)FontFamilyCB.SelectedItem;
             var FamilyString = family.Source;
             Program.OptionsObject.Editor_FontFamily = FamilyString;
-            FontFamilyTB.Text = "Font (" + FamilyString + "):";
             var editors = Program.MainWindow.GetAllEditorElements();
             if (editors != null)
             {
@@ -412,8 +406,35 @@ namespace SPCode.UI.Windows
 
         }
 
+        private void ReloadLanguageButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChanging)
+            {
+                return;
+            }
+
+            var selectedItem = (ComboboxItem)LanguageBox.SelectedItem;
+            var lang = Program.Translations.AvailableLanguageIDs.FirstOrDefault(x => x == selectedItem.Value);
+            try
+            {
+                Program.Translations.LoadLanguage(lang);
+                Program.OptionsObject.Language = lang;
+                Program.MainWindow.Language_Translate();
+                Language_Translate();
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageAsync("Error while reloading language", $"Details: {ex.Message}", settings: Program.MainWindow.MetroDialogOptions);
+            }
+        }
+
         private void ActionOnCloseBox_Changed(object sender, SelectionChangedEventArgs e)
         {
+            if (!AllowChanging)
+            {
+                return;
+            }
+
             Program.OptionsObject.ActionOnClose = (ActionOnClose)ActionOnCloseBox.SelectedIndex;
         }
 
@@ -626,13 +647,6 @@ namespace SPCode.UI.Windows
                 }
             }
 
-            foreach (var action in ActionOnCloseMessages.Values)
-            {
-                ActionOnCloseBox.Items.Add(action);
-            }
-
-            ActionOnCloseBox.SelectedIndex = (int)Program.OptionsObject.ActionOnClose;
-
             if (Program.OptionsObject.Editor_AutoSave)
             {
                 var seconds = Program.OptionsObject.Editor_AutoSaveInterval;
@@ -670,7 +684,7 @@ namespace SPCode.UI.Windows
             ShowSpaces.IsChecked = Program.OptionsObject.Editor_ShowSpaces;
             ShowTabs.IsChecked = Program.OptionsObject.Editor_ShowTabs;
             UseTabToAutocomplete.IsChecked = Program.OptionsObject.Editor_TabToAutocomplete;
-            FontFamilyTB.Text = $"{Translate("FontFamily")} ({Program.OptionsObject.Editor_FontFamily}):";
+            FontFamilyTB.Text = Translate("FontFamily");
             FontFamilyCB.SelectedValue = new FontFamily(Program.OptionsObject.Editor_FontFamily);
             IndentationSize.Value = Program.OptionsObject.Editor_IndentationSize;
             HardwareSalts.IsChecked = Program.OptionsObject.Program_UseHardwareSalts;
@@ -730,15 +744,26 @@ namespace SPCode.UI.Windows
             }
         }
 
+        private void SetupActionOnCloseBox()
+        {
+            AllowChanging = false;
+            var ActionOnCloseMessages = new Dictionary<ActionOnClose, string>
+            {
+                { ActionOnClose.Prompt, Translate("ActionClosePrompt") },
+                { ActionOnClose.Save, Translate("Save") },
+                { ActionOnClose.DontSave, Translate("DontSave") }
+            };
+
+            ActionOnCloseBox.ItemsSource = ActionOnCloseMessages.Values;
+            ActionOnCloseBox.SelectedIndex = (int)Program.OptionsObject.ActionOnClose;
+            AllowChanging = true;
+        }
+
         private void Language_Translate()
         {
-            if (Program.Translations.IsDefault)
-            {
-                return;
-            }
             Title = Translate("Options");
             HardwareSalts.Content = Translate("HardwareEncryption");
-            ProgramHeader.Header = $" {Translate("Program")}";
+            ProgramHeader.Header = Translate("Program");
             HardwareAcc.Content = Translate("HardwareAcc");
             UIAnimation.Content = Translate("UIAnim");
             OpenIncludes.Content = Translate("OpenInc");
@@ -749,15 +774,15 @@ namespace SPCode.UI.Windows
             DarkTheme.Content = Translate("DarkTheme");
             ThemeColorLabel.Content = Translate("ThemeColor");
             LanguageLabel.Content = Translate("LanguageStr");
-            EditorHeader.Header = $" {Translate("Editor")}";
+            EditorHeader.Header = Translate("Editor");
             FontSizeBlock.Text = Translate("FontSize");
             ScrollSpeedBlock.Text = Translate("ScrollSpeed");
             WordWrap.Content = Translate("WordWrap");
             AgressiveIndentation.Content = Translate("AggIndentation");
             LineReformatting.Content = Translate("ReformatAfterSem");
             TabToSpace.Content = Translate("TabsToSpace");
-            AutoCloseBrackets.Content = $"{Translate("AutoCloseBrack")} (), [], {{}}";
-            AutoCloseStringChars.Content = $"{Translate("AutoCloseStrChr")} \"\", ''";
+            AutoCloseBrackets.Content = Translate("AutoCloseBrack");
+            AutoCloseStringChars.Content = Translate("AutoCloseStrChr");
             ShowSpaces.Content = Translate("ShowSpaces");
             ShowTabs.Content = Translate("ShowTabs");
             IndentationSizeBlock.Text = Translate("IndentationSize");
@@ -770,6 +795,12 @@ namespace SPCode.UI.Windows
             DefaultButton.Content = Translate("DefaultValues");
             BackupButton.Content = Translate("BackupOptions");
             LoadButton.Content = Translate("LoadOptions");
+            ResetButton.Content = Translate("ResetOptions");
+            ActionOnCloseLabel.Content = Translate("ActionOnClose");
+            UseTabToAutocomplete.Content = Translate("TabToAutocomplete");
+            HotkeysHeader.Header = Translate("Hotkeys");
+
+            SetupActionOnCloseBox();
 
             foreach (var item in HotkeysGrid.Children)
             {

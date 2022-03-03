@@ -8,12 +8,12 @@
                       ResizeMode="NoResize" 
                       ShowTitleBar="True"
                       ShowInTaskbar="False" 
-                      Height="263" 
-                      Width="536"
+                      Height="290" 
+                      Width="580"
                       HorizontalAlignment="Center" 
                       VerticalAlignment="Center" 
-                      UseNoneWindowStyle="False" 
-                      TitlebarHeight="20" 
+                      UseNoneWindowStyle="False"
+                      TitleCharacterCasing="Normal"
                       KeyDown="MetroWindow_KeyDown">
 
   <controls:MetroWindow.Resources>
@@ -26,67 +26,73 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Red.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
         <ResourceDictionary>
-          <Storyboard x:Key="BlendOverEffect" Duration="00:00:00.5" Storyboard.TargetName="BlendEffectPlane" Storyboard.TargetProperty="Opacity">
-            <DoubleAnimationUsingKeyFrames>
-              <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.00" />
-              <SplineDoubleKeyFrame Value="0.5" KeyTime="00:00:00.25" />
-              <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.50" />
-            </DoubleAnimationUsingKeyFrames>
-          </Storyboard>
-          <Storyboard x:Key="FadeFindReplaceGridIn" Duration="00:00:00.2" Storyboard.TargetName="FindReplaceGrid">
-            <DoubleAnimation To="1" Duration="00:00:00.2" Storyboard.TargetProperty="Opacity" />
-          </Storyboard>
-          <Storyboard x:Key="FadeFindReplaceGridOut" Duration="00:00:00.2" Storyboard.TargetName="FindReplaceGrid">
-            <DoubleAnimation To="0" Duration="00:00:00.2" Storyboard.TargetProperty="Opacity" />
-          </Storyboard>
-          <Storyboard x:Key="EnableServerAnim">
-            <DoubleAnimation Duration="00:00:00.5" To="5" Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="Height" />
-            <BooleanAnimationUsingKeyFrames Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="IsIndeterminate">
-              <BooleanAnimationUsingKeyFrames.KeyFrames>
-                <BooleanKeyFrameCollection>
-                  <DiscreteBooleanKeyFrame KeyTime="00:00:00.25" Value="True" />
-                </BooleanKeyFrameCollection>
-              </BooleanAnimationUsingKeyFrames.KeyFrames>
-            </BooleanAnimationUsingKeyFrames>
-          </Storyboard>
-          <Storyboard x:Key="DisableServerAnim">
-            <DoubleAnimation Duration="00:00:00.5" To="0" Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="Height" />
-            <BooleanAnimationUsingKeyFrames Storyboard.TargetName="ServerProgressBar" Storyboard.TargetProperty="IsIndeterminate">
-              <BooleanAnimationUsingKeyFrames.KeyFrames>
-                <BooleanKeyFrameCollection>
-                  <DiscreteBooleanKeyFrame KeyTime="00:00:00.25" Value="False" />
-                </BooleanKeyFrameCollection>
-              </BooleanAnimationUsingKeyFrames.KeyFrames>
-            </BooleanAnimationUsingKeyFrames>
-          </Storyboard>
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </controls:MetroWindow.Resources>
-  <Grid Name="FindReplaceGrid" Margin="0,0,0,0">
+
+  <Grid Name="FindReplaceGrid">
     <Grid.RowDefinitions>
-      <RowDefinition Height="185*"/>
-      <RowDefinition Height="62*"/>
+      <RowDefinition Height="130"/>
+      <RowDefinition/>
+      <RowDefinition Height="20"/>
     </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="22*"/>
-      <ColumnDefinition Width="45*"/>
-    </Grid.ColumnDefinitions>
-    <TextBox x:Name="FindBox" VerticalAlignment="Top" Margin="7,19,3,0" Height="45" controls:TextBoxHelper.Watermark="Find" VerticalScrollBarVisibility="Visible" TextChanged="SearchBoxTextChanged" KeyDown="SearchBoxKeyUp" Grid.ColumnSpan="2"/>
-    <TextBox x:Name="ReplaceBox" VerticalAlignment="Center" Margin="7,0,3,0" Height="45" controls:TextBoxHelper.Watermark="Replace" VerticalScrollBarVisibility="Visible" KeyDown="ReplaceBoxKeyUp" Grid.ColumnSpan="2" TextChanged="ReplaceBoxTextChanged"/>
-    <RadioButton x:Name="NSearch_RButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="7,119,0,0" Content="Normal Search" Foreground="{DynamicResource BlackBrush}" Height="18" Width="102" Checked="RadioButtonsChanged"/>
-    <RadioButton x:Name="WSearch_RButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="7,140,0,0" Content="Match Whole Words" Foreground="{DynamicResource BlackBrush}" Height="18" Width="132" Checked="RadioButtonsChanged"/>
-    <RadioButton x:Name="ASearch_RButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="7,161,0,0" Content="Advanced Search (\r, \n, \t)" Foreground="{DynamicResource BlackBrush}" Height="18" Width="166" Checked="RadioButtonsChanged" />
-    <RadioButton x:Name="RSearch_RButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="7,4,0,0" Content="Regex Search" Foreground="{DynamicResource BlackBrush}" Grid.Row="1" Height="18" Width="95" Checked="RadioButtonsChanged" />
-    <ComboBox x:Name="FindDestinies" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,119,0,0" Width="150" Grid.Column="1" Height="26" SelectionChanged="DocumentChanged">
-      <ComboBoxItem x:Name="MenuFR_CurrDoc" IsSelected="True" Content="Current Document" />
-      <ComboBoxItem x:Name="MenuFR_AllDoc" Content="All Open Documents" />
-    </ComboBox>
-    <Button x:Name="Find_Button" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,119,3,0" Content="Find (F3)" Width="150" Click="SearchButtonClicked" Style="{DynamicResource MetroFlatButton}" Grid.Column="1" Height="29"/>
-    <Button x:Name="Count_Button" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,2,3,0" Content="Count" Width="150" Click="CountButtonClicked" Style="{DynamicResource MetroFlatButton}" Grid.Column="1" Grid.Row="1" Height="29"/>
-    <controls:SplitButton Name="ReplaceButton" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,151,3,0" Width="150" Click="ReplaceButtonClicked" Grid.Column="1" Height="26" SelectionChanged="ReplaceChanged"/>
-    <CheckBox x:Name="CCBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,148,0,0" Content="Case Sensitive" Foreground="{DynamicResource BlackBrush}" Grid.Column="1" Height="18" Width="99" Checked="CaseSensitiveChanged" />
-    <CheckBox x:Name="MLRBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,169,0,0" Content="Multiline Regex" Foreground="{DynamicResource BlackBrush}" Grid.Column="1" Grid.RowSpan="2" Height="18" Width="105" Checked="MultilineRegexChanged" />
-    <TextBlock x:Name="FindResultBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,31,0,0" Text="" Width="312" FontSize="14" Foreground="{DynamicResource AccentColorBrush}" IsHitTestVisible="False" Grid.ColumnSpan="2" Height="21" Grid.Row="1" />
+
+    <Grid Grid.Row="0" VerticalAlignment="Center">
+      <StackPanel>
+        <TextBox x:Name="FindBox" Margin="10,0,10,5" Height="55" controls:TextBoxHelper.Watermark="Find" VerticalScrollBarVisibility="Visible" TextChanged="SearchBoxTextChanged" KeyDown="SearchBoxKeyUp" />
+        <TextBox x:Name="ReplaceBox" Margin="10,0,10,5" Height="55" controls:TextBoxHelper.Watermark="Replace" VerticalScrollBarVisibility="Visible" KeyDown="ReplaceBoxKeyUp" TextChanged="ReplaceBoxTextChanged" />
+      </StackPanel>
+    </Grid>
+
+    <Grid Grid.Row="1">
+      <Grid>
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition/>
+          <ColumnDefinition/>
+          <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+          <StackPanel>
+            <StackPanel.Resources>
+              <Style BasedOn="{StaticResource {x:Type RadioButton}}" TargetType="{x:Type RadioButton}">
+                <Setter Property="Margin" Value="3"/>
+              </Style>
+            </StackPanel.Resources>
+            <RadioButton x:Name="NSearch_RButton" Foreground="{DynamicResource BlackBrush}" Checked="RadioButtonsChanged"/>
+            <RadioButton x:Name="WSearch_RButton" Foreground="{DynamicResource BlackBrush}" Checked="RadioButtonsChanged"/>
+            <RadioButton x:Name="ASearch_RButton" Foreground="{DynamicResource BlackBrush}" Checked="RadioButtonsChanged" />
+            <RadioButton x:Name="RSearch_RButton" Foreground="{DynamicResource BlackBrush}" Checked="RadioButtonsChanged" />
+          </StackPanel>
+        </Grid>
+
+        <Grid Grid.Column="1" HorizontalAlignment="Left">
+          <StackPanel>
+            <ComboBox x:Name="FindDestinies" Width="150" Height="26" Margin="0,3,0,10" SelectionChanged="DocumentChanged">
+              <ComboBoxItem x:Name="MenuFR_CurrDoc" />
+              <ComboBoxItem x:Name="MenuFR_AllDoc" />
+            </ComboBox>
+            <CheckBox x:Name="CCBox" Foreground="{DynamicResource BlackBrush}" Margin="0,3,0,0" Checked="CaseSensitiveChanged" Unchecked="CaseSensitiveChanged"/>
+            <CheckBox x:Name="MLRBox" Foreground="{DynamicResource BlackBrush}" Margin="0,5,0,0" Checked="MultilineRegexChanged" Unchecked="MultilineRegexChanged" />
+          </StackPanel>
+        </Grid>
+
+        <Grid Grid.Column="2">
+          <StackPanel>
+            <Button x:Name="Find_Button" Click="SearchButtonClicked" Margin="3" Style="{DynamicResource MetroFlatButton}" />
+            <controls:SplitButton Name="ReplaceButton" Margin="3" Click="ReplaceButtonClicked" SelectionChanged="ReplaceChanged"/>
+            <Button x:Name="Count_Button" Click="CountButtonClicked" Margin="3" Style="{DynamicResource MetroFlatButton}" />
+          </StackPanel>
+        </Grid>
+
+      </Grid>
+    </Grid>
+
+    <Grid Grid.Row="2">
+      <TextBlock x:Name="FindResultBlock" FontSize="14" Margin="5,-1,0,0" Foreground="{DynamicResource AccentColorBrush}" IsHitTestVisible="False" />
+    </Grid>
+    
   </Grid>
 </controls:MetroWindow>
