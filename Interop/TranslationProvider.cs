@@ -101,6 +101,7 @@ namespace SPCode.Interop
                 else
                 {
                     doc.Load(file);
+                    Program.IsRTL = false;
 
                     // Replace existing keys with the ones available in this file
                     foreach (XmlNode node in doc.ChildNodes[0].ChildNodes)
@@ -109,6 +110,12 @@ namespace SPCode.Interop
                         {
                             _langDictionary.Add(node.Name, node.InnerText);
                         }
+
+                        if (node.Name == "rtl" && node.InnerText == "true")
+                        {
+                            Program.IsRTL = true;
+                        }
+
                     }
                 }
             }

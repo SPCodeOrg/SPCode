@@ -37,6 +37,7 @@ namespace SPCode
         public static DiscordRpcClient DiscordClient = new(Constants.DiscordRPCAppID);
         public static Timestamps DiscordTime = Timestamps.Now;
         public static bool PreventOptionsSaving = false;
+        public static bool IsRTL;
 
         public static string Indentation => OptionsObject.Editor_ReplaceTabsToWhitespace
             ? new string(' ', OptionsObject.Editor_IndentationSize)

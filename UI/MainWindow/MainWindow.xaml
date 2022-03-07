@@ -254,9 +254,11 @@
       </Grid>
     </controls:WindowCommands>
   </controls:MetroWindow.LeftWindowCommands>
+  
   <controls:MetroWindow.Icon>
     <BitmapImage UriSource="/SPCode;component/Resources/Icons/icon.ico" />
   </controls:MetroWindow.Icon>
+  
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="299*"/>
@@ -376,17 +378,17 @@
         <ListView Grid.Column="1" x:Name="OBButtonHolder" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0" Height="28" ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderThickness="0" SelectionMode="Single" BorderBrush="{DynamicResource TextBoxBorderBrush}">
           <ListView.ItemsPanel>
             <ItemsPanelTemplate>
-              <StackPanel Orientation="Horizontal" Margin="0"/>
+              <StackPanel Orientation="Horizontal"/>
             </ItemsPanelTemplate>
           </ListView.ItemsPanel>
           <ListViewItem x:Name="OBTabFile" Selected="ListViewOBItem_SelectFile">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel x:Name="FileDirButtonStackPanel" Orientation="Horizontal">
               <Image Source="/SPCode;component/Resources/Icons/icon-folder.png" Width="18" Height="18" />
               <TextBlock x:Name="OBItemText_File" Margin="5,0,0,0" />
             </StackPanel>
           </ListViewItem>
           <ListViewItem x:Name="OBTabConfig" Selected="ListViewOBItem_SelectConfig">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel x:Name="ConfigDirButtonStackPanel" Orientation="Horizontal">
               <Image Source="/SPCode;component/Resources/Icons/icon-gear.png" Width="18" Height="18" />
               <TextBlock x:Name="OBItemText_Config" Margin="5,0,0,0" />
             </StackPanel>

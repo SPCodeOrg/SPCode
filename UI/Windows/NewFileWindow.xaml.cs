@@ -100,6 +100,8 @@ namespace SPCode.UI.Windows
             InitializeComponent();
             ParseTemplateFile();
             Language_Translate();
+            EvaluateRTL();
+
             PreviewBox.Parent = new LayoutDocument();
             Program.MainWindow.EditorReferences.Add(PreviewBox);
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
@@ -369,17 +371,6 @@ namespace SPCode.UI.Windows
             }
         }
 
-        private void Language_Translate()
-        {
-            Title = Translate("NewFromTemplate");
-            PreviewBlock.Text = Translate("Preview");
-            SaveButton.Content = Translate("Save");
-            CancelButton.Content = Translate("Cancel");
-            AddTemplateButton.Header = Translate("Add");
-            EditTemplateButton.Header = Translate("Edit");
-            DeleteTemplateButton.Header = Translate("Delete");
-        }
-
         private void GoToSelectedTemplate()
         {
             try
@@ -530,7 +521,7 @@ namespace SPCode.UI.Windows
         {
             try
             {
-                PreviewBlock.Text = $"{Translate("Name")}:";
+                PreviewBlock.Text = Translate("Name");
                 TbxRenameTemplate.Text = isNewTemplate ? "" : (TemplateListBox.SelectedItem as ListBoxItem).Content.ToString();
                 TbxRenameTemplate.Visibility = Visibility.Visible;
                 var mg = PreviewBox.Margin;
@@ -551,7 +542,7 @@ namespace SPCode.UI.Windows
         {
             try
             {
-                PreviewBlock.Text = $"{Translate("Preview")}:";
+                PreviewBlock.Text = Translate("Preview");
                 TbxRenameTemplate.Visibility = Visibility.Collapsed;
                 LblError.Visibility = Visibility.Collapsed;
                 var mg = PreviewBox.Margin;
@@ -596,6 +587,22 @@ namespace SPCode.UI.Windows
 
             name = new string(arr);
             return true;
+        }
+
+        private void Language_Translate()
+        {
+            Title = Translate("NewFromTemplate");
+            PreviewBlock.Text = Translate("Preview");
+            SaveButton.Content = Translate("Save");
+            CancelButton.Content = Translate("Cancel");
+            AddTemplateButton.Header = Translate("Add");
+            EditTemplateButton.Header = Translate("Edit");
+            DeleteTemplateButton.Header = Translate("Delete");
+        }
+
+        private void EvaluateRTL()
+        {
+            NewFileWindowMainGrid.FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
         }
         #endregion
     }
