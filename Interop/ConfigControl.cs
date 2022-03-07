@@ -10,16 +10,16 @@ namespace SPCode.Interop
 {
     public static class ConfigLoader
     {
-        public static Config[] Load()
+        public static List<Config> Load()
         {
             var configs = new List<Config>();
-            if (File.Exists(Paths.GetConfigFilePath()))
+            if (File.Exists(PathsHelper.ConfigFilePath))
             {
                 try
                 {
                     // Document gets loaded
                     var document = new XmlDocument();
-                    document.Load(Paths.GetConfigFilePath());
+                    document.Load(PathsHelper.ConfigFilePath);
 
                     // Document gets checked for proper Configurations tag
                     if (document.ChildNodes.Count < 1)
@@ -63,7 +63,7 @@ namespace SPCode.Interop
                         // (calculate it based on installation being standalone or portable)
                         if (IsStandardConfig && string.IsNullOrEmpty(_SMDirectoryStr))
                         {
-                            SMDirs.Add(Paths.GetConfigsDirectory());
+                            SMDirs.Add(PathsHelper.ConfigsDirectory);
                         }
 
                         foreach (var dir in SMDirectoriesSplitted)
@@ -78,7 +78,7 @@ namespace SPCode.Interop
                         // Extra assurance for the program to always load a proper config
                         if (IsStandardConfig && SMDirs.Count == 0)
                         {
-                            SMDirs.Add(Paths.GetConfigsDirectory());
+                            SMDirs.Add(PathsHelper.ConfigsDirectory);
                         }
 
                         int _OptimizationLevel = 2, _VerboseLevel = 1;
@@ -169,7 +169,7 @@ namespace SPCode.Interop
                 Environment.Exit(Environment.ExitCode);
             }
 
-            return configs.ToArray();
+            return configs;
         }
 
         private static string ReadAttributeStringSafe(ref XmlNode node, string attributeName, string defaultValue = "")

@@ -218,7 +218,7 @@ namespace SPCode.UI.Windows
 
         private void LoadConfigToUI(int index)
         {
-            if (index < 0 || index >= Program.Configs.Length)
+            if (index < 0 || index >= Program.Configs.Count)
             {
                 return;
             }
@@ -261,7 +261,7 @@ namespace SPCode.UI.Windows
                 SMDirectories = new List<string>()
             };
             var configList = new List<Config>(Program.Configs) { c };
-            Program.Configs = configList.ToArray();
+            Program.Configs = configList;
             ConfigListBox.Items.Add(new ListBoxItem { Content = Translate("NewConfig") });
         }
 
@@ -279,7 +279,7 @@ namespace SPCode.UI.Windows
 
             var configList = new List<Config>(Program.Configs);
             configList.RemoveAt(index);
-            Program.Configs = configList.ToArray();
+            Program.Configs = configList;
             ConfigListBox.Items.RemoveAt(index);
             if (index == Program.SelectedConfig)
             {
@@ -633,7 +633,7 @@ namespace SPCode.UI.Windows
                 writer.Flush();
             }
 
-            File.WriteAllText(Paths.GetConfigFilePath(), outString.ToString());
+            File.WriteAllText(PathsHelper.ConfigFilePath, outString.ToString());
             LoggingControl.LogAction($"Configs saved.", 2);
         }
 

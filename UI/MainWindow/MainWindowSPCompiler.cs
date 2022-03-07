@@ -586,7 +586,7 @@ namespace SPCode.UI
                 return null;
             }
 
-            var batchFile = new FileInfo(@$"{Paths.GetTempDirectory()}\{Environment.TickCount}_{(uint)code.GetHashCode() ^ (uint)directory.GetHashCode()}_temp.bat").FullName;
+            var batchFile = new FileInfo(@$"{PathsHelper.TempDirectory}\{Environment.TickCount}_{(uint)code.GetHashCode() ^ (uint)directory.GetHashCode()}_temp.bat").FullName;
             File.WriteAllText(batchFile, code);
             string result;
             using (var process = new Process())

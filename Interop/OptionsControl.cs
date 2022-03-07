@@ -229,7 +229,7 @@ namespace SPCode
             try
             {
                 var formatter = new BinaryFormatter();
-                using var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Create, FileAccess.ReadWrite,
+                using var fileStream = new FileStream(PathsHelper.OptionsFilePath, FileMode.Create, FileAccess.ReadWrite,
                     FileShare.None);
                 formatter.Serialize(fileStream, Program.OptionsObject);
             }
@@ -242,11 +242,11 @@ namespace SPCode
         {
             try
             {
-                if (File.Exists(Paths.GetOptionsFilePath()))
+                if (File.Exists(PathsHelper.OptionsFilePath))
                 {
                     OptionsControl optionsObject;
                     var formatter = new BinaryFormatter();
-                    using (var fileStream = new FileStream(Paths.GetOptionsFilePath(), FileMode.Open, FileAccess.Read,
+                    using (var fileStream = new FileStream(PathsHelper.OptionsFilePath, FileMode.Open, FileAccess.Read,
                         FileShare.ReadWrite))
                     {
                         optionsObject = (OptionsControl)formatter.Deserialize(fileStream);
