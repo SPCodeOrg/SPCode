@@ -19,7 +19,7 @@ namespace SPCode.Interop.Updater
     public partial class UpdateWindow
     {
         #region Variables
-        private readonly UpdateInfo updateInfo;
+        private readonly UpdateInfo _updateInfo;
         public bool Succeeded;
         #endregion
 
@@ -38,7 +38,7 @@ namespace SPCode.Interop.Updater
                     ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
             }
 
-            updateInfo = info;
+            _updateInfo = info;
             PrepareUpdateWindow(OnlyChangelog);
 
         }
@@ -86,8 +86,8 @@ namespace SPCode.Interop.Updater
             }
             else
             {
-                Title = string.Format(Translate("VersionAvailable"), updateInfo.AllReleases[0].TagName);
-                MainLine.Text = Translate("WantToUpdate");
+                Title = string.Format(Translate("VersionAvailable"), _updateInfo.AllReleases[0].TagName);
+                MainLine.Text = string.Format(Translate("WantToUpdate"), NamesHelper.VersionString, _updateInfo.AllReleases[0].TagName);
                 ActionYesButton.Content = Translate("Yes");
                 ActionNoButton.Content = Translate("No");
                 ActionGithubButton.Content = Translate("ViewGithub");
@@ -95,9 +95,9 @@ namespace SPCode.Interop.Updater
 
             var releasesBody = new StringBuilder();
 
-            if (updateInfo.AllReleases != null && updateInfo.AllReleases.Count > 0)
+            if (_updateInfo.AllReleases != null && _updateInfo.AllReleases.Count > 0)
             {
-                foreach (var release in updateInfo.AllReleases)
+                foreach (var release in _updateInfo.AllReleases)
                 {
                     releasesBody.Append($"**%{{color:{GetAccentHex()}}}Version {release.TagName}%** ");
                     releasesBody.AppendLine($"*%{{color:gray}}({MonthToTitlecase(release.CreatedAt)})% *\r\n");
@@ -112,7 +112,7 @@ namespace SPCode.Interop.Updater
             content.FontFamily = new FontFamily("Segoe UI");
             DescriptionBox.Document = content;
 
-            if (updateInfo.SkipDialog)
+            if (_updateInfo.SkipDialog)
             {
                 StartUpdate();
             }
@@ -123,7 +123,7 @@ namespace SPCode.Interop.Updater
         /// </summary>
         private void StartUpdate()
         {
-            if (updateInfo == null)
+            if (_updateInfo == null)
             {
                 Close();
                 return;
@@ -132,7 +132,7 @@ namespace SPCode.Interop.Updater
             ActionYesButton.Visibility = Visibility.Hidden;
             ActionNoButton.Visibility = Visibility.Hidden;
             ActionGithubButton.Visibility = Visibility.Hidden;
-            MainLine.Text = string.Format(Translate("UpdatingTo"), updateInfo.AllReleases[0].TagName);
+            MainLine.Text = string.Format(Translate("UpdatingTo"), _updateInfo.AllReleases[0].TagName);
             SubLine.Text = Translate("DownloadingUpdater");
             var t = new Thread(UpdateDownloadWorker);
             t.Start();
@@ -143,8 +143,8 @@ namespace SPCode.Interop.Updater
         /// </summary>
         private void UpdateDownloadWorker()
         {
-            var updater = updateInfo.Updater;
-            var portable = updateInfo.Portable;
+            var updater = _updateInfo.Updater;
+            var portable = _updateInfo.Portable;
 
             try
             {

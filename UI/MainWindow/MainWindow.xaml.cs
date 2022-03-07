@@ -134,6 +134,9 @@ namespace SPCode.UI
             // Translate
             Language_Translate();
 
+            // Evaluate RTL
+            EvaluateRTL();
+
             // Load previously opened files
             if (Program.OptionsObject.LastOpenFiles != null)
             {
@@ -581,6 +584,24 @@ namespace SPCode.UI
             {
                 BlendEffectPlane.Fill = (SolidColorBrush)FindResource("AccentColorBrush4");
             };
+        }
+
+        public void EvaluateRTL()
+        {
+            if (Program.IsRTL)
+            {
+                FileDirButtonStackPanel.FlowDirection = FlowDirection.RightToLeft;
+                ConfigDirButtonStackPanel.FlowDirection = FlowDirection.RightToLeft;
+                MainWindowCommands.FlowDirection = FlowDirection.RightToLeft;
+                OBSearch.FlowDirection = FlowDirection.RightToLeft;
+            }
+            else
+            {
+                FileDirButtonStackPanel.FlowDirection = FlowDirection.LeftToRight;
+                ConfigDirButtonStackPanel.FlowDirection = FlowDirection.LeftToRight;
+                MainWindowCommands.FlowDirection = FlowDirection.LeftToRight;
+                OBSearch.FlowDirection = FlowDirection.LeftToRight;
+            }
         }
         #endregion
     }

@@ -46,6 +46,7 @@ namespace SPCode.UI.Windows
             LoadSH();
             LoadHotkeysSection();
             Language_Translate();
+            EvaluateRTL();
 
             AllowChanging = true;
 
@@ -397,7 +398,9 @@ namespace SPCode.UI.Windows
                 Program.Translations.LoadLanguage(lang);
                 Program.OptionsObject.Language = lang;
                 Program.MainWindow.Language_Translate();
+                Program.MainWindow.EvaluateRTL();
                 Language_Translate();
+                EvaluateRTL();
             }
             catch (Exception ex)
             {
@@ -809,6 +812,11 @@ namespace SPCode.UI.Windows
                     tbx.Text = Translate(tbx.Name.Substring(3));
                 }
             }
+        }
+
+        private void EvaluateRTL()
+        {
+            OptionsWindowMainGrid.FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
         }
         #endregion
     }

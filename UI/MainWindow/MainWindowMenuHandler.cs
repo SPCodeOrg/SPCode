@@ -438,7 +438,7 @@ namespace SPCode.UI
             // Create the StackPanel where we will place image and text
             var stack = new StackPanel()
             {
-                Orientation = Orientation.Horizontal,
+                Orientation = Orientation.Horizontal
             };
             stack.Children.Add(img);
             stack.Children.Add(text);
@@ -450,7 +450,7 @@ namespace SPCode.UI
             };
 
             // Set the click callback to open the file
-            mi.Click += (sender, e) =>
+            mi.Click += delegate
             {
                 TryLoadSourceFile(fInfo.FullName, out _, true, false, true);
             };

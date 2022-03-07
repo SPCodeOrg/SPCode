@@ -52,6 +52,7 @@ namespace SPCode.UI.Windows
         {
             InitializeComponent();
             Language_Translate();
+            EvaluateRTL();
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
             {
                 ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
@@ -668,6 +669,11 @@ namespace SPCode.UI.Windows
             Rcon_MenuC.Text = Translate("RConCMDLineCom");
             BackupConfigsButton.Content = Translate("BackupConfigs");
             LoadConfigsButton.Content = Translate("LoadConfigs");
+        }
+
+        private void EvaluateRTL()
+        {
+            ConfigsWindowMainGrid.FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
         }
 
         private class SimpleCommand : ICommand

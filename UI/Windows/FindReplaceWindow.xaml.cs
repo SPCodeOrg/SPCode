@@ -66,6 +66,7 @@ namespace SPCode.UI.Windows
             RestoreSettings();
             LoadEditorsInfo();
             Language_Translate();
+            EvaluateRTL();
 
             FindBox.SelectAll();
             AllowChanging = true;
@@ -545,6 +546,11 @@ namespace SPCode.UI.Windows
             Count_Button.Content = Translate("Count");
             CCBox.Content = Translate("CaseSen");
             MLRBox.Content = Translate("MultilineRegex");
+        }
+
+        private void EvaluateRTL()
+        {
+            FindReplaceGrid.FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
         }
         #endregion
     }

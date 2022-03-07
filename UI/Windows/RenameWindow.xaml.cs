@@ -28,6 +28,8 @@ namespace SPCode.UI.Windows
             try
             {
                 Language_Translate();
+                EvaluateRTL();
+
                 _file = file;
                 TxtName.Text = Path.GetFileName(_file);
                 TxtName.Focus();
@@ -127,6 +129,11 @@ namespace SPCode.UI.Windows
         {
             BtAccept.Content = Translate("Accept");
             BtCancel.Content = Translate("Cancel");
+        }
+
+        private void EvaluateRTL()
+        {
+            RenameWindowMainGrid.FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
         }
         #endregion
     }
