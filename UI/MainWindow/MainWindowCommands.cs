@@ -611,13 +611,12 @@ namespace SPCode.UI
         /// </summary>
         private async void Command_Decompile()
         {
-            ProgressDialogController? msg = null;
             try
             {
                 var file = DecompileUtil.GetFile();
                 if (file != null)
                 {
-                    msg = await this.ShowProgressAsync(Translate("Decompiling") + "...", file.Name, false, MetroDialogOptions);
+                    var msg = await this.ShowProgressAsync(Translate("Decompiling") + "...", file.Name, false, MetroDialogOptions);
                     msg.SetIndeterminate();
                     ProcessUITasks();
                     TryLoadSourceFile(DecompileUtil.GetDecompiledPlugin(file), out _);

@@ -35,7 +35,7 @@ namespace SPCode.Interop.Updater
             var info = new UpdateInfo();
             try
             {
-                info.AllReleases = (await GetAllReleases()).ToList();
+                info.AllReleases = await GetAllReleases();
                 if (info.AllReleases.Count == 0)
                 {
                     info.IsAvailable = false;
@@ -96,23 +96,23 @@ namespace SPCode.Interop.Updater
         }
 
         /// <summary>
-        /// Calls the GitHub API to get all releases.
+        /// Calls the GitHub API to get the latest 10 releases.
         /// </summary>
-        /// <returns></returns>
-        private static async Task<IEnumerable<Release>> GetAllReleases()
+        /// <returns>Latest 10 releases</returns>
+        private static async Task<List<Release>> GetAllReleases()
         {
-            var apiOptions = new ApiOptions()
-            {
-                PageCount = 1,
-                PageSize = 10
-            };
-
             var client = new GitHubClient(new ProductHeaderValue(Constants.ProductHeaderValueName));
-            var releases = await client.Repository.Release.GetAll(Constants.OrgName, Constants.MainRepoName, apiOptions);
+            var releases = await client.Repository.Release.GetAll(Constants.OrgName, Constants.MainRepoName);
 #if BETA
-            var finalReleasesList = releases.Where(x => x.Prerelease);
+            var finalReleasesList = releases
+                .Where(x => x.Prerelease)
+                .Take(10)
+                .ToList();
 #else
-            var finalReleasesList = releases.Where(x => !x.Prerelease);
+            var finalReleasesList = releases
+                .Where(x => !x.Prerelease)
+                .Take(10)
+                .ToList();
 #endif
             return finalReleasesList;
         }
