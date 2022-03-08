@@ -74,8 +74,12 @@
               <ComboBoxItem x:Name="MenuFR_CurrDoc" />
               <ComboBoxItem x:Name="MenuFR_AllDoc" />
             </ComboBox>
-            <CheckBox x:Name="CCBox" Foreground="{DynamicResource BlackBrush}" Margin="0,3,0,0" Checked="CaseSensitiveChanged" Unchecked="CaseSensitiveChanged"/>
-            <CheckBox x:Name="MLRBox" Foreground="{DynamicResource BlackBrush}" Margin="0,5,0,0" Checked="MultilineRegexChanged" Unchecked="MultilineRegexChanged" />
+            <CheckBox x:Name="CCBox" Foreground="{DynamicResource BlackBrush}" Margin="0,3,0,0" Checked="CaseSensitiveChanged" Unchecked="CaseSensitiveChanged">
+              <TextBlock x:Name="CCBoxText" TextWrapping="Wrap"/>
+            </CheckBox>
+            <CheckBox x:Name="MLRBox" Foreground="{DynamicResource BlackBrush}" Margin="0,5,0,0" Checked="MultilineRegexChanged" Unchecked="MultilineRegexChanged">
+              <TextBlock x:Name="MLRBoxText" TextWrapping="Wrap"/>
+            </CheckBox>
           </StackPanel>
         </Grid>
 

@@ -544,8 +544,8 @@ namespace SPCode.UI.Windows
 
             Find_Button.Content = Translate("Find");
             Count_Button.Content = Translate("Count");
-            CCBox.Content = Translate("CaseSen");
-            MLRBox.Content = Translate("MultilineRegex");
+            CCBoxText.Text = Translate("CaseSen");
+            MLRBoxText.Text = Translate("MultilineRegex");
         }
 
         private void EvaluateRTL()

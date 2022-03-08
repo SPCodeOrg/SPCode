@@ -89,6 +89,58 @@ namespace SPCode.UI.Windows
 
         #region Methods
         /// <summary>
+        /// Loads the hotkeys into the Options Window UI.
+        /// </summary>
+        private void LoadHotkeysSection()
+        {
+            var txtMargin = 54;
+            var hkMargin = 48;
+            var sepMargin = 61;
+            foreach (var hkInfo in Program.HotkeysList)
+            {
+                var textBlock = new TextBlock()
+                {
+                    Name = $"Txt{hkInfo.Command}",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Margin = new Thickness(161, txtMargin, 0, 0),
+                    TextWrapping = TextWrapping.Wrap,
+                    Text = Translate(hkInfo.Command)
+                };
+                var hotkeyEditor = new HotkeyEditorControl()
+                {
+                    Name = $"Hk{hkInfo.Command}",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Height = 28,
+                    Width = 140,
+                    Margin = new Thickness(85, hkMargin, 0, 0),
+                    Hotkey = hkInfo.Hotkey,
+                    FontStyle = hkInfo.Hotkey == null || hkInfo.Hotkey.ToString() == "None" ? FontStyles.Italic : FontStyles.Normal
+                };
+                hotkeyEditor.PreviewKeyDown += Hotkey_PreviewKeyDown;
+                hotkeyEditor.PreviewMouseDown += Hotkey_PreviewMouseDown;
+                Grid.SetColumn(hotkeyEditor, 1);
+                var separator = new Separator()
+                {
+                    Margin = new Thickness(30, sepMargin, 0, 0),
+                    Height = 41,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#408B8B8B")
+                };
+                Grid.SetColumnSpan(separator, 2);
+
+                HotkeysGrid.Children.Add(textBlock);
+                HotkeysGrid.Children.Add(hotkeyEditor);
+                HotkeysGrid.Children.Add(separator);
+
+                txtMargin += 40;
+                hkMargin += 40;
+                sepMargin += 40;
+            }
+        }
+
+        /// <summary>
         /// Saves the input hotkey to the Hotkeys file, and caches it.
         /// </summary>
         private void SaveHotkey(bool toDefault = false)

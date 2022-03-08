@@ -49,8 +49,10 @@
       </Style>
 
       <Style x:Key="ColorChangeControlStyle" TargetType="{x:Type components:ColorChangeControl}">
-        <Setter Property="Margin" Value="0,10,0,0"/>
-        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="5,10,5,0"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Height" Value="105"/>
+        <Setter Property="Width" Value="320"/>
       </Style>
 
       <ResourceDictionary.MergedDictionaries>
@@ -229,25 +231,27 @@
 
                 <CheckBox Name="HighlightDeprecateds" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="HighlightDeprecateds_Changed" Unchecked="HighlightDeprecateds_Changed" />
 
-                <StackPanel Grid.Column="0" Margin="0,30,0,0">
+                <StackPanel Grid.Column="0" Margin="0,30,0,10">
 
                   <StackPanel.Resources>
-                    <Style BasedOn="{StaticResource ColorChangeControlStyle}" TargetType="{x:Type components:ColorChangeControl}"/>
+                    <Style BasedOn="{StaticResource ColorChangeControlStyle}" TargetType="{x:Type components:ColorChangeControl}">
+                      <Setter Property="HorizontalAlignment" Value="Left"/>
+                    </Style>
                   </StackPanel.Resources>
 
-                  <components:ColorChangeControl x:Name="SH_Comments" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Comments_Changed" />
-                  <components:ColorChangeControl x:Name="SH_PreProcessor" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="PreProcessor_Changed" />
-                  <components:ColorChangeControl x:Name="SH_Types" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Types_Changed" />
-                  <components:ColorChangeControl x:Name="SH_Keywords" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Keywords_Changed" />
-                  <components:ColorChangeControl x:Name="SH_Chars" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Chars_Changed" />
-                  <components:ColorChangeControl x:Name="SH_Numbers" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Numbers_Changed" />
-                  <components:ColorChangeControl x:Name="SH_Deprecated" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Deprecated_Changed" />
-                  <components:ColorChangeControl x:Name="SH_Functions" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Functions_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Comments" ColorChanged="Comments_Changed" />
+                  <components:ColorChangeControl x:Name="SH_PreProcessor" ColorChanged="PreProcessor_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Types" ColorChanged="Types_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Keywords" ColorChanged="Keywords_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Chars" ColorChanged="Chars_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Numbers" ColorChanged="Numbers_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Deprecated" ColorChanged="Deprecated_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Functions" ColorChanged="Functions_Changed" />
                   
                 </StackPanel>
 
                 <Button Grid.Column="1" Margin="0,0,5,0" 
-                        Width="150" Height="30" VerticalContentAlignment="Center" 
+                        Height="30" VerticalContentAlignment="Center" 
                         HorizontalContentAlignment="Center" HorizontalAlignment="Right" 
                         VerticalAlignment="Top" x:Name="DefaultButton" Click="DefaultButton_Click" 
                         FontWeight="Bold"/>
@@ -255,17 +259,19 @@
                 <StackPanel Grid.Column="1" Margin="0,30,0,0">
 
                   <StackPanel.Resources>
-                    <Style BasedOn="{StaticResource ColorChangeControlStyle}" TargetType="{x:Type components:ColorChangeControl}"/>
+                    <Style BasedOn="{StaticResource ColorChangeControlStyle}" TargetType="{x:Type components:ColorChangeControl}">
+                      <Setter Property="HorizontalAlignment" Value="Right"/>
+                    </Style>
                   </StackPanel.Resources>
 
-                  <components:ColorChangeControl x:Name="SH_CommentMarkers" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="CommentMarker_Changed" />
-                  <components:ColorChangeControl x:Name="SH_Strings" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="String_Changed" />
-                  <components:ColorChangeControl x:Name="SH_TypesValues" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="TypeValues_Changed" />
-                  <components:ColorChangeControl x:Name="SH_ContextKeywords" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="ContextKeywords_Changed" />
-                  <components:ColorChangeControl x:Name="SH_UnknownFunctions" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="UFunctions_Changed" />
-                  <components:ColorChangeControl x:Name="SH_SpecialCharacters" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="SpecialCharacters_Changed" />
-                  <components:ColorChangeControl x:Name="SH_Constants" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Constants_Changed" />
-                  <components:ColorChangeControl x:Name="SH_Methods" VerticalAlignment="Top" Height="105" Width="300" ColorChanged="Methods_Changed" />
+                  <components:ColorChangeControl x:Name="SH_CommentMarkers" ColorChanged="CommentMarker_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Strings" ColorChanged="String_Changed" />
+                  <components:ColorChangeControl x:Name="SH_TypesValues" ColorChanged="TypeValues_Changed" />
+                  <components:ColorChangeControl x:Name="SH_ContextKeywords" ColorChanged="ContextKeywords_Changed" />
+                  <components:ColorChangeControl x:Name="SH_UnknownFunctions" ColorChanged="UFunctions_Changed" />
+                  <components:ColorChangeControl x:Name="SH_SpecialCharacters" ColorChanged="SpecialCharacters_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Constants" ColorChanged="Constants_Changed" />
+                  <components:ColorChangeControl x:Name="SH_Methods" ColorChanged="Methods_Changed" />
 
                 </StackPanel>
 
