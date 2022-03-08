@@ -619,7 +619,7 @@ namespace SPCode.UI
                     var msg = await this.ShowProgressAsync(Translate("Decompiling") + "...", file.Name, false, MetroDialogOptions);
                     msg.SetIndeterminate();
                     ProcessUITasks();
-                    TryLoadSourceFile(DecompileUtil.GetDecompiledPlugin(file), out _);
+                    TryLoadSourceFile(DecompileUtil.GetDecompiledPlugin(file), out _, SelectMe: true);
                     await msg.CloseAsync();
                 }
             }

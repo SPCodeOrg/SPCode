@@ -59,7 +59,7 @@ namespace SPCode.Interop
                 {
                     if (_window.IsLoaded)
                     {
-                        if (_window.TryLoadSourceFile(files[i], out _, SelectIt) && _window.WindowState == System.Windows.WindowState.Minimized)
+                        if (_window.TryLoadSourceFile(files[i], out _, SelectMe: SelectIt) && _window.WindowState == System.Windows.WindowState.Minimized)
                         {
                             _window.WindowState = System.Windows.WindowState.Normal;
                             SelectIt = false;
