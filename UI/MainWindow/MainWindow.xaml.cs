@@ -127,6 +127,10 @@ namespace SPCode.UI
             DisableServerAnim = (Storyboard)Resources["DisableServerAnim"];
             DimmMainWindowEffect = (Storyboard)Resources["DimmMainWindow"];
             RestoreMainWindowEffect = (Storyboard)Resources["RestoreMainWindow"];
+            RestoreMainWindowEffect.Completed += delegate
+            {
+                BlendEffectPlane.Fill = (SolidColorBrush)FindResource("AccentColorBrush4");
+            };
 
             // Start OB
             ChangeObjectBrowserToDirectory(Program.OptionsObject.Program_ObjectBrowserDirectory);
@@ -580,10 +584,6 @@ namespace SPCode.UI
         public void RestoreMainWindow()
         {
             RestoreMainWindowEffect.Begin();
-            RestoreMainWindowEffect.Completed += delegate
-            {
-                BlendEffectPlane.Fill = (SolidColorBrush)FindResource("AccentColorBrush4");
-            };
         }
 
         public void EvaluateRTL()
