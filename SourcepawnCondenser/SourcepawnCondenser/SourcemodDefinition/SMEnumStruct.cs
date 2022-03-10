@@ -1,11 +1,24 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SourcepawnCondenser.SourcemodDefinition
 {
     public class SMEnumStruct : SMBaseDefinition
     {
-        public List<SMEnumStructField> Fields = new();
-        public List<SMEnumStructMethod> Methods = new();
+        public readonly List<SMMethodmapField> Fields = new();
+        public readonly List<SMMethodmapMethod> Methods = new();
+        
+        
+        public List<ACNode> ProduceNodes()
+        {
+            var nodes = new List<ACNode>();
+            nodes.AddRange(ACNode.ConvertFromStringList(Methods.Select(e => e.Name), true, "▲ "));
+            nodes.AddRange(ACNode.ConvertFromStringList(Fields.Select(e => e.Name), false, "• "));
+            
+            nodes.Sort((a, b) => string.CompareOrdinal(a.EntryName, b.EntryName));
+
+            return nodes;
+        }
     }
 
     public class SMEnumStructField : SMBaseDefinition

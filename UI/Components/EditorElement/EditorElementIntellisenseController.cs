@@ -473,7 +473,7 @@ namespace SPCode.UI.Components
                     return false;
                 }
 
-                var isNodes = mm.ProduceISNodes();
+                var isNodes = mm.ProduceNodes();
 
                 if (!isNodes.SequenceEqual(_methodACEntries, ISEqualityComparer))
                 {
