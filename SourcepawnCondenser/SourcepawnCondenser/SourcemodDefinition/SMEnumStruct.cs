@@ -5,8 +5,8 @@ namespace SourcepawnCondenser.SourcemodDefinition
 {
     public class SMEnumStruct : SMBaseDefinition
     {
-        public readonly List<SMMethodmapField> Fields = new();
-        public readonly List<SMMethodmapMethod> Methods = new();
+        public readonly List<SMEnumStructField> Fields = new();
+        public readonly List<SMEnumStructMethod> Methods = new();
         
         
         public List<ACNode> ProduceNodes()
