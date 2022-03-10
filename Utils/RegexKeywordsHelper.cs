@@ -7,9 +7,16 @@ namespace SPCode.Utils
 {
     public static class RegexKeywordsHelper
     {
-        public static Regex GetRegexFromKeywords(string[] keywords, bool ForceAtomicRegex = false)
+        /// <summary>
+        /// Converts a string list a regexp matching all the given word.
+        /// </summary>
+        /// <param name="keywords">The words list</param>
+        /// <param name="forceAtomicRegex">If true the word is enclosed in "\b"</param>
+        /// <param name="noDot">If true the match requires a "." not to be present before the word</param>
+        /// <returns></returns>
+        public static Regex GetRegexFromKeywords(string[] keywords, bool forceAtomicRegex = false, bool noDot = false)
         {
-            if (ForceAtomicRegex)
+            if (forceAtomicRegex)
             {
                 keywords = ConvertToAtomicRegexAbleStringArray(keywords);
             }
@@ -19,26 +26,10 @@ namespace SPCode.Utils
                 return new Regex("SPEdit_Error"); //hehe 
             }
 
-            var UseAtomicRegex = true;
-            for (var j = 0; j < keywords.Length; ++j)
-            {
-                if (!char.IsLetterOrDigit(keywords[j][0]) ||
-                    !char.IsLetterOrDigit(keywords[j][keywords[j].Length - 1]))
-                {
-                    UseAtomicRegex = false;
-                    break;
-                }
-            }
+            var useAtomicRegex = keywords.All(t => char.IsLetterOrDigit(t[0]) && char.IsLetterOrDigit(t[t.Length - 1]));
 
             var regexBuilder = new StringBuilder();
-            if (UseAtomicRegex)
-            {
-                regexBuilder.Append(@"\b(?>");
-            }
-            else
-            {
-                regexBuilder.Append(@"(");
-            }
+            regexBuilder.Append(useAtomicRegex ? @"\b(?>" : @"(");
 
             var orderedKeyWords = new List<string>(keywords);
             var i = 0;
@@ -49,7 +40,7 @@ namespace SPCode.Utils
                     regexBuilder.Append('|');
                 }
 
-                if (UseAtomicRegex)
+                if (useAtomicRegex)
                 {
                     regexBuilder.Append(Regex.Escape(keyword));
                 }
@@ -68,7 +59,7 @@ namespace SPCode.Utils
                 }
             }
 
-            if (UseAtomicRegex)
+            if (useAtomicRegex)
             {
                 regexBuilder.Append(@")\b");
             }
@@ -159,16 +150,16 @@ namespace SPCode.Utils
             var regexBuilder = new StringBuilder(@"\b(?<=[^\s]+\.)(");
             regexBuilder.Append(string.Join("|", keywords));
             regexBuilder.Append(@")\b");
-            
+
             return new Regex(regexBuilder.ToString(), RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture);
         }
-        
+
         public static Regex GetRegexFromKeywords2(List<string> keywords)
         {
             var regexBuilder = new StringBuilder(@"\b(?<=[^\s]+\.)(");
             regexBuilder.Append(string.Join("|", keywords));
             regexBuilder.Append(@")\b");
-            
+
             return new Regex(regexBuilder.ToString(), RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture);
         }
     }

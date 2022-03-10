@@ -395,6 +395,9 @@ namespace SPCode.UI.Components
             }
 
 
+            if (text.Length == 0)
+                return false;
+            
             if (!IsValidFunctionChar(text[lineOffset - 1]) &&
                 text[lineOffset - 1] != '.' && text[lineOffset - 1] != ' ' && text[lineOffset - 1] != '\t')
                 return false;

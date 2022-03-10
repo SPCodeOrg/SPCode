@@ -169,8 +169,7 @@ namespace SPCode.UI.Windows
                 if (TagValue is SMMethodmap methodmap)
                 {
                     SPNameBlock.Text = methodmap.Name;
-                    SPFullNameBlock.Text = $"Type: " + methodmap.Type +
-                                           $" - {Translate("InheritedFrom")}: {methodmap.InheritedType}";
+                    SPFullNameBlock.Text = $"{Translate("InheritedFrom")}: {methodmap.InheritedType}";
                     SPFileBlock.Text = methodmap.File + ".inc" +
                                        $" ({string.Format(Translate("PosLen"), methodmap.Index, methodmap.Length)})";
                     SPTypeBlock.Text = "Methodmap " + methodmap.Methods.Count + " methods - " + methodmap.Fields.Count + " fields";
@@ -198,7 +197,7 @@ namespace SPCode.UI.Windows
                     SPFullNameBlock.Text = method.FullName;
                     SPFileBlock.Text = method.File + ".inc" +
                                        $" {string.Format(Translate("PosLen"), method.Index, method.Length)}";
-                    SPTypeBlock.Text = $"{Translate("MethodFrom")} {method.MethodmapName}";
+                    SPTypeBlock.Text = $"{Translate("MethodFrom")} {method.ClassName}";
                     SPCommentBox.Text = method.CommentString;
                     return;
                 }
@@ -209,7 +208,7 @@ namespace SPCode.UI.Windows
                     SPFullNameBlock.Text = field.FullName;
                     SPFileBlock.Text = field.File + ".inc" +
                                        $" {string.Format(Translate("PosLen"), field.Index, field.Length)}";
-                    SPTypeBlock.Text = $"{Translate("PropertyFrom")} {field.MethodmapName}";
+                    SPTypeBlock.Text = $"{Translate("PropertyFrom")} {field.ClassName}";
                     SPCommentBox.Text = string.Empty;
                     return;
                 }
