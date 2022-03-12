@@ -17,30 +17,38 @@ namespace SPCode.UI.Components
 {
     enum ACType
     {
+        /// <summary>
         /// Top level objects, such as Functions, Variables, Types.
+        /// </summary> 
         Toplevel,
-
+        
+        /// <summary>
         /// Class Methods and Fields. Also used for MethodMap list.
+        /// </summary> 
         Class,
 
-        /// Pre-processor statments.
+        /// <summary>
+        /// Pre-processor statements.
+        /// </summary> 
         PreProc,
     }
 
-    /// @note
     // AC stands for AutoComplete
     // IS stands for IntelliSense and is often replaced with "Doc"/"Documentation"
     //
     // _smDef is the SMDefinition that contains all the symbols of the include directory and open file,
     // currentSmDef contains only the current file symbols.
+
     public partial class EditorElement
     {
         private bool _isAcOpen;
         private List<ACNode> _acEntries;
 
-        /// We use this just to keep track of the current isNodes for the equality check.
-        /// Seems like that using this as ItemsSource for the MethodAutoCompleteBox causes it to not update the UI
+        /// <summary>
+        /// We use this just to keep track of the current isNodes for the equality check. <br></br>
+        /// Seems like that using this as ItemsSource for the MethodAutoCompleteBox causes it to not update the UI <br></br>
         /// when ScrollIntoView is called.
+        /// </summary>
         private readonly List<ACNode> _methodACEntries = new();
 
         private bool _isDocOpen;
@@ -61,12 +69,16 @@ namespace SPCode.UI.Components
 
         static private readonly SMDefinition.ISNodeEqualityComparer ISEqualityComparer = new();
 
+        /// <summary>
         /// Used to keep track of the current autocomplete type (ie. toplevel, class or preprocessor)
+        /// </summary> 
         private ACType _acType = ACType.Toplevel;
 
         private SMDefinition _smDef;
 
+        /// <summary>
         /// Matches either a function call ("PrintToChat(...)") or a method call ("arrayList.Push(...)")
+        /// </summary> 
         static private readonly Regex ISFindRegex = new(
             @"\b(((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+)\.)?(?<method>[a-zA-Z_]([a-zA-Z0-9_]?)+)\()",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture);
@@ -77,7 +89,9 @@ namespace SPCode.UI.Components
         static private readonly Regex MultilineCommentRegex = new(@"/\*.*?\*/",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
 
-        // Pre-processor statements
+        /// <summary>
+        /// Pre-processor statements
+        /// </summary> 
         static private readonly string[] PreProcArr =
         {
             "assert", "define", "else", "elseif", "endif", "endinput", "endscript", "error", "warning", "if",
@@ -92,7 +106,7 @@ namespace SPCode.UI.Components
         static private readonly Regex PreprocessorRegex = new("#\\w+", RegexOptions.Compiled);
 
         /// <summary>
-        ///  This is called only one time when the program first opens.
+        /// This is called only one time when the program first opens.
         /// </summary>
         public void LoadAutoCompletes()
         {
@@ -128,7 +142,7 @@ namespace SPCode.UI.Components
         }
 
         /// <summary>
-        ///  This is called several times. Mostly when the caret position changes.
+        /// This is called several times. Mostly when the caret position changes.
         /// </summary>
         /// <param name="smDef"> The SMDefinition </param>
         private void InterruptLoadAutoCompletes(SMDefinition smDef)
@@ -395,7 +409,7 @@ namespace SPCode.UI.Components
             }
 
 
-            if (text.Length == 0)
+            if (text.Length == 0 || editor.SelectionLength > 0)
                 return false;
             
             if (!IsValidFunctionChar(text[lineOffset - 1]) &&
