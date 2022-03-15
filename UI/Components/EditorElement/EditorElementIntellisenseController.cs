@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Rendering;
+using SourcepawnCondenser;
 using SourcepawnCondenser.SourcemodDefinition;
 
 // ReSharper disable once CheckNamespace
@@ -21,7 +22,7 @@ namespace SPCode.UI.Components
         /// Top level objects, such as Functions, Variables, Types.
         /// </summary> 
         Toplevel,
-        
+
         /// <summary>
         /// Class Methods and Fields. Also used for MethodMap list.
         /// </summary> 
@@ -84,7 +85,6 @@ namespace SPCode.UI.Components
             RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         static private readonly Regex NewRegex = new(@"(?:(\w+)\s+\w+\s+=\s+)?new\s+(\w+)?$", RegexOptions.Compiled);
-        // TODO Add EnumStructs
 
         static private readonly Regex MultilineCommentRegex = new(@"/\*.*?\*/",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
@@ -254,7 +254,6 @@ namespace SPCode.UI.Components
         /// <returns>True if a the IntelliSense matched a symbol false otherwise</returns>
         bool ComputeIntelliSense(string text, int lineOffset)
         {
-            //TODO: Add support for EnumStructs
             var isMatches = ISFindRegex.Matches(text);
             var scopeLevel = 0;
 
@@ -293,7 +292,7 @@ namespace SPCode.UI.Components
 
                         if (classString.Length > 0)
                         {
-                            var methodMap = FindMethodMap(classString);
+                            var methodMap = FindClass(classString);
 
                             var method = methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
 
@@ -321,21 +320,22 @@ namespace SPCode.UI.Components
         }
 
 
-        SMMethodmap? FindMethodMap(string classStr)
+        SMClasslike? FindClass(string classStr)
         {
             // Match for static methods. Like MyClass.StaticMethod(). Look for a MethodMap that is named as our classStr.
-            var methodMap = _smDef.Methodmaps.FirstOrDefault(e => e.Name == classStr);
+            var classElement = _smDef.Methodmaps.FirstOrDefault(e => e.Name == classStr);
 
             // If the staticMethod is found show it.
-            if (methodMap != null)
+            if (classElement != null)
             {
-                return methodMap;
+                return classElement;
             }
 
             // Find variable declaration to see of what type it is -->
             // Try to match it in the local variables (of the current function).
             var varDecl =
                 _smDef?.CurrentFunction?.FuncVariables.FirstOrDefault(e => e.Name == classStr);
+
 
             //TODO: Add FunctionParameters matching.
             /*varDecl ??= _smDef?.CurrentFunction?.Parameters.FirstOrDefault(e =>
@@ -344,8 +344,15 @@ namespace SPCode.UI.Components
             // Try to match it in the current file.
             varDecl ??= _smDef.Variables.FirstOrDefault(e => e.Name == classStr);
 
+            if (varDecl == null)
+            {
+                return null;
+            }
+            
             // If we found the declaration get the Variable Type and look for a method-map matching its type.
-            return varDecl == null ? null : _smDef.Methodmaps.FirstOrDefault(e => e.Name == varDecl.Type);
+
+            return (SMClasslike)_smDef.Methodmaps.FirstOrDefault(e => e.Name == varDecl.Type) ??
+                   _smDef.EnumStructs.FirstOrDefault(e => e.Name == varDecl.Type);
         }
 
         /// <summary>
@@ -411,7 +418,7 @@ namespace SPCode.UI.Components
 
             if (text.Length == 0 || editor.SelectionLength > 0)
                 return false;
-            
+
             if (!IsValidFunctionChar(text[lineOffset - 1]) &&
                 text[lineOffset - 1] != '.' && text[lineOffset - 1] != ' ' && text[lineOffset - 1] != '\t')
                 return false;
@@ -481,7 +488,7 @@ namespace SPCode.UI.Components
                 }
 
                 var classString = text.Substring(classOffset, len);
-                var mm = FindMethodMap(classString);
+                var mm = FindClass(classString);
                 if (mm == null)
                 {
                     return false;
@@ -1031,11 +1038,13 @@ namespace SPCode.UI.Components
                 return i;
             }
 
-            var index = nodes.FindIndex(node => node.EntryName.StartsWith(query, StringComparison.InvariantCultureIgnoreCase));
+            var index = nodes.FindIndex(node =>
+                node.EntryName.StartsWith(query, StringComparison.InvariantCultureIgnoreCase));
             if (index == -1)
             {
                 index = nodes.FindIndex(node => node.EntryName.Contains(query));
             }
+
             return index == -1 ? null : index;
         }
     }

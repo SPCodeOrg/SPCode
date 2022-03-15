@@ -203,12 +203,12 @@ namespace SourcepawnCondenser
                                     Index = mStartIndex,
                                     Name = methodName,
                                     ReturnType = methodReturnValue,
-                                    MethodKind = functionIndicators.ToArray(),
+                                    // MethodKind = functionIndicators.ToArray(),
                                     Parameters = parameters.ToArray(),
                                     FullName = TrimFullname(source.Substring(mStartIndex, mEndIndex - mStartIndex + 1)),
                                     Length = mEndIndex - mStartIndex + 1,
                                     CommentString = TrimComments(functionCommentString),
-                                    MethodmapName = enumStructName,
+                                    // MethodmapName = enumStructName,
                                     File = FileName
                                 });
                             }
