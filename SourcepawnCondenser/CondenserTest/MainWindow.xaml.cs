@@ -188,11 +188,12 @@ namespace CondenserTest
                     subSubItem.Items.Add(new TreeViewItem() { Header = "Length: " + m.Methods[j].Length, Background = Brushes.LightGray });
                     subSubItem.Items.Add(new TreeViewItem() { Header = "Comment: >>" + m.Methods[j].CommentString + "<<" });
                     subSubItem.Items.Add(new TreeViewItem() { Header = "Return: " + m.Methods[j].ReturnType, Background = Brushes.LightGray });
-                    var k = 0;
+
+                    var k = 0;/*
                     for (; k < m.Methods[j].MethodKind.Length; ++k)
                     {
                         subSubItem.Items.Add(new TreeViewItem() { Header = "MethodKind" + (k + 1) + ": " + m.Methods[j].MethodKind[k], Background = (k % 2 == 0) ? Brushes.LightGray : Brushes.White });
-                    }
+                    }*/
                     for (var l = 0; l < m.Methods[j].Parameters.Length; ++l)
                     {
                         ++k;
