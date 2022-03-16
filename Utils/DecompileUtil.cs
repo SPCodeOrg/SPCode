@@ -30,7 +30,7 @@ namespace SPCode.Utils
 
         public static string GetDecompiledPlugin(FileInfo file)
         {
-            var decompilerPath = Paths.GetLysisDirectory();
+            var decompilerPath = PathsHelper.LysisDirectory;
             var destFile = file.FullName + ".sp";
             var standardOutput = new StringBuilder();
             using var process = new Process();

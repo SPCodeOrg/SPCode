@@ -21,7 +21,8 @@ namespace SPCode.UI.Windows
     public partial class NewFileWindow
     {
         #region Variables
-        private readonly string PathStr = Program.Configs[Program.SelectedConfig].SMDirectories[0];
+        private readonly string _pathStr = Program.Configs[Program.SelectedConfig].SMDirectories[0];
+        private readonly string _templatesFile = PathsHelper.TemplatesFilePath;
         private bool TemplateEditMode = false;
         private bool TemplateNewMode = false;
         private ICommand textBoxButtonFileCmd;
@@ -132,7 +133,7 @@ namespace SPCode.UI.Windows
                 if ((TemplateListBox.SelectedItem as ListBoxItem)?.Tag is TemplateInfo templateInfo)
                 {
                     PreviewBox.editor.Text = File.ReadAllText(templateInfo.Path);
-                    PathBox.Text = Path.Combine(PathStr, templateInfo.NewName);
+                    PathBox.Text = Path.Combine(_pathStr, templateInfo.NewName);
                 }
             }
             catch (Exception ex)
@@ -297,10 +298,10 @@ namespace SPCode.UI.Windows
         {
             try
             {
-                if (File.Exists(Paths.GetTemplatesFilePath()))
+                if (File.Exists(_templatesFile))
                 {
                     LBIList = new List<ListBoxItem>();
-                    using Stream stream = File.OpenRead(Paths.GetTemplatesFilePath());
+                    using Stream stream = File.OpenRead(_templatesFile);
                     var doc = new XmlDocument();
                     doc.Load(stream);
                     if (doc.ChildNodes.Count <= 0)
@@ -324,7 +325,7 @@ namespace SPCode.UI.Windows
                             var NewNameStr = attributes?["NewName"].Value;
 
                             Debug.Assert(FileNameStr != null, nameof(FileNameStr) + " != null");
-                            var FilePathStr = Path.Combine(Paths.GetTemplatesDirectory(), FileNameStr);
+                            var FilePathStr = Path.Combine(PathsHelper.TemplatesDirectory, FileNameStr);
                             if (File.Exists(FilePathStr))
                             {
                                 Debug.Assert(NameStr != null, nameof(NameStr) + " != null");
@@ -395,14 +396,13 @@ namespace SPCode.UI.Windows
             try
             {
                 var temp = TemplateListBox.SelectedItem as ListBoxItem;
-                var tempFilePath = Paths.GetTemplatesFilePath();
 
                 // Save the file's content
                 var path = (temp.Tag as TemplateInfo).Path;
                 File.WriteAllText(path, PreviewBox.editor.Text);
 
                 // Save the new entry in Templates.xml
-                using Stream stream = File.OpenRead(tempFilePath);
+                using Stream stream = File.OpenRead(_templatesFile);
                 var doc = new XmlDocument();
                 doc.Load(stream);
                 stream.Dispose();
@@ -434,7 +434,7 @@ namespace SPCode.UI.Windows
                                 FileName = pathboxFileInfo.Name.Replace(" ", "")
                             };
                         }
-                        doc.Save(tempFilePath);
+                        doc.Save(_templatesFile);
                         break;
                     }
                 }
@@ -451,7 +451,7 @@ namespace SPCode.UI.Windows
             {
                 TemplateListBox.Items.RemoveAt(TemplateListBox.SelectedIndex);
                 File.Delete(new FileInfo((temp.Tag as TemplateInfo).Path).FullName);
-                using Stream stream = File.OpenRead(Paths.GetTemplatesFilePath());
+                using Stream stream = File.OpenRead(_templatesFile);
                 var doc = new XmlDocument();
                 doc.Load(stream);
                 stream.Dispose();
@@ -460,7 +460,7 @@ namespace SPCode.UI.Windows
                     if (node.Attributes["Name"].Value == temp.Content.ToString())
                     {
                         doc.ChildNodes[0].RemoveChild(node);
-                        doc.Save(Paths.GetTemplatesFilePath());
+                        doc.Save(_templatesFile);
                         return;
                     }
                 }
@@ -475,11 +475,10 @@ namespace SPCode.UI.Windows
         {
             try
             {
-                var tempFilePath = Paths.GetTemplatesFilePath();
                 var pathBoxFileInfo = new FileInfo(PathBox.Text);
 
                 // Save in XML
-                using Stream stream = File.OpenRead(tempFilePath);
+                using Stream stream = File.OpenRead(_templatesFile);
                 var doc = new XmlDocument();
                 doc.Load(stream);
                 stream.Dispose();
@@ -490,10 +489,10 @@ namespace SPCode.UI.Windows
                 newNode.SetAttribute("File", pathBoxFileInfo.Name.Replace(" ", ""));
 
                 doc.ChildNodes[0].AppendChild(newNode);
-                doc.Save(tempFilePath);
+                doc.Save(_templatesFile);
 
                 // Create file
-                var newFilePath = Path.GetDirectoryName(tempFilePath) + Path.DirectorySeparatorChar + pathBoxFileInfo.Name.Replace(" ", "");
+                var newFilePath = Path.GetDirectoryName(_templatesFile) + Path.DirectorySeparatorChar + pathBoxFileInfo.Name.Replace(" ", "");
                 File.WriteAllText(newFilePath, PreviewBox.editor.Text);
 
                 // Save ListBoxItem

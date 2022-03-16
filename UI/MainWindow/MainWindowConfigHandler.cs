@@ -18,7 +18,7 @@ namespace SPCode.UI
         public void FillConfigMenu()
         {
             ConfigMenu.Items.Clear();
-            for (var i = 0; i < Program.Configs.Length; ++i)
+            for (var i = 0; i < Program.Configs.Count; ++i)
             {
                 var item = new MenuItem
                 {
@@ -56,7 +56,7 @@ namespace SPCode.UI
         /// <param name="index">The config index to change to</param>
         public void ChangeConfig(int index)
         {
-            if (index < 0 || index >= Program.Configs.Length)
+            if (index < 0 || index >= Program.Configs.Count)
             {
                 return;
             }
@@ -106,7 +106,7 @@ namespace SPCode.UI
         /// <param name="name">Name of the config to change to.</param>
         private void ChangeConfig(string name)
         {
-            for (var i = 0; i < Program.Configs.Length; ++i)
+            for (var i = 0; i < Program.Configs.Count; ++i)
             {
                 if (Program.Configs[i].Name == name)
                 {

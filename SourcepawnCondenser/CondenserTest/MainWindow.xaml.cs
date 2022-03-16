@@ -145,7 +145,6 @@ namespace CondenserTest
                 item.MouseLeftButtonUp += ItemMM_MouseLeftButtonUp;
                 item.Items.Add(new TreeViewItem() { Header = "Index: " + m.Index, Background = Brushes.LightGray });
                 item.Items.Add(new TreeViewItem() { Header = "Length: " + m.Length });
-                item.Items.Add(new TreeViewItem() { Header = "Type: " + m.Type, Background = Brushes.LightGray });
                 item.Items.Add(new TreeViewItem() { Header = "InheritedType: " + m.InheritedType });
                 var subItem = new TreeViewItem() { Header = "Methods", Background = Brushes.LightGray };
                 for (var j = 0; j < m.Methods.Count; ++j)
@@ -155,16 +154,6 @@ namespace CondenserTest
                     subSubItem.Items.Add(new TreeViewItem() { Header = "Length: " + m.Methods[j].Length, Background = Brushes.LightGray });
                     subSubItem.Items.Add(new TreeViewItem() { Header = "Comment: >>" + m.Methods[j].CommentString + "<<" });
                     subSubItem.Items.Add(new TreeViewItem() { Header = "Return: " + m.Methods[j].ReturnType, Background = Brushes.LightGray });
-                    var k = 0;
-                    for (; k < m.Methods[j].MethodKind.Length; ++k)
-                    {
-                        subSubItem.Items.Add(new TreeViewItem() { Header = "MethodKind" + (k + 1) + ": " + m.Methods[j].MethodKind[k], Background = (k % 2 == 0) ? Brushes.LightGray : Brushes.White });
-                    }
-                    for (var l = 0; l < m.Methods[j].Parameters.Length; ++l)
-                    {
-                        ++k;
-                        subSubItem.Items.Add(new TreeViewItem() { Header = "Parameter" + (l + 1) + ": " + m.Methods[j].Parameters[l], Background = (k % 2 == 0) ? Brushes.LightGray : Brushes.White });
-                    }
                     subItem.Items.Add(subSubItem);
                 }
                 item.Items.Add(subItem);
@@ -199,11 +188,12 @@ namespace CondenserTest
                     subSubItem.Items.Add(new TreeViewItem() { Header = "Length: " + m.Methods[j].Length, Background = Brushes.LightGray });
                     subSubItem.Items.Add(new TreeViewItem() { Header = "Comment: >>" + m.Methods[j].CommentString + "<<" });
                     subSubItem.Items.Add(new TreeViewItem() { Header = "Return: " + m.Methods[j].ReturnType, Background = Brushes.LightGray });
-                    var k = 0;
+
+                    var k = 0;/*
                     for (; k < m.Methods[j].MethodKind.Length; ++k)
                     {
                         subSubItem.Items.Add(new TreeViewItem() { Header = "MethodKind" + (k + 1) + ": " + m.Methods[j].MethodKind[k], Background = (k % 2 == 0) ? Brushes.LightGray : Brushes.White });
-                    }
+                    }*/
                     for (var l = 0; l < m.Methods[j].Parameters.Length; ++l)
                     {
                         ++k;

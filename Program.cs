@@ -28,7 +28,7 @@ namespace SPCode
         public static OptionsControl OptionsObject;
         public static TranslationProvider Translations;
         public static List<HotkeyInfo> HotkeysList;
-        public static Config[] Configs;
+        public static List<Config> Configs;
         public static int SelectedConfig;
         public static string SelectedTemplatePath;
         public static Stack<string> RecentFilesStack = new();
@@ -42,8 +42,6 @@ namespace SPCode
         public static string Indentation => OptionsObject.Editor_ReplaceTabsToWhitespace
             ? new string(' ', OptionsObject.Editor_IndentationSize)
             : "\t";
-
-        public static bool _IsLocalInstallation;
 
         [STAThread]
         public static void Main(string[] args)
@@ -65,7 +63,6 @@ namespace SPCode
                         ProfileOptimization.SetProfileRoot(Environment.CurrentDirectory);
                         ProfileOptimization.StartProfile("Startup.Profile");
 #endif
-                    _IsLocalInstallation = Paths.IsLocalInstallation();
                     UpdateStatus = new UpdateInfo();
                     OptionsObject = OptionsControl.Load(out var ProgramIsNew);
 
@@ -117,7 +114,7 @@ namespace SPCode
                     }
 
                     Configs = ConfigLoader.Load();
-                    for (var i = 0; i < Configs.Length; ++i)
+                    for (var i = 0; i < Configs.Count; ++i)
                     {
                         if (Configs[i].Name == OptionsObject.Program_SelectedConfig)
                         {
@@ -158,11 +155,12 @@ namespace SPCode
                     }
                     catch (Exception e)
                     {
-                        File.WriteAllText($@"{Paths.GetCrashLogDirectory()}\CRASH_{Environment.TickCount}.txt",
+                        var crashDir = PathsHelper.CrashLogDirectory;
+                        File.WriteAllText($@"{crashDir}\CRASH_{Environment.TickCount}.txt",
                             BuildExceptionString(e, "SPCODE LOADING"));
                         MessageBox.Show(
                             "An error occured." + Environment.NewLine +
-                            $"A crash report was written in {Paths.GetCrashLogDirectory()}",
+                            $"A crash report was written in {crashDir}",
                             "Error",
                             MessageBoxButton.OK,
                             MessageBoxImage.Error);
@@ -185,11 +183,12 @@ namespace SPCode
                     }
                     catch (Exception e)
                     {
-                        File.WriteAllText($@"{Paths.GetCrashLogDirectory()}\CRASH_{Environment.TickCount}.txt",
+                        var crashDir = PathsHelper.CrashLogDirectory;
+                        File.WriteAllText($@"{crashDir}\CRASH_{Environment.TickCount}.txt",
                             BuildExceptionString(e, "SPCODE MAIN"));
                         MessageBox.Show(
                             "An error occured." + Environment.NewLine +
-                            $"A crash report was written in {Paths.GetCrashLogDirectory()}",
+                            $"A crash report was written in {crashDir}",
                             "Error",
                             MessageBoxButton.OK,
                             MessageBoxImage.Error);
@@ -277,7 +276,7 @@ namespace SPCode
             var outString = new StringBuilder();
             outString.AppendLine("Section: " + SectionName);
             outString.AppendLine(".NET Version: " + Environment.Version);
-            outString.AppendLine("Is local installation?: " + _IsLocalInstallation);
+            outString.AppendLine("Is local installation?: " + PathsHelper.LocalInstallation);
             outString.AppendLine("OS: " + Environment.OSVersion.VersionString);
             outString.AppendLine("64 bit OS: " + (Environment.Is64BitOperatingSystem ? "TRUE" : "FALSE"));
             outString.AppendLine("64 bit mode: " + (Environment.Is64BitProcess ? "TRUE" : "FALSE"));

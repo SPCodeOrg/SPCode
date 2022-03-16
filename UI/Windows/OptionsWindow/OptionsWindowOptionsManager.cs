@@ -32,7 +32,7 @@ namespace SPCode.UI.Windows
         
         private async void BackupButton_Clicked(object sender, RoutedEventArgs e)
         {
-            var optionsFile = new FileInfo(Paths.GetOptionsFilePath());
+            var optionsFile = new FileInfo(PathsHelper.OptionsFilePath);
             var sfd = new SaveFileDialog
             {
                 FileName = "options_0",
@@ -70,7 +70,7 @@ namespace SPCode.UI.Windows
                 return;
             }
 
-            var optionsFile = new FileInfo(Paths.GetOptionsFilePath());
+            var optionsFile = new FileInfo(PathsHelper.OptionsFilePath);
             var ofd = new OpenFileDialog
             {
                 Filter = Constants.DatFilesFilter

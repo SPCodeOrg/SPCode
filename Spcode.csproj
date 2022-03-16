@@ -209,7 +209,7 @@
     <Compile Include="Utils\HotkeyUtils.cs" />
     <Compile Include="Utils\NamesHelper.cs" />
     <Compile Include="Utils\ObjectBrowserUtils.cs" />
-    <Compile Include="Utils\Paths.cs" />
+    <Compile Include="Utils\PathsHelper.cs" />
     <Compile Include="Utils\Models\FTP.cs" />
     <Compile Include="Utils\ManagedAES.cs" />
     <Compile Include="UI\Components\EditorElement\Highlighting\SPBracketSearcher.cs" />

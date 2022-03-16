@@ -43,7 +43,7 @@ namespace SPCode.UI.Components
                 });
                 rs.Rules.Add(new HighlightingRule() //opcodes
                 {
-                    Regex = RegexKeywordsHelper.GetRegexFromKeywords(OpCodeStrings, true),
+                    Regex = RegexKeywordsHelper.GetRegexFromKeywords(OpCodeStrings),
                     Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Program.OptionsObject.SH_CommentsMarker) }
                 });
                 rs.Rules.Add(new HighlightingRule() //hexnumbers
@@ -56,7 +56,7 @@ namespace SPCode.UI.Components
                 {
                     rs.Rules.Add(new HighlightingRule() //Types
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.TypeStrings, true),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.TypeStrings),
                         Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
                     });
                 }
@@ -64,7 +64,7 @@ namespace SPCode.UI.Components
                 {
                     rs.Rules.Add(new HighlightingRule() //constants
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.Constants, true),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.Constants),
                         Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
                     });
                 }
@@ -72,7 +72,7 @@ namespace SPCode.UI.Components
                 {
                     rs.Rules.Add(new HighlightingRule() //Functions
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.FunctionStrings, true),
+                        Regex = RegexKeywordsHelper.GetFunctionRegex(def.FunctionStrings),
                         Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
                     });
                 }
@@ -80,7 +80,7 @@ namespace SPCode.UI.Components
                 {
                     rs.Rules.Add(new HighlightingRule() //Methods
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.ObjectMethods, true),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.ObjectMethods),
                         Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
                     });
                 }
@@ -89,7 +89,7 @@ namespace SPCode.UI.Components
                 {
                     rs.Rules.Add(new HighlightingRule() //Methods
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.ObjectFields, true),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.ObjectFields),
                         Color = new HighlightingColor() { Foreground = new SimpleHighlightingBrush(Colors.Gray) }
                     });
                 }

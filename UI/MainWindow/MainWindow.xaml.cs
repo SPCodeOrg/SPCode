@@ -29,6 +29,7 @@ namespace SPCode.UI
     public partial class MainWindow
     {
         #region Variables
+        private readonly SolidColorBrush BlendOverEffectColorBrush;
         private readonly Storyboard BlendOverEffect;
         private readonly Storyboard DimmMainWindowEffect;
         private readonly Storyboard RestoreMainWindowEffect;
@@ -121,12 +122,21 @@ namespace SPCode.UI
             OBDirList.SelectedIndex = 0;
 
             // Set some visual effects
+            BlendOverEffectColorBrush = (SolidColorBrush)FindResource("AccentColorBrush4");
             MetroDialogOptions.AnimateHide = MetroDialogOptions.AnimateShow = false;
             BlendOverEffect = (Storyboard)Resources["BlendOverEffect"];
+            BlendOverEffect.Completed += delegate
+            {
+                BlendEffectPlane.Fill = BlendOverEffectColorBrush;
+            };
             EnableServerAnim = (Storyboard)Resources["EnableServerAnim"];
             DisableServerAnim = (Storyboard)Resources["DisableServerAnim"];
             DimmMainWindowEffect = (Storyboard)Resources["DimmMainWindow"];
             RestoreMainWindowEffect = (Storyboard)Resources["RestoreMainWindow"];
+            RestoreMainWindowEffect.Completed += delegate
+            {
+                BlendEffectPlane.Fill = BlendOverEffectColorBrush;
+            };
 
             // Start OB
             ChangeObjectBrowserToDirectory(Program.OptionsObject.Program_ObjectBrowserDirectory);
@@ -580,10 +590,6 @@ namespace SPCode.UI
         public void RestoreMainWindow()
         {
             RestoreMainWindowEffect.Begin();
-            RestoreMainWindowEffect.Completed += delegate
-            {
-                BlendEffectPlane.Fill = (SolidColorBrush)FindResource("AccentColorBrush4");
-            };
         }
 
         public void EvaluateRTL()

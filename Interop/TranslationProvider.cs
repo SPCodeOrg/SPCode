@@ -16,8 +16,8 @@ namespace SPCode.Interop
         public List<string> AvailableLanguageIDs = new();
         public List<string> AvailableLanguages = new();
 
-        private readonly string _tempDir = Paths.GetTempDirectory();
-        private readonly string _translationsDir = Paths.GetTranslationsDirectory();
+        private readonly string _tempDir = PathsHelper.TempDirectory;
+        private readonly string _translationsDir = PathsHelper.TranslationsDirectory;
         private static readonly Dictionary<string, string> _langDictionary = new(StringComparer.OrdinalIgnoreCase);
         private static readonly Dictionary<string, string> _defaultDictionary = new(StringComparer.OrdinalIgnoreCase);
         private Release _latestVersion;

@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Condenser.cs" />
+    <Compile Include="CondenserFunctions\SMClasslike.cs" />
     <Compile Include="CondenserFunctions\SMEnumStructConsumer.cs" />
     <Compile Include="CondenserFunctions\SMPPDirectiveConsumer.cs" />
     <Compile Include="CondenserFunctions\SMConstantConsumer.cs" />

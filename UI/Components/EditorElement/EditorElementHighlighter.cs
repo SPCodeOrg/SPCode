@@ -51,7 +51,6 @@ namespace SPCode.UI.Components
                 {
                     Name = "CommentMarkerSet"
                 };
-
                 commentMarkerSet.Rules.Add(new HighlightingRule
                 {
                     Regex = RegexKeywordsHelper.GetRegexFromKeywords(new[]
@@ -62,6 +61,7 @@ namespace SPCode.UI.Components
                         FontWeight = FontWeights.Bold,
                     }
                 });
+
 
                 // RULESET 2: Exclude inner single line comment (backslash to escape inside strings)
                 var excludeInnerSingleLineComment = new HighlightingRuleSet();
@@ -225,7 +225,7 @@ namespace SPCode.UI.Components
                 {
                     rs.Rules.Add(new HighlightingRule // types
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.TypeStrings, true),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.TypeStrings),
                         Color = new HighlightingColor { Foreground = typesBrush }
                     });
                 }
@@ -234,7 +234,7 @@ namespace SPCode.UI.Components
                 {
                     rs.Rules.Add(new HighlightingRule // constants
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.Constants, true),
+                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.Constants),
                         Color = new HighlightingColor { Foreground = constantBrush }
                     });
                 }
@@ -243,7 +243,7 @@ namespace SPCode.UI.Components
                 {
                     rs.Rules.Add(new HighlightingRule // Functions
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords(def.FunctionStrings, true),
+                        Regex = RegexKeywordsHelper.GetFunctionRegex(def.FunctionStrings),
                         Color = new HighlightingColor { Foreground = functionBrush }
                     });
                 }
@@ -252,7 +252,7 @@ namespace SPCode.UI.Components
                 {
                     rs.Rules.Add(new HighlightingRule // Methods
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.ObjectMethods),
+                        Regex = RegexKeywordsHelper.GetMethodRegex(def.ObjectMethods),
                         Color = new HighlightingColor { Foreground = methodBrush }
                     });
                 }
@@ -261,7 +261,7 @@ namespace SPCode.UI.Components
                 {
                     rs.Rules.Add(new HighlightingRule // Methods
                     {
-                        Regex = RegexKeywordsHelper.GetRegexFromKeywords2(def.ObjectFields),
+                        Regex = RegexKeywordsHelper.GetMethodRegex(def.ObjectFields),
                         Color = new HighlightingColor { Foreground = methodBrush }
                     });
                 }

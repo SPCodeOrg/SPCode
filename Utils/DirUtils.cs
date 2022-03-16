@@ -6,7 +6,7 @@ namespace SPCode.Utils
     {
         public static void ClearTempFolder()
         {
-            var tempDir = Paths.GetTempDirectory();
+            var tempDir = PathsHelper.TempDirectory;
             foreach (var file in Directory.GetFiles(tempDir))
             {
                 File.Delete(file);

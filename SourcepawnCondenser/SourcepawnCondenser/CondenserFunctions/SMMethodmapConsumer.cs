@@ -15,20 +15,16 @@ namespace SourcepawnCondenser
             if ((position + 4) < length)
             {
                 var methodMapName = string.Empty;
-                var methodMapType = string.Empty;
                 var methods = new List<SMMethodmapMethod>();
                 var fields = new List<SMMethodmapField>();
                 if (t[iteratePosition].Kind == TokenKind.Identifier)
                 {
+                    methodMapName = t[iteratePosition].Value;
+
+                    // Handle declaration like "methodmap MyMap __nullable { ... }"
                     if (t[iteratePosition + 1].Kind == TokenKind.Identifier)
                     {
-                        methodMapType = t[iteratePosition].Value;
                         ++iteratePosition;
-                        methodMapName = t[iteratePosition].Value;
-                    }
-                    else
-                    {
-                        methodMapName = t[iteratePosition].Value;
                     }
                     ++iteratePosition;
                 }
@@ -97,7 +93,7 @@ namespace SourcepawnCondenser
                             var functionIndicators = new List<string>();
                             var parameters = new List<string>();
                             var methodName = string.Empty;
-                            var methodReturnValue = string.Empty;
+                            var methodReturnType = string.Empty;
                             var ParsingIndicators = true;
                             var InCodeSection = false;
                             var ParenthesisIndex = 0;
@@ -144,7 +140,7 @@ namespace SourcepawnCondenser
                                         {
                                             if (t[i + 1].Kind == TokenKind.Identifier)
                                             {
-                                                methodReturnValue = t[i].Value;
+                                                methodReturnType = t[i].Value;
                                                 methodName = t[i + 1].Value;
                                                 ++i;
                                             }
@@ -210,13 +206,13 @@ namespace SourcepawnCondenser
                                 {
                                     Index = mStartIndex,
                                     Name = methodName,
-                                    ReturnType = methodReturnValue,
-                                    MethodKind = functionIndicators.ToArray(),
-                                    Parameters = parameters.ToArray(),
+                                    ReturnType = methodReturnType,
+                                    /*MethodKind = functionIndicators.ToArray(),
+                                    Parameters = parameters.ToArray(),*/
                                     FullName = TrimFullname(source.Substring(mStartIndex, mEndIndex - mStartIndex + 1)),
                                     Length = mEndIndex - mStartIndex + 1,
                                     CommentString = TrimComments(functionCommentString),
-                                    MethodmapName = methodMapName,
+                                    ClassName = methodMapName,
                                     File = FileName
                                 });
                             }
@@ -287,13 +283,13 @@ namespace SourcepawnCondenser
                             }
                             if (fStartIndex < fEndIndex)
                             {
-                                fields.Add(new SMMethodmapField()
+                                fields.Add(new SMMethodmapField
                                 {
                                     Index = fStartIndex,
                                     Length = fEndIndex - fStartIndex + 1,
                                     Name = fieldName,
                                     File = FileName,
-                                    MethodmapName = methodMapName,
+                                    ClassName = methodMapName,
                                     FullName = source.Substring(fStartIndex, fEndIndex - fStartIndex + 1)
                                 });
                             }
@@ -308,7 +304,6 @@ namespace SourcepawnCondenser
                         Length = t[lastIndex].Index - startIndex + 1,
                         Name = methodMapName,
                         File = FileName,
-                        Type = methodMapType,
                         InheritedType = inheriteType
                     };
                     mm.Methods.AddRange(methods);
