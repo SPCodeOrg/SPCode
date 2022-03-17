@@ -30,9 +30,10 @@ namespace SPCode.UI.Windows
             _offsetNumber = _editor.Document.TextLength;
 
             Language_Translate();
+            EvaluateRTL();
 
-            rbLineJump.Content += $" (1-{_lineNumber})";
-            rbOffsetJump.Content += $" (0-{_offsetNumber})";
+            rbLineJump.Content += $" 1-{_lineNumber}";
+            rbOffsetJump.Content += $" 0-{_offsetNumber}";
 
             JumpNumber.Focus();
             JumpNumber.SelectAll();
@@ -153,6 +154,11 @@ namespace SPCode.UI.Windows
             rbLineJump.Content = Translate("GoToLine");
             rbOffsetJump.Content = Translate("GoToOffset");
             btJump.Content = Translate("Go");
+        }
+
+        public void EvaluateRTL()
+        {
+            FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
         }
         #endregion
     }

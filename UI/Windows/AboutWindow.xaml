@@ -40,7 +40,7 @@
   </controls:MetroWindow.Flyouts>
 
   <Grid>
-    <TextBlock Name="TitleBox" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0" FontSize="20" FontWeight="Light" IsHitTestVisible="False" />
+    <TextBlock Name="TitleBox" FlowDirection="RightToLeft" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0" FontSize="20" FontWeight="Light" IsHitTestVisible="False" />
     <Image HorizontalAlignment="Center" VerticalAlignment="Center" Source="/SPCode;component/Resources/Icons/icon256x.png" Width="256" Height="256" />
     <ScrollViewer Margin="0,65,0,0">
       <StackPanel Name="ContentStackPanel">

@@ -601,7 +601,8 @@ namespace SPCode.UI.Windows
 
         private void EvaluateRTL()
         {
-            NewFileWindowMainGrid.FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+            FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+            PathBox.FlowDirection = FlowDirection.LeftToRight;
         }
         #endregion
     }

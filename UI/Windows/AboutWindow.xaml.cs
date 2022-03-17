@@ -16,6 +16,7 @@ namespace SPCode.UI.Windows
         {
             InitializeComponent();
             Language_Translate();
+            EvaluateRTL();
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
             {
                 ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
@@ -35,7 +36,7 @@ namespace SPCode.UI.Windows
                     g.Background = gridBrush;
                 }
             }
-            TitleBox.Text = $"SPCode ({NamesHelper.VersionString}) - {Translate("SPCodeCap")}";
+            TitleBox.Text = $"SPCode {NamesHelper.VersionString} - {Translate("SPCodeCap")}";
             if (File.Exists(Constants.LicenseFile))
             {
                 FlyoutTextBox.Text = File.ReadAllText(Constants.LicenseFile);
@@ -58,6 +59,18 @@ namespace SPCode.UI.Windows
             Title = Translate("About");
             OpenLicenseButton.Content = Translate("License");
             PeopleInvolvedBlock.Text = Translate("PeopleInv");
+        }
+
+        private void EvaluateRTL()
+        {
+            if (Program.IsRTL)
+            {
+                FlowDirection = FlowDirection.RightToLeft;
+            }
+            else
+            {
+                FlowDirection = FlowDirection.LeftToRight;
+            }
         }
     }
 }

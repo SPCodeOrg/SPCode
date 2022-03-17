@@ -673,7 +673,9 @@ namespace SPCode.UI.Windows
 
         private void EvaluateRTL()
         {
-            ConfigsWindowMainGrid.FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+            FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+            C_OptimizationLevel.FlowDirection = FlowDirection.LeftToRight;
+            C_VerboseLevel.FlowDirection = FlowDirection.LeftToRight;
         }
 
         private class SimpleCommand : ICommand

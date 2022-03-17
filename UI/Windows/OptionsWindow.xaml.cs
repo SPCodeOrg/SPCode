@@ -767,7 +767,24 @@ namespace SPCode.UI.Windows
 
         private void EvaluateRTL()
         {
-            OptionsWindowMainGrid.FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+            FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+            FontSizeD.FlowDirection = FlowDirection.LeftToRight;
+            IndentationSize.FlowDirection = FlowDirection.LeftToRight;
+            ScrollSpeed.FlowDirection = FlowDirection.LeftToRight;
+            foreach (var child in RGBSliders1.Children)
+            {
+                if (child is ColorChangeControl control)
+                {
+                    control.FlowDirection = FlowDirection.LeftToRight;
+                }
+            }
+            foreach (var child in RGBSliders2.Children)
+            {
+                if (child is ColorChangeControl control)
+                {
+                    control.FlowDirection = FlowDirection.LeftToRight;
+                }
+            }
         }
         #endregion
     }

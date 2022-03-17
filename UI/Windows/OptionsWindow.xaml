@@ -231,7 +231,7 @@
 
                 <CheckBox Name="HighlightDeprecateds" Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="HighlightDeprecateds_Changed" Unchecked="HighlightDeprecateds_Changed" />
 
-                <StackPanel Grid.Column="0" Margin="0,30,0,10">
+                <StackPanel Grid.Column="0" Margin="0,30,0,10" x:Name="RGBSliders1">
 
                   <StackPanel.Resources>
                     <Style BasedOn="{StaticResource ColorChangeControlStyle}" TargetType="{x:Type components:ColorChangeControl}">
@@ -256,7 +256,7 @@
                         VerticalAlignment="Top" x:Name="DefaultButton" Click="DefaultButton_Click" 
                         FontWeight="Bold"/>
 
-                <StackPanel Grid.Column="1" Margin="0,30,0,0">
+                <StackPanel Grid.Column="1" Margin="0,30,0,0" x:Name="RGBSliders2">
 
                   <StackPanel.Resources>
                     <Style BasedOn="{StaticResource ColorChangeControlStyle}" TargetType="{x:Type components:ColorChangeControl}">

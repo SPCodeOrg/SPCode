@@ -144,9 +144,6 @@ namespace SPCode.UI
             // Translate
             Language_Translate();
 
-            // Evaluate RTL
-            EvaluateRTL();
-
             // Load previously opened files
             if (Program.OptionsObject.LastOpenFiles != null)
             {
@@ -214,6 +211,9 @@ namespace SPCode.UI
             // Set error status buttons state
             Status_ErrorButton.IsChecked = true;
             Status_WarningButton.IsChecked = true;
+
+            // Evaluate RTL
+            EvaluateRTL();
         }
         #endregion
 
@@ -594,20 +594,8 @@ namespace SPCode.UI
 
         public void EvaluateRTL()
         {
-            if (Program.IsRTL)
-            {
-                FileDirButtonStackPanel.FlowDirection = FlowDirection.RightToLeft;
-                ConfigDirButtonStackPanel.FlowDirection = FlowDirection.RightToLeft;
-                MainWindowCommands.FlowDirection = FlowDirection.RightToLeft;
-                OBSearch.FlowDirection = FlowDirection.RightToLeft;
-            }
-            else
-            {
-                FileDirButtonStackPanel.FlowDirection = FlowDirection.LeftToRight;
-                ConfigDirButtonStackPanel.FlowDirection = FlowDirection.LeftToRight;
-                MainWindowCommands.FlowDirection = FlowDirection.LeftToRight;
-                OBSearch.FlowDirection = FlowDirection.LeftToRight;
-            }
+            FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+            GetAllEditorElements().ForEach(x => x.TooltipGrid.FlowDirection = FlowDirection.LeftToRight);
         }
         #endregion
     }

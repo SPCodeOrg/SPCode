@@ -550,7 +550,7 @@ namespace SPCode.UI.Windows
 
         private void EvaluateRTL()
         {
-            FindReplaceGrid.FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+            FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
         }
         #endregion
     }

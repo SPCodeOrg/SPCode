@@ -159,7 +159,7 @@
               <TextBlock Name="PreBuildBlock" IsHitTestVisible="False" HorizontalAlignment="Left" VerticalAlignment="Center"/>
               <ComboBox Name="CMD_ItemC" Width="200" HorizontalAlignment="Right" Margin="0,0,0,5"/>
             </DockPanel>
-            <TextBox Name="C_PreBuildCmd" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PreBuildCmd_TextChanged" GotFocus="BuildCommandsBoxes_OnFocus" />
+            <TextBox Name="C_PreBuildCmd" FlowDirection="RightToLeft" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PreBuildCmd_TextChanged" GotFocus="BuildCommandsBoxes_OnFocus" />
           </StackPanel>
 
           <StackPanel Margin="5">

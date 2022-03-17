@@ -133,7 +133,8 @@ namespace SPCode.UI.Windows
 
         private void EvaluateRTL()
         {
-            RenameWindowMainGrid.FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+            FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+            TxtName.FlowDirection = FlowDirection.LeftToRight;
         }
         #endregion
     }

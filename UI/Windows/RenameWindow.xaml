@@ -9,7 +9,7 @@
                       ShowInTaskbar="True" 
                       Title="SPCode Rename" 
                       Height="96" 
-                      Width="256" 
+                      Width="356" 
                       HorizontalAlignment="Center" 
                       VerticalAlignment="Top" 
                       UseNoneWindowStyle="False" 
@@ -31,8 +31,8 @@
   
   <Grid x:Name="RenameWindowMainGrid">
     <TextBox Name="TxtName" VerticalAlignment="Top" Foreground="{DynamicResource BlackColorBrush}" Margin="5,8,5,0" TextChanged="TxtName_TextChanged"/>
-    <Button Name="BtAccept" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,48,10,0" Click="BtAccept_Click"/>
-    <Button Name="BtCancel" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,48,145,0" Click="BtCancel_Click"/>
+    <Button Name="BtAccept" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,48,50,0" Click="BtAccept_Click"/>
+    <Button Name="BtCancel" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,48,205,0" Click="BtCancel_Click"/>
     <Label Name="lblError" HorizontalAlignment="Right" Margin="0,8,10,0" VerticalAlignment="Top" Foreground="Red" FontWeight="Bold"/>
   </Grid>
 </controls:MetroWindow>
