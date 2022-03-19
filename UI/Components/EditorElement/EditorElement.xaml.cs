@@ -214,6 +214,7 @@ namespace SPCode.UI.Components
         private void Editor_Loaded(object sender, RoutedEventArgs e)
         {
             ParseIncludes(sender, e);
+            EvaluateRTL();
         }
 
         public void Editor_TabClosed(object sender, CancelEventArgs e)
@@ -1030,6 +1031,11 @@ namespace SPCode.UI.Components
                 StatusLine_FontSize.Text =
                     editor.FontSize.ToString("n0") + $" {Translate("PtAbb")}";
             }
+        }
+
+        public void EvaluateRTL()
+        {
+            TooltipGrid.FlowDirection = FlowDirection.LeftToRight;
         }
 
         #endregion

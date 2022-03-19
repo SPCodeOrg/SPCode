@@ -595,7 +595,7 @@ namespace SPCode.UI
         public void EvaluateRTL()
         {
             FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
-            GetAllEditorElements().ForEach(x => x.TooltipGrid.FlowDirection = FlowDirection.LeftToRight);
+            GetAllEditorElements()?.ForEach(x => x.EvaluateRTL());
         }
         #endregion
     }
