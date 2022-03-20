@@ -29,7 +29,7 @@ namespace SPCode.UI
 
             try
             {
-                using var server = ServerQuery.GetServerInstance(c.RConIP, c.RConPort, false, 500, 500, 2, true);
+                using var server = ServerQuery.GetServerInstance(c.RConIP, c.RConPort, false, 1000, 1000, 2, true);
                 var serverInfo = server.GetInfo();
 
                 if (serverInfo == null)

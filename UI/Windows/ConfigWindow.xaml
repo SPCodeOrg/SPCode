@@ -191,7 +191,7 @@
                 <PasswordBox x:Name="C_FTPPW" PasswordChanged="C_FTPPW_TextChanged" />
                 <TextBlock x:Name="FTPDirBlock" IsHitTestVisible="False" />
                 <TextBox x:Name="C_FTPDir" TextChanged="C_FTPDir_TextChanged" />
-                <Button x:Name="FTPTestConnectionButton" Content="Test Connection" Click="FTPTestConnectionButton_Click" HorizontalAlignment="Left" Margin="0,20,0,-10"/>
+                <Button x:Name="FTPTestConnectionButton" Content="Test Connection" Click="FTPTestConnectionButton_Click" HorizontalAlignment="Left" Margin="0,15,0,-10"/>
               </StackPanel>
             </Grid>
             <Grid Grid.Column="1" Margin="5,0,0,0">
@@ -245,6 +245,11 @@
                 <TextBox Name="C_RConPort" TextChanged="C_RConPort_TextChanged" />
                 <TextBlock Name="RConPWBlock" IsHitTestVisible="False" />
                 <PasswordBox Name="C_RConPW" PasswordChanged="C_RConPW_TextChanged" />
+                <Button x:Name="RCONTestConnectionButton" 
+                        Margin="0,15,0,0" 
+                        HorizontalAlignment="Left" 
+                        Content="Test connection"
+                        Click="RCONTestConnectionButton_Click"/>
               </StackPanel>
             </Grid>
             <Grid Grid.Column="1">

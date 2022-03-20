@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,6 +18,7 @@ using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using SPCode.Interop;
 using SPCode.Utils;
+using ValveQuery.GameServer;
 using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI.Windows
@@ -503,23 +505,23 @@ namespace SPCode.UI.Windows
 
         private async void FTPTestConnectionButton_Click(object sender, RoutedEventArgs e)
         {
-            var result = await this.ShowProgressAsync("Testing the FTP connection with the provided details...", "Please wait...", settings: Program.MainWindow.MetroDialogOptions);
+            var dialog = await this.ShowProgressAsync("Testing the FTP connection with the provided details...", "Please wait...", settings: Program.MainWindow.MetroDialogOptions);
             var ftp = new FTP(C_FTPHost.Text, C_FTPUser.Text, C_FTPPW.Password);
-            result.SetIndeterminate();
-            result.SetCancelable(true);
-            result.Canceled += async delegate
+            dialog.SetIndeterminate();
+            dialog.SetCancelable(true);
+            dialog.Canceled += async delegate
             {
-                await result?.CloseAsync();
+                await dialog?.CloseAsync();
                 return;
             };
             if (await ftp.TestConnection())
             {
-                await result?.CloseAsync();
+                await dialog?.CloseAsync();
                 await this.ShowMessageAsync("Success", "Connection successful!", settings: Program.MainWindow.MetroDialogOptions);
             }
             else
             {
-                await result?.CloseAsync();
+                await dialog?.CloseAsync();
                 await this.ShowMessageAsync("Error", $"The connection could not be made! Message: {ftp.ErrorMessage}", settings: Program.MainWindow.MetroDialogOptions);
             }
         }
@@ -558,6 +560,48 @@ namespace SPCode.UI.Windows
             }
 
             Program.Configs[ConfigListBox.SelectedIndex].RConPassword = C_RConPW.Password;
+        }
+
+        private async void RCONTestConnectionButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = await this.ShowProgressAsync("Testing RCON connection...", "Please wait...", settings: Program.MainWindow.MetroDialogOptions);
+            dialog.SetIndeterminate();
+            dialog.SetCancelable(true);
+            dialog.Canceled += async delegate
+            {
+                await dialog?.CloseAsync();
+                return;
+            };
+            var success = true;
+            var errorMsg = "";
+            try
+            {
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    var server = ServerQuery.GetServerInstance(C_RConIP.Text, ushort.Parse(C_RConPort.Text));
+                    server.GetInfo();
+                    if (!server.GetControl(C_RConPW.Password, false))
+                    {
+                        success = false;
+                        errorMsg = "Invalid credentials!";
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                errorMsg = ex.Message;
+            }
+
+            await dialog?.CloseAsync();
+            if (success)
+            {
+                await this.ShowMessageAsync("Success", "The connection was successful!", settings: Program.MainWindow.MetroDialogOptions);
+            }
+            else
+            {
+                await this.ShowMessageAsync("Error", $"The connection could not be made! Message: {errorMsg}", settings: Program.MainWindow.MetroDialogOptions);
+            }
         }
 
         private void C_RConCmds_TextChanged(object sender, RoutedEventArgs e)
