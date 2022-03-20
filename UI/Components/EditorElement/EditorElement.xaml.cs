@@ -286,9 +286,7 @@ namespace SPCode.UI.Components
                             {
                                 // ignored
                             }
-
-                            Thread.Sleep(
-                                100); //dont include System.Threading in the using directives, cause its onlyused once and the Timer class will double
+                            Thread.Sleep(100);
                         }
                     });
                 }

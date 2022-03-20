@@ -505,7 +505,7 @@ namespace SPCode.UI.Windows
 
         private async void FTPTestConnectionButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = await this.ShowProgressAsync("Testing the FTP connection with the provided details...", "Please wait...", settings: Program.MainWindow.MetroDialogOptions);
+            ProgressDialogController? dialog = await this.ShowProgressAsync(Translate("TestingFTPConn"), Translate("PleaseWait"), settings: Program.MainWindow.MetroDialogOptions);
             var ftp = new FTP(C_FTPHost.Text, C_FTPUser.Text, C_FTPPW.Password);
             dialog.SetIndeterminate();
             dialog.SetCancelable(true);
@@ -514,15 +514,20 @@ namespace SPCode.UI.Windows
                 await dialog?.CloseAsync();
                 return;
             };
-            if (await ftp.TestConnection())
+            var result = await ftp.TestConnection();
+            if ((bool)dialog?.IsCanceled)
+            {
+                return;
+            }
+            if (result)
             {
                 await dialog?.CloseAsync();
-                await this.ShowMessageAsync("Success", "Connection successful!", settings: Program.MainWindow.MetroDialogOptions);
+                await this.ShowMessageAsync(Translate("Success"), string.Empty, settings: Program.MainWindow.MetroDialogOptions);
             }
             else
             {
                 await dialog?.CloseAsync();
-                await this.ShowMessageAsync("Error", $"The connection could not be made! Message: {ftp.ErrorMessage}", settings: Program.MainWindow.MetroDialogOptions);
+                await this.ShowMessageAsync(Translate("Error"), ftp.ErrorMessage, settings: Program.MainWindow.MetroDialogOptions);
             }
         }
 
@@ -564,7 +569,7 @@ namespace SPCode.UI.Windows
 
         private async void RCONTestConnectionButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = await this.ShowProgressAsync("Testing RCON connection...", "Please wait...", settings: Program.MainWindow.MetroDialogOptions);
+            ProgressDialogController? dialog = await this.ShowProgressAsync(Translate("TestingRCONConn"), Translate("PleaseWait"), settings: Program.MainWindow.MetroDialogOptions);
             dialog.SetIndeterminate();
             dialog.SetCancelable(true);
             dialog.Canceled += async delegate
@@ -572,20 +577,29 @@ namespace SPCode.UI.Windows
                 await dialog?.CloseAsync();
                 return;
             };
+
             var success = true;
             var errorMsg = "";
+
             try
             {
-                await Dispatcher.InvokeAsync(() =>
+                var server = ServerQuery.GetServerInstance(C_RConIP.Text, ushort.Parse(C_RConPort.Text));
+                var sInfo = new ServerInfo();
+                // See if the provided details at least point to a valid server
+                await Task.Run(() => { sInfo = server.GetInfo(); });
+                if (sInfo == null)
                 {
-                    var server = ServerQuery.GetServerInstance(C_RConIP.Text, ushort.Parse(C_RConPort.Text));
-                    server.GetInfo();
-                    if (!server.GetControl(C_RConPW.Password, false))
-                    {
-                        success = false;
-                        errorMsg = "Invalid credentials!";
-                    }
-                });
+                    success = false;
+                    errorMsg = Translate("RCONFailureMessage");
+                    goto End;
+                }
+                bool done = false;
+                await Task.Run(() => { done = server.GetControl(C_RConPW.Password, false); });
+                if (!done)
+                {
+                    success = false;
+                    errorMsg = Translate("InvalidCredentials");
+                }
             }
             catch (Exception ex)
             {
@@ -593,14 +607,20 @@ namespace SPCode.UI.Windows
                 errorMsg = ex.Message;
             }
 
+            End:
+
+            if ((bool)dialog?.IsCanceled)
+            {
+                return;
+            }
             await dialog?.CloseAsync();
             if (success)
             {
-                await this.ShowMessageAsync("Success", "The connection was successful!", settings: Program.MainWindow.MetroDialogOptions);
+                await this.ShowMessageAsync(Translate("Success"), string.Empty, settings: Program.MainWindow.MetroDialogOptions);
             }
             else
             {
-                await this.ShowMessageAsync("Error", $"The connection could not be made! Message: {errorMsg}", settings: Program.MainWindow.MetroDialogOptions);
+                await this.ShowMessageAsync(Translate("Error"), errorMsg, settings: Program.MainWindow.MetroDialogOptions);
             }
         }
 
