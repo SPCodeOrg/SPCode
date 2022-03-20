@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using System.Xml;
 using MahApps.Metro;
 using MahApps.Metro.Controls.Dialogs;
@@ -498,6 +499,29 @@ namespace SPCode.UI.Windows
             }
 
             Program.Configs[ConfigListBox.SelectedIndex].FTPDir = C_FTPDir.Text;
+        }
+
+        private async void FTPTestConnectionButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = await this.ShowProgressAsync("Testing the FTP connection with the provided details...", "Please wait...", settings: Program.MainWindow.MetroDialogOptions);
+            var ftp = new FTP(C_FTPHost.Text, C_FTPUser.Text, C_FTPPW.Password);
+            result.SetIndeterminate();
+            result.SetCancelable(true);
+            result.Canceled += async delegate
+            {
+                await result?.CloseAsync();
+                return;
+            };
+            if (await ftp.TestConnection())
+            {
+                await result?.CloseAsync();
+                await this.ShowMessageAsync("Success", "Connection successful!", settings: Program.MainWindow.MetroDialogOptions);
+            }
+            else
+            {
+                await result?.CloseAsync();
+                await this.ShowMessageAsync("Error", $"The connection could not be made! Message: {ftp.ErrorMessage}", settings: Program.MainWindow.MetroDialogOptions);
+            }
         }
 
         private void C_RConIP_TextChanged(object sender, RoutedEventArgs e)

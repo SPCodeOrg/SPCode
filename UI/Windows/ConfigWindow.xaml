@@ -159,7 +159,7 @@
               <TextBlock Name="PreBuildBlock" IsHitTestVisible="False" HorizontalAlignment="Left" VerticalAlignment="Center"/>
               <ComboBox Name="CMD_ItemC" Width="200" HorizontalAlignment="Right" Margin="0,0,0,5"/>
             </DockPanel>
-            <TextBox Name="C_PreBuildCmd" FlowDirection="RightToLeft" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PreBuildCmd_TextChanged" GotFocus="BuildCommandsBoxes_OnFocus" />
+            <TextBox Name="C_PreBuildCmd" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PreBuildCmd_TextChanged" GotFocus="BuildCommandsBoxes_OnFocus" />
           </StackPanel>
 
           <StackPanel Margin="5">
@@ -183,14 +183,15 @@
             </Grid.Resources>
             <Grid Grid.Column="0">
               <StackPanel Margin="5,0,5,0">
-                <TextBlock Name="FTPHostBlock" IsHitTestVisible="False" />
-                <TextBox Name="C_FTPHost" TextChanged="C_FTPHost_TextChanged" />
-                <TextBlock Name="FTPUserBlock" IsHitTestVisible="False" />
-                <TextBox Name="C_FTPUser" TextChanged="C_FTPUser_TextChanged" />
-                <TextBlock Name="FTPPWBlock" IsHitTestVisible="False" />
-                <PasswordBox Name="C_FTPPW" PasswordChanged="C_FTPPW_TextChanged" />
-                <TextBlock Name="FTPDirBlock" IsHitTestVisible="False" />
-                <TextBox Name="C_FTPDir" TextChanged="C_FTPDir_TextChanged" />
+                <TextBlock x:Name="FTPHostBlock" IsHitTestVisible="False" />
+                <TextBox x:Name="C_FTPHost" TextChanged="C_FTPHost_TextChanged" />
+                <TextBlock x:Name="FTPUserBlock" IsHitTestVisible="False" />
+                <TextBox x:Name="C_FTPUser" TextChanged="C_FTPUser_TextChanged" />
+                <TextBlock x:Name="FTPPWBlock" IsHitTestVisible="False" />
+                <PasswordBox x:Name="C_FTPPW" PasswordChanged="C_FTPPW_TextChanged" />
+                <TextBlock x:Name="FTPDirBlock" IsHitTestVisible="False" />
+                <TextBox x:Name="C_FTPDir" TextChanged="C_FTPDir_TextChanged" />
+                <Button x:Name="FTPTestConnectionButton" Content="Test Connection" Click="FTPTestConnectionButton_Click" HorizontalAlignment="Left" Margin="0,20,0,-10"/>
               </StackPanel>
             </Grid>
             <Grid Grid.Column="1" Margin="5,0,0,0">
