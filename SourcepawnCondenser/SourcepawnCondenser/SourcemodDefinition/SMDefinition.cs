@@ -17,7 +17,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
                     Name = "Handle",
                     Methods =
                     {
-                        new SMMethodmapMethod()
+                        new SMObjectMethod()
                         {
                             FullName = "(external) void Close()",
                             ClassName = "Name",

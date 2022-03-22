@@ -14,7 +14,7 @@ public abstract class SMClasslike : SMBaseDefinition
     public readonly List<SMObjectField> Fields = new();
     public readonly List<SMObjectMethod> Methods = new();
     
-    public List<ACNode> ProduceNodes()
+    public virtual List<ACNode> ProduceNodes(SMDefinition smDef)
     {
         var nodes = new List<ACNode>();
         nodes.AddRange(ACNode.ConvertFromStringList(Methods.Select(e => e.Name), true, "▲ "));
@@ -26,7 +26,7 @@ public abstract class SMClasslike : SMBaseDefinition
     }
 }
 
-public abstract class SMObjectMethod : SMBaseDefinition
+public class SMObjectMethod : SMBaseDefinition
 {
     public string ClassName = string.Empty;
     public string FullName = string.Empty;
@@ -34,7 +34,7 @@ public abstract class SMObjectMethod : SMBaseDefinition
     public string[] Parameters = Array.Empty<string>();
 }
 
-public abstract class SMObjectField : SMBaseDefinition
+public class SMObjectField : SMBaseDefinition
 {
     public string ClassName = string.Empty;
     public string FullName = string.Empty;

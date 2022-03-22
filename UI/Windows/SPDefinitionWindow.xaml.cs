@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using MahApps.Metro;
 using MahApps.Metro.Controls;
+using SourcepawnCondenser;
 using SourcepawnCondenser.SourcemodDefinition;
 using static SPCode.Interop.TranslationProvider;
 
@@ -191,7 +192,7 @@ namespace SPCode.UI.Windows
                     return;
                 }
 
-                if (TagValue is SMMethodmapMethod method)
+                if (TagValue is SMObjectMethod method)
                 {
                     SPNameBlock.Text = method.Name;
                     SPFullNameBlock.Text = method.FullName;
@@ -202,7 +203,7 @@ namespace SPCode.UI.Windows
                     return;
                 }
 
-                if (TagValue is SMMethodmapField field)
+                if (TagValue is SMObjectField field)
                 {
                     SPNameBlock.Text = field.Name;
                     SPFullNameBlock.Text = field.FullName;

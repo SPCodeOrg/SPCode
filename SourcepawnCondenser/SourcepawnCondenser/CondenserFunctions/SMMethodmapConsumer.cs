@@ -15,8 +15,8 @@ namespace SourcepawnCondenser
             if ((position + 4) < length)
             {
                 var methodMapName = string.Empty;
-                var methods = new List<SMMethodmapMethod>();
-                var fields = new List<SMMethodmapField>();
+                var methods = new List<SMObjectMethod>();
+                var fields = new List<SMObjectField>();
                 if (t[iteratePosition].Kind == TokenKind.Identifier)
                 {
                     methodMapName = t[iteratePosition].Value;
@@ -202,7 +202,7 @@ namespace SourcepawnCondenser
                             }
                             if (mStartIndex < mEndIndex)
                             {
-                                methods.Add(new SMMethodmapMethod()
+                                methods.Add(new SMObjectMethod()
                                 {
                                     Index = mStartIndex,
                                     Name = methodName,
@@ -283,7 +283,7 @@ namespace SourcepawnCondenser
                             }
                             if (fStartIndex < fEndIndex)
                             {
-                                fields.Add(new SMMethodmapField
+                                fields.Add(new SMObjectField
                                 {
                                     Index = fStartIndex,
                                     Length = fEndIndex - fStartIndex + 1,

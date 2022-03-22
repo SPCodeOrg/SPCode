@@ -15,8 +15,8 @@ namespace SourcepawnCondenser
             if (position + 4 < length)
             {
                 var enumStructName = string.Empty;
-                var methods = new List<SMEnumStructMethod>();
-                var fields = new List<SMEnumStructField>();
+                var methods = new List<SMObjectMethod>();
+                var fields = new List<SMObjectField>();
                 if (t[iteratePosition].Kind == TokenKind.Identifier)
                 {
                     enumStructName = t[iteratePosition++].Value;
@@ -198,7 +198,7 @@ namespace SourcepawnCondenser
 
                             if (mStartIndex < mEndIndex)
                             {
-                                methods.Add(new SMEnumStructMethod
+                                methods.Add(new SMObjectMethod
                                 {
                                     Index = mStartIndex,
                                     Name = methodName,
@@ -286,13 +286,13 @@ namespace SourcepawnCondenser
 
                             if (fStartIndex < fEndIndex)
                             {
-                                fields.Add(new SMEnumStructField
+                                fields.Add(new SMObjectField()
                                 {
                                     Index = fStartIndex,
                                     Length = fEndIndex - fStartIndex + 1,
                                     Name = fieldName,
                                     File = FileName,
-                                    MethodmapName = enumStructName,
+                                    // MethodmapName = enumStructName,
                                     FullName = source.Substring(fStartIndex, fEndIndex - fStartIndex + 1)
                                 });
                             }

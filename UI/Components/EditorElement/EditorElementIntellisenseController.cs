@@ -292,9 +292,20 @@ namespace SPCode.UI.Components
 
                         if (classString.Length > 0)
                         {
-                            var methodMap = FindClass(classString);
+                            var classObj = FindClass(classString);
 
-                            var method = methodMap?.Methods.FirstOrDefault(e => e.Name == methodString);
+                            SMObjectMethod? method = null;
+
+                            switch (classObj)
+                            {
+                                case SMEnumStruct:
+                                    method = classObj?.Methods.Find(e => e.Name == methodString);
+                                    break;
+                                case SMMethodmap obj:
+                                    method = FindMethod(methodString, obj, _smDef);
+                                    break;
+                            }
+
 
                             if (method == null)
                                 continue;
@@ -353,6 +364,24 @@ namespace SPCode.UI.Components
 
             return (SMClasslike)_smDef.Methodmaps.FirstOrDefault(e => e.Name == varDecl.Type) ??
                    _smDef.EnumStructs.FirstOrDefault(e => e.Name == varDecl.Type);
+        }
+
+        SMObjectMethod? FindMethod(string methodName, SMMethodmap methodMap, SMDefinition smDef)
+        {
+            var mm = methodMap;
+            while (mm != null)
+            {
+                var method = mm.Methods.Find(e => e.Name == methodName);
+                if (method != null)
+                    return method;
+
+                if (mm.InheritedType.Length == 0)
+                    return null;
+
+                mm = smDef.Methodmaps.Find(e => e.Name == mm.InheritedType);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -494,7 +523,7 @@ namespace SPCode.UI.Components
                     return false;
                 }
 
-                var isNodes = mm.ProduceNodes();
+                var isNodes = mm.ProduceNodes(_smDef);
 
                 if (!isNodes.SequenceEqual(_methodACEntries, ISEqualityComparer))
                 {
