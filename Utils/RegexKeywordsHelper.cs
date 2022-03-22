@@ -32,7 +32,7 @@ namespace SPCode.Utils
             }
 
             return new Regex(
-                @$"\b({string.Join("|", keywords)})\b",
+                @$"\b({string.Join("|", keywords.Select(Regex.Escape))})\b",
                 RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture);
         }
 
@@ -48,7 +48,7 @@ namespace SPCode.Utils
             }
             
             return new Regex(
-                @$"\b(?<!\.)({string.Join("|", keywords)})\b",
+                @$"\b(?<!\.)({string.Join("|", keywords.Select(Regex.Escape))})\b",
                 RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture);
         }
 
@@ -63,7 +63,7 @@ namespace SPCode.Utils
             }
             
             return new Regex(
-                @$"\b(?<=[^\s]+\.)({string.Join("|", keywords)})\b",
+                @$"\b(?<=[^\s]+\.)({string.Join("|", keywords.Select(Regex.Escape))})\b",
                 RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture);
         }
     }
