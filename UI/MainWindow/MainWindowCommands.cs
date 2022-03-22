@@ -94,10 +94,21 @@ namespace SPCode.UI
                     return;
                 }
                 string newFilePath;
+                string rootPath;
                 var newFileNum = 0;
+
+                if (Program.Configs[Program.SelectedConfig].SMDirectories.Count > 0)
+                {
+                    rootPath = Program.Configs[Program.SelectedConfig].SMDirectories[0];
+                }
+                else
+                {
+                    rootPath = Environment.CurrentDirectory;
+                }
+
                 do
                 {
-                    newFilePath = Path.Combine(Program.Configs[Program.SelectedConfig].SMDirectories[0], $"New Plugin ({++newFileNum}).sp");
+                    newFilePath = Path.Combine(rootPath, $"New Plugin ({++newFileNum}).sp");
                 } while (File.Exists(newFilePath));
 
                 File.Create(newFilePath).Close();
