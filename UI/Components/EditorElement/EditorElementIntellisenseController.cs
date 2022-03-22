@@ -348,7 +348,7 @@ namespace SPCode.UI.Components
             {
                 return null;
             }
-            
+
             // If we found the declaration get the Variable Type and look for a method-map matching its type.
 
             return (SMClasslike)_smDef.Methodmaps.FirstOrDefault(e => e.Name == varDecl.Type) ??

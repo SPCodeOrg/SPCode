@@ -187,12 +187,7 @@ namespace SPCode.UI.Components
 
             var currentChar = editor.TextArea.Document.GetText(offset, 1);
 
-            if (string.IsNullOrWhiteSpace(currentChar))
-            {
-                return string.Empty;
-            }
-
-            return editor.TextArea.Document.GetText(offsetStart, offsetEnd - offsetStart);
+            return string.IsNullOrWhiteSpace(currentChar) ? string.Empty : editor.TextArea.Document.GetText(offsetStart, offsetEnd - offsetStart);
         }
     }
 }

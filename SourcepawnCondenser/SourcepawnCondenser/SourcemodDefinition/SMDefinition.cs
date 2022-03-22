@@ -2,12 +2,34 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace SourcepawnCondenser.SourcemodDefinition
 {
     public class SMDefinition
     {
+        public SMDefinition()
+        {
+            if (Methodmaps.Count == 0)
+                Methodmaps.Add(new SMMethodmap()
+                {
+                    Name = "Handle",
+                    Methods =
+                    {
+                        new SMMethodmapMethod()
+                        {
+                            FullName = "(external) void Close()",
+                            ClassName = "Name",
+                            Name = "Close",
+                            CommentString =
+                                "Clones a Handle.\nWhen passing handles in between plugins, caching handles can result in accidental invalidation when one plugin releases the Handle,\nor is its owner is unloaded from memory.\nTo prevent this, the Handle may be \"cloned\" with a new owner.",
+                            ReturnType = "void"
+                        }
+                    }
+                });
+        }
+
         // This contains Enum values, Constant variables, Defines.
         public List<string> Constants;
 
@@ -30,6 +52,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
 
         // This contains method map and enum structs' methods.
         public List<string> ObjectMethods;
+
         // This contains method map and enum structs' fields.
         public List<string> ObjectFields;
 
@@ -46,7 +69,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
             {
                 Functions = Functions.Distinct(new SMFunctionComparer()).ToList();
                 Functions.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
-                //Enums = Enums.Distinct(new SMEnumComparer()).ToList(); //enums can have the same name but not be the same...
+                //Enums = Enums.Distinct(new SMEnumComparer()).ToList(); //enums can have the same name but not be the same values
                 Enums.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
                 Structs = Structs.Distinct(new SMStructComparer()).ToList();
                 Structs.Sort((a, b) => string.CompareOrdinal(a.Name, b.Name));
@@ -170,13 +193,13 @@ namespace SourcepawnCondenser.SourcemodDefinition
             // nodes.AddRange(ACNode.ConvertFromStringList(EnumStructs.Select(e => e.Name), false, "↩ "));
             nodes.AddRange(ACNode.ConvertFromStringList(Variables.Select(e => e.Name), false, "• "));
             nodes.AddRange(ACNode.ConvertFromStringList(_functionVariableStrings, false, "• "));
-            
+
             //nodes = nodes.Distinct(new ACNodeEqualityComparer()).ToList(); Methodmaps and Functions can and will be the same.
             nodes.Sort((a, b) => string.CompareOrdinal(a.EntryName, b.EntryName));
 
             return nodes;
         }
-        
+
         public void MergeDefinitions(SMDefinition def)
         {
             try
