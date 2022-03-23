@@ -23,7 +23,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
                             ClassName = "Name",
                             Name = "Close",
                             CommentString =
-                                "Clones a Handle.\nWhen passing handles in between plugins, caching handles can result in accidental invalidation when one plugin releases the Handle,\nor is its owner is unloaded from memory.\nTo prevent this, the Handle may be \"cloned\" with a new owner.",
+                                "Closes a Handle. If the handle has multiple copies open, it is not destroyed unless all copies are closed.",
                             ReturnType = "void"
                         }
                     }
