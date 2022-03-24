@@ -28,7 +28,10 @@ namespace SPCode.UI.Components
                     ChangeLinePart(
                         lineStartOffset + index,
                         lineStartOffset + index + SelectionString.Length,
-                        element => { element.BackgroundBrush = Brushes.LightGray; });
+                        element => { 
+                            element.BackgroundBrush = new SolidColorBrush(Colors.CornflowerBlue);
+                            element.TextRunProperties.SetForegroundBrush(new SolidColorBrush(Colors.White));
+                        });
                     start = index + 1;
                 }
             }

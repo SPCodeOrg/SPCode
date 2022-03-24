@@ -332,9 +332,9 @@ namespace SPCode.UI.Components
             if (WantFoldingUpdate)
             {
                 WantFoldingUpdate = false;
-                try //this "solves" a racing-conditions error - i wasnt able to fix it till today.. 
+                try
                 {
-                    Dispatcher.Invoke(() => { foldingStrategy.UpdateFoldings(foldingManager, editor.Document); });
+                    Dispatcher.Invoke(() => foldingStrategy.UpdateFoldings(foldingManager, editor.Document));
                 }
                 catch (Exception)
                 {

@@ -466,7 +466,9 @@ namespace SPCode.UI.Windows
             var editorStartIndex = 0;
             List<EditorElement> editors;
             if (FindDestinies.SelectedIndex == 0)
-            { editors = new() { _editor }; }
+            { 
+                editors = new() { _editor }; 
+            }
             else
             {
                 editors = _allEditors;
