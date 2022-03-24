@@ -45,7 +45,7 @@ namespace SPCode.UI.Components
         private bool isBlock;
         private double LineHeight;
         public new LayoutDocument Parent;
-        private bool SelectionIsHighlited;
+        private bool SelectionIsHighlighted;
         private bool WantFoldingUpdate;
         public bool IsTemplateEditor = false;
         private bool Closed = false;
@@ -304,17 +304,17 @@ namespace SPCode.UI.Components
                     {
                         colorizeSelection.SelectionString = selectionString;
                         colorizeSelection.HighlightSelection = true;
-                        SelectionIsHighlited = true;
+                        SelectionIsHighlighted = true;
                         editor.TextArea.TextView.Redraw();
                     }
                     else
                     {
                         colorizeSelection.HighlightSelection = false;
                         colorizeSelection.SelectionString = string.Empty;
-                        if (SelectionIsHighlited)
+                        if (SelectionIsHighlighted)
                         {
                             editor.TextArea.TextView.Redraw();
-                            SelectionIsHighlited = false;
+                            SelectionIsHighlighted = false;
                         }
                     }
                 }
@@ -322,10 +322,10 @@ namespace SPCode.UI.Components
                 {
                     colorizeSelection.HighlightSelection = false;
                     colorizeSelection.SelectionString = string.Empty;
-                    if (SelectionIsHighlited)
+                    if (SelectionIsHighlighted)
                     {
                         editor.TextArea.TextView.Redraw();
-                        SelectionIsHighlited = false;
+                        SelectionIsHighlighted = false;
                     }
                 }
             });
