@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using MahApps.Metro;
+using MahApps.Metro.Controls;
 using SPCode.UI.Components;
 using Xceed.Wpf.AvalonDock.Layout;
 using static SPCode.Interop.TranslationProvider;
@@ -206,7 +207,7 @@ namespace SPCode.UI.Windows
                     }
                 }
                 IsSearchFieldOpen = false;
-                FindReplaceGrid.IsHitTestVisible = false;
+                SearchGrid.IsHitTestVisible = false;
                 if (_editor == null)
                 {
                     return;
@@ -216,7 +217,7 @@ namespace SPCode.UI.Windows
             else
             {
                 IsSearchFieldOpen = true;
-                FindReplaceGrid.IsHitTestVisible = true;
+                SearchGrid.IsHitTestVisible = true;
                 if (_editor == null)
                 {
                     return;
@@ -546,6 +547,9 @@ namespace SPCode.UI.Windows
             Count_Button.Content = Translate("Count");
             CCBoxText.Text = Translate("CaseSen");
             MLRBoxText.Text = Translate("MultilineRegex");
+
+            TextBoxHelper.SetWatermark(FindBox, Translate("Find"));
+            TextBoxHelper.SetWatermark(ReplaceBox, Translate("Replace"));
         }
 
         private void EvaluateRTL()

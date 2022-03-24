@@ -31,7 +31,7 @@
     </ResourceDictionary>
   </controls:MetroWindow.Resources>
 
-  <Grid Name="FindReplaceGrid">
+  <Grid Name="SearchGrid">
     <Grid.RowDefinitions>
       <RowDefinition Height="130"/>
       <RowDefinition/>
@@ -40,8 +40,8 @@
 
     <Grid Grid.Row="0" VerticalAlignment="Center">
       <StackPanel>
-        <TextBox x:Name="FindBox" Margin="10,0,10,5" Height="55" controls:TextBoxHelper.Watermark="Find" VerticalScrollBarVisibility="Visible" TextChanged="SearchBoxTextChanged" KeyDown="SearchBoxKeyUp" />
-        <TextBox x:Name="ReplaceBox" Margin="10,0,10,5" Height="55" controls:TextBoxHelper.Watermark="Replace" VerticalScrollBarVisibility="Visible" KeyDown="ReplaceBoxKeyUp" TextChanged="ReplaceBoxTextChanged" />
+        <TextBox x:Name="FindBox" Margin="10,0,10,5" Height="55" VerticalScrollBarVisibility="Visible" TextChanged="SearchBoxTextChanged" KeyDown="SearchBoxKeyUp" />
+        <TextBox x:Name="ReplaceBox" Margin="10,0,10,5" Height="55" VerticalScrollBarVisibility="Visible" KeyDown="ReplaceBoxKeyUp" TextChanged="ReplaceBoxTextChanged" />
       </StackPanel>
     </Grid>
 
