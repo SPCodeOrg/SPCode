@@ -14,7 +14,7 @@ using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI.Windows
 {
-    public partial class FindReplaceWindow
+    public partial class SearchWindow
     {
         #region Variables
         private EditorElement _editor;
@@ -47,7 +47,7 @@ namespace SPCode.UI.Windows
         #endregion
 
         #region Constructors
-        public FindReplaceWindow(string searchTerm = "")
+        public SearchWindow(string searchTerm = "")
         {
             InitializeComponent();
             if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")

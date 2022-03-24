@@ -179,8 +179,8 @@
     <Compile Include="UI\Windows\GoToLineWindow.xaml.cs">
       <DependentUpon>GoToLineWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Windows\FindReplaceWindow.xaml.cs">
-      <DependentUpon>FindReplaceWindow.xaml</DependentUpon>
+    <Compile Include="UI\Windows\SearchWindow.xaml.cs">
+      <DependentUpon>SearchWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Windows\NewFileWindow.xaml.cs">
       <DependentUpon>NewFileWindow.xaml</DependentUpon>
@@ -268,7 +268,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UI\Windows\FindReplaceWindow.xaml">
+    <Page Include="UI\Windows\SearchWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

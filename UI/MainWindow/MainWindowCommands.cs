@@ -296,7 +296,7 @@ namespace SPCode.UI
 
                 foreach (Window win in Application.Current.Windows)
                 {
-                    if (win is FindReplaceWindow findWin)
+                    if (win is SearchWindow findWin)
                     {
                         findWin.Activate();
                         findWin.FindBox.Text = selection;
@@ -305,7 +305,7 @@ namespace SPCode.UI
                         return;
                     }
                 }
-                var findWindow = new FindReplaceWindow(selection) { Owner = this };
+                var findWindow = new SearchWindow(selection) { Owner = this };
                 findWindow.Show();
                 findWindow.FindBox.Focus();
             }
