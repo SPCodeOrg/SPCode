@@ -310,7 +310,10 @@ namespace SPCode.UI.Windows
                 {
                     startFileCaretOffset = editors[index].editor.CaretOffset;
                     addToOffset = startFileCaretOffset;
-                    if (startFileCaretOffset < 0) { startFileCaretOffset = 0; }
+                    if (startFileCaretOffset < 0) 
+                    { 
+                        startFileCaretOffset = 0; 
+                    }
                     searchText = editors[index].editor.Text.Substring(startFileCaretOffset);
                 }
                 else if (i == (editors.Count + editorIndex))
