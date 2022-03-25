@@ -1,11 +1,14 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using MahApps.Metro.Controls.Dialogs;
 using SPCode.Interop;
 using SPCode.UI.Components;
 using SPCode.Utils;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.UI
 {
@@ -13,62 +16,73 @@ namespace SPCode.UI
     {
         private async void ErrorResultGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var row = (ErrorDataGridRow)ErrorResultGrid.SelectedItem;
-            if (row == null)
+            try
             {
-                return;
-            }
-
-            var editors = GetAllEditorElements();
-            if (editors == null)
-            {
-                return;
-            }
-
-            // Create a file info with the supplied file 
-            var fileName = row.File;
-            var fInfo = new FileInfo(fileName);
-
-            // If it doesn't exist, it's probably a local file relative to one of the scripts being compiled
-            if (!fInfo.Exists)
-            {
-                var exists = false;
-
-                // We're gonna search for the file containing the error
-                // inside every compiled scripts location
-                foreach (var script in ScriptsCompiled)
+                var row = (ErrorDataGridRow)ErrorResultGrid.SelectedItem;
+                if (row == null)
                 {
-                    var scriptDirInfo = Path.GetDirectoryName(script);
-                    fInfo = new FileInfo(scriptDirInfo + Path.DirectorySeparatorChar + fileName);
-                    if (fInfo.Exists)
+                    return;
+                }
+
+                var editors = GetAllEditorElements();
+                if (editors == null)
+                {
+                    return;
+                }
+
+                // Create a file info with the supplied file 
+                var fileName = row.File;
+                var fInfo = new FileInfo(fileName);
+
+                // If it doesn't exist, it's probably a local file relative to one of the scripts being compiled
+                if (!fInfo.Exists)
+                {
+                    var exists = false;
+
+                    // We're gonna search for the file containing the error
+                    // inside every compiled scripts location
+                    foreach (var script in ScriptsCompiled)
                     {
-                        exists = true;
-                        break;
+                        var scriptDirInfo = Path.GetDirectoryName(script);
+                        fInfo = new FileInfo(scriptDirInfo + Path.DirectorySeparatorChar + fileName);
+                        if (fInfo.Exists)
+                        {
+                            exists = true;
+                            break;
+                        }
+                    }
+
+                    if (!exists)
+                    {
+                        LoggingControl.LogAction($"Failed to select {fInfo.Name}:{row.Line} - unable to find file.", 2);
+                        return;
                     }
                 }
 
-                if (!exists)
+                // Look for the file that has the error among those that are open
+                foreach (var ed in editors)
                 {
-                    LoggingControl.LogAction($"Failed to select {fInfo.Name}:{row.Line} - unable to find file.", 2);
-                    return;
+                    if (ed.FullFilePath == fInfo.FullName)
+                    {
+                        await Task.Delay(50);
+                        GoToErrorLine(ed, row);
+                    }
                 }
-            }
 
-            // Look for the file that has the error among those that are open
-            foreach (var ed in editors)
-            {
-                if (ed.FullFilePath == fInfo.FullName)
+                // If it's not opened, open it and go to the error line
+                if (TryLoadSourceFile(fInfo.FullName, out var editor, true, false, true) && editor != null)
                 {
                     await Task.Delay(50);
-                    GoToErrorLine(ed, row);
+                    GoToErrorLine(editor, row);
                 }
             }
-
-            // If it's not opened, open it and go to the error line
-            if (TryLoadSourceFile(fInfo.FullName, out var editor, true, false, true) && editor != null)
+            catch (UnauthorizedAccessException ex)
             {
-                await Task.Delay(50);
-                GoToErrorLine(editor, row);
+                await this.ShowMessageAsync(Translate("Error"), Translate("PermissionAccessError"), settings: MetroDialogOptions);
+            }
+            catch (Exception ex)
+            {
+                LoggingControl.LogAction($"Could not go to error! {ex.Message}");
             }
         }
 
