@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -43,10 +44,10 @@ namespace SPCode.UI
             RestoreMainWindow();
         }
 
-        private void Item_Click(object sender, RoutedEventArgs e)
+        private async void Item_Click(object sender, RoutedEventArgs e)
         {
             var name = (string)((MenuItem)sender).Header;
-            ChangeConfig(name);
+            await ChangeConfig(name);
             LoggingControl.LogAction($"Changed to config \"{name}\".", 2);
         }
 
@@ -54,63 +55,66 @@ namespace SPCode.UI
         /// Changes to the specified config.
         /// </summary>
         /// <param name="index">The config index to change to</param>
-        public void ChangeConfig(int index)
+        public async Task ChangeConfig(int index)
         {
             if (index < 0 || index >= Program.Configs.Count)
             {
                 return;
             }
 
-            Program.Configs[index].LoadSMDef();
-
-            if (Program.Configs[index].RejectedPaths.Any())
+            await Dispatcher.InvokeAsync(() =>
             {
-                var sb = new StringBuilder();
-                sb.Append("SPCode was unauthorized to access the following directories to parse their includes: \n");
-                foreach (var path in Program.Configs[index].RejectedPaths)
+                Program.Configs[index].LoadSMDef();
+
+                if (Program.Configs[index].RejectedPaths.Any())
                 {
-                    sb.Append($"  - {path}\n");
+                    var sb = new StringBuilder();
+                    sb.Append("SPCode was unauthorized to access the following directories to parse their includes: \n");
+                    foreach (var path in Program.Configs[index].RejectedPaths)
+                    {
+                        sb.Append($"  - {path}\n");
+                    }
+
+                    LoggingControl.LogAction(sb.ToString());
                 }
 
-                LoggingControl.LogAction(sb.ToString());
-            }
-
-            var name = Program.Configs[index].Name;
-            for (var i = 0; i < ConfigMenu.Items.Count - 2; ++i)
-            {
-                ((MenuItem)ConfigMenu.Items[i]).IsChecked = name == (string)((MenuItem)ConfigMenu.Items[i]).Header;
-            }
-
-            Program.SelectedConfig = index;
-            Program.OptionsObject.Program_SelectedConfig = Program.Configs[Program.SelectedConfig].Name;
-
-            var editors = GetAllEditorElements();
-            if (editors != null)
-            {
-                foreach (var editor in editors)
+                var name = Program.Configs[index].Name;
+                for (var i = 0; i < ConfigMenu.Items.Count - 2; ++i)
                 {
-                    editor.LoadAutoCompletes();
-                    editor.editor.SyntaxHighlighting = new AeonEditorHighlighting();
-                    editor.InvalidateVisual();
+                    ((MenuItem)ConfigMenu.Items[i]).IsChecked = name == (string)((MenuItem)ConfigMenu.Items[i]).Header;
                 }
-            }
 
-            OBDirList.ItemsSource = Program.Configs[index].SMDirectories;
-            OBDirList.Items.Refresh();
-            OBDirList.SelectedIndex = 0;
+                Program.SelectedConfig = index;
+                Program.OptionsObject.Program_SelectedConfig = Program.Configs[Program.SelectedConfig].Name;
+
+                var editors = GetAllEditorElements();
+                if (editors != null)
+                {
+                    foreach (var editor in editors)
+                    {
+                        editor.LoadAutoCompletes();
+                        editor.editor.SyntaxHighlighting = new AeonEditorHighlighting();
+                        editor.InvalidateVisual();
+                    }
+                }
+
+                OBDirList.ItemsSource = Program.Configs[index].SMDirectories;
+                OBDirList.Items.Refresh();
+                OBDirList.SelectedIndex = 0;
+            });
         }
 
         /// <summary>
         /// Overload of ChangeConfig to take the name of the config.
         /// </summary>
         /// <param name="name">Name of the config to change to.</param>
-        private void ChangeConfig(string name)
+        private async Task ChangeConfig(string name)
         {
             for (var i = 0; i < Program.Configs.Count; ++i)
             {
                 if (Program.Configs[i].Name == name)
                 {
-                    ChangeConfig(i);
+                    await ChangeConfig(i);
                     return;
                 }
             }
