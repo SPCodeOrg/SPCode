@@ -404,17 +404,22 @@ namespace SPCode.UI.Components
             var matchIndex = defMatch.Index;
             var matchLen = defMatch.Length;
 
+            var trimText = text.Trim();
             // Check that we are inside a preprocessor statement and that the caret is on the definition, eg. "#<here>" and not "#define <here>".
-            if (text.Trim() == "#" || (text.Trim().StartsWith("#") && matchIndex + matchLen >= lineOffset &&
-                                       lineOffset > matchIndex))
+            if (trimText == "#" || (trimText.StartsWith("#") && matchIndex + matchLen >= lineOffset &&
+                                    lineOffset > matchIndex))
             {
                 // Get only the preprocessor statement and not the full line 
-                var endIndex = text.IndexOf(" ", StringComparison.Ordinal);
-                var statement = text.Substring(1);
-                if (endIndex != -1)
+                string statement = trimText;
+                if (statement != "#")
                 {
-                    statement = text.Substring(1, endIndex).ToLower();
+                    var endIndex = trimText.IndexOf(" ", StringComparison.Ordinal);
+                    if (endIndex == -1)
+                        endIndex = trimText.Length;
+                    statement = trimText.Substring(1, endIndex-1);
                 }
+                
+
 
                 // If the preprocessor stmt found close the dialog.
                 if (statement.Length != 0 && PreProcList.Contains(statement.Trim()))
@@ -687,7 +692,7 @@ namespace SPCode.UI.Components
                         var charAt = editor.Document.GetCharAt(i);
                         if (!IsValidFunctionChar(charAt))
                         {
-                            if (i == startOffset && (charAt is '.' or ' ' or '\t'))
+                            if (i == startOffset && (charAt is '.' or ' ' or '\t' or '#'))
                             {
                                 endOffset = i + 1;
                             }
