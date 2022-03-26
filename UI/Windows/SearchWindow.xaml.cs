@@ -304,27 +304,41 @@ namespace SPCode.UI.Windows
             for (var i = editorIndex; i < (editors.Count + editorIndex + 1); ++i)
             {
                 var index = ValueUnderMap(i, editors.Count);
+                var currEditor = editors[index].editor;
                 string searchText;
                 var addToOffset = 0;
                 if (i == editorIndex)
                 {
-                    startFileCaretOffset = editors[index].editor.CaretOffset;
+                    // Set caret to beggining of the word its standing on
+                    var docText = currEditor.Text;
+                    for (int j = currEditor.CaretOffset - 1; j >= 0; j--)
+                    {
+                        if (!char.IsLetterOrDigit(docText[j]))
+                        {
+                            currEditor.CaretOffset = j;
+                            break;
+                        }
+                        if (j == 0)
+                        {
+                            currEditor.CaretOffset = 0;
+                        }
+                    }
+
+                    startFileCaretOffset = currEditor.CaretOffset;
                     addToOffset = startFileCaretOffset;
                     if (startFileCaretOffset < 0) 
                     { 
                         startFileCaretOffset = 0; 
                     }
-                    searchText = editors[index].editor.Text.Substring(startFileCaretOffset);
+                    searchText = currEditor.Text.Substring(startFileCaretOffset);
                 }
-                else if (i == (editors.Count + editorIndex))
+                else if (i == editors.Count + editorIndex)
                 {
-                    searchText = startFileCaretOffset == 0 ?
-                        string.Empty :
-                        editors[index].editor.Text.Substring(0, startFileCaretOffset);
+                    searchText = startFileCaretOffset == 0 ? string.Empty : currEditor.Text.Substring(0, startFileCaretOffset);
                 }
                 else
                 {
-                    searchText = editors[index].editor.Text;
+                    searchText = currEditor.Text;
                 }
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
@@ -334,11 +348,11 @@ namespace SPCode.UI.Windows
                         foundOccurence = true;
                         editors[index].Parent.IsSelected = true;
                         var result = m.Result(replaceString);
-                        editors[index].editor.Document.Replace(m.Index + addToOffset, m.Length, result);
-                        editors[index].editor.CaretOffset = m.Index + addToOffset + result.Length;
-                        editors[index].editor.Select(m.Index + addToOffset, result.Length);
-                        var location = editors[index].editor.Document.GetLocation(m.Index + addToOffset);
-                        editors[index].editor.ScrollTo(location.Line, location.Column);
+                        currEditor.Document.Replace(m.Index + addToOffset, m.Length, result);
+                        currEditor.CaretOffset = m.Index + addToOffset + result.Length;
+                        currEditor.Select(m.Index + addToOffset, result.Length);
+                        var location = currEditor.Document.GetLocation(m.Index + addToOffset);
+                        currEditor.ScrollTo(location.Line, location.Column);
                         FindResultBlock.Text = string.Format(Translate("ReplacedOff"), MinHeight + addToOffset);
                         break;
                     }
