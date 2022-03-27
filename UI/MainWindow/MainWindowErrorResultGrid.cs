@@ -76,7 +76,7 @@ namespace SPCode.UI
                     GoToErrorLine(editor, row);
                 }
             }
-            catch (UnauthorizedAccessException ex)
+            catch (UnauthorizedAccessException)
             {
                 await this.ShowMessageAsync(Translate("Error"), Translate("PermissionAccessError"), settings: MetroDialogOptions);
             }

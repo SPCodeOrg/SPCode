@@ -634,7 +634,7 @@ namespace SPCode.UI.Windows
             Program.Configs[ConfigListBox.SelectedIndex].RConCommands = C_RConCmds.Text;
         }
 
-        private void MetroWindow_Closing(object sender, CancelEventArgs e)
+        private async void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
             if (NeedsSMDefInvalidation)
             {
@@ -654,7 +654,7 @@ namespace SPCode.UI.Windows
             if (configsList.Any(x => string.IsNullOrEmpty(x)))
             {
                 e.Cancel = true;
-                this.ShowMessageAsync(Translate("ErrorSavingConfigs"),
+                await this.ShowMessageAsync(Translate("ErrorSavingConfigs"),
                     Translate("EmptyConfigNames"), MessageDialogStyle.Affirmative,
                     Program.MainWindow.MetroDialogOptions);
                 return;
@@ -664,14 +664,14 @@ namespace SPCode.UI.Windows
             if (configsList.Count != configsList.Distinct().Count())
             {
                 e.Cancel = true;
-                this.ShowMessageAsync(Translate("ErrorSavingConfigs"),
+                await this.ShowMessageAsync(Translate("ErrorSavingConfigs"),
                     Translate("DuplicateConfigNames"), MessageDialogStyle.Affirmative,
                     Program.MainWindow.MetroDialogOptions);
                 return;
             }
 
             Program.MainWindow.FillConfigMenu();
-            Program.MainWindow.ChangeConfig(Program.SelectedConfig);
+            await Program.MainWindow.ChangeConfig(Program.SelectedConfig);
             var outString = new StringBuilder();
             var settings = new XmlWriterSettings
             {
@@ -755,6 +755,8 @@ namespace SPCode.UI.Windows
             RConPWBlock.Text = Translate("RconPw");
             RConComBlock.Text = Translate("RconCom");
             Rcon_MenuC.Text = Translate("RConCMDLineCom");
+            FTPTestConnectionButton.Content = Translate("TestConnection");
+            RCONTestConnectionButton.Content = Translate("TestConnection");
             BackupConfigsButton.Content = Translate("BackupConfigs");
             LoadConfigsButton.Content = Translate("LoadConfigs");
         }
