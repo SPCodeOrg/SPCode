@@ -85,7 +85,7 @@
     </ResourceDictionary>
   </controls:MetroWindow.Resources>
 
-  <Grid x:Name="ConfigsWindowMainGrid">
+  <Grid>
     <Button Name="NewButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Width="75" Click="NewButton_Clicked" />
     <Button Name="DeleteButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="120,5,0,0" Width="75" Click="DeleteButton_Clicked" />
     <ListBox Name="ConfigListBox" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,35,0,0" Width="200" SelectionChanged="ConfigListBox_SelectionChanged" />
@@ -105,7 +105,7 @@
             </StackPanel.Resources>
 
             <DockPanel>
-              <TextBlock Name="NameBlock" IsHitTestVisible="False" HorizontalAlignment="right" MaxWidth="40" />
+              <TextBlock Name="NameBlock" IsHitTestVisible="False" HorizontalAlignment="Right" />
               <TextBox Name="C_Name" Margin="50,0,0,0" VerticalAlignment="Top" TextChanged="C_Name_TextChanged" />
             </DockPanel>
 
