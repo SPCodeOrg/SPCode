@@ -25,4 +25,5 @@
 *.nsi -linguist-detectable
 *.nsh -linguist-detectable
 *.ps1 -linguist-detectable
+*.bat -linguist-detectable
 Deploy/ -linguist-vendored
