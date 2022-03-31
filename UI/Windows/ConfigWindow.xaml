@@ -14,12 +14,12 @@
                       ShowTitleBar="true" 
                       Closing="MetroWindow_Closing">
 
-  <controls:MetroWindow.RightWindowCommands>
+  <!--<controls:MetroWindow.RightWindowCommands>
     <controls:WindowCommands>
       <Button Name="BackupConfigsButton" Click="BackupConfigsButton_Click"/>
       <Button Name="LoadConfigsButton" Click="LoadConfigsButton_Click"/>
     </controls:WindowCommands>
-  </controls:MetroWindow.RightWindowCommands>
+  </controls:MetroWindow.RightWindowCommands>-->
 
   <controls:MetroWindow.Resources>
     <ResourceDictionary>

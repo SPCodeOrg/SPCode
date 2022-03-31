@@ -757,8 +757,8 @@ namespace SPCode.UI.Windows
             Rcon_MenuC.Text = Translate("RConCMDLineCom");
             FTPTestConnectionButton.Content = Translate("TestConnection");
             RCONTestConnectionButton.Content = Translate("TestConnection");
-            BackupConfigsButton.Content = Translate("BackupConfigs");
-            LoadConfigsButton.Content = Translate("LoadConfigs");
+            //BackupConfigsButton.Content = Translate("BackupConfigs");
+            //LoadConfigsButton.Content = Translate("LoadConfigs");
         }
 
         private void EvaluateRTL()
