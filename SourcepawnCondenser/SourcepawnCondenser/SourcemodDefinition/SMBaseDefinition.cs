@@ -1,6 +1,6 @@
 ﻿namespace SourcepawnCondenser.SourcemodDefinition;
 
-abstract public class SMBaseDefinition
+public abstract class SMBaseDefinition
 {
     public int Index = -1;
     public int Length = 0;

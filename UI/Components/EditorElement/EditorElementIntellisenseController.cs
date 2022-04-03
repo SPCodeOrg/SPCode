@@ -12,6 +12,7 @@ using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Rendering;
 using SourcepawnCondenser;
 using SourcepawnCondenser.SourcemodDefinition;
+using SPCode.Interop;
 
 // ReSharper disable once CheckNamespace
 namespace SPCode.UI.Components
@@ -68,7 +69,7 @@ namespace SPCode.UI.Components
         private Storyboard _fadeTooltipIn;
         private Storyboard _fadeTooltipOut;
 
-        static private readonly SMDefinition.ISNodeEqualityComparer ISEqualityComparer = new();
+        private static readonly SMDefinition.ISNodeEqualityComparer ISEqualityComparer = new();
 
         /// <summary>
         /// Used to keep track of the current autocomplete type (ie. toplevel, class or preprocessor)
@@ -80,30 +81,30 @@ namespace SPCode.UI.Components
         /// <summary>
         /// Matches either a function call ("PrintToChat(...)") or a method call ("arrayList.Push(...)")
         /// </summary> 
-        static private readonly Regex ISFindRegex = new(
+        private static readonly Regex ISFindRegex = new(
             @"\b(((?<class>[a-zA-Z_]([a-zA-Z0-9_]?)+)\.)?(?<method>[a-zA-Z_]([a-zA-Z0-9_]?)+)\()",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
-        static private readonly Regex NewRegex = new(@"(?:(\w+)\s+\w+\s+=\s+)?new\s+(\w+)?$", RegexOptions.Compiled);
+        private static readonly Regex NewRegex = new(@"(?:(\w+)\s+\w+\s+=\s+)?new\s+(\w+)?$", RegexOptions.Compiled);
 
-        static private readonly Regex MultilineCommentRegex = new(@"/\*.*?\*/",
+        private static readonly Regex MultilineCommentRegex = new(@"/\*.*?\*/",
             RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
 
         /// <summary>
         /// Pre-processor statements
         /// </summary> 
-        static private readonly string[] PreProcArr =
+        private static readonly string[] PreProcArr =
         {
             "assert", "define", "else", "elseif", "endif", "endinput", "endscript", "error", "warning", "if",
             "include", "line", "pragma", "tryinclude", "undef"
         };
 
-        static private readonly List<string> PreProcList = PreProcArr.ToList();
+        private static readonly List<string> PreProcList = PreProcArr.ToList();
 
-        static private readonly IEnumerable<ACNode>
+        private static readonly IEnumerable<ACNode>
             PreProcNodes = ACNode.ConvertFromStringList(PreProcList, false, "#", true);
 
-        static private readonly Regex PreprocessorRegex = new("#\\w+", RegexOptions.Compiled);
+        private static readonly Regex PreprocessorRegex = new("#\\w+", RegexOptions.Compiled);
 
         /// <summary>
         /// This is called only one time when the program first opens.
@@ -252,86 +253,93 @@ namespace SPCode.UI.Components
         /// Triggers the Documentation tooltip to be shown if a matching symbol is found.
         /// </summary>
         /// <returns>True if a the IntelliSense matched a symbol false otherwise</returns>
-        bool ComputeIntelliSense(string text, int lineOffset)
+        private bool ComputeIntelliSense(string text, int lineOffset)
         {
-            var isMatches = ISFindRegex.Matches(text);
-            var scopeLevel = 0;
-
-            // Iterate the line characters in reverse starting from the caret position.
-            for (var i = lineOffset - 1; i >= 0; --i)
+            try
             {
-                if (text[i] == ')')
-                {
-                    scopeLevel++;
-                }
-                else if (text[i] == '(')
-                {
-                    scopeLevel--;
+                var isMatches = ISFindRegex.Matches(text);
+                var scopeLevel = 0;
 
-                    // Check that we are inside a scope (eg. "PrintToChat(--HERE--)" )
-                    if (scopeLevel >= 0)
+                // Iterate the line characters in reverse starting from the caret position.
+                for (var i = lineOffset - 1; i >= 0; --i)
+                {
+                    if (text[i] == ')')
                     {
-                        continue;
+                        scopeLevel++;
                     }
-
-                    for (var j = 0; j < isMatches.Count; ++j)
+                    else if (text[i] == '(')
                     {
-                        // Check that the cursor inside the match.
-                        if (i < isMatches[j].Index || i > isMatches[j].Index + isMatches[j].Length)
+                        scopeLevel--;
+
+                        // Check that we are inside a scope (eg. "PrintToChat(--HERE--)" )
+                        if (scopeLevel >= 0)
                         {
                             continue;
                         }
 
-                        var classString = isMatches[j].Groups["class"].Value;
-                        var methodString =
-                            isMatches[j].Groups["method"]
-                                .Value; // If we are not inside a method call this is a classic function call (eg. "PrintToChat(...)")
-
-                        var xPos = isMatches[j].Groups["method"].Index +
-                                   isMatches[j].Groups["method"].Length;
-
-                        if (classString.Length > 0)
+                        for (var j = 0; j < isMatches.Count; ++j)
                         {
-                            var classObj = FindClass(classString);
-
-                            SMObjectMethod? method = null;
-
-                            switch (classObj)
+                            // Check that the cursor inside the match.
+                            if (i < isMatches[j].Index || i > isMatches[j].Index + isMatches[j].Length)
                             {
-                                case SMEnumStruct:
-                                    method = classObj?.Methods.Find(e => e.Name == methodString);
-                                    break;
-                                case SMMethodmap obj:
-                                    method = FindMethod(methodString, obj, _smDef);
-                                    break;
+                                continue;
                             }
 
+                            var classString = isMatches[j].Groups["class"].Value;
+                            var methodString =
+                                isMatches[j].Groups["method"]
+                                    .Value; // If we are not inside a method call this is a classic function call (eg. "PrintToChat(...)")
 
-                            if (method == null)
+                            var xPos = isMatches[j].Groups["method"].Index +
+                                       isMatches[j].Groups["method"].Length;
+
+                            if (classString.Length > 0)
+                            {
+                                var classObj = FindClass(classString);
+
+                                SMObjectMethod? method = null;
+
+                                switch (classObj)
+                                {
+                                    case SMEnumStruct:
+                                        method = classObj?.Methods.Find(e => e.Name == methodString);
+                                        break;
+                                    case SMMethodmap obj:
+                                        method = FindMethod(methodString, obj, _smDef);
+                                        break;
+                                }
+
+
+                                if (method == null)
+                                    continue;
+
+                                ShowTooltip(xPos, method.FullName, method.CommentString);
+                                return true;
+                            }
+
+                            // Try to find the function definition.
+                            var func = _smDef.Functions.FirstOrDefault(e => e.Name == methodString);
+                            if (func == null)
                                 continue;
 
-                            ShowTooltip(xPos, method.FullName, method.CommentString);
+                            ShowTooltip(xPos, func.FullName, func.CommentString);
                             return true;
                         }
 
-                        // Try to find the function definition.
-                        var func = _smDef.Functions.FirstOrDefault(e => e.Name == methodString);
-                        if (func == null)
-                            continue;
-
-                        ShowTooltip(xPos, func.FullName, func.CommentString);
-                        return true;
+                        break;
                     }
-
-                    break;
                 }
-            }
 
-            return false;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                LoggingControl.LogAction($"Exception caught in {ex.TargetSite}: {ex.Message}");
+                return false;
+            }
         }
 
-
-        SMClasslike? FindClass(string classStr)
+        private SMClasslike? FindClass(string classStr)
         {
             // Match for static methods. Like MyClass.StaticMethod(). Look for a MethodMap that is named as our classStr.
             var classElement = _smDef.Methodmaps.FirstOrDefault(e => e.Name == classStr);
@@ -366,7 +374,7 @@ namespace SPCode.UI.Components
                    _smDef.EnumStructs.FirstOrDefault(e => e.Name == varDecl.Type);
         }
 
-        SMObjectMethod? FindMethod(string methodName, SMMethodmap methodMap, SMDefinition smDef)
+        private SMObjectMethod? FindMethod(string methodName, SMMethodmap methodMap, SMDefinition smDef)
         {
             var mm = methodMap;
             while (mm != null)
@@ -388,370 +396,385 @@ namespace SPCode.UI.Components
         /// Triggers the AutoComplete tooltip to be shown if a suggestion is found.
         /// </summary>
         /// <returns>True if a the AutoComplete matched a symbol false otherwise</returns>
-        bool ComputeAutoComplete(string text, int lineOffset, int quoteCount)
+        private bool ComputeAutoComplete(string text, int lineOffset, int quoteCount)
         {
-            // Return if we are inside a string.
-            if (quoteCount % 2 != 0)
-                return false;
-
-            var acType = ACType.Toplevel;
-            const int xPos = int.MaxValue;
-
-            //TODO: Check for multi-line strings. (Actually currently the Program doesn't support the declarations split between two lines).
-
-            /*** Auto-complete for preprocessor statements. ***/
-            var defMatch = PreprocessorRegex.Match(text);
-            var matchIndex = defMatch.Index;
-            var matchLen = defMatch.Length;
-
-            var trimText = text.Trim();
-            // Check that we are inside a preprocessor statement and that the caret is on the definition, eg. "#<here>" and not "#define <here>".
-            if (trimText == "#" || (trimText.StartsWith("#") && matchIndex + matchLen >= lineOffset &&
-                                    lineOffset > matchIndex))
+            try
             {
-                // Get only the preprocessor statement and not the full line 
-                string statement = trimText;
-                if (statement != "#")
+                // Return if we are inside a string.
+                if (quoteCount % 2 != 0)
+                    return false;
+
+                var acType = ACType.Toplevel;
+                const int xPos = int.MaxValue;
+
+                //TODO: Check for multi-line strings. (Actually currently the Program doesn't support the declarations split between two lines).
+
+                /*** Auto-complete for preprocessor statements. ***/
+                var defMatch = PreprocessorRegex.Match(text);
+                var matchIndex = defMatch.Index;
+                var matchLen = defMatch.Length;
+
+                var trimText = text.Trim();
+                // Check that we are inside a preprocessor statement and that the caret is on the definition, eg. "#<here>" and not "#define <here>".
+                if (trimText == "#" || (trimText.StartsWith("#") && matchIndex + matchLen >= lineOffset &&
+                                        lineOffset > matchIndex))
                 {
-                    var endIndex = trimText.IndexOf(" ", StringComparison.Ordinal);
-                    if (endIndex == -1)
-                        endIndex = trimText.Length;
-                    statement = trimText.Substring(1, endIndex-1);
-                }
-                
+                    // Get only the preprocessor statement and not the full line 
+                    string statement = trimText;
+                    if (statement != "#")
+                    {
+                        var endIndex = trimText.IndexOf(" ", StringComparison.Ordinal);
+                        if (endIndex == -1)
+                            endIndex = trimText.Length;
+                        statement = trimText.Substring(1, endIndex - 1);
+                    }
 
 
-                // If the preprocessor stmt found close the dialog.
-                if (statement.Length != 0 && PreProcList.Contains(statement.Trim()))
-                {
-                    HideAC();
-                    return true;
-                }
 
-                // Try to find a stmt that starts with the text
-                var selectedIndex = PreProcList.FindIndex(e => e.StartsWith(statement));
+                    // If the preprocessor stmt found close the dialog.
+                    if (statement.Length != 0 && PreProcList.Contains(statement.Trim()))
+                    {
+                        HideAC();
+                        return true;
+                    }
 
-                if (selectedIndex == -1)
-                {
-                    // If no stmt starts with the text find one try to find one that contains it.
-                    selectedIndex = PreProcList.FindIndex(e => e.Contains(statement));
+                    // Try to find a stmt that starts with the text
+                    var selectedIndex = PreProcList.FindIndex(e => e.StartsWith(statement));
+
                     if (selectedIndex == -1)
                     {
-                        selectedIndex = 0;
-                    }
-                }
-
-
-                PreProcAutocompleteBox.SelectedIndex = selectedIndex;
-                PreProcAutocompleteBox.ScrollIntoView(PreProcAutocompleteBox.SelectedItem);
-
-                ShowTooltip(xPos, ACType.PreProc);
-                return true;
-            }
-
-
-            if (text.Length == 0 || editor.SelectionLength > 0)
-                return false;
-
-            if (!IsValidFunctionChar(text[lineOffset - 1]) &&
-                text[lineOffset - 1] != '.' && text[lineOffset - 1] != ' ' && text[lineOffset - 1] != '\t')
-                return false;
-
-            var isNextCharValid = true;
-            if (text.Length > lineOffset)
-            {
-                if (IsValidFunctionChar(text[lineOffset]) || text[lineOffset] == '(')
-                {
-                    isNextCharValid = false;
-                }
-            }
-
-            if (!isNextCharValid)
-            {
-                return false;
-            }
-
-
-            // Check if we are calling a Method.
-            var dotOffset = lineOffset - 1;
-
-            // Try to find the "." index from the caret position.
-            for (var i = dotOffset; i >= 0; --i)
-            {
-                if (!IsValidFunctionChar(text[i]))
-                {
-                    if (text[i] == '.')
-                    {
-                        acType = ACType.Class;
-                    }
-
-                    break;
-                }
-
-                // Save the "." index.
-                dotOffset = i;
-            }
-
-            var methodString = text.Substring(dotOffset, lineOffset - dotOffset);
-            if (methodString == ".")
-            {
-                dotOffset++;
-            }
-
-            if (methodString.Length <= 0)
-            {
-                return false;
-            }
-
-            int classOffset = dotOffset - 2;
-
-            if (acType == ACType.Class)
-            {
-                if (classOffset < 0)
-                {
-                    return false;
-                }
-                int len = 0;
-                for (var i = classOffset; i >= 0; --i)
-                {
-                    if (!IsValidFunctionChar(text[i]))
-                    {
-                        break;
-                    }
-
-                    // Save the index where the method call begins, eg. ArrayList.Push().
-                    //                                                  ^HERE
-                    classOffset = i;
-                    len++;
-                }
-
-                var classString = text.Substring(classOffset, len);
-                var mm = FindClass(classString);
-                if (mm == null)
-                {
-                    return false;
-                }
-
-                var isNodes = mm.ProduceNodes(_smDef);
-
-                if (!isNodes.SequenceEqual(_methodACEntries, ISEqualityComparer))
-                {
-                    MethodAutoCompleteBox.Items.Clear();
-                    isNodes.ForEach(e => MethodAutoCompleteBox.Items.Add(e));
-
-                    _methodACEntries.Clear();
-                    _methodACEntries.AddRange(isNodes);
-
-                    MethodAutoCompleteBox.UpdateLayout();
-                }
-
-                if (methodString == ".")
-                {
-                    MethodAutoCompleteBox.SelectedIndex = 0;
-                    MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
-
-                    ShowTooltip(xPos, ACType.Class);
-                    return true;
-                }
-
-                var index = isNodes.FindNode(methodString);
-
-                if (index == null)
-                    return false;
-
-                MethodAutoCompleteBox.SelectedIndex = (int)index;
-                MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
-
-                ShowTooltip(xPos, ACType.Class);
-
-                return true;
-            }
-
-            // Match MethodMap initializations.
-            var match = NewRegex.Match(text.Substring(0, lineOffset));
-            if (match.Success)
-            {
-                var isNodes = ACNode.ConvertFromStringList(_smDef.Methodmaps.Select(e => e.Name), true, "• ").ToList();
-
-                if (!isNodes.SequenceEqual(_methodACEntries, ISEqualityComparer))
-                {
-                    MethodAutoCompleteBox.Items.Clear();
-                    isNodes.ForEach(e => MethodAutoCompleteBox.Items.Add(e));
-
-                    _methodACEntries.Clear();
-                    _methodACEntries.AddRange(isNodes);
-
-                    MethodAutoCompleteBox.UpdateLayout();
-                }
-
-                var methodMapName = match.Groups[2].Value;
-
-                if (methodMapName == "")
-                {
-                    var boxIndex = 0;
-                    var varType = match.Groups[1].Value;
-                    if (varType != "")
-                    {
-                        var mmIndex = _methodACEntries.FindIndex(e => e.EntryName.StartsWith(varType));
-                        if (mmIndex != -1)
+                        // If no stmt starts with the text find one try to find one that contains it.
+                        selectedIndex = PreProcList.FindIndex(e => e.Contains(statement));
+                        if (selectedIndex == -1)
                         {
-                            boxIndex = mmIndex;
+                            selectedIndex = 0;
                         }
                     }
 
-                    MethodAutoCompleteBox.SelectedIndex = boxIndex;
-                    MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
 
-                    ShowTooltip(xPos, ACType.Class);
+                    PreProcAutocompleteBox.SelectedIndex = selectedIndex;
+                    PreProcAutocompleteBox.ScrollIntoView(PreProcAutocompleteBox.SelectedItem);
+
+                    ShowTooltip(xPos, ACType.PreProc);
                     return true;
                 }
 
-                var index = isNodes.FindNode(methodMapName);
 
-                if (index == null)
+                if (text.Length == 0 || editor.SelectionLength > 0)
+                    return false;
+
+                if (!IsValidFunctionChar(text[lineOffset - 1]) &&
+                    text[lineOffset - 1] != '.' && text[lineOffset - 1] != ' ' && text[lineOffset - 1] != '\t')
+                    return false;
+
+                var isNextCharValid = true;
+                if (text.Length > lineOffset)
+                {
+                    if (IsValidFunctionChar(text[lineOffset]) || text[lineOffset] == '(')
+                    {
+                        isNextCharValid = false;
+                    }
+                }
+
+                if (!isNextCharValid)
                 {
                     return false;
                 }
 
-                MethodAutoCompleteBox.SelectedIndex = (int)index;
-                MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
 
-                ShowTooltip(xPos, ACType.Class);
+                // Check if we are calling a Method.
+                var dotOffset = lineOffset - 1;
 
-                return true;
-            }
-
-            // Match functions and other symbols like Variables, Types, ...
-            var funcIndex =
-                _acEntries.FindIndex(e => e.EntryName.StartsWith(methodString) && methodString != e.EntryName);
-            if (funcIndex == -1)
-            {
-                // Re-try without case sensitivity.
-                funcIndex = _acEntries.FindIndex(e =>
-                    e.EntryName.StartsWith(methodString, StringComparison.InvariantCultureIgnoreCase) &&
-                    methodString != e.EntryName);
-            }
-
-            // If not found
-            if (funcIndex == -1)
-            {
-                return false;
-            }
-
-            AutoCompleteBox.SelectedIndex = funcIndex;
-            AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
-            ShowTooltip(xPos, ACType.Toplevel);
-            return true;
-        }
-
-        private bool ISAC_EvaluateKeyDownEvent(Key k)
-        {
-            if ((Keyboard.Modifiers & ModifierKeys.Control) != 0 && k == Key.Space)
-            {
-                _keepTooltipClosed = false;
-                var currentLineIndex = editor.TextArea.Caret.Line - 1;
-                var line = editor.Document.Lines[currentLineIndex];
-                var text = editor.Document.GetText(line.Offset, line.Length);
-                var lineOffset = editor.TextArea.Caret.Column - 1;
-
-                ComputeAutoComplete(text, lineOffset, 0);
-                return true;
-            }
-
-
-            if (!_isTooltipOpen)
-            {
-                return false;
-            }
-
-            if (k == Key.Escape)
-            {
-                HideTooltip();
-                _keepTooltipClosed = true;
-                return true;
-            }
-
-            if (!_isAcOpen)
-            {
-                return false;
-            }
-
-            switch (k)
-            {
-                case Key.Enter:
-                case Key.Tab:
+                // Try to find the "." index from the caret position.
+                for (var i = dotOffset; i >= 0; --i)
                 {
-                    var tabToAutoC = Program.OptionsObject.Editor_TabToAutocomplete;
-                    if ((k == Key.Tab && !tabToAutoC) || (k == Key.Enter && tabToAutoC))
+                    if (!IsValidFunctionChar(text[i]))
+                    {
+                        if (text[i] == '.')
+                        {
+                            acType = ACType.Class;
+                        }
+
+                        break;
+                    }
+
+                    // Save the "." index.
+                    dotOffset = i;
+                }
+
+                var methodString = text.Substring(dotOffset, lineOffset - dotOffset);
+                if (methodString == ".")
+                {
+                    dotOffset++;
+                }
+
+                if (methodString.Length <= 0)
+                {
+                    return false;
+                }
+
+                int classOffset = dotOffset - 2;
+
+                if (acType == ACType.Class)
+                {
+                    if (classOffset < 0)
+                    {
+                        return false;
+                    }
+                    int len = 0;
+                    for (var i = classOffset; i >= 0; --i)
+                    {
+                        if (!IsValidFunctionChar(text[i]))
+                        {
+                            break;
+                        }
+
+                        // Save the index where the method call begins, eg. ArrayList.Push().
+                        //                                                  ^HERE
+                        classOffset = i;
+                        len++;
+                    }
+
+                    var classString = text.Substring(classOffset, len);
+                    var mm = FindClass(classString);
+                    if (mm == null)
                     {
                         return false;
                     }
 
-                    // HideTooltip();
+                    var isNodes = mm.ProduceNodes(_smDef);
 
-                    var startOffset = editor.CaretOffset - 1;
-                    var endOffset = startOffset;
-                    for (var i = startOffset; i >= 0; --i)
+                    if (!isNodes.SequenceEqual(_methodACEntries, ISEqualityComparer))
                     {
-                        var charAt = editor.Document.GetCharAt(i);
-                        if (!IsValidFunctionChar(charAt))
-                        {
-                            if (i == startOffset && (charAt is '.' or ' ' or '\t' or '#'))
-                            {
-                                endOffset = i + 1;
-                            }
+                        MethodAutoCompleteBox.Items.Clear();
+                        isNodes.ForEach(e => MethodAutoCompleteBox.Items.Add(e));
 
-                            break;
+                        _methodACEntries.Clear();
+                        _methodACEntries.AddRange(isNodes);
+
+                        MethodAutoCompleteBox.UpdateLayout();
+                    }
+
+                    if (methodString == ".")
+                    {
+                        MethodAutoCompleteBox.SelectedIndex = 0;
+                        MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+
+                        ShowTooltip(xPos, ACType.Class);
+                        return true;
+                    }
+
+                    var index = isNodes.FindNode(methodString);
+
+                    if (index == null)
+                        return false;
+
+                    MethodAutoCompleteBox.SelectedIndex = (int)index;
+                    MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+
+                    ShowTooltip(xPos, ACType.Class);
+
+                    return true;
+                }
+
+                // Match MethodMap initializations.
+                var match = NewRegex.Match(text.Substring(0, lineOffset));
+                if (match.Success)
+                {
+                    var isNodes = ACNode.ConvertFromStringList(_smDef.Methodmaps.Select(e => e.Name), true, "• ").ToList();
+
+                    if (!isNodes.SequenceEqual(_methodACEntries, ISEqualityComparer))
+                    {
+                        MethodAutoCompleteBox.Items.Clear();
+                        isNodes.ForEach(e => MethodAutoCompleteBox.Items.Add(e));
+
+                        _methodACEntries.Clear();
+                        _methodACEntries.AddRange(isNodes);
+
+                        MethodAutoCompleteBox.UpdateLayout();
+                    }
+
+                    var methodMapName = match.Groups[2].Value;
+
+                    if (methodMapName == "")
+                    {
+                        var boxIndex = 0;
+                        var varType = match.Groups[1].Value;
+                        if (varType != "")
+                        {
+                            var mmIndex = _methodACEntries.FindIndex(e => e.EntryName.StartsWith(varType));
+                            if (mmIndex != -1)
+                            {
+                                boxIndex = mmIndex;
+                            }
                         }
 
-                        endOffset = i;
+                        MethodAutoCompleteBox.SelectedIndex = boxIndex;
+                        MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+
+                        ShowTooltip(xPos, ACType.Class);
+                        return true;
                     }
 
-                    var length = startOffset - endOffset;
-                    string replaceString;
-                    var setCaret = 0;
+                    var index = isNodes.FindNode(methodMapName);
 
-
-                    var item = (ACNode)CurrentBox.SelectedItem;
-                    switch (_acType)
+                    if (index == null)
                     {
-                        case ACType.Toplevel:
-                        case ACType.Class:
-                            replaceString = item.EntryName;
-                            if (item.IsExecutable)
-                            {
-                                replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
-                                setCaret = -1;
-                            }
-
-                            break;
-
-                        case ACType.PreProc:
-                            replaceString = item.EntryName + " ";
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        return false;
                     }
 
-                    editor.Document.Replace(endOffset, length + 1, replaceString);
-                    editor.CaretOffset += setCaret;
+                    MethodAutoCompleteBox.SelectedIndex = (int)index;
+                    MethodAutoCompleteBox.ScrollIntoView(MethodAutoCompleteBox.SelectedItem);
+
+                    ShowTooltip(xPos, ACType.Class);
 
                     return true;
                 }
-                case Key.Up:
+
+                // Match functions and other symbols like Variables, Types, ...
+                var funcIndex =
+                    _acEntries.FindIndex(e => e.EntryName.StartsWith(methodString) && methodString != e.EntryName);
+                if (funcIndex == -1)
                 {
-                    ScrollBox(1);
-                    return true;
+                    // Re-try without case sensitivity.
+                    funcIndex = _acEntries.FindIndex(e =>
+                        e.EntryName.StartsWith(methodString, StringComparison.InvariantCultureIgnoreCase) &&
+                        methodString != e.EntryName);
                 }
-                case Key.Down:
-                {
-                    ScrollBox(-1);
-                    return true;
-                }
-                default:
+
+                // If not found
+                if (funcIndex == -1)
                 {
                     return false;
                 }
+
+                AutoCompleteBox.SelectedIndex = funcIndex;
+                AutoCompleteBox.ScrollIntoView(AutoCompleteBox.SelectedItem);
+                ShowTooltip(xPos, ACType.Toplevel);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LoggingControl.LogAction($"Exception caught in {ex.TargetSite}: {ex.Message}");
+                return false;
+            }
+        }
+
+        private bool ISAC_EvaluateKeyDownEvent(Key k)
+        {
+            try
+            {
+                if ((Keyboard.Modifiers & ModifierKeys.Control) != 0 && k == Key.Space)
+                {
+                    _keepTooltipClosed = false;
+                    var currentLineIndex = editor.TextArea.Caret.Line - 1;
+                    var line = editor.Document.Lines[currentLineIndex];
+                    var text = editor.Document.GetText(line.Offset, line.Length);
+                    var lineOffset = editor.TextArea.Caret.Column - 1;
+
+                    ComputeAutoComplete(text, lineOffset, 0);
+                    return true;
+                }
+
+                if (!_isTooltipOpen)
+                {
+                    return false;
+                }
+
+                if (k == Key.Escape)
+                {
+                    HideTooltip();
+                    _keepTooltipClosed = true;
+                    return true;
+                }
+
+                if (!_isAcOpen)
+                {
+                    return false;
+                }
+
+                switch (k)
+                {
+                    case Key.Enter:
+                    case Key.Tab:
+                    {
+                        var tabToAutoC = Program.OptionsObject.Editor_TabToAutocomplete;
+                        if ((k == Key.Tab && !tabToAutoC) || (k == Key.Enter && tabToAutoC))
+                        {
+                            return false;
+                        }
+
+                        // HideTooltip();
+
+                        var startOffset = editor.CaretOffset - 1;
+                        var endOffset = startOffset;
+                        for (var i = startOffset; i >= 0; --i)
+                        {
+                            var charAt = editor.Document.GetCharAt(i);
+                            if (!IsValidFunctionChar(charAt))
+                            {
+                                if (i == startOffset && (charAt is '.' or ' ' or '\t' or '#'))
+                                {
+                                    endOffset = i + 1;
+                                }
+
+                                break;
+                            }
+
+                            endOffset = i;
+                        }
+
+                        var length = startOffset - endOffset;
+                        string replaceString;
+                        var setCaret = 0;
+
+
+                        var item = (ACNode)CurrentBox.SelectedItem;
+                        switch (_acType)
+                        {
+                            case ACType.Toplevel:
+                            case ACType.Class:
+                                replaceString = item.EntryName;
+                                if (item.IsExecutable)
+                                {
+                                    replaceString += "(" + (Program.OptionsObject.Editor_AutoCloseBrackets ? ")" : "");
+                                    setCaret = -1;
+                                }
+
+                                break;
+
+                            case ACType.PreProc:
+                                replaceString = item.EntryName + " ";
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+
+                        editor.Document.Replace(endOffset, length + 1, replaceString);
+                        editor.CaretOffset += setCaret;
+
+                        return true;
+                    }
+                    case Key.Up:
+                    {
+                        ScrollBox(1);
+                        return true;
+                    }
+                    case Key.Down:
+                    {
+                        ScrollBox(-1);
+                        return true;
+                    }
+                    default:
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LoggingControl.LogAction($"Exception caught in {ex.TargetSite}: {ex.Message}");
+                throw;
             }
         }
 
@@ -819,7 +842,6 @@ namespace SPCode.UI.Components
             ShowDoc(name, desc);
             ShowTooltip(xPos);
         }
-
 
         /// <summary>
         /// Shows the Autocomplete tooltip.
