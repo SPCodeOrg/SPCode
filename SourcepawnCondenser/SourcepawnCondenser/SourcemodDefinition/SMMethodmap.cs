@@ -20,7 +20,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
                 if (inheritedType.Length == 0)
                     break;
 
-                var mm = smDef.Methodmaps.Find(e => e.Name == InheritedType);
+                var mm = smDef.Methodmaps.Find(e => e.Name == inheritedType);
                 if (mm == null)
                     break;
 
