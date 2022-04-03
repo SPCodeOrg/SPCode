@@ -507,6 +507,10 @@ namespace SPCode.UI.Components
 
             if (acType == ACType.Class)
             {
+                if (classOffset < 0)
+                {
+                    return false;
+                }
                 int len = 0;
                 for (var i = classOffset; i >= 0; --i)
                 {
