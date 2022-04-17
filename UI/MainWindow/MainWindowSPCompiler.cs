@@ -38,6 +38,8 @@ namespace SPCode.UI
 
         private string CurrentErrorString;
 
+        private static readonly Encoding _ansi = Encoding.GetEncoding(1251);
+
         /// <summary>
         /// Compiles the specified scripts.
         /// </summary>
@@ -231,7 +233,7 @@ namespace SPCode.UI
                         if (File.Exists(errorFile))
                         {
                             hadError = false;
-                            var errorStr = File.ReadAllText(errorFile);
+                            var errorStr = Encoding.UTF8.GetString(Encoding.Convert(_ansi, Encoding.UTF8, _ansi.GetBytes(File.ReadAllText(errorFile, _ansi))));
                             CurrentErrorString = errorStr;
                             stringOutput.AppendLine(errorStr.Trim('\n', '\r'));
                             var mc = errorFilterRegex.Matches(errorStr);
