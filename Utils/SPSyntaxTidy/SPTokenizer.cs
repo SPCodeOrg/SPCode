@@ -43,7 +43,7 @@ namespace SPCode.Utils.SPSyntaxTidy
 
                 #region Quotes
 
-                if (c == '"')
+                if (c == '"' || c == '\'')
                 {
                     var startIndex = i;
                     var foundOccurence = false;
@@ -52,7 +52,7 @@ namespace SPCode.Utils.SPSyntaxTidy
                     for (var j = i + 1; j < length; ++j)
                     {
                         // if found, search for an escape slash before it
-                        if (buffer[j] == '"')
+                        if (buffer[j] == c)
                         {
                             if (buffer[j - 1] == '\\')
                             {
@@ -110,34 +110,6 @@ namespace SPCode.Utils.SPSyntaxTidy
                     }
 
                     continue;
-                }
-
-                if (c == '\'') //I sell that as a quote...kill me right?
-                {
-                    var startIndex = i;
-                    var foundOccurence = false;
-                    for (var j = i + 1; j < length; ++j)
-                    {
-                        if (buffer[j] == '\'')
-                        {
-                            if (buffer[j - 1] != '\\') //is the quote not escaped?
-                            {
-                                token.Add(new SPToken()
-                                {
-                                    Kind = SPTokenKind.Quote,
-                                    Value = source.Substring(startIndex, j - startIndex + 1)
-                                });
-                                foundOccurence = true;
-                                i = j;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (foundOccurence)
-                    {
-                        continue;
-                    }
                 }
 
                 #endregion
