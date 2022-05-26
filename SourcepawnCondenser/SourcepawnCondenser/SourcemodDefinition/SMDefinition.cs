@@ -180,12 +180,12 @@ namespace SourcepawnCondenser.SourcemodDefinition
             }
         }
 
-        public List<ACNode> ProduceACNodes()
+        public void ProduceACNodes(List<ACNode> nodes)
         {
-            var nodes = new List<ACNode>
-            {
-                Capacity = Enums.Count + Structs.Count + ConstVariables.Count + Functions.Count
-            };
+            
+            nodes.Clear();
+            
+            nodes.Capacity = Enums.Count + Structs.Count + ConstVariables.Count + Functions.Count;
             nodes.AddRange(ACNode.ConvertFromStringArray(FunctionStrings, true, "▲ "));
             nodes.AddRange(ACNode.ConvertFromStringList(TypeStrings, false, "♦ "));
             nodes.AddRange(ACNode.ConvertFromStringList(Constants, false, "• "));
@@ -196,8 +196,6 @@ namespace SourcepawnCondenser.SourcemodDefinition
 
             //nodes = nodes.Distinct(new ACNodeEqualityComparer()).ToList(); Methodmaps and Functions can and will be the same.
             nodes.Sort((a, b) => string.CompareOrdinal(a.EntryName, b.EntryName));
-
-            return nodes;
         }
 
         public void MergeDefinitions(SMDefinition def)
@@ -341,9 +339,9 @@ namespace SourcepawnCondenser.SourcemodDefinition
 
     public class ACNode
     {
+        private string Prefix;
         public string EntryName;
         public bool IsExecutable;
-        private string _name;
 
         public static List<ACNode> ConvertFromStringArray(string[] strings, bool executable, string prefix = "")
         {
@@ -352,7 +350,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
             for (var i = 0; i < length; ++i)
             {
                 nodeList.Add(
-                    new ACNode {_name = prefix + strings[i], EntryName = strings[i], IsExecutable = executable});
+                    new ACNode {Prefix = prefix, EntryName = strings[i], IsExecutable = executable});
             }
 
             return nodeList;
@@ -361,9 +359,9 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public static IEnumerable<ACNode> ConvertFromStringList(IEnumerable<string> strings, bool executable,
             string prefix = "", bool addSpace = false)
         {
-            return strings.Select(e => new ACNode {_name = prefix + e, EntryName = e, IsExecutable = executable});
+            return strings.Select(e => new ACNode {Prefix = prefix, EntryName = e, IsExecutable = executable});
         }
 
-        public override string ToString() => _name;
+        public override string ToString() => Prefix + EntryName;
     }
 }

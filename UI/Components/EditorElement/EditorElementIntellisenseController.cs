@@ -135,7 +135,8 @@ namespace SPCode.UI.Components
             }
 
             _smDef = Program.Configs[Program.SelectedConfig].GetSMDef();
-            _acEntries = _smDef.ProduceACNodes();
+            _acEntries = new List<ACNode>();
+            _smDef.ProduceACNodes(_acEntries);
 
 
             AutoCompleteBox.ItemsSource = _acEntries;
@@ -148,10 +149,10 @@ namespace SPCode.UI.Components
         /// <param name="smDef"> The SMDefinition </param>
         private void InterruptLoadAutoCompletes(SMDefinition smDef)
         {
-            var acNodes = smDef.ProduceACNodes();
+            smDef.ProduceACNodes(_acEntries);
             Dispatcher?.Invoke(() =>
             {
-                _acEntries = acNodes;
+                _acEntries = _acEntries;
                 AutoCompleteBox.ItemsSource = _acEntries;
                 PreProcAutocompleteBox.ItemsSource = PreProcNodes;
                 _smDef = smDef;
@@ -430,7 +431,6 @@ namespace SPCode.UI.Components
                     }
 
 
-
                     // If the preprocessor stmt found close the dialog.
                     if (statement.Length != 0 && PreProcList.Contains(statement.Trim()))
                     {
@@ -521,6 +521,7 @@ namespace SPCode.UI.Components
                     {
                         return false;
                     }
+
                     int len = 0;
                     for (var i = classOffset; i >= 0; --i)
                     {
@@ -581,7 +582,8 @@ namespace SPCode.UI.Components
                 var match = NewRegex.Match(text.Substring(0, lineOffset));
                 if (match.Success)
                 {
-                    var isNodes = ACNode.ConvertFromStringList(_smDef.Methodmaps.Select(e => e.Name), true, "• ").ToList();
+                    var isNodes = ACNode.ConvertFromStringList(_smDef.Methodmaps.Select(e => e.Name), true, "• ")
+                        .ToList();
 
                     if (!isNodes.SequenceEqual(_methodACEntries, ISEqualityComparer))
                     {
