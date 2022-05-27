@@ -68,7 +68,6 @@
         <Setter Property="Height" Value="2"/>
       </Style>
 
-      <Image x:Key="ImgAdd" Source="/SPCode;component/Resources/Icons/icon-add.png" Width="16"/>
       <Image x:Key="ImgCopy" Source="/SPCode;component/Resources/Icons/icon-duplicate.png" Width="16"/>
       <Image x:Key="ImgDelete" Source="/SPCode;component/Resources/Icons/icon-trash.png" Width="16"/>
 
@@ -85,11 +84,11 @@
   <Grid>
 
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="200"/>
+      <ColumnDefinition Width="250" MaxWidth="800"/>
       <ColumnDefinition/>
     </Grid.ColumnDefinitions>
 
-    <Grid Grid.Column="0" Margin="0,5,0,0">
+    <Grid Name="SidebarColumn" SizeChanged="SidebarColumn_SizeChanged" Grid.Column="0" Margin="0,5,0,0">
 
       <Grid.RowDefinitions>
         <RowDefinition Height="30"/>
@@ -104,9 +103,24 @@
           <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <Button Name="NewButton" Width="32" VerticalAlignment="Center" Grid.Column="0" Click="NewButton_Click" Content="{StaticResource ImgAdd}"/>
-        <Button Name="CopyButton" Width="32" Grid.Column="1" Click="CopyButton_Click" Content="{StaticResource ImgCopy}"/>
-        <Button Name="DeleteButton" Width="32" Grid.Column="2" Click="DeleteButton_Click" Content="{StaticResource ImgDelete}" />
+        <Button Name="NewButton" MaxWidth="70" Margin="3,0,3,0" Grid.Column="0" Click="NewButton_Click">
+          <StackPanel Orientation="Horizontal">
+            <Image Source="/SPCode;component/Resources/Icons/icon-add.png" Width="13"/>
+            <TextBlock Name="AddButtonText" Text="Add" FontSize="11" Margin="5,0,0,0"/>
+          </StackPanel>
+        </Button>
+        <Button Name="CopyButton" MaxWidth="70" Margin="3,0,3,0" Grid.Column="1" Click="CopyButton_Click">
+          <StackPanel Orientation="Horizontal">
+            <Image Source="/SPCode;component/Resources/Icons/icon-duplicate.png" Width="13"/>
+            <TextBlock Name="CopyButtonText" Text="Copy" FontSize="11" Margin="5,0,0,0"/>
+          </StackPanel>
+        </Button>
+        <Button Name="DeleteButton" MaxWidth="70" Margin="3,0,3,0" Grid.Column="2" Click="DeleteButton_Click">
+          <StackPanel Orientation="Horizontal">
+            <Image Source="/SPCode;component/Resources/Icons/icon-trash.png" Width="13"/>
+            <TextBlock Name="RemoveButtonText" Text="Delete" FontSize="11" Margin="5,0,0,0"/>
+          </StackPanel>
+        </Button>
 
       </Grid>
 

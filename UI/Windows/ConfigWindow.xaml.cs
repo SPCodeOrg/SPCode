@@ -231,7 +231,7 @@ namespace SPCode.UI.Windows
             var c = Program.Configs[index];
 
             C_SMDir.Items.Clear();
-            c.SMDirectories.ForEach(x => C_SMDir.Items.Add(CreateDirItem(x)));
+            c.SMDirectories.ForEach(x => C_SMDir.Items.Add(CreateDirItem(x, DirUtils.CanAccess(x))));
             C_Name.Text = c.Name;
             C_AutoCopy.IsChecked = c.AutoCopy;
             C_AutoUpload.IsChecked = c.AutoUpload;
@@ -330,22 +330,18 @@ namespace SPCode.UI.Windows
             }
 
             // Test for access permissions and flag as rejected directory if necessary
-            try
-            {
-                Directory.GetAccessControl(dialog.FileName);
-            }
-            catch (UnauthorizedAccessException)
+            var canAccess = DirUtils.CanAccess(dialog.FileName);
+            if (!canAccess)
             {
                 this.ShowMessageAsync(Translate("PermissionAccessError"),
-                    Translate("PermissionAcessErrorMessage"),
+                    Translate("PermissionAccessErrorMessage"),
                     MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
             }
-
             // Add to dirs of that config
             c.SMDirectories.Add(dialog.FileName);
 
             // Add list item
-            C_SMDir.Items.Add(CreateDirItem(dialog.FileName));
+            C_SMDir.Items.Add(CreateDirItem(dialog.FileName, canAccess));
 
             NeedsSMDefInvalidation = true;
         }
@@ -780,7 +776,7 @@ namespace SPCode.UI.Windows
         /// </summary>
         /// <param name="path">Path of the SM Directory to be added</param>
         /// <returns>The ListBoxItem that will be added to the SM Directories list</returns>
-        private ListBoxItem CreateDirItem(string path)
+        private ListBoxItem CreateDirItem(string path, bool canAccess = false)
         {
             var item = new ListBoxItem();
             var stack = new StackPanel();
@@ -789,18 +785,44 @@ namespace SPCode.UI.Windows
             {
                 Text = path
             });
+            if (!canAccess)
+            {
+                stack.Children.Add(new Image
+                {
+                    Source = new BitmapImage(new Uri($"/SPCode;component/Resources/Icons/icon-error.png", UriKind.Relative)),
+                    Width = 16,
+                    Margin = new Thickness(5, 0, 0, 0),
+                    ToolTip = Translate("PermissionAccessError")
+                });
+            }
             if (File.Exists(Path.Combine(path, Constants.SPCompiler)))
             {
                 stack.Children.Add(new Image
                 {
                     Source = new BitmapImage(new Uri($"/SPCode;component/Resources/Icons/icon-pawn.png", UriKind.Relative)),
                     Width = 16,
-                    Margin = new Thickness(5,0,0,0),
+                    Margin = new Thickness(5, 0, 0, 0),
                     ToolTip = Translate("SPCompilerFoundHere")
                 });
             }
             item.Content = stack;
             return item;
+        }
+
+        private void SidebarColumn_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width < 200)
+            {
+                AddButtonText.Visibility = Visibility.Collapsed;
+                CopyButtonText.Visibility = Visibility.Collapsed;
+                RemoveButtonText.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                AddButtonText.Visibility = Visibility.Visible;
+                CopyButtonText.Visibility = Visibility.Visible;
+                RemoveButtonText.Visibility = Visibility.Visible;
+            }
         }
 
         private void Language_Translate()
