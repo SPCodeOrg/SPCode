@@ -264,9 +264,9 @@ namespace SPCode.UI.Windows
                 SMDirectories = new List<string>()
             };
             Program.Configs.Add(cfg);
-            ConfigListBox.Items.Add(new ListBoxItem 
-            { 
-                Content = Translate("NewConfig") 
+            ConfigListBox.Items.Add(new ListBoxItem
+            {
+                Content = Translate("NewConfig")
             });
         }
 
@@ -621,7 +621,7 @@ namespace SPCode.UI.Windows
                 errorMsg = ex.Message;
             }
 
-            End:
+        End:
 
             if ((bool)dialog?.IsCanceled)
             {
@@ -650,93 +650,96 @@ namespace SPCode.UI.Windows
 
         private async void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
-            if (NeedsSMDefInvalidation)
+            await Dispatcher.InvokeAsync(async () =>
             {
-                foreach (var config in Program.Configs)
+                if (NeedsSMDefInvalidation)
                 {
-                    config.InvalidateSMDef();
-                }
-            }
-
-            var configsList = new List<string>();
-            foreach (ListBoxItem item in ConfigListBox.Items)
-            {
-                configsList.Add(item.Content.ToString());
-            }
-
-            // Check for empty named configs
-            if (configsList.Any(x => string.IsNullOrEmpty(x)))
-            {
-                e.Cancel = true;
-                await this.ShowMessageAsync(Translate("ErrorSavingConfigs"),
-                    Translate("EmptyConfigNames"), MessageDialogStyle.Affirmative,
-                    Program.MainWindow.MetroDialogOptions);
-                return;
-            }
-
-            // Check for duplicate names in the config list
-            if (configsList.Count != configsList.Distinct().Count())
-            {
-                e.Cancel = true;
-                await this.ShowMessageAsync(Translate("ErrorSavingConfigs"),
-                    Translate("DuplicateConfigNames"), MessageDialogStyle.Affirmative,
-                    Program.MainWindow.MetroDialogOptions);
-                return;
-            }
-
-            Program.MainWindow.FillConfigMenu();
-            await Program.MainWindow.ChangeConfig(Program.SelectedConfig);
-            var outString = new StringBuilder();
-            var settings = new XmlWriterSettings
-            {
-                Indent = true,
-                IndentChars = "\t",
-                NewLineOnAttributes = false,
-                OmitXmlDeclaration = true
-            };
-            using (var writer = XmlWriter.Create(outString, settings))
-            {
-                writer.WriteStartElement("Configurations");
-                foreach (var c in Program.Configs)
-                {
-                    writer.WriteStartElement("Config");
-                    writer.WriteAttributeString("Name", c.Name);
-                    var SMDirOut = new StringBuilder();
-                    foreach (var dir in c.SMDirectories)
+                    foreach (var config in Program.Configs)
                     {
-                        SMDirOut.Append(dir.Trim() + ";");
+                        config.InvalidateSMDef();
+                    }
+                }
+
+                var configsList = new List<string>();
+                foreach (ListBoxItem item in ConfigListBox.Items)
+                {
+                    configsList.Add(item.Content.ToString());
+                }
+
+                // Check for empty named configs
+                if (configsList.Any(x => string.IsNullOrEmpty(x)))
+                {
+                    e.Cancel = true;
+                    await this.ShowMessageAsync(Translate("ErrorSavingConfigs"),
+                        Translate("EmptyConfigNames"), MessageDialogStyle.Affirmative,
+                        Program.MainWindow.MetroDialogOptions);
+                    return;
+                }
+
+                // Check for duplicate names in the config list
+                if (configsList.Count != configsList.Distinct().Count())
+                {
+                    e.Cancel = true;
+                    await this.ShowMessageAsync(Translate("ErrorSavingConfigs"),
+                        Translate("DuplicateConfigNames"), MessageDialogStyle.Affirmative,
+                        Program.MainWindow.MetroDialogOptions);
+                    return;
+                }
+
+                Program.MainWindow.FillConfigMenu();
+                await Program.MainWindow.ChangeConfig(Program.SelectedConfig);
+                var outString = new StringBuilder();
+                var settings = new XmlWriterSettings
+                {
+                    Indent = true,
+                    IndentChars = "\t",
+                    NewLineOnAttributes = false,
+                    OmitXmlDeclaration = true
+                };
+                using (var writer = XmlWriter.Create(outString, settings))
+                {
+                    writer.WriteStartElement("Configurations");
+                    foreach (var c in Program.Configs)
+                    {
+                        writer.WriteStartElement("Config");
+                        writer.WriteAttributeString("Name", c.Name);
+                        var SMDirOut = new StringBuilder();
+                        foreach (var dir in c.SMDirectories)
+                        {
+                            SMDirOut.Append(dir.Trim() + ";");
+                        }
+
+                        writer.WriteAttributeString("SMDirectory", SMDirOut.ToString());
+                        writer.WriteAttributeString("Standard", c.Standard ? "1" : "0");
+                        writer.WriteAttributeString("CopyDirectory", c.CopyDirectory);
+                        writer.WriteAttributeString("AutoCopy", c.AutoCopy ? "1" : "0");
+                        writer.WriteAttributeString("AutoUpload", c.AutoUpload ? "1" : "0");
+                        writer.WriteAttributeString("AutoRCON", c.AutoRCON ? "1" : "0");
+                        writer.WriteAttributeString("ServerFile", c.ServerFile);
+                        writer.WriteAttributeString("ServerArgs", c.ServerArgs);
+                        writer.WriteAttributeString("PostCmd", c.PostCmd);
+                        writer.WriteAttributeString("PreCmd", c.PreCmd);
+                        writer.WriteAttributeString("OptimizationLevel", c.OptimizeLevel.ToString());
+                        writer.WriteAttributeString("VerboseLevel", c.VerboseLevel.ToString());
+                        writer.WriteAttributeString("DeleteAfterCopy", c.DeleteAfterCopy ? "1" : "0");
+                        writer.WriteAttributeString("FTPHost", c.FTPHost);
+                        writer.WriteAttributeString("FTPUser", c.FTPUser);
+                        writer.WriteAttributeString("FTPPassword", ManagedAES.Encrypt(c.FTPPassword));
+                        writer.WriteAttributeString("FTPDir", c.FTPDir);
+                        writer.WriteAttributeString("RConIP", c.RConIP);
+                        writer.WriteAttributeString("RConPort", c.RConPort.ToString());
+                        writer.WriteAttributeString("RConPassword", ManagedAES.Encrypt(c.RConPassword));
+                        writer.WriteAttributeString("RConCommands", c.RConCommands);
+                        writer.WriteEndElement();
                     }
 
-                    writer.WriteAttributeString("SMDirectory", SMDirOut.ToString());
-                    writer.WriteAttributeString("Standard", c.Standard ? "1" : "0");
-                    writer.WriteAttributeString("CopyDirectory", c.CopyDirectory);
-                    writer.WriteAttributeString("AutoCopy", c.AutoCopy ? "1" : "0");
-                    writer.WriteAttributeString("AutoUpload", c.AutoUpload ? "1" : "0");
-                    writer.WriteAttributeString("AutoRCON", c.AutoRCON ? "1" : "0");
-                    writer.WriteAttributeString("ServerFile", c.ServerFile);
-                    writer.WriteAttributeString("ServerArgs", c.ServerArgs);
-                    writer.WriteAttributeString("PostCmd", c.PostCmd);
-                    writer.WriteAttributeString("PreCmd", c.PreCmd);
-                    writer.WriteAttributeString("OptimizationLevel", c.OptimizeLevel.ToString());
-                    writer.WriteAttributeString("VerboseLevel", c.VerboseLevel.ToString());
-                    writer.WriteAttributeString("DeleteAfterCopy", c.DeleteAfterCopy ? "1" : "0");
-                    writer.WriteAttributeString("FTPHost", c.FTPHost);
-                    writer.WriteAttributeString("FTPUser", c.FTPUser);
-                    writer.WriteAttributeString("FTPPassword", ManagedAES.Encrypt(c.FTPPassword));
-                    writer.WriteAttributeString("FTPDir", c.FTPDir);
-                    writer.WriteAttributeString("RConIP", c.RConIP);
-                    writer.WriteAttributeString("RConPort", c.RConPort.ToString());
-                    writer.WriteAttributeString("RConPassword", ManagedAES.Encrypt(c.RConPassword));
-                    writer.WriteAttributeString("RConCommands", c.RConCommands);
                     writer.WriteEndElement();
+                    writer.Flush();
                 }
 
-                writer.WriteEndElement();
-                writer.Flush();
-            }
-
-            File.WriteAllText(PathsHelper.ConfigFilePath, outString.ToString());
-            LoggingControl.LogAction($"Configs saved.", 2);
+                File.WriteAllText(PathsHelper.ConfigFilePath, outString.ToString());
+                LoggingControl.LogAction($"Configs saved.", 2);
+            });
         }
 
         private void Language_Translate()
