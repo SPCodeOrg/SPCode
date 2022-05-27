@@ -68,9 +68,9 @@
         <Setter Property="Height" Value="2"/>
       </Style>
 
-      <Image x:Key="ImgAdd" Source="/SPCode;component/Resources/Icons/add.png" Width="16"/>
-      <Image x:Key="ImgCopy" Source="/SPCode;component/Resources/Icons/duplicate.png" Width="16"/>
-      <Image x:Key="ImgDelete" Source="/SPCode;component/Resources/Icons/trash.png" Width="16"/>
+      <Image x:Key="ImgAdd" Source="/SPCode;component/Resources/Icons/icon-add.png" Width="16"/>
+      <Image x:Key="ImgCopy" Source="/SPCode;component/Resources/Icons/icon-duplicate.png" Width="16"/>
+      <Image x:Key="ImgDelete" Source="/SPCode;component/Resources/Icons/icon-trash.png" Width="16"/>
 
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />

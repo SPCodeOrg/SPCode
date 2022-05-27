@@ -466,9 +466,9 @@
     <Content Include="Deploy\nsis-plugins\DotNetChecker.dll" />
     <Resource Include="Resources\Icons\icon-error.png" />
     <Resource Include="Resources\Icons\icon-warning.png" />
-    <Resource Include="Resources\Icons\add.png" />
-    <Resource Include="Resources\Icons\duplicate.png" />
-    <Resource Include="Resources\Icons\trash.png" />
+    <Resource Include="Resources\Icons\icon-add.png" />
+    <Resource Include="Resources\Icons\icon-duplicate.png" />
+    <Resource Include="Resources\Icons\icon-trash.png" />
     <Content Include="Resources\License.txt" />
     <Content Include="Resources\Misc\Configurations\sm_1_10_0_6509\include\admin.inc" />
     <Content Include="Resources\Misc\Configurations\sm_1_10_0_6509\include\adminmenu.inc" />

@@ -255,29 +255,40 @@ namespace SPCode.UI.Windows
 
         private void NewButton_Click(object sender, RoutedEventArgs e)
         {
-            var c = new Config
+            var cfg = new Config
             {
-                Name = "New Config",
+                Name = Translate("NewConfig"),
                 Standard = false,
                 OptimizeLevel = 2,
                 VerboseLevel = 1,
                 SMDirectories = new List<string>()
             };
-            var configList = new List<Config>(Program.Configs) { c };
-            Program.Configs = configList;
-            ConfigListBox.Items.Add(new ListBoxItem { Content = Translate("NewConfig") });
+            Program.Configs.Add(cfg);
+            ConfigListBox.Items.Add(new ListBoxItem 
+            { 
+                Content = Translate("NewConfig") 
+            });
         }
 
         private void CopyButton_Click(object sender, RoutedEventArgs e)
         {
-
+            var cfg = Program.Configs[ConfigListBox.SelectedIndex].Clone() as Config;
+            var newName = $"Copy of {cfg.Name}";
+            cfg.Name = newName;
+            cfg.Standard = false;
+            Program.Configs.Add(cfg);
+            ConfigListBox.Items.Add(new ListBoxItem
+            {
+                Content = newName
+            });
+            ConfigListBox.SelectedIndex = ConfigListBox.Items.Count - 1;
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             var index = ConfigListBox.SelectedIndex;
-            var c = Program.Configs[index];
-            if (c.Standard)
+            var cfg = Program.Configs[index];
+            if (cfg.Standard)
             {
                 this.ShowMessageAsync(Translate("CannotDelConf"),
                     Translate("YCannotDelConf"), MessageDialogStyle.Affirmative,
@@ -285,9 +296,7 @@ namespace SPCode.UI.Windows
                 return;
             }
 
-            var configList = new List<Config>(Program.Configs);
-            configList.RemoveAt(index);
-            Program.Configs = configList;
+            Program.Configs.Remove(cfg);
             ConfigListBox.Items.RemoveAt(index);
             if (index == Program.SelectedConfig)
             {
@@ -733,6 +742,9 @@ namespace SPCode.UI.Windows
         private void Language_Translate()
         {
             Title = Translate("Configs");
+            NewButton.ToolTip = Translate("New");
+            CopyButton.ToolTip = Translate("Copy");
+            DeleteButton.ToolTip = Translate("Delete");
             AddSMDirButton.Content = Translate("Add");
             RemoveSMDirButton.Content = Translate("Remove");
             NameBlock.Text = Translate("Name");

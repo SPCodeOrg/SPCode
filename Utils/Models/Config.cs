@@ -5,7 +5,7 @@ using SourcepawnCondenser.SourcemodDefinition;
 
 namespace SPCode.Utils
 {
-    public class Config
+    public class Config : ICloneable
     {
         public bool AutoCopy;
         public bool AutoUpload;
@@ -75,6 +75,37 @@ namespace SPCode.Utils
             {
                 SMDef = new SMDefinition();
             }
+        }
+
+        public object Clone()
+        {
+            return new Config
+            {
+                AutoCopy = AutoCopy,
+                AutoUpload = AutoUpload,
+                AutoRCON = AutoRCON,
+                CopyDirectory = CopyDirectory,
+                DeleteAfterCopy = DeleteAfterCopy,
+                FTPDir = FTPDir,
+                FTPHost = FTPHost,
+                FTPPassword = FTPPassword,
+                FTPUser = FTPUser,
+                Name = Name,
+                OptimizeLevel = OptimizeLevel,
+                PostCmd = PostCmd,
+                PreCmd = PreCmd,
+                RConCommands = RConCommands,
+                RConIP = RConIP,
+                RConPort = RConPort,
+                RConPassword = RConPassword,
+                ServerArgs = ServerArgs,
+                ServerFile = ServerFile,
+                SMDef = SMDef,
+                SMDirectories = SMDirectories,
+                RejectedPaths = RejectedPaths,
+                Standard = Standard,
+                VerboseLevel = VerboseLevel
+            };
         }
     }
 }
