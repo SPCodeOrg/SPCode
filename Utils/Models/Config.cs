@@ -101,8 +101,8 @@ namespace SPCode.Utils
                 ServerArgs = ServerArgs,
                 ServerFile = ServerFile,
                 SMDef = SMDef,
-                SMDirectories = SMDirectories,
-                RejectedPaths = RejectedPaths,
+                SMDirectories = new(SMDirectories),
+                RejectedPaths = new(RejectedPaths),
                 Standard = Standard,
                 VerboseLevel = VerboseLevel
             };
