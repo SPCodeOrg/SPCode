@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Renci.SshNet;
 using Renci.SshNet.Common;
+using static SPCode.Interop.TranslationProvider;
 
 namespace SPCode.Utils
 {
@@ -51,7 +52,6 @@ namespace SPCode.Utils
         {
             var requestUri = new UriBuilder(_host).Uri;
             var success = true;
-
             if (requestUri.Scheme == "sftp")
             {
                 var connectionInfo = new ConnectionInfo(requestUri.Host, requestUri.Port == -1 ? 22 : requestUri.Port, _user, new PasswordAuthenticationMethod(_user, _pass));
@@ -64,7 +64,7 @@ namespace SPCode.Utils
                 catch (SshAuthenticationException)
                 {
                     success = false;
-                    ErrorMessage = "Invalid credentials!";
+                    ErrorMessage = Translate("InvalidCredentials");
                 }
                 catch (Exception ex)
                 {
@@ -77,7 +77,7 @@ namespace SPCode.Utils
                     sftp.Dispose();
                 }
             }
-            else
+            else if (requestUri.Scheme == "ftp")
             {
                 var requestDir = WebRequest.Create(requestUri);
                 requestDir.Credentials = new NetworkCredential(_user, _pass);
@@ -86,10 +86,16 @@ namespace SPCode.Utils
                 {
                     var response = await requestDir.GetResponseAsync();
                 }
-                catch
+                catch (Exception ex)
                 {
                     success = false;
+                    ErrorMessage = ex.Message;
                 }
+            }
+            else
+            {
+                success = false;
+                ErrorMessage = Translate("InvalidFTPSchema");
             }
             return success;
         }

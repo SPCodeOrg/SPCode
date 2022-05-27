@@ -530,7 +530,19 @@ namespace SPCode.UI.Windows
 
         private async void FTPTestConnectionButton_Click(object sender, RoutedEventArgs e)
         {
-            ProgressDialogController? dialog = await this.ShowProgressAsync(Translate("TestingFTPConn"), Translate("PleaseWait"), settings: Program.MainWindow.MetroDialogOptions);
+            var dialog = await this.ShowProgressAsync(Translate("TestingFTPConn"), Translate("PleaseWait"), settings: Program.MainWindow.MetroDialogOptions);
+
+            var host = C_FTPHost.Text;
+            var user = C_FTPUser.Text;
+            var pw = C_FTPPW.Password;
+
+            if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(user) || string.IsNullOrEmpty(pw))
+            {
+                await dialog?.CloseAsync();
+                await this.ShowMessageAsync(Translate("Warning"), Translate("FTPFieldsEmpty"), settings: Program.MainWindow.MetroDialogOptions);
+                return;
+            }
+
             var ftp = new FTP(C_FTPHost.Text, C_FTPUser.Text, C_FTPPW.Password);
             dialog.SetIndeterminate();
             dialog.SetCancelable(true);
@@ -594,7 +606,20 @@ namespace SPCode.UI.Windows
 
         private async void RCONTestConnectionButton_Click(object sender, RoutedEventArgs e)
         {
-            ProgressDialogController? dialog = await this.ShowProgressAsync(Translate("TestingRCONConn"), Translate("PleaseWait"), settings: Program.MainWindow.MetroDialogOptions);
+            var success = true;
+            var errorMsg = "";
+            var dialog = await this.ShowProgressAsync(Translate("TestingRCONConn"), Translate("PleaseWait"), settings: Program.MainWindow.MetroDialogOptions);
+
+            var ip = C_RConIP.Text;
+            var port = C_RConPort.Text;
+
+            if (string.IsNullOrEmpty(ip) || string.IsNullOrEmpty(port))
+            {
+                success = false;
+                errorMsg = Translate("RCONFieldsEmpty");
+                goto End;
+            }
+
             dialog.SetIndeterminate();
             dialog.SetCancelable(true);
             dialog.Canceled += async delegate
@@ -602,9 +627,6 @@ namespace SPCode.UI.Windows
                 await dialog?.CloseAsync();
                 return;
             };
-
-            var success = true;
-            var errorMsg = "";
 
             try
             {
