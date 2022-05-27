@@ -79,7 +79,7 @@ namespace SPCode.Interop
 
             try
             {
-                // Fill with defaults first
+                // Fill with defaults on first boot
                 if (initial)
                 {
                     doc.Load(Path.Combine(_translationsDir, Constants.DefaultTranslationsFile));

@@ -26,6 +26,7 @@ namespace SPCode.UI.Windows
 {
     public partial class ConfigWindow
     {
+        #region Properties
         private bool AllowChange;
         private bool NeedsSMDefInvalidation;
 
@@ -52,45 +53,26 @@ namespace SPCode.UI.Windows
             $"{{plugins_unload}} {Translate("macro_plugins_unload")}"
         };
 
-        public ConfigWindow()
+        private class SimpleCommand : ICommand
         {
-            InitializeComponent();
-            Language_Translate();
-            EvaluateRTL();
-            if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
+            public Predicate<object> CanExecutePredicate { get; set; }
+            public Action<object> ExecuteAction { get; set; }
+
+            public bool CanExecute(object parameter)
             {
-                ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
-                    ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
+                return true;
             }
 
-            foreach (var config in Program.Configs)
+            public event EventHandler CanExecuteChanged
             {
-                ConfigListBox.Items.Add(new ListBoxItem { Content = config.Name });
+                add => CommandManager.RequerySuggested += value;
+                remove => CommandManager.RequerySuggested -= value;
             }
 
-            SelectedBox = C_PreBuildCmd;
-
-            ConfigListBox.SelectedIndex = Program.SelectedConfig;
-
-            CompileMacros.ToList().ForEach(x => CMD_ItemC.Items.Add(x));
-            CMD_ItemC.SelectionChanged += CompileMacros_OnClickedItem;
-            CommandMacros.ToList().ForEach(x => Rcon_MenuC.Items.Add(x));
-            Rcon_MenuC.SelectionChanged += CommandMacros_OnClickedItem;
-
-            var item1 = new ComboBoxItem()
+            public void Execute(object parameter)
             {
-                Visibility = Visibility.Collapsed,
-                Content = Translate("Macros"),
-            };
-            var item2 = new ComboBoxItem()
-            {
-                Visibility = Visibility.Collapsed,
-                Content = Translate("Macros"),
-            };
-            CMD_ItemC.Items.Insert(0, item1);
-            Rcon_MenuC.Items.Insert(0, item2);
-            CMD_ItemC.SelectedIndex = 0;
-            Rcon_MenuC.SelectedIndex = 0;
+                ExecuteAction?.Invoke(parameter);
+            }
         }
 
         public ICommand TextBoxButtonFolderCmd
@@ -171,7 +153,52 @@ namespace SPCode.UI.Windows
                 return textBoxButtonFileCmd;
             }
         }
+        #endregion
 
+        #region Constructors
+        public ConfigWindow()
+        {
+            InitializeComponent();
+            Language_Translate();
+            EvaluateRTL();
+            if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
+            {
+                ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
+                    ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
+            }
+
+            foreach (var config in Program.Configs)
+            {
+                ConfigListBox.Items.Add(new ListBoxItem { Content = config.Name });
+            }
+
+            SelectedBox = C_PreBuildCmd;
+
+            ConfigListBox.SelectedIndex = Program.SelectedConfig;
+
+            CompileMacros.ToList().ForEach(x => CMD_ItemC.Items.Add(x));
+            CMD_ItemC.SelectionChanged += CompileMacros_OnClickedItem;
+            CommandMacros.ToList().ForEach(x => Rcon_MenuC.Items.Add(x));
+            Rcon_MenuC.SelectionChanged += CommandMacros_OnClickedItem;
+
+            var item1 = new ComboBoxItem()
+            {
+                Visibility = Visibility.Collapsed,
+                Content = Translate("Macros"),
+            };
+            var item2 = new ComboBoxItem()
+            {
+                Visibility = Visibility.Collapsed,
+                Content = Translate("Macros"),
+            };
+            CMD_ItemC.Items.Insert(0, item1);
+            Rcon_MenuC.Items.Insert(0, item2);
+            CMD_ItemC.SelectedIndex = 0;
+            Rcon_MenuC.SelectedIndex = 0;
+        }
+        #endregion
+
+        #region Events
         private void ConfigListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             LoadConfigToUI(ConfigListBox.SelectedIndex);
@@ -218,41 +245,6 @@ namespace SPCode.UI.Windows
         private void BuildCommandsBoxes_OnFocus(object sender, RoutedEventArgs e)
         {
             SelectedBox = sender as TextBox;
-        }
-
-        private void LoadConfigToUI(int index)
-        {
-            if (index < 0 || index >= Program.Configs.Count)
-            {
-                return;
-            }
-
-            AllowChange = false;
-            var c = Program.Configs[index];
-
-            C_SMDir.Items.Clear();
-            c.SMDirectories.ForEach(x => C_SMDir.Items.Add(CreateDirItem(x, DirUtils.CanAccess(x))));
-            C_Name.Text = c.Name;
-            C_AutoCopy.IsChecked = c.AutoCopy;
-            C_AutoUpload.IsChecked = c.AutoUpload;
-            C_AutoRCON.IsChecked = c.AutoRCON;
-            C_CopyDir.Text = c.CopyDirectory;
-            C_ServerFile.Text = c.ServerFile;
-            C_ServerArgs.Text = c.ServerArgs;
-            C_PreBuildCmd.Text = c.PreCmd;
-            C_PostBuildCmd.Text = c.PostCmd;
-            C_OptimizationLevel.Value = c.OptimizeLevel;
-            C_VerboseLevel.Value = c.VerboseLevel;
-            C_DeleteAfterCopy.IsChecked = c.DeleteAfterCopy;
-            C_FTPHost.Text = c.FTPHost;
-            C_FTPUser.Text = c.FTPUser;
-            C_FTPPW.Password = c.FTPPassword;
-            C_FTPDir.Text = c.FTPDir;
-            C_RConIP.Text = c.RConIP;
-            C_RConPort.Text = c.RConPort.ToString();
-            C_RConPW.Password = c.RConPassword;
-            C_RConCmds.Text = c.RConCommands;
-            AllowChange = true;
         }
 
         private void NewButton_Click(object sender, RoutedEventArgs e)
@@ -771,6 +763,63 @@ namespace SPCode.UI.Windows
             });
         }
 
+        private void SidebarColumn_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width < 200)
+            {
+                NewButtonText.Visibility = Visibility.Collapsed;
+                CopyButtonText.Visibility = Visibility.Collapsed;
+                DeleteButtonText.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                NewButtonText.Visibility = Visibility.Visible;
+                CopyButtonText.Visibility = Visibility.Visible;
+                DeleteButtonText.Visibility = Visibility.Visible;
+            }
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Loads the config preferences to the controls of the window
+        /// </summary>
+        /// <param name="index"></param>
+        private void LoadConfigToUI(int index)
+        {
+            if (index < 0 || index >= Program.Configs.Count)
+            {
+                return;
+            }
+
+            AllowChange = false;
+            var c = Program.Configs[index];
+
+            C_SMDir.Items.Clear();
+            c.SMDirectories.ForEach(x => C_SMDir.Items.Add(CreateDirItem(x, DirUtils.CanAccess(x))));
+            C_Name.Text = c.Name;
+            C_AutoCopy.IsChecked = c.AutoCopy;
+            C_AutoUpload.IsChecked = c.AutoUpload;
+            C_AutoRCON.IsChecked = c.AutoRCON;
+            C_CopyDir.Text = c.CopyDirectory;
+            C_ServerFile.Text = c.ServerFile;
+            C_ServerArgs.Text = c.ServerArgs;
+            C_PreBuildCmd.Text = c.PreCmd;
+            C_PostBuildCmd.Text = c.PostCmd;
+            C_OptimizationLevel.Value = c.OptimizeLevel;
+            C_VerboseLevel.Value = c.VerboseLevel;
+            C_DeleteAfterCopy.IsChecked = c.DeleteAfterCopy;
+            C_FTPHost.Text = c.FTPHost;
+            C_FTPUser.Text = c.FTPUser;
+            C_FTPPW.Password = c.FTPPassword;
+            C_FTPDir.Text = c.FTPDir;
+            C_RConIP.Text = c.RConIP;
+            C_RConPort.Text = c.RConPort.ToString();
+            C_RConPW.Password = c.RConPassword;
+            C_RConCmds.Text = c.RConCommands;
+            AllowChange = true;
+        }
+
         /// <summary>
         /// Creates the ListBoxItem that will be added to the SM Directories list of the selected config
         /// </summary>
@@ -779,8 +828,10 @@ namespace SPCode.UI.Windows
         private ListBoxItem CreateDirItem(string path, bool canAccess = false)
         {
             var item = new ListBoxItem();
-            var stack = new StackPanel();
-            stack.Orientation = Orientation.Horizontal;
+            var stack = new StackPanel
+            {
+                Orientation = Orientation.Horizontal
+            };
             stack.Children.Add(new TextBlock
             {
                 Text = path
@@ -807,22 +858,6 @@ namespace SPCode.UI.Windows
             }
             item.Content = stack;
             return item;
-        }
-
-        private void SidebarColumn_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (e.NewSize.Width < 200)
-            {
-                AddButtonText.Visibility = Visibility.Collapsed;
-                CopyButtonText.Visibility = Visibility.Collapsed;
-                RemoveButtonText.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                AddButtonText.Visibility = Visibility.Visible;
-                CopyButtonText.Visibility = Visibility.Visible;
-                RemoveButtonText.Visibility = Visibility.Visible;
-            }
         }
 
         private void Language_Translate()
@@ -869,27 +904,6 @@ namespace SPCode.UI.Windows
             C_OptimizationLevel.FlowDirection = FlowDirection.LeftToRight;
             C_VerboseLevel.FlowDirection = FlowDirection.LeftToRight;
         }
-
-        private class SimpleCommand : ICommand
-        {
-            public Predicate<object> CanExecutePredicate { get; set; }
-            public Action<object> ExecuteAction { get; set; }
-
-            public bool CanExecute(object parameter)
-            {
-                return true;
-            }
-
-            public event EventHandler CanExecuteChanged
-            {
-                add => CommandManager.RequerySuggested += value;
-                remove => CommandManager.RequerySuggested -= value;
-            }
-
-            public void Execute(object parameter)
-            {
-                ExecuteAction?.Invoke(parameter);
-            }
-        }
+        #endregion
     }
 }
