@@ -1,10 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace SPCode.Utils
 {
     public static class DirUtils
     {
-        public static void ClearTempFolder()
+        public static void ClearSPCodeTempFolder()
         {
             var tempDir = PathsHelper.TempDirectory;
             foreach (var file in Directory.GetFiles(tempDir))
@@ -15,6 +16,32 @@ namespace SPCode.Utils
             {
                 Directory.Delete(dir, true);
             }
+        }
+
+        public static bool CanAccess(string path)
+        {
+            try
+            {
+                Directory.GetAccessControl(path);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool CanAccess(DirectoryInfo dir)
+        {
+            try
+            {
+                dir.GetAccessControl();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

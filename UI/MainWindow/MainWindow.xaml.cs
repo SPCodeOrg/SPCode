@@ -353,11 +353,7 @@ namespace SPCode.UI
                     fileInfo.Extension == ".ini")
                 {
                     var finalPath = fileInfo.FullName;
-                    try
-                    {
-                        File.GetAccessControl(finalPath);
-                    }
-                    catch (UnauthorizedAccessException)
+                    if (!DirUtils.CanAccess(finalPath))
                     {
                         return false;
                     }

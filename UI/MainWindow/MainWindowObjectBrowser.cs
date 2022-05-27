@@ -502,11 +502,7 @@ namespace SPCode.UI
             {
                 dir = Environment.CurrentDirectory;
             }
-            try
-            {
-                Directory.GetAccessControl(dir);
-            }
-            catch (UnauthorizedAccessException)
+            if (!DirUtils.CanAccess(dir))
             {
                 return;
             }
@@ -613,15 +609,7 @@ namespace SPCode.UI
                 if (attr.HasFlag(FileAttributes.Directory))
                 {
                     var dInfo = new DirectoryInfo(item);
-                    if (!dInfo.Exists)
-                    {
-                        continue;
-                    }
-                    try
-                    {
-                        dInfo.GetAccessControl();
-                    }
-                    catch (UnauthorizedAccessException)
+                    if (!dInfo.Exists || !DirUtils.CanAccess(dInfo))
                     {
                         continue;
                     }
