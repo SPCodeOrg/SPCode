@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Xml;
 using MahApps.Metro;
@@ -229,8 +230,9 @@ namespace SPCode.UI.Windows
             AllowChange = false;
             var c = Program.Configs[index];
 
+            C_SMDir.Items.Clear();
+            c.SMDirectories.ForEach(x => C_SMDir.Items.Add(CreateDirItem(x)));
             C_Name.Text = c.Name;
-            C_SMDir.ItemsSource = c.SMDirectories;
             C_AutoCopy.IsChecked = c.AutoCopy;
             C_AutoUpload.IsChecked = c.AutoUpload;
             C_AutoRCON.IsChecked = c.AutoRCON;
@@ -313,42 +315,51 @@ namespace SPCode.UI.Windows
                 IsFolderPicker = true
             };
 
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            if (dialog.ShowDialog() != CommonFileDialogResult.Ok)
             {
-                var c = Program.Configs[ConfigListBox.SelectedIndex];
-
-                if (c.SMDirectories.Contains(dialog.FileName))
-                {
-                    return;
-                }
-
-                try
-                {
-                    Directory.GetAccessControl(dialog.FileName);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    this.ShowMessageAsync(Translate("PermissionAccessError"),
-                        Translate("PermissionAcessErrorMessage"),
-                        MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
-                }
-
-                c.SMDirectories.Add(dialog.FileName);
-                C_SMDir.Items.Refresh();
-                NeedsSMDefInvalidation = true;
+                return;
             }
+
+            // Get selected config
+            var c = Program.Configs[ConfigListBox.SelectedIndex];
+
+            // If it already has that scripting dir, return
+            if (c.SMDirectories.Contains(dialog.FileName))
+            {
+                return;
+            }
+
+            // Test for access permissions and flag as rejected directory if necessary
+            try
+            {
+                Directory.GetAccessControl(dialog.FileName);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                this.ShowMessageAsync(Translate("PermissionAccessError"),
+                    Translate("PermissionAcessErrorMessage"),
+                    MessageDialogStyle.Affirmative, Program.MainWindow.MetroDialogOptions);
+            }
+
+            // Add to dirs of that config
+            c.SMDirectories.Add(dialog.FileName);
+
+            // Add list item
+            C_SMDir.Items.Add(CreateDirItem(dialog.FileName));
+
+            NeedsSMDefInvalidation = true;
         }
 
         private void RemoveSMDirButton_Click(object sender, RoutedEventArgs e)
         {
-            var c = Program.Configs[ConfigListBox.SelectedIndex];
-            if (C_SMDir.SelectedItem == null)
+            var item = C_SMDir.SelectedIndex;
+            var cfg = Program.Configs[ConfigListBox.SelectedIndex];
+            if (item == -1 || cfg == null)
             {
                 return;
             }
-            c.SMDirectories.Remove(C_SMDir.SelectedItem.ToString());
-            C_SMDir.Items.Refresh();
-            NeedsSMDefInvalidation = true;
+            cfg.SMDirectories.RemoveAt(item);
+            C_SMDir.Items.RemoveAt(item);
         }
 
         private void C_Name_TextChanged(object sender, TextChangedEventArgs e)
@@ -740,6 +751,34 @@ namespace SPCode.UI.Windows
                 File.WriteAllText(PathsHelper.ConfigFilePath, outString.ToString());
                 LoggingControl.LogAction($"Configs saved.", 2);
             });
+        }
+
+        /// <summary>
+        /// Creates the ListBoxItem that will be added to the SM Directories list of the selected config
+        /// </summary>
+        /// <param name="path">Path of the SM Directory to be added</param>
+        /// <returns>The ListBoxItem that will be added to the SM Directories list</returns>
+        private ListBoxItem CreateDirItem(string path)
+        {
+            var item = new ListBoxItem();
+            var stack = new StackPanel();
+            stack.Orientation = Orientation.Horizontal;
+            stack.Children.Add(new TextBlock
+            {
+                Text = path
+            });
+            if (File.Exists(Path.Combine(path, Constants.SPCompiler)))
+            {
+                stack.Children.Add(new Image
+                {
+                    Source = new BitmapImage(new Uri($"/SPCode;component/Resources/Icons/icon-pawn.png", UriKind.Relative)),
+                    Width = 16,
+                    Margin = new Thickness(5,0,0,0),
+                    ToolTip = Translate("SPCompilerFoundHere")
+                });
+            }
+            item.Content = stack;
+            return item;
         }
 
         private void Language_Translate()

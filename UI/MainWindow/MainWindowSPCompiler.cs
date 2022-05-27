@@ -77,7 +77,7 @@ namespace SPCode.UI
             // Searches for the spcomp.exe compiler
             foreach (var dir in currentConfig.SMDirectories)
             {
-                spCompInfo = new FileInfo(Path.Combine(dir, "spcomp.exe"));
+                spCompInfo = new FileInfo(Path.Combine(dir, Constants.SPCompiler));
                 if (spCompInfo.Exists)
                 {
                     SpCompFound = true;

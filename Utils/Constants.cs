@@ -28,6 +28,7 @@
         public const string LicenseFile = "License.txt";
         public const string LanguagesFile = "lang_0_spcode.xml";
         public const string DefaultTranslationsFile = "default.xml";
+        public const string SPCompiler = "spcomp.exe";
         #endregion
 
         #region Filters
