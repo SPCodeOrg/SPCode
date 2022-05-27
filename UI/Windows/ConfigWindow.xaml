@@ -14,13 +14,6 @@
                       ShowTitleBar="true" 
                       Closing="MetroWindow_Closing">
 
-  <!--<controls:MetroWindow.RightWindowCommands>
-    <controls:WindowCommands>
-      <Button Name="BackupConfigsButton" Click="BackupConfigsButton_Click"/>
-      <Button Name="LoadConfigsButton" Click="LoadConfigsButton_Click"/>
-    </controls:WindowCommands>
-  </controls:MetroWindow.RightWindowCommands>-->
-
   <controls:MetroWindow.Resources>
     <ResourceDictionary>
 
@@ -75,6 +68,10 @@
         <Setter Property="Height" Value="2"/>
       </Style>
 
+      <Image x:Key="ImgAdd" Source="/SPCode;component/Resources/Icons/add.png" Width="16"/>
+      <Image x:Key="ImgCopy" Source="/SPCode;component/Resources/Icons/duplicate.png" Width="16"/>
+      <Image x:Key="ImgDelete" Source="/SPCode;component/Resources/Icons/trash.png" Width="16"/>
+
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
@@ -86,184 +83,218 @@
   </controls:MetroWindow.Resources>
 
   <Grid>
-    <Button Name="NewButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Width="75" Click="NewButton_Clicked" />
-    <Button Name="DeleteButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="120,5,0,0" Width="75" Click="DeleteButton_Clicked" />
-    <ListBox Name="ConfigListBox" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,35,0,0" Width="200" SelectionChanged="ConfigListBox_SelectionChanged" />
-    <Line X1="200" X2="200" Y2="1000" VerticalAlignment="Stretch" Stroke="{DynamicResource BlackColorBrush}" StrokeThickness="1" />
-    <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="201,5,0,0">
-      <Grid Margin="0,0,0,5">
-        <StackPanel>
 
-          <!-- Section 1 -->
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="200"/>
+      <ColumnDefinition/>
+    </Grid.ColumnDefinitions>
 
+    <Grid Grid.Column="0" Margin="0,5,0,0">
+
+      <Grid.RowDefinitions>
+        <RowDefinition Height="30"/>
+        <RowDefinition/>
+      </Grid.RowDefinitions>
+
+      <Grid Grid.Row="0">
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition/>
+          <ColumnDefinition/>
+          <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Button Name="NewButton" Width="32" VerticalAlignment="Center" Grid.Column="0" Click="NewButton_Click" Content="{StaticResource ImgAdd}"/>
+        <Button Name="CopyButton" Width="32" Grid.Column="1" Click="CopyButton_Click" Content="{StaticResource ImgCopy}"/>
+        <Button Name="DeleteButton" Width="32" Grid.Column="2" Click="DeleteButton_Click" Content="{StaticResource ImgDelete}" />
+
+      </Grid>
+
+      <Grid Grid.Row="1" Margin="0,5,0,0">
+        <ListBox Name="ConfigListBox" SelectionChanged="ConfigListBox_SelectionChanged" />
+      </Grid>
+      
+    </Grid>
+
+    <GridSplitter Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="2" Background="{DynamicResource GrayBrush5}" />
+
+    <Grid Grid.Column="1" Margin="5,5,0,0">
+
+      <ScrollViewer>
+        <Grid>
           <StackPanel>
-            <StackPanel.Resources>
-              <Style BasedOn="{StaticResource DockPanelStyle}" TargetType="DockPanel"/>
-              <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
-                <Setter Property="VerticalAlignment" Value="Center"/>
-              </Style>
-            </StackPanel.Resources>
 
-            <DockPanel>
-              <TextBlock Name="NameBlock" IsHitTestVisible="False" HorizontalAlignment="Right" />
-              <TextBox Name="C_Name" Margin="50,0,0,0" VerticalAlignment="Top" TextChanged="C_Name_TextChanged" />
-            </DockPanel>
+            <!-- Section 1 -->
+
+            <StackPanel>
+              <StackPanel.Resources>
+                <Style BasedOn="{StaticResource DockPanelStyle}" TargetType="DockPanel"/>
+                <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
+                  <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+              </StackPanel.Resources>
+
+              <DockPanel>
+                <TextBlock Name="NameBlock" IsHitTestVisible="False" HorizontalAlignment="Right" />
+                <TextBox Name="C_Name" Margin="50,0,0,0" VerticalAlignment="Top" TextChanged="C_Name_TextChanged" />
+              </DockPanel>
+
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="150"/>
+                  <ColumnDefinition Width="60"/>
+                  <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <DockPanel Grid.Column="0">
+                  <TextBlock Name="ScriptingDirBlock" IsHitTestVisible="False" />
+                </DockPanel>
+                <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                  <Button Height="30" Margin="0,0,0,10" x:Name="AddSMDirButton" Click="AddSMDirButton_Click"/>
+                  <Button Height="30" x:Name="RemoveSMDirButton" Click="RemoveSMDirButton_Click"/>
+                </StackPanel>
+                <DockPanel Grid.Column="2">
+                  <ListBox x:Name="C_SMDir" Height="91" SelectionMode="Extended" Style="{StaticResource ListBoxStyle}"/>
+                </DockPanel>
+              </Grid>
+
+              <DockPanel>
+                <TextBlock Name="CopyDirBlock" IsHitTestVisible="False" />
+                <TextBox Name="C_CopyDir" Margin="50,0,0,0" TextChanged="C_CopyDir_TextChanged"
+                       Style="{DynamicResource SearchMetroTextBoxStyle}" 
+                       controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFolderCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
+              </DockPanel>
+
+              <DockPanel>
+                <TextBlock Name="ServerExeBlock" IsHitTestVisible="False" />
+                <TextBox Name="C_ServerFile" Margin="50,0,0,0" TextChanged="C_ServerFile_TextChanged"
+                       Style="{StaticResource SearchMetroTextBoxStyle}"
+                       controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFileCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
+              </DockPanel>
+
+              <DockPanel>
+                <TextBlock Name="ServerStartArgBlock" IsHitTestVisible="False" />
+                <TextBox Name="C_ServerArgs" Margin="50,0,0,0" TextChanged="C_ServerArgs_TextChanged" />
+              </DockPanel>
+
+            </StackPanel>
+
+            <StackPanel>
+              <Separator Margin="0,10,0,10"/>
+            </StackPanel>
+
+            <!-- Section 2 -->
+
+            <StackPanel Margin="5">
+              <DockPanel>
+                <TextBlock Name="PreBuildBlock" IsHitTestVisible="False" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <ComboBox Name="CMD_ItemC" Width="200" HorizontalAlignment="Right" Margin="0,0,0,5"/>
+              </DockPanel>
+              <TextBox Name="C_PreBuildCmd" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PreBuildCmd_TextChanged" GotFocus="BuildCommandsBoxes_OnFocus" />
+            </StackPanel>
+
+            <StackPanel Margin="5">
+              <TextBlock Name="PostBuildBlock" Margin="0,0,0,5" IsHitTestVisible="False" />
+              <TextBox Name="C_PostBuildCmd" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PostBuildCmd_TextChanged" GotFocus="BuildCommandsBoxes_OnFocus" />
+            </StackPanel>
+
+            <StackPanel>
+              <Separator Margin="0,10,0,10"/>
+            </StackPanel>
+
+            <!-- Section 3 -->
 
             <Grid>
               <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150"/>
-                <ColumnDefinition Width="60"/>
+                <ColumnDefinition/>
                 <ColumnDefinition/>
               </Grid.ColumnDefinitions>
-              <DockPanel Grid.Column="0">
-                <TextBlock Name="ScriptingDirBlock" IsHitTestVisible="False" />
-              </DockPanel>
-              <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Height="30" Margin="0,0,0,10" x:Name="AddSMDirButton" Click="AddSMDirButton_Click"/>
-                <Button Height="30" x:Name="RemoveSMDirButton" Click="RemoveSMDirButton_Click"/>
-              </StackPanel>
-              <DockPanel Grid.Column="2">
-                <ListBox x:Name="C_SMDir" Height="91" SelectionMode="Extended" Style="{StaticResource ListBoxStyle}"/>
-              </DockPanel>
-            </Grid>
-
-            <DockPanel>
-              <TextBlock Name="CopyDirBlock" IsHitTestVisible="False" />
-              <TextBox Name="C_CopyDir" Margin="50,0,0,0" TextChanged="C_CopyDir_TextChanged"
-                       Style="{DynamicResource SearchMetroTextBoxStyle}" 
-                       controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFolderCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
-            </DockPanel>
-
-            <DockPanel>
-              <TextBlock Name="ServerExeBlock" IsHitTestVisible="False" />
-              <TextBox Name="C_ServerFile" Margin="50,0,0,0" TextChanged="C_ServerFile_TextChanged"
-                       Style="{StaticResource SearchMetroTextBoxStyle}"
-                       controls:TextBoxHelper.ButtonCommand="{Binding TextBoxButtonFileCmd, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
-            </DockPanel>
-
-            <DockPanel>
-              <TextBlock Name="ServerStartArgBlock" IsHitTestVisible="False" />
-              <TextBox Name="C_ServerArgs" Margin="50,0,0,0" TextChanged="C_ServerArgs_TextChanged" />
-            </DockPanel>
-
-          </StackPanel>
-
-          <StackPanel>
-            <Separator Margin="0,10,0,10"/>
-          </StackPanel>
-
-          <!-- Section 2 -->
-
-          <StackPanel Margin="5">
-            <DockPanel>
-              <TextBlock Name="PreBuildBlock" IsHitTestVisible="False" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-              <ComboBox Name="CMD_ItemC" Width="200" HorizontalAlignment="Right" Margin="0,0,0,5"/>
-            </DockPanel>
-            <TextBox Name="C_PreBuildCmd" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PreBuildCmd_TextChanged" GotFocus="BuildCommandsBoxes_OnFocus" />
-          </StackPanel>
-
-          <StackPanel Margin="5">
-            <TextBlock Name="PostBuildBlock" Margin="0,0,0,5" IsHitTestVisible="False" />
-            <TextBox Name="C_PostBuildCmd" Height="80" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_PostBuildCmd_TextChanged" GotFocus="BuildCommandsBoxes_OnFocus" />
-          </StackPanel>
-
-          <StackPanel>
-            <Separator Margin="0,10,0,10"/>
-          </StackPanel>
-
-          <!-- Section 3 -->
-
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition/>
-              <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid.Resources>
-              <Style BasedOn="{StaticResource SpacedTextBlock}" TargetType="TextBlock"/>
-            </Grid.Resources>
-            <Grid Grid.Column="0">
-              <StackPanel Margin="5,0,5,0">
-                <TextBlock x:Name="FTPHostBlock" IsHitTestVisible="False" />
-                <TextBox x:Name="C_FTPHost" TextChanged="C_FTPHost_TextChanged" />
-                <TextBlock x:Name="FTPUserBlock" IsHitTestVisible="False" />
-                <TextBox x:Name="C_FTPUser" TextChanged="C_FTPUser_TextChanged" />
-                <TextBlock x:Name="FTPPWBlock" IsHitTestVisible="False" />
-                <PasswordBox x:Name="C_FTPPW" PasswordChanged="C_FTPPW_TextChanged" />
-                <TextBlock x:Name="FTPDirBlock" IsHitTestVisible="False" />
-                <TextBox x:Name="C_FTPDir" TextChanged="C_FTPDir_TextChanged" />
-                <Button x:Name="FTPTestConnectionButton" Click="FTPTestConnectionButton_Click" HorizontalAlignment="Left" Margin="0,15,0,-10"/>
-              </StackPanel>
-            </Grid>
-            <Grid Grid.Column="1" Margin="5,0,0,0">
-              <Grid.RowDefinitions>
-                <RowDefinition Height="60"/>
-                <RowDefinition/>
-              </Grid.RowDefinitions>
-
-              <StackPanel Orientation="Horizontal">
-                <StackPanel Grid.Row="0" Margin="5,0,30,0">
-                  <TextBlock Name="OptimizeBlock" IsHitTestVisible="False" />
-                  <Slider Name="C_OptimizationLevel" HorizontalAlignment="Left" Width="75" Minimum="0" Maximum="2" TickFrequency="2" IsSnapToTickEnabled="True" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="C_OptimizationLevel_ValueChanged" />
+              <Grid.Resources>
+                <Style BasedOn="{StaticResource SpacedTextBlock}" TargetType="TextBlock"/>
+              </Grid.Resources>
+              <Grid Grid.Column="0">
+                <StackPanel Margin="5,0,5,0">
+                  <TextBlock x:Name="FTPHostBlock" IsHitTestVisible="False" />
+                  <TextBox x:Name="C_FTPHost" TextChanged="C_FTPHost_TextChanged" />
+                  <TextBlock x:Name="FTPUserBlock" IsHitTestVisible="False" />
+                  <TextBox x:Name="C_FTPUser" TextChanged="C_FTPUser_TextChanged" />
+                  <TextBlock x:Name="FTPPWBlock" IsHitTestVisible="False" />
+                  <PasswordBox x:Name="C_FTPPW" PasswordChanged="C_FTPPW_TextChanged" />
+                  <TextBlock x:Name="FTPDirBlock" IsHitTestVisible="False" />
+                  <TextBox x:Name="C_FTPDir" TextChanged="C_FTPDir_TextChanged" />
+                  <Button x:Name="FTPTestConnectionButton" Click="FTPTestConnectionButton_Click" HorizontalAlignment="Left" Margin="0,15,0,-10"/>
                 </StackPanel>
-                <StackPanel>
-                  <TextBlock Name="VerboseBlock" IsHitTestVisible="False" />
-                  <Slider Name="C_VerboseLevel" Width="75" HorizontalAlignment="Left" Minimum="0" Maximum="2" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="C_VerboseLevel_ValueChanged" />
+              </Grid>
+              <Grid Grid.Column="1" Margin="5,0,0,0">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="60"/>
+                  <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Orientation="Horizontal">
+                  <StackPanel Grid.Row="0" Margin="5,0,30,0">
+                    <TextBlock Name="OptimizeBlock" IsHitTestVisible="False" />
+                    <Slider Name="C_OptimizationLevel" HorizontalAlignment="Left" Width="75" Minimum="0" Maximum="2" TickFrequency="2" IsSnapToTickEnabled="True" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="C_OptimizationLevel_ValueChanged" />
+                  </StackPanel>
+                  <StackPanel>
+                    <TextBlock Name="VerboseBlock" IsHitTestVisible="False" />
+                    <Slider Name="C_VerboseLevel" Width="75" HorizontalAlignment="Left" Minimum="0" Maximum="2" TickFrequency="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" AutoToolTipPlacement="TopLeft" ValueChanged="C_VerboseLevel_ValueChanged" />
+                  </StackPanel>
                 </StackPanel>
-              </StackPanel>
 
-              <StackPanel Grid.Row="1" Margin="0,0,0,0">
-                <StackPanel.Resources>
-                  <Style BasedOn="{StaticResource ParentCheckBox}" TargetType="CheckBox"/>
-                </StackPanel.Resources>
-                <CheckBox Name="C_AutoCopy" Checked="C_AutoCopy_Changed" Unchecked="C_AutoCopy_Changed" />
-                <CheckBox Name="C_DeleteAfterCopy" Checked="C_DeleteAfterCopy_Changed" Unchecked="C_DeleteAfterCopy_Changed" />
-                <CheckBox Name="C_AutoUpload" Checked="C_AutoUpload_Changed" Unchecked="C_AutoUpload_Changed" />
-                <CheckBox Name="C_AutoRCON" Checked="C_AutoRCON_Changed" Unchecked="C_AutoRCON_Changed" />
-              </StackPanel>
+                <StackPanel Grid.Row="1" Margin="0,0,0,0">
+                  <StackPanel.Resources>
+                    <Style BasedOn="{StaticResource ParentCheckBox}" TargetType="CheckBox"/>
+                  </StackPanel.Resources>
+                  <CheckBox Name="C_AutoCopy" Checked="C_AutoCopy_Changed" Unchecked="C_AutoCopy_Changed" />
+                  <CheckBox Name="C_DeleteAfterCopy" Checked="C_DeleteAfterCopy_Changed" Unchecked="C_DeleteAfterCopy_Changed" />
+                  <CheckBox Name="C_AutoUpload" Checked="C_AutoUpload_Changed" Unchecked="C_AutoUpload_Changed" />
+                  <CheckBox Name="C_AutoRCON" Checked="C_AutoRCON_Changed" Unchecked="C_AutoRCON_Changed" />
+                </StackPanel>
+              </Grid>
             </Grid>
-          </Grid>
 
-          <StackPanel>
-            <Separator Margin="0,20,0,0"/>
-          </StackPanel>
+            <StackPanel>
+              <Separator Margin="0,20,0,0"/>
+            </StackPanel>
 
-          <!-- Section 4 -->
+            <!-- Section 4 -->
 
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition/>
-              <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid.Resources>
-              <Style BasedOn="{StaticResource SpacedTextBlock}" TargetType="TextBlock"></Style>
-            </Grid.Resources>
-            <Grid Grid.Column="0">
-              <StackPanel Margin="5">
-                <TextBlock Name="RConIPBlock" IsHitTestVisible="False" />
-                <TextBox Name="C_RConIP" TextChanged="C_RConIP_TextChanged" />
-                <TextBlock Name="RConPortBlock" IsHitTestVisible="False" />
-                <TextBox Name="C_RConPort" TextChanged="C_RConPort_TextChanged" />
-                <TextBlock Name="RConPWBlock" IsHitTestVisible="False" />
-                <PasswordBox Name="C_RConPW" PasswordChanged="C_RConPW_TextChanged" />
-                <Button x:Name="RCONTestConnectionButton" 
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+              </Grid.ColumnDefinitions>
+              <Grid.Resources>
+                <Style BasedOn="{StaticResource SpacedTextBlock}" TargetType="TextBlock"></Style>
+              </Grid.Resources>
+              <Grid Grid.Column="0">
+                <StackPanel Margin="5">
+                  <TextBlock Name="RConIPBlock" IsHitTestVisible="False" />
+                  <TextBox Name="C_RConIP" TextChanged="C_RConIP_TextChanged" />
+                  <TextBlock Name="RConPortBlock" IsHitTestVisible="False" />
+                  <TextBox Name="C_RConPort" TextChanged="C_RConPort_TextChanged" />
+                  <TextBlock Name="RConPWBlock" IsHitTestVisible="False" />
+                  <PasswordBox Name="C_RConPW" PasswordChanged="C_RConPW_TextChanged" />
+                  <Button x:Name="RCONTestConnectionButton" 
                         Margin="0,15,0,0" 
                         HorizontalAlignment="Left" 
                         Content="Test connection"
                         Click="RCONTestConnectionButton_Click"/>
-              </StackPanel>
+                </StackPanel>
+              </Grid>
+              <Grid Grid.Column="1">
+                <StackPanel Margin="5">
+                  <DockPanel LastChildFill="True">
+                    <TextBlock Name="RConComBlock" IsHitTestVisible="False" />
+                    <ComboBox Name="Rcon_MenuC" Width="200" HorizontalAlignment="Right" Margin="0,0,0,5"/>
+                  </DockPanel>
+                  <TextBox Name="C_RConCmds" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_RConCmds_TextChanged" Height="100"/>
+                </StackPanel>
+              </Grid>
             </Grid>
-            <Grid Grid.Column="1">
-              <StackPanel Margin="5">
-                <DockPanel LastChildFill="True">
-                  <TextBlock Name="RConComBlock" IsHitTestVisible="False" />
-                  <ComboBox Name="Rcon_MenuC" Width="200" HorizontalAlignment="Right" Margin="0,0,0,5"/>
-                </DockPanel>
-                <TextBox Name="C_RConCmds" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextChanged="C_RConCmds_TextChanged" Height="100"/>
-              </StackPanel>
-            </Grid>
-          </Grid>
-        </StackPanel>
-      </Grid>
-    </ScrollViewer>
+          </StackPanel>
+        </Grid>
+      </ScrollViewer>
+    </Grid>
   </Grid>
 </controls:MetroWindow>

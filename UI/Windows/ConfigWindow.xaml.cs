@@ -253,7 +253,7 @@ namespace SPCode.UI.Windows
             AllowChange = true;
         }
 
-        private void NewButton_Clicked(object sender, RoutedEventArgs e)
+        private void NewButton_Click(object sender, RoutedEventArgs e)
         {
             var c = new Config
             {
@@ -268,7 +268,12 @@ namespace SPCode.UI.Windows
             ConfigListBox.Items.Add(new ListBoxItem { Content = Translate("NewConfig") });
         }
 
-        private void DeleteButton_Clicked(object sender, RoutedEventArgs e)
+        private void CopyButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             var index = ConfigListBox.SelectedIndex;
             var c = Program.Configs[index];
@@ -730,8 +735,6 @@ namespace SPCode.UI.Windows
             Title = Translate("Configs");
             AddSMDirButton.Content = Translate("Add");
             RemoveSMDirButton.Content = Translate("Remove");
-            NewButton.Content = Translate("New");
-            DeleteButton.Content = Translate("Delete");
             NameBlock.Text = Translate("Name");
             ScriptingDirBlock.Text = Translate("ScriptDir");
             CopyDirBlock.Text = Translate("CopyDir");
@@ -757,8 +760,6 @@ namespace SPCode.UI.Windows
             Rcon_MenuC.Text = Translate("RConCMDLineCom");
             FTPTestConnectionButton.Content = Translate("TestConnection");
             RCONTestConnectionButton.Content = Translate("TestConnection");
-            //BackupConfigsButton.Content = Translate("BackupConfigs");
-            //LoadConfigsButton.Content = Translate("LoadConfigs");
         }
 
         private void EvaluateRTL()
