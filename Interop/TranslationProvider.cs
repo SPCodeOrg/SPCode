@@ -45,13 +45,14 @@ namespace SPCode.Interop
         /// <returns></returns>
         public static string Translate(string phrase)
         {
-            if (_langDictionary.ContainsKey(phrase))
+
+            if (_langDictionary.TryGetValue(phrase, out var result))
             {
-                return _langDictionary[phrase];
+                return result;
             }
-            else if (_defaultDictionary.ContainsKey(phrase))
+            else if (_defaultDictionary.TryGetValue(phrase, out result))
             {
-                return _defaultDictionary[phrase];
+                return result;
             }
             else
             {
@@ -170,7 +171,7 @@ namespace SPCode.Interop
             try
             {
                 // Clear temp folder before beggining
-                DirUtils.ClearTempFolder();
+                DirUtils.ClearSPCodeTempFolder();
 
                 // Download latest release zip file
                 var wc = new WebClient();
@@ -196,7 +197,7 @@ namespace SPCode.Interop
                 }
 
                 // Delete all temp folder contents
-                DirUtils.ClearTempFolder();
+                DirUtils.ClearSPCodeTempFolder();
 
                 // Update version to options object
                 Program.OptionsObject.TranslationsVersion = int.Parse(_latestVersion.Name);
