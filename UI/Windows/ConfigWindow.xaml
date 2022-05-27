@@ -106,19 +106,19 @@
         <Button Name="NewButton" MaxWidth="70" Margin="3,0,3,0" Grid.Column="0" Click="NewButton_Click">
           <StackPanel Orientation="Horizontal">
             <Image Source="/SPCode;component/Resources/Icons/icon-add.png" Width="13"/>
-            <TextBlock Name="AddButtonText" Text="Add" FontSize="11" Margin="5,0,0,0"/>
+            <TextBlock Name="NewButtonText" FontSize="11" Margin="5,0,0,0"/>
           </StackPanel>
         </Button>
         <Button Name="CopyButton" MaxWidth="70" Margin="3,0,3,0" Grid.Column="1" Click="CopyButton_Click">
           <StackPanel Orientation="Horizontal">
             <Image Source="/SPCode;component/Resources/Icons/icon-duplicate.png" Width="13"/>
-            <TextBlock Name="CopyButtonText" Text="Copy" FontSize="11" Margin="5,0,0,0"/>
+            <TextBlock Name="CopyButtonText" FontSize="11" Margin="5,0,0,0"/>
           </StackPanel>
         </Button>
         <Button Name="DeleteButton" MaxWidth="70" Margin="3,0,3,0" Grid.Column="2" Click="DeleteButton_Click">
           <StackPanel Orientation="Horizontal">
             <Image Source="/SPCode;component/Resources/Icons/icon-trash.png" Width="13"/>
-            <TextBlock Name="RemoveButtonText" Text="Delete" FontSize="11" Margin="5,0,0,0"/>
+            <TextBlock Name="DeleteButtonText" FontSize="11" Margin="5,0,0,0"/>
           </StackPanel>
         </Button>
 

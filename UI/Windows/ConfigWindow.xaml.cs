@@ -829,8 +829,11 @@ namespace SPCode.UI.Windows
         {
             Title = Translate("Configs");
             NewButton.ToolTip = Translate("New");
+            NewButtonText.Text = Translate("New");
             CopyButton.ToolTip = Translate("Copy");
+            CopyButtonText.Text = Translate("Copy");
             DeleteButton.ToolTip = Translate("Delete");
+            DeleteButtonText.Text = Translate("Delete");
             AddSMDirButton.Content = Translate("Add");
             RemoveSMDirButton.Content = Translate("Remove");
             NameBlock.Text = Translate("Name");
