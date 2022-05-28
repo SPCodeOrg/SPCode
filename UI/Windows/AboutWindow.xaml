@@ -49,34 +49,22 @@
           <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="325,15,0,15">
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Julien 'Aeon' Kluge (Original creator of SPEdit)" FontWeight="Bold" FontSize="16" />
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Hexah (Maintainer, Italian translation)" FontWeight="Bold" FontSize="14" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Natanel-Shitrit  (Maintainer)" FontWeight="Bold" FontSize="14" />
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Natanel Shitrit  (Maintainer)" FontWeight="Bold" FontSize="14" />
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- ampere (Maintainer, Spanish translation)"  FontWeight="Bold" FontSize="14"/>
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Bara (Tester, Proposer, Contributor, Update Server, Domain)" FontWeight="Bold" />
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- mev (Proposer, Contributor, Color Scheme Designer)" FontWeight="Bold" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- BAILOPAN (Proposer, Help)" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- necavi (Tester, Proposer, Contributor)" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- psychonic (Contributor)" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- WildCard65 (Tester, Proposer)" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- ClassicSpeed (ClassicGuzzi) (Tester, Proposer)" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- TnTSCS  (Tester, Proposer)" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- kossolax (Tester, Proposer)" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- urban_ninja (Tester, Proposer)" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- BAILANDO (Tester, Proposer)" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Impact123 (Tester, Proposer)" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Keith Warren (r3dw3r3w0lf; Drixevel) (Tester, Proposer) http://www.drixevel.com/" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Xerrion (Tester, Proposer)" />
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Arkarr (French translation)" />
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- azalty (French translation)" />
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- JOMENVEST (Swedish translation)" />
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Grey83 (Russian translation)" />
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Ghost Rideaux (Portuguese translation)" />
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Trostal (Korean translation)" />
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Johnny2525 (Korean translation)" />
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Mithat Güner (Turkish translation)" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Reinakumiko (Chinese(simplified) translation)" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- dev-xiamu (Chinese(simplified) translation)" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Pohearts (Chinese(simplified and traditional) translation)" />
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Reinakumiko (Chinese (simplified) translation)" />
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- dev-xiamu (Chinese (simplified) translation)" />
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- Pohearts (Chinese (simplified and traditional) translation)" />
             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Text="- milutinke (Serbian translation)" />
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5,0,0" Text="Proposer: &#013;Powerlord; Wliu; barel31; asherkin; BAILANDO; Arkarr; turtsmcgurts; Tank Missile&#013;Wilczek; Miu; StealthGus; WhiteThunder; ghost" />
           </StackPanel>
         </Grid>
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="150" Margin="0,2,0,2">
