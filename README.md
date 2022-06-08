@@ -47,6 +47,7 @@ It was born in 2015 under the name of SPEdit, and in early 2020, we took care of
 Requirements:
 - [.NET Framework 4.8](https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net48-developer-pack-offline-installer)
 - [NSIS](https://nsis.sourceforge.io/Download)
+- [Git](https://git-scm.com/download/win)
 
 1- Build the program: `msbuild Spcode.csproj /p:Configuration=Release` <br>
 2- Create the installer with `makensis .\bin\Release\SPCode.nsi` <br>
