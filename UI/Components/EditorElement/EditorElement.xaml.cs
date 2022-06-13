@@ -1021,6 +1021,7 @@ namespace SPCode.UI.Components
             MenuC_Paste.Header = Translate("Paste");
             MenuC_SelectAll.Header = Translate("SelectAll");
             CompileBox.Content = Translate("Compile");
+            DontCreateFileBox.Content = Translate("DontOutputFile");
             if (!Initial)
             {
                 StatusLine_Column.Text =

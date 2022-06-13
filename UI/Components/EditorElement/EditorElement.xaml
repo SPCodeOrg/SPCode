@@ -65,6 +65,7 @@
       </editor:TextEditor.ContextMenu>
     </editor:TextEditor>
     <CheckBox x:Name="CompileBox" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="2,0,0,0" Content="Compile" Foreground="{DynamicResource BlackColorBrush}" />
+    <CheckBox x:Name="DontCreateFileBox" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="92,0,0,0" Foreground="{DynamicResource BlackColorBrush}" />
     <TextBlock Name="StatusLine_FontSize" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2" Text="14 pt" Foreground="{DynamicResource BlackColorBrush}" IsHitTestVisible="False" />
     <TextBlock Name="StatusLine_Column" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2,2,100,2" Text="Col 0" Foreground="{DynamicResource BlackColorBrush}" IsHitTestVisible="False" />
     <TextBlock Name="StatusLine_Offset" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,151,2" Foreground="{DynamicResource BlackColorBrush}" IsHitTestVisible="False" />

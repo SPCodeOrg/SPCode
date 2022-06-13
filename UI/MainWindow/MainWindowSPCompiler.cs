@@ -70,6 +70,7 @@ namespace SPCode.UI
             var SpCompFound = false;
             var PressedEscape = false;
             var hadError = false;
+            var dontCreateFile = false;
             TotalErrors = 0;
             TotalWarnings = 0;
             CurrentErrorString = string.Empty;
@@ -172,11 +173,24 @@ namespace SPCode.UI
                         process.StartInfo.CreateNoWindow = true;
                         process.StartInfo.FileName = spCompInfo.FullName;
 
-                        var destinationFileName = ShortenScriptFileName(fileInfo.Name) + ".smx";
-                        var outFile = Path.Combine(fileInfo.DirectoryName, destinationFileName);
-                        if (File.Exists(outFile))
+                        dontCreateFile = ee.DontCreateFileBox.IsChecked.HasValue && ee.DontCreateFileBox.IsChecked.Value;
+                        string outFile;
+                        string destinationFileName;
+                        if (dontCreateFile)
                         {
-                            File.Delete(outFile);
+                            outFile = "NUL";
+                            destinationFileName = string.Empty;
+                        }
+                        else
+                        {
+                            destinationFileName = ShortenScriptFileName(fileInfo.Name) + ".smx";
+                            outFile = Path.Combine(fileInfo.DirectoryName, destinationFileName);
+                            if (File.Exists(outFile))
+                            {
+                                File.Delete(outFile);
+                            }
+                            ExecuteCommandLine(currentConfig.PreCmd, fileInfo.DirectoryName, currentConfig.CopyDirectory,
+                            fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
                         }
 
                         var errorFile = $@"{fileInfo.DirectoryName}\error_{Environment.TickCount}_{file.GetHashCode():X}_{i}.txt";
@@ -197,8 +211,7 @@ namespace SPCode.UI
                             "\"" + fileInfo.FullName + "\" -o=\"" + outFile + "\" -e=\"" + errorFile + "\"" +
                             includeStr + " -O=" + currentConfig.OptimizeLevel + " -v=" + currentConfig.VerboseLevel;
                         ProgressTask.SetProgress((i + 1 - 0.5d) / compileCount);
-                        var execResult = ExecuteCommandLine(currentConfig.PreCmd, fileInfo.DirectoryName, currentConfig.CopyDirectory,
-                            fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
+
 
                         ProcessUITasks();
 
@@ -212,7 +225,7 @@ namespace SPCode.UI
                                 await ProgressTask.CloseAsync();
                                 await this.ShowMessageAsync(Translate("Error"),
                                     "The SourcePawn compiler has crashed.\n" +
-                                    "Try again, or file an issue at the SourcePawn GitHub repository describing your steps that lead to this instance in detail.\n" +
+                                    "Try again, or file an issue at the SourcePawn GitHub repository describing your steps that led to this instance in detail.\n" +
                                     $"Exit code: {process.ExitCode:X}", MessageDialogStyle.Affirmative,
                                     MetroDialogOptions);
                                 LoggingControl.LogAction($"Compiler crash detected, file: {fileInfo.Name}", 2);
@@ -286,15 +299,18 @@ namespace SPCode.UI
                             compiledSuccess++;
                         }
 
-                        if (File.Exists(outFile))
+                        if (!dontCreateFile && File.Exists(outFile))
                         {
                             CompiledFiles.Add(outFile);
                             NonUploadedFiles.Add(outFile);
                             CompiledFileNames.Add(destinationFileName);
                         }
 
-                        var execResult_Post = ExecuteCommandLine(currentConfig.PostCmd, fileInfo.DirectoryName,
-                            currentConfig.CopyDirectory, fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
+                        if (!dontCreateFile)
+                        {
+                            ExecuteCommandLine(currentConfig.PostCmd, fileInfo.DirectoryName,
+                                currentConfig.CopyDirectory, fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
+                        }
 
                         ProgressTask.SetProgress((double)(i + 1) / compileCount);
                         ProcessUITasks();
@@ -312,7 +328,7 @@ namespace SPCode.UI
                 if (!PressedEscape)
                 {
                     ProgressTask.SetProgress(1.0);
-                    if (currentConfig.AutoCopy)
+                    if (currentConfig.AutoCopy && !dontCreateFile)
                     {
                         ProgressTask.SetTitle(Translate("CopyingFiles") + "...");
                         ProgressTask.SetIndeterminate();
@@ -320,7 +336,7 @@ namespace SPCode.UI
                         ProgressTask.SetProgress(1.0);
                     }
 
-                    if (currentConfig.AutoUpload)
+                    if (currentConfig.AutoUpload && !dontCreateFile)
                     {
                         ProgressTask.SetTitle(Translate("FTPUploading") + "...");
                         ProgressTask.SetIndeterminate();
@@ -328,7 +344,7 @@ namespace SPCode.UI
                         ProgressTask.SetProgress(1.0);
                     }
 
-                    if (currentConfig.AutoRCON)
+                    if (currentConfig.AutoRCON && !dontCreateFile)
                     {
                         ProgressTask.SetTitle(Translate("RCONCommand") + "...");
                         ProgressTask.SetIndeterminate();
