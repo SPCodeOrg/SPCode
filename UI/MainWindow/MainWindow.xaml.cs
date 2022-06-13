@@ -447,8 +447,11 @@ namespace SPCode.UI
         /// <param name="SelectMe">Whether to focus this editor element once created.</param>
         private void AddEditorElement(FileInfo fInfo, string editorTitle, bool SelectMe, out EditorElement editor)
         {
-            var layoutDocument = new LayoutDocument { Title = editorTitle };
-            layoutDocument.ToolTip = fInfo.FullName;
+            var layoutDocument = new LayoutDocument
+            {
+                Title = editorTitle,
+                ToolTip = fInfo.FullName
+            };
             editor = new EditorElement(fInfo.FullName) { Parent = layoutDocument };
             layoutDocument.Content = editor;
             EditorReferences.Add(editor);

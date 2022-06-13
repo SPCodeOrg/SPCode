@@ -164,6 +164,16 @@ namespace SPCode.UI
                         fileTag.Value = newFileInfo.FullName;
                         file.Header = BuildTreeViewItemContent(renameWindow.NewName, FileIcons[newFileInfo.Extension]);
                     }
+
+                    // Update file if opened by SPCode
+                    foreach (var editor in EditorReferences)
+                    {
+                        if (editor.FullFilePath == oldFileInfo.FullName)
+                        {
+                            editor.FullFilePath = newFileInfo.FullName;
+                        }
+                    }
+                    UpdateWindowTitle();
                 }
             }
             catch (Exception ex)
