@@ -743,7 +743,7 @@ namespace SPCode.UI.Components
                         }
                     }
 
-                    el.InterruptLoadAutoCompletes(smDef);
+                    //el.InterruptLoadAutoCompletes(smDef);
                 }
             });
         }
