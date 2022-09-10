@@ -136,7 +136,8 @@ namespace SPCode.UI.Components
 
             _smDef = Program.Configs[Program.SelectedConfig].GetSMDef();
             _acEntries = new List<ACNode>();
-            _smDef.ProduceACNodes(_acEntries);
+            _acEntries.Clear();
+            _acEntries = _smDef.ProduceACNodes();
 
 
             AutoCompleteBox.ItemsSource = _acEntries;
@@ -149,7 +150,8 @@ namespace SPCode.UI.Components
         /// <param name="smDef"> The SMDefinition </param>
         private void InterruptLoadAutoCompletes(SMDefinition smDef)
         {
-            smDef.ProduceACNodes(_acEntries);
+            _acEntries.Clear();
+            _acEntries = smDef.ProduceACNodes();
             Dispatcher?.Invoke(() =>
             {
                 _acEntries = _acEntries;

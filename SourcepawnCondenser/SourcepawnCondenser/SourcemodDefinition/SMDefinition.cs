@@ -180,12 +180,14 @@ namespace SourcepawnCondenser.SourcemodDefinition
             }
         }
 
-        public void ProduceACNodes(List<ACNode> nodes)
+        public List<ACNode> ProduceACNodes()
         {
             
-            nodes.Clear();
-            
-            nodes.Capacity = Enums.Count + Structs.Count + ConstVariables.Count + Functions.Count;
+            var nodes = new List<ACNode>
+            {
+                Capacity = Enums.Count + Structs.Count + ConstVariables.Count + Functions.Count
+            };
+
             nodes.AddRange(ACNode.ConvertFromStringArray(FunctionStrings, true, "▲ "));
             nodes.AddRange(ACNode.ConvertFromStringList(TypeStrings, false, "♦ "));
             nodes.AddRange(ACNode.ConvertFromStringList(Constants, false, "• "));
@@ -196,6 +198,8 @@ namespace SourcepawnCondenser.SourcemodDefinition
 
             //nodes = nodes.Distinct(new ACNodeEqualityComparer()).ToList(); Methodmaps and Functions can and will be the same.
             nodes.Sort((a, b) => string.CompareOrdinal(a.EntryName, b.EntryName));
+
+            return nodes;
         }
 
         public void MergeDefinitions(SMDefinition def)
