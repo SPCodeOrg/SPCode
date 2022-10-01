@@ -173,7 +173,6 @@ namespace SPCode.UI
 
             // Close SplashScreen
             sc.Close(TimeSpan.FromMilliseconds(500.0));
-            FullyInitialized = true;
 
             // Enclose menuitems in an accesible list to set their InputGestureTexts easier
             MenuItems = new()
@@ -214,6 +213,8 @@ namespace SPCode.UI
 
             // Evaluate RTL
             EvaluateRTL();
+
+            FullyInitialized = true;
         }
         #endregion
 
@@ -456,7 +457,10 @@ namespace SPCode.UI
             layoutDocument.Content = editor;
             EditorReferences.Add(editor);
             DockingPane.Children.Add(layoutDocument);
-            AddNewRecentFile(fInfo);
+            if (FullyInitialized)
+            {
+                AddNewRecentFile(fInfo);
+            }
             if (SelectMe)
             {
                 layoutDocument.IsSelected = true;
@@ -478,7 +482,10 @@ namespace SPCode.UI
             layoutDocument.Content = dasmElement;
             DockingPane.Children.Add(layoutDocument);
             DockingPane.SelectedContentIndex = DockingPane.ChildrenCount - 1;
-            AddNewRecentFile(fileInfo);
+            if (FullyInitialized)
+            {
+                AddNewRecentFile(fileInfo);
+            }
         }
 
         /// <summary>
