@@ -154,7 +154,7 @@ namespace SPCode.UI.Components
             _acEntries = smDef.ProduceACNodes();
             Dispatcher?.Invoke(() =>
             {
-                _acEntries = _acEntries;
+                //_acEntries = _acEntries;
                 AutoCompleteBox.ItemsSource = _acEntries;
                 PreProcAutocompleteBox.ItemsSource = PreProcNodes;
                 _smDef = smDef;
