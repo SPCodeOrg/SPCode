@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,8 +25,7 @@ namespace SPCode.UI
                     return;
                 }
 
-                var editors = GetAllEditorElements();
-                if (editors == null)
+                if (!EditorReferences.Any())
                 {
                     return;
                 }
@@ -60,7 +60,7 @@ namespace SPCode.UI
                 }
 
                 // Look for the file that has the error among those that are open
-                foreach (var ed in editors)
+                foreach (var ed in EditorReferences)
                 {
                     if (ed.FullFilePath == fInfo.FullName)
                     {

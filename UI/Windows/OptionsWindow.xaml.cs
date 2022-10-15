@@ -191,13 +191,10 @@ namespace SPCode.UI.Windows
 
             var size = FontSizeD.Value;
             Program.OptionsObject.Editor_FontSize = size;
-            var editors = Program.MainWindow.GetAllEditorElements();
-            if (editors != null)
+            var editors = Program.MainWindow.EditorReferences;
+            foreach (var editor in editors)
             {
-                foreach (var editor in editors)
-                {
-                    editor.UpdateFontSize(size);
-                }
+                editor.UpdateFontSize(size);
             }
         }
 
@@ -221,13 +218,10 @@ namespace SPCode.UI.Windows
             Debug.Assert(WordWrap.IsChecked != null, "WordWrap.IsChecked != null");
             var wrapping = WordWrap.IsChecked.Value;
             Program.OptionsObject.Editor_WordWrap = wrapping;
-            var editors = Program.MainWindow.GetAllEditorElements();
-            if (editors != null)
+            var editors = Program.MainWindow.EditorReferences;
+            foreach (var editor in editors)
             {
-                foreach (var editor in editors)
-                {
-                    editor.editor.WordWrap = wrapping;
-                }
+                editor.editor.WordWrap = wrapping;
             }
         }
 
@@ -263,13 +257,10 @@ namespace SPCode.UI.Windows
             Debug.Assert(TabToSpace.IsChecked != null, "TabToSpace.IsChecked != null");
             var replaceTabs = TabToSpace.IsChecked.Value;
             Program.OptionsObject.Editor_ReplaceTabsToWhitespace = replaceTabs;
-            var editors = Program.MainWindow.GetAllEditorElements();
-            if (editors != null)
+            var editors = Program.MainWindow.EditorReferences;
+            foreach (var editor in editors)
             {
-                foreach (var editor in editors)
-                {
-                    editor.editor.Options.ConvertTabsToSpaces = replaceTabs;
-                }
+                editor.editor.Options.ConvertTabsToSpaces = replaceTabs;
             }
         }
 
@@ -304,13 +295,10 @@ namespace SPCode.UI.Windows
 
             Debug.Assert(ShowSpaces.IsChecked != null, "ShowSpaces.IsChecked != null");
             var showSpacesValue = Program.OptionsObject.Editor_ShowSpaces = ShowSpaces.IsChecked.Value;
-            var editors = Program.MainWindow.GetAllEditorElements();
-            if (editors != null)
+            var editors = Program.MainWindow.EditorReferences;
+            foreach (var editor in editors)
             {
-                foreach (var editor in editors)
-                {
-                    editor.editor.Options.ShowSpaces = showSpacesValue;
-                }
+                editor.editor.Options.ShowSpaces = showSpacesValue;
             }
         }
 
@@ -323,13 +311,10 @@ namespace SPCode.UI.Windows
 
             Debug.Assert(ShowTabs.IsChecked != null, "ShowTabs.IsChecked != null");
             var showTabsValue = Program.OptionsObject.Editor_ShowTabs = ShowTabs.IsChecked.Value;
-            var editors = Program.MainWindow.GetAllEditorElements();
-            if (editors != null)
+            var editors = Program.MainWindow.EditorReferences;
+            foreach (var editor in editors)
             {
-                foreach (var editor in editors)
-                {
-                    editor.editor.Options.ShowTabs = showTabsValue;
-                }
+                editor.editor.Options.ShowTabs = showTabsValue;
             }
         }
 
@@ -343,13 +328,10 @@ namespace SPCode.UI.Windows
             var family = (FontFamily)FontFamilyCB.SelectedItem;
             var FamilyString = family.Source;
             Program.OptionsObject.Editor_FontFamily = FamilyString;
-            var editors = Program.MainWindow.GetAllEditorElements();
-            if (editors != null)
+            var editors = Program.MainWindow.EditorReferences;
+            foreach (var editor in editors)
             {
-                foreach (var editor in editors)
-                {
-                    editor.editor.FontFamily = family;
-                }
+                editor.editor.FontFamily = family;
             }
         }
 
@@ -361,13 +343,10 @@ namespace SPCode.UI.Windows
             }
 
             var indentationSizeValue = Program.OptionsObject.Editor_IndentationSize = (int)Math.Round(IndentationSize.Value);
-            var editors = Program.MainWindow.GetAllEditorElements();
-            if (editors != null)
+            var editors = Program.MainWindow.EditorReferences;
+            foreach (var editor in editors)
             {
-                foreach (var editor in editors)
-                {
-                    editor.editor.Options.IndentationSize = indentationSizeValue;
-                }
+                editor.editor.Options.IndentationSize = indentationSizeValue;
             }
         }
 
@@ -548,18 +527,15 @@ namespace SPCode.UI.Windows
             }
 
             var newIndex = AutoSave.SelectedIndex;
-            var editors = Program.MainWindow.GetAllEditorElements();
+            var editors = Program.MainWindow.EditorReferences;
             if (newIndex == 0)
             {
                 Program.OptionsObject.Editor_AutoSave = false;
-                if (editors != null)
+                foreach (var editor in editors)
                 {
-                    foreach (var editor in editors)
+                    if (editor.AutoSaveTimer.Enabled)
                     {
-                        if (editor.AutoSaveTimer.Enabled)
-                        {
-                            editor.AutoSaveTimer.Stop();
-                        }
+                        editor.AutoSaveTimer.Stop();
                     }
                 }
             }
@@ -583,12 +559,9 @@ namespace SPCode.UI.Windows
                     Program.OptionsObject.Editor_AutoSaveInterval = (newIndex - 1) * 60;
                 }
 
-                if (editors != null)
+                foreach (var editor in editors)
                 {
-                    foreach (var editor in editors)
-                    {
-                        editor.StartAutoSaveTimer();
-                    }
+                    editor.StartAutoSaveTimer();
                 }
             }
         }

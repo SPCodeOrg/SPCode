@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Linq;
 using System.Windows.Controls;
 using MahApps.Metro.Controls;
 using static SPCode.Interop.TranslationProvider;
@@ -12,12 +12,11 @@ namespace SPCode.UI
             CompileButtonDict = new () { Translate("CompileAll"), Translate("CompileCurrent") };
             ActionButtonDict = new () { Translate("Copy"), Translate("UploadFTP"), Translate("StartServer") };
             ((MenuItem)ConfigMenu.Items[ConfigMenu.Items.Count - 1]).Header = Translate("EditConfig");
-            var ee = GetAllEditorElements();
-            if (ee != null)
+            if (EditorReferences.Any())
             {
-                foreach (var t in ee)
+                foreach (var editor in EditorReferences)
                 {
-                    t?.Language_Translate();
+                    editor.Language_Translate();
                 }
             }
             MenuI_New.Header = Translate("New");

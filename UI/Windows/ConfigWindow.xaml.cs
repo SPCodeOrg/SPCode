@@ -322,7 +322,7 @@ namespace SPCode.UI.Windows
             }
 
             // Test for access permissions and flag as rejected directory if necessary
-            var canAccess = DirUtils.CanAccess(dialog.FileName);
+            var canAccess = DirHelper.CanAccess(dialog.FileName);
             if (!canAccess)
             {
                 this.ShowMessageAsync(Translate("PermissionAccessError"),
@@ -796,7 +796,7 @@ namespace SPCode.UI.Windows
             var c = Program.Configs[index];
 
             C_SMDir.Items.Clear();
-            c.SMDirectories.ForEach(x => C_SMDir.Items.Add(CreateDirItem(x, DirUtils.CanAccess(x))));
+            c.SMDirectories.ForEach(x => C_SMDir.Items.Add(CreateDirItem(x, DirHelper.CanAccess(x))));
             C_Name.Text = c.Name;
             C_AutoCopy.IsChecked = c.AutoCopy;
             C_AutoUpload.IsChecked = c.AutoUpload;

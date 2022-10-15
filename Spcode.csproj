@@ -198,7 +198,7 @@
     </Compile>
     <Compile Include="UI\Components\EditorElement\Highlighting\BracketHighlightHelpers.cs" />
     <Compile Include="UI\Components\EditorElement\Highlighting\BracketSearchResult.cs" />
-    <Compile Include="Utils\DirUtils.cs" />
+    <Compile Include="Utils\DirHelper.cs" />
     <Compile Include="Utils\Models\ComboboxItem.cs" />
     <Compile Include="Utils\Models\Config.cs" />
     <Compile Include="Utils\Constants.cs" />

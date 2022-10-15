@@ -64,24 +64,6 @@ namespace SPCode.UI
         }
 
         /// <summary>
-        /// Gets an array of all open editor elements.
-        /// </summary>
-        /// <returns></returns>
-        public List<EditorElement> GetAllEditorElements()
-        {
-            return EditorReferences.Count == 0 ? null : EditorReferences;
-        }
-
-        /// <summary>
-        /// Gets an array of all open DASM elements.
-        /// </summary>
-        /// <returns></returns>
-        public List<DASMElement> GetAllDASMElements()
-        {
-            return DASMReferences.Count < 1 ? null : DASMReferences;
-        }
-
-        /// <summary>
         /// Creates a new SourcePawn Script file and loads it.
         /// </summary>
         private void Command_New()
@@ -249,7 +231,7 @@ namespace SPCode.UI
         {
             try
             {
-                if (GetAllEditorElements() != null)
+                if (EditorReferences.Any())
                 {
                     var goToLineWindow = new GoToLineWindow();
                     goToLineWindow.ShowDialog();
@@ -287,7 +269,7 @@ namespace SPCode.UI
         {
             try
             {
-                if (GetAllEditorElements() == null)
+                if (EditorReferences.Any())
                 {
                     return;
                 }
@@ -322,15 +304,14 @@ namespace SPCode.UI
         {
             try
             {
-                var editors = GetAllEditorElements();
-                if (editors == null || GetCurrentEditorElement().IsTemplateEditor)
+                if (!EditorReferences.Any()|| GetCurrentEditorElement().IsTemplateEditor)
                 {
                     return;
                 }
 
-                if (editors.Count > 0)
+                if (EditorReferences.Count > 0)
                 {
-                    foreach (var editor in editors)
+                    foreach (var editor in EditorReferences)
                     {
                         editor.Save();
                     }
@@ -373,16 +354,9 @@ namespace SPCode.UI
         {
             try
             {
-                var editors = GetAllEditorElements();
-                var dasm = GetAllDASMElements();
-
-                if (editors == null || editors.Any(x => x.IsTemplateEditor) || editors.Count == 0 || editors.Any(x => x.ClosingPromptOpened))
-                {
-                    return;
-                }
-
-                foreach (var editor in editors) editor.Close();
-                foreach (var editor in dasm) editor.Close();
+                // We create a new list because we can't delete elements of the list we're iterating through
+                foreach (var editor in EditorReferences.ToList()) editor.Close();
+                foreach (var editor in DASMReferences.ToList()) editor.Close();
             }
             catch (Exception ex)
             {
@@ -564,51 +538,49 @@ namespace SPCode.UI
         /// <summary>
         /// Perform a code reformat to clean loose whitespaces/wrongly indented code.
         /// </summary>
-        /// <param name="All"></param>
-        private void Command_TidyCode(bool All)
+        /// <param name="all"></param>
+        private void Command_TidyCode(bool all)
         {
             try
             {
-                var editors = All ? GetAllEditorElements() : new() { GetCurrentEditorElement() };
-                if (editors == null)
+                var editors = all ? EditorReferences : new() { GetCurrentEditorElement() };
+                foreach (var editor in editors)
                 {
-                    return;
-                }
-                foreach (var ee in editors)
-                {
-                    if (ee != null && !ee.editor.IsReadOnly)
+                    if (editor == null || editor.editor.IsReadOnly)
                     {
-                        int currentCaret = ee.editor.TextArea.Caret.Offset, numOfSpacesOrTabsBefore = 0;
-                        var line = ee.editor.Document.GetLineByOffset(currentCaret);
-                        var lineNumber = line.LineNumber;
-                        // 0 - start | any other - middle | -1 - EOS
-                        var cursorLinePos = currentCaret == line.Offset ? 0 : currentCaret == line.EndOffset ? -1 : currentCaret - line.Offset;
-
-                        if (cursorLinePos > 0)
-                        {
-                            numOfSpacesOrTabsBefore = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
-                        }
-
-                        // Formatting Start //
-                        ee.editor.Document.BeginUpdate();
-                        var source = ee.editor.Text;
-                        ee.editor.Document.Replace(0, source.Length, SPSyntaxTidy.TidyUp(source));
-                        ee.editor.Document.EndUpdate();
-                        // Formatting End //
-
-                        line = ee.editor.Document.GetLineByNumber(lineNumber);
-                        var newCaretPos = line.Offset;
-                        if (cursorLinePos == -1)
-                        {
-                            newCaretPos += line.Length;
-                        }
-                        else if (cursorLinePos != 0)
-                        {
-                            var numOfSpacesOrTabsAfter = ee.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
-                            newCaretPos += cursorLinePos + (numOfSpacesOrTabsAfter - numOfSpacesOrTabsBefore);
-                        }
-                        ee.editor.TextArea.Caret.Offset = newCaretPos;
+                        continue;
                     }
+
+                    int currentCaret = editor.editor.TextArea.Caret.Offset, numOfSpacesOrTabsBefore = 0;
+                    var line = editor.editor.Document.GetLineByOffset(currentCaret);
+                    var lineNumber = line.LineNumber;
+                    // 0 - start | any other - middle | -1 - EOS
+                    var cursorLinePos = currentCaret == line.Offset ? 0 : currentCaret == line.EndOffset ? -1 : currentCaret - line.Offset;
+
+                    if (cursorLinePos > 0)
+                    {
+                        numOfSpacesOrTabsBefore = editor.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
+                    }
+
+                    // Formatting Start //
+                    editor.editor.Document.BeginUpdate();
+                    var source = editor.editor.Text;
+                    editor.editor.Document.Replace(0, source.Length, SPSyntaxTidy.TidyUp(source));
+                    editor.editor.Document.EndUpdate();
+                    // Formatting End //
+
+                    line = editor.editor.Document.GetLineByNumber(lineNumber);
+                    var newCaretPos = line.Offset;
+                    if (cursorLinePos == -1)
+                    {
+                        newCaretPos += line.Length;
+                    }
+                    else if (cursorLinePos != 0)
+                    {
+                        var numOfSpacesOrTabsAfter = editor.editor.Document.GetText(line).Count(c => c == ' ' || c == '\t');
+                        newCaretPos += cursorLinePos + (numOfSpacesOrTabsAfter - numOfSpacesOrTabsBefore);
+                    }
+                    editor.editor.TextArea.Caret.Offset = newCaretPos;
                 }
             }
             catch (Exception ex)

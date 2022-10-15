@@ -512,7 +512,7 @@ namespace SPCode.UI
             {
                 dir = Environment.CurrentDirectory;
             }
-            if (!DirUtils.CanAccess(dir))
+            if (!DirHelper.CanAccess(dir))
             {
                 return;
             }
@@ -619,7 +619,7 @@ namespace SPCode.UI
                 if (attr.HasFlag(FileAttributes.Directory))
                 {
                     var dInfo = new DirectoryInfo(item);
-                    if (!dInfo.Exists || !DirUtils.CanAccess(dInfo))
+                    if (!dInfo.Exists || !DirHelper.CanAccess(dInfo))
                     {
                         continue;
                     }
@@ -724,7 +724,7 @@ namespace SPCode.UI
         /// </summary>
         public void UpdateOBFileButton()
         {
-            if (GetAllEditorElements() == null && GetAllDASMElements() == null)
+            if (!EditorReferences.Any() && !DASMReferences.Any())
             {
                 OBTabFile.IsEnabled = false;
                 OBTabFile.IsSelected = false;

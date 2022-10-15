@@ -517,7 +517,7 @@ namespace SPCode.UI.Windows
         private void LoadEditorsInfo()
         {
             _editor = Program.MainWindow.GetCurrentEditorElement();
-            _allEditors = Program.MainWindow.GetAllEditorElements();
+            _allEditors = Program.MainWindow.EditorReferences;
             _dockingPane = Program.MainWindow.DockingPane;
         }
 

@@ -171,7 +171,7 @@ namespace SPCode.Interop
             try
             {
                 // Clear temp folder before beggining
-                DirUtils.ClearSPCodeTempFolder();
+                DirHelper.ClearSPCodeTempFolder();
 
                 // Download latest release zip file
                 var wc = new WebClient();
@@ -197,7 +197,7 @@ namespace SPCode.Interop
                 }
 
                 // Delete all temp folder contents
-                DirUtils.ClearSPCodeTempFolder();
+                DirHelper.ClearSPCodeTempFolder();
 
                 // Update version to options object
                 Program.OptionsObject.TranslationsVersion = int.Parse(_latestVersion.Name);

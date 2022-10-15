@@ -100,14 +100,13 @@ namespace SPCode.UI
             ScriptsCompiled = new();
             if (compileAll)
             {
-                var editors = GetAllEditorElements();
-                if (editors == null)
+                if (!EditorReferences.Any())
                 {
                     InCompiling = false;
                     return;
                 }
 
-                foreach (var editor in editors)
+                foreach (var editor in EditorReferences)
                 {
                     var compileBoxIsChecked = editor.CompileBox.IsChecked;
                     if (compileBoxIsChecked != null && compileBoxIsChecked.Value)

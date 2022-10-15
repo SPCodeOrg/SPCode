@@ -262,9 +262,8 @@ namespace SPCode.UI
             if (!ClosingBuffer)
             {
                 // Close directly if no files need to be saved
-                var editors = GetAllEditorElements()?.ToList();
 
-                if (editors == null || (editors != null && !editors.Any(x => x.NeedsSave)) || Program.OptionsObject.ActionOnClose != ActionOnClose.Prompt)
+                if (!EditorReferences.Any() || !EditorReferences.Any(x => x.NeedsSave) || Program.OptionsObject.ActionOnClose != ActionOnClose.Prompt)
                 {
                     ClosingBuffer = true;
                     CloseProgram(true);
@@ -277,7 +276,7 @@ namespace SPCode.UI
                     // Build list of unsaved files to show
                     var sb = new StringBuilder();
 
-                    foreach (var editor in editors.Where(x => x.NeedsSave))
+                    foreach (var editor in EditorReferences.Where(x => x.NeedsSave))
                     {
                         sb.AppendLine($"  - {editor.Parent.Title.Substring(1)}");
                     }
@@ -345,99 +344,98 @@ namespace SPCode.UI
         {
             outEditor = null;
             var fileInfo = new FileInfo(filePath);
-            if (fileInfo.Exists)
+
+            if (!fileInfo.Exists)
             {
-                if (fileInfo.Extension == ".sp" ||
-                    fileInfo.Extension == ".inc" ||
-                    fileInfo.Extension == ".txt" ||
-                    fileInfo.Extension == ".cfg" ||
-                    fileInfo.Extension == ".ini")
-                {
-                    var finalPath = fileInfo.FullName;
-                    if (!DirUtils.CanAccess(finalPath))
-                    {
-                        return false;
-                    }
-
-                    var editors = GetAllEditorElements();
-                    if (editors != null)
-                    {
-                        foreach (var editor in editors)
-                        {
-                            if (editor.FullFilePath == finalPath)
-                            {
-                                if (SelectMe)
-                                {
-                                    editor.Parent.IsSelected = true;
-                                    editor.editor.TextArea.Caret.Show();
-                                    EditorToFocus = editor;
-                                    SelectDocumentTimer.Start();
-                                }
-
-                                outEditor = editor;
-                                return true;
-                            }
-                        }
-                    }
-
-                    AddEditorElement(fileInfo, fileInfo.Name, SelectMe, out outEditor);
-                    if (TryOpenIncludes && Program.OptionsObject.Program_OpenCustomIncludes)
-                    {
-                        using var textReader = fileInfo.OpenText();
-                        var source = Regex.Replace(textReader.ReadToEnd(), @"/\*.*?\*/", string.Empty,
-                            RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
-                        var regex = new Regex(@"^\s*\#include\s+((\<|"")(?<name>.+?)(\>|""))",
-                            RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
-                        var mc = regex.Matches(source);
-                        for (var i = 0; i < mc.Count; ++i)
-                        {
-                            try
-                            {
-                                var fileName = mc[i].Groups["name"].Value;
-                                if (!(fileName.EndsWith(".inc", StringComparison.InvariantCultureIgnoreCase) ||
-                                      fileName.EndsWith(".sp", StringComparison.InvariantCultureIgnoreCase)))
-                                {
-                                    fileName += ".inc";
-                                }
-
-                                fileName = Path.Combine(
-                                    fileInfo.DirectoryName ?? throw new NullReferenceException(), fileName);
-                                TryLoadSourceFile(fileName, out _, false,
-                                    Program.OptionsObject.Program_OpenIncludesRecursively);
-                            }
-                            catch (Exception)
-                            {
-                                // ignored
-                            }
-                        }
-                    }
-                }
-                else if (fileInfo.Extension == ".smx")
-                {
-                    var viewers = GetAllDASMElements();
-                    if (viewers != null)
-                    {
-                        foreach (var dasmviewer in viewers)
-                        {
-                            if (dasmviewer.FilePath == fileInfo.FullName)
-                            {
-                                DockingManager.ActiveContent = dasmviewer;
-                                return true;
-                            }
-                        }
-                    }
-                    AddDASMElement(fileInfo);
-                }
-
-                if (UseBlendoverEffect)
-                {
-                    BlendOverEffect.Begin();
-                }
-
-                return true;
+                return false;
             }
 
-            return false;
+            if (DirHelper.HasValidTextExtension(fileInfo))
+            {
+                var finalPath = fileInfo.FullName;
+                if (!DirHelper.CanAccess(finalPath))
+                {
+                    return false;
+                }
+
+                if (EditorReferences.Any())
+                {
+                    foreach (var editor in EditorReferences)
+                    {
+                        if (editor.FullFilePath == finalPath)
+                        {
+                            if (SelectMe)
+                            {
+                                editor.Parent.IsSelected = true;
+                                editor.editor.TextArea.Caret.Show();
+                                EditorToFocus = editor;
+                                SelectDocumentTimer.Start();
+                            }
+
+                            outEditor = editor;
+                            return true;
+                        }
+                    }
+                }
+
+                AddEditorElement(fileInfo, fileInfo.Name, SelectMe, out outEditor);
+                if (TryOpenIncludes && Program.OptionsObject.Program_OpenCustomIncludes)
+                {
+                    using var textReader = fileInfo.OpenText();
+                    var source = Regex.Replace(textReader.ReadToEnd(), @"/\*.*?\*/", string.Empty,
+                        RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline);
+                    var regex = new Regex(@"^\s*\#include\s+((\<|"")(?<name>.+?)(\>|""))",
+                        RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline);
+                    var mc = regex.Matches(source);
+                    for (var i = 0; i < mc.Count; ++i)
+                    {
+                        try
+                        {
+                            var fileName = mc[i].Groups["name"].Value;
+                            if (!(fileName.EndsWith(".inc", StringComparison.InvariantCultureIgnoreCase) ||
+                                  fileName.EndsWith(".sp", StringComparison.InvariantCultureIgnoreCase)))
+                            {
+                                fileName += ".inc";
+                            }
+
+                            fileName = Path.Combine(
+                                fileInfo.DirectoryName ?? throw new NullReferenceException(), fileName);
+                            TryLoadSourceFile(fileName, out _, false,
+                                Program.OptionsObject.Program_OpenIncludesRecursively);
+                        }
+                        catch (Exception)
+                        {
+                            // ignored
+                        }
+                    }
+                }
+            }
+            else if (DirHelper.IsBinary(fileInfo))
+            {
+                if (DASMReferences.Any())
+                {
+                    foreach (var dasmviewer in DASMReferences)
+                    {
+                        if (dasmviewer.FilePath == fileInfo.FullName)
+                        {
+                            DockingManager.ActiveContent = dasmviewer;
+                            return true;
+                        }
+                    }
+                }
+                AddDASMElement(fileInfo);
+            }
+            else
+            {
+                return false;
+            }
+
+            if (UseBlendoverEffect)
+            {
+                BlendOverEffect.Begin();
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -549,9 +547,8 @@ namespace SPCode.UI
         {
             // Save all the last open files
             var lastOpenFiles = new List<string>();
-            var editors = GetAllEditorElements()?.ToList();
 
-            editors?.ForEach(x =>
+            EditorReferences.ForEach(x =>
             {
                 if (File.Exists(x.FullFilePath))
                 {
@@ -562,11 +559,11 @@ namespace SPCode.UI
 
             if (saveAll)
             {
-                editors?.ForEach(x => x.Close(true));
+                EditorReferences.ForEach(x => x.Close(true));
             }
             else
             {
-                editors?.ForEach(x => x.Close(false, false));
+                EditorReferences.ForEach(x => x.Close(false, false));
             }
 
             // Kill children process from "Server Start" feature
@@ -601,7 +598,7 @@ namespace SPCode.UI
         public void EvaluateRTL()
         {
             FlowDirection = Program.IsRTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
-            GetAllEditorElements()?.ForEach(x => x.EvaluateRTL());
+            EditorReferences.ForEach(x => x.EvaluateRTL());
         }
         #endregion
     }

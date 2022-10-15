@@ -21,7 +21,7 @@ namespace SPCode.UI
         #region Events
         private void FileMenu_Open(object sender, RoutedEventArgs e)
         {
-            var EditorsAreOpen = GetAllEditorElements() != null;
+            var EditorsAreOpen = EditorReferences.Any();
             var EditorIsSelected = GetCurrentEditorElement() != null;
 
             MenuI_Save.IsEnabled = EditorIsSelected;

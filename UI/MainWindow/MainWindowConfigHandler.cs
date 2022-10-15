@@ -87,10 +87,9 @@ namespace SPCode.UI
                 Program.SelectedConfig = index;
                 Program.OptionsObject.Program_SelectedConfig = Program.Configs[Program.SelectedConfig].Name;
 
-                var editors = GetAllEditorElements();
-                if (editors != null)
+                if (EditorReferences.Any())
                 {
-                    foreach (var editor in editors)
+                    foreach (var editor in EditorReferences)
                     {
                         editor.LoadAutoCompletes();
                         editor.editor.SyntaxHighlighting = new AeonEditorHighlighting();

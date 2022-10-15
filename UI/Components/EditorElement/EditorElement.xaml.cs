@@ -663,21 +663,21 @@ namespace SPCode.UI.Components
                     return;
                 }
 
-                var ee = Program.MainWindow.GetAllEditorElements();
-                var ce = Program.MainWindow.GetCurrentEditorElement();
+                var editors = Program.MainWindow.EditorReferences;
+                var currentEditor = Program.MainWindow.GetCurrentEditorElement();
 
                 var caret = -1;
 
-                if (ee == null || ce == null)
+                if (!editors.Any() || currentEditor == null)
                 {
                     return;
                 }
 
-                var definitions = new List<SMDefinition>(ee.Count);
+                var definitions = new List<SMDefinition>(editors.Count);
 
                 List<SMFunction> currentFunctions = null;
 
-                foreach (var el in ee)
+                foreach (var el in editors)
                 {
                     var fInfo = new FileInfo(el.FullFilePath);
                     var text = el.editor.Document.Text;
@@ -694,7 +694,7 @@ namespace SPCode.UI.Components
                     definitions.Add(def);
 
 
-                    if (el != ce)
+                    if (el != currentEditor)
                         continue;
 
                     currentFunctions = def.Functions;
@@ -730,14 +730,14 @@ namespace SPCode.UI.Components
                     .ProduceTemporaryExpandedDefinition(definitions, caret, currentFunctions);
 
                 // Lags the hell out when typing a lot.
-                ce.editor.SyntaxHighlighting = new AeonEditorHighlighting(smDef);
+                currentEditor.editor.SyntaxHighlighting = new AeonEditorHighlighting(smDef);
 
-                foreach (var el in ee)
+                foreach (var el in editors)
                 {
-                    if (el == ce)
+                    if (el == currentEditor)
                     {
-                        Debug.Assert(ce != null, nameof(ce) + " != null");
-                        if (ce._isTooltipOpen)
+                        Debug.Assert(currentEditor != null, nameof(currentEditor) + " != null");
+                        if (currentEditor._isTooltipOpen)
                         {
                             continue;
                         }
