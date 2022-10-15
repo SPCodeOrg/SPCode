@@ -17,7 +17,7 @@ namespace SPCode.UI
 {
     public partial class MainWindow
     {
-        private List<string> ScriptsCompiled;
+        private List<string> ScriptsCompiled = new();
 
         private readonly List<string> CompiledFileNames = new();
         private readonly List<string> CompiledFiles = new();
@@ -39,6 +39,9 @@ namespace SPCode.UI
         private string CurrentErrorString;
 
         private static readonly Encoding _ansi = Encoding.GetEncoding(1251);
+
+        private static readonly RegexOptions _regexOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline;
+        private readonly Regex _errorFilterRegex = new(Constants.ErrorFilterRegex, _regexOptions);
 
         /// <summary>
         /// Compiles the specified scripts.
@@ -69,7 +72,6 @@ namespace SPCode.UI
             FileInfo spCompInfo = null;
             var SpCompFound = false;
             var PressedEscape = false;
-            var hadError = false;
             var dontCreateFile = false;
             TotalErrors = 0;
             TotalWarnings = 0;
@@ -97,7 +99,7 @@ namespace SPCode.UI
             }
 
             // If the compiler was found, it starts adding to a list all of the files to compile
-            ScriptsCompiled = new();
+            ScriptsCompiled.Clear();
             if (compileAll)
             {
                 if (!EditorReferences.Any())
@@ -144,8 +146,6 @@ namespace SPCode.UI
                 ProgressTask.SetProgress(0.0);
 
                 var stringOutput = new StringBuilder();
-                var regexOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline;
-                var errorFilterRegex = new Regex(Constants.ErrorFilterRegex, regexOptions);
 
                 var compiledSuccess = 0;
 
@@ -164,14 +164,6 @@ namespace SPCode.UI
                     var fileInfo = new FileInfo(file);
                     if (fileInfo.Exists)
                     {
-                        var process = new Process();
-                        process.StartInfo.WorkingDirectory =
-                            fileInfo.DirectoryName ?? throw new NullReferenceException();
-                        process.StartInfo.UseShellExecute = true;
-                        process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                        process.StartInfo.CreateNoWindow = true;
-                        process.StartInfo.FileName = spCompInfo.FullName;
-
                         dontCreateFile = ee.DontCreateFileBox.IsChecked.HasValue && ee.DontCreateFileBox.IsChecked.Value;
                         string outFile;
                         string destinationFileName;
@@ -192,12 +184,6 @@ namespace SPCode.UI
                             fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
                         }
 
-                        var errorFile = $@"{fileInfo.DirectoryName}\error_{Environment.TickCount}_{file.GetHashCode():X}_{i}.txt";
-                        if (File.Exists(errorFile))
-                        {
-                            File.Delete(errorFile);
-                        }
-
                         var includeDirectories = new StringBuilder();
                         foreach (var dir in currentConfig.SMDirectories)
                         {
@@ -206,31 +192,30 @@ namespace SPCode.UI
 
                         var includeStr = includeDirectories.ToString();
 
-                        process.StartInfo.Arguments =
-                            "\"" + fileInfo.FullName + "\" -o=\"" + outFile + "\" -e=\"" + errorFile + "\"" +
-                            includeStr + " -O=" + currentConfig.OptimizeLevel + " -v=" + currentConfig.VerboseLevel;
-                        ProgressTask.SetProgress((i + 1 - 0.5d) / compileCount);
+                        var process = new Process();
+                        var startInfo = new ProcessStartInfo
+                        {
+                            WorkingDirectory = fileInfo.DirectoryName ?? throw new NullReferenceException(),
+                            UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                            CreateNoWindow = true,
+                            FileName = spCompInfo.FullName,
+                            Arguments = $"\"{fileInfo.FullName}\" -o=\"{outFile}\" {includeStr} -O={currentConfig.OptimizeLevel} -v={currentConfig.VerboseLevel}"
+                        };
 
+                        var sb = new StringBuilder();
+                        process.StartInfo = startInfo;
+                        ProgressTask.SetProgress((i + 1 - 0.5d) / compileCount);
 
                         ProcessUITasks();
 
                         try
                         {
                             process.Start();
+                            sb.Append(process.StandardOutput.ReadToEnd());
                             process.WaitForExit();
-
-                            if (process.ExitCode != 1 && process.ExitCode != 0)
-                            {
-                                await ProgressTask.CloseAsync();
-                                await this.ShowMessageAsync(Translate("Error"),
-                                    "The SourcePawn compiler has crashed.\n" +
-                                    "Try again, or file an issue at the SourcePawn GitHub repository describing your steps that led to this instance in detail.\n" +
-                                    $"Exit code: {process.ExitCode:X}", MessageDialogStyle.Affirmative,
-                                    MetroDialogOptions);
-                                LoggingControl.LogAction($"Compiler crash detected, file: {fileInfo.Name}", 2);
-                                InCompiling = false;
-                                return;
-                            }
                         }
                         catch (Exception)
                         {
@@ -242,60 +227,72 @@ namespace SPCode.UI
                             return;
                         }
 
-                        if (File.Exists(errorFile))
+                        switch (process.ExitCode)
                         {
-                            hadError = false;
-                            var errorStr = Encoding.UTF8.GetString(Encoding.Convert(_ansi, Encoding.UTF8, _ansi.GetBytes(File.ReadAllText(errorFile, _ansi))));
-                            CurrentErrorString = errorStr;
-                            stringOutput.AppendLine(errorStr.Trim('\n', '\r'));
-                            var mc = errorFilterRegex.Matches(errorStr);
-                            for (var j = 0; j < mc.Count; ++j)
+                            // Successful compilation
+                            case 0:
                             {
-                                if (mc[j].Groups["Type"].Value.Contains("error"))
-                                {
-                                    hadError = true;
-                                    TotalErrors++;
-                                    var item = new ErrorDataGridRow
-                                    {
-                                        File = mc[j].Groups["File"].Value.Trim(),
-                                        Line = mc[j].Groups["Line"].Value.Trim(),
-                                        Type = mc[j].Groups["Type"].Value.Trim(),
-                                        Details = mc[j].Groups["Details"].Value.Trim()
-                                    };
-                                    if (!HideErrors)
-                                    {
-                                        ErrorResultGrid.Items.Add(item);
-                                    }
-                                    CurrentErrors.Add(item);
-                                }
-                                if (mc[j].Groups["Type"].Value.Contains("warning"))
-                                {
-                                    TotalWarnings++;
-                                    var item = new ErrorDataGridRow
-                                    {
-                                        File = mc[j].Groups["File"].Value.Trim(),
-                                        Line = mc[j].Groups["Line"].Value.Trim(),
-                                        Type = mc[j].Groups["Type"].Value.Trim(),
-                                        Details = mc[j].Groups["Details"].Value.Trim()
-                                    };
-                                    if (!HideWarnings)
-                                    {
-                                        ErrorResultGrid.Items.Add(item);
-                                    }
-                                    CurrentWarnings.Add(item);
-                                }
+                                LoggingControl.LogAction($"{fileInfo.Name}{(TotalWarnings > 0 ? $" ({TotalWarnings} warnings)" : "")}");
+                                compiledSuccess++;
+                                break;
                             }
-                            File.Delete(errorFile);
-                        }
 
-                        if (hadError)
-                        {
-                            LoggingControl.LogAction(fileInfo.Name + " (error)");
-                        }
-                        else
-                        {
-                            LoggingControl.LogAction($"{fileInfo.Name}{(TotalWarnings > 0 ? $" ({TotalWarnings} warnings)" : "")}");
-                            compiledSuccess++;
+                            // Failed compilation
+                            case 1:
+                            {
+                                LoggingControl.LogAction(fileInfo.Name + " (error)");
+                                var matches = _errorFilterRegex.Matches(sb.ToString());
+                                foreach (Match match in matches)
+                                {
+                                    if (match.Groups["Type"].Value.Contains("error"))
+                                    {
+                                        TotalErrors++;
+                                        var item = new ErrorDataGridRow
+                                        {
+                                            File = match.Groups["File"].Value.Trim(),
+                                            Line = match.Groups["Line"].Value.Trim(),
+                                            Type = match.Groups["Type"].Value.Trim(),
+                                            Details = match.Groups["Details"].Value.Trim()
+                                        };
+                                        if (!HideErrors)
+                                        {
+                                            ErrorResultGrid.Items.Add(item);
+                                        }
+                                        CurrentErrors.Add(item);
+                                    }
+                                    if (match.Groups["Type"].Value.Contains("warning"))
+                                    {
+                                        TotalWarnings++;
+                                        var item = new ErrorDataGridRow
+                                        {
+                                            File = match.Groups["File"].Value.Trim(),
+                                            Line = match.Groups["Line"].Value.Trim(),
+                                            Type = match.Groups["Type"].Value.Trim(),
+                                            Details = match.Groups["Details"].Value.Trim()
+                                        };
+                                        if (!HideWarnings)
+                                        {
+                                            ErrorResultGrid.Items.Add(item);
+                                        }
+                                        CurrentWarnings.Add(item);
+                                    }
+                                }
+                                break;
+                            }
+
+                            // Compiler crash
+                            default:
+                            {
+                                await ProgressTask.CloseAsync();
+                                await this.ShowMessageAsync(Translate("Error"),
+                                    "The SourcePawn compiler has crashed.\n" +
+                                    "Try again, or file an issue at the SourcePawn GitHub repository describing your steps that led to this instance in detail.\n" +
+                                    $"Exit code: {process.ExitCode:X}", MessageDialogStyle.Affirmative,
+                                    MetroDialogOptions);
+                                LoggingControl.LogAction($"Compiler crash detected, file: {fileInfo.Name}", 2);
+                                InCompiling = false;
+                                return;
+                            }
                         }
 
                         if (!dontCreateFile && File.Exists(outFile))
@@ -324,7 +321,7 @@ namespace SPCode.UI
                 Status_ErrorText.Text = (TotalErrors == 1 ? string.Format(Translate("status_error"), "1") : string.Format(Translate("status_errors"), TotalErrors)).ToLowerInvariant();
                 Status_WarningText.Text = (TotalWarnings == 1 ? string.Format(Translate("status_warning"), "1") : string.Format(Translate("status_warnings"), TotalWarnings)).ToLowerInvariant();
 
-                if (!PressedEscape)
+                if (!PressedEscape && compiledSuccess > 0)
                 {
                     ProgressTask.SetProgress(1.0);
                     if (currentConfig.AutoCopy && !dontCreateFile)
