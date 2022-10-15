@@ -559,11 +559,11 @@ namespace SPCode.UI
 
             if (saveAll)
             {
-                EditorReferences.ForEach(x => x.Close(true));
+                EditorReferences.ToList().ForEach(x => x.Close(true));
             }
             else
             {
-                EditorReferences.ForEach(x => x.Close(false, false));
+                EditorReferences.ToList().ForEach(x => x.Close(false, false));
             }
 
             // Kill children process from "Server Start" feature
