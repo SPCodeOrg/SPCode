@@ -269,7 +269,7 @@ namespace SPCode.UI
         {
             try
             {
-                if (EditorReferences.Any())
+                if (!EditorReferences.Any())
                 {
                     return;
                 }
