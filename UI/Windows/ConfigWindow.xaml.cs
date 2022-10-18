@@ -778,6 +778,14 @@ namespace SPCode.UI.Windows
                 DeleteButtonText.Visibility = Visibility.Visible;
             }
         }
+
+        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
+        }
         #endregion
 
         #region Methods

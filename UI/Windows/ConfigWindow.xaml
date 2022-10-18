@@ -12,7 +12,8 @@
                       Title="Configurations"
                       TitleCaps="False"
                       ShowTitleBar="true" 
-                      Closing="MetroWindow_Closing">
+                      Closing="MetroWindow_Closing"
+                      KeyDown="MetroWindow_KeyDown">
 
   <controls:MetroWindow.Resources>
     <ResourceDictionary>

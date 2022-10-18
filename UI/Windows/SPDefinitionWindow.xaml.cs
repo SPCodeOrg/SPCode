@@ -255,6 +255,14 @@ namespace SPCode.UI.Windows
             }
         }
 
+        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Close();
+            }
+        }
+
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             SPProgress.IsIndeterminate = true;

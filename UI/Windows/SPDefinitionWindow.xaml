@@ -8,7 +8,8 @@
                       WindowStartupLocation="CenterOwner" 
                       GlowBrush="{DynamicResource AccentColorBrush}"
                       ShowTitleBar="True"
-                      TitleCharacterCasing="Normal">
+                      TitleCharacterCasing="Normal"
+                      KeyDown="MetroWindow_KeyDown">
 
   <controls:MetroWindow.Resources>
     <ResourceDictionary>

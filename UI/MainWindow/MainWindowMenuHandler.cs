@@ -223,7 +223,9 @@ namespace SPCode.UI
         private void Menu_OpenSPDef(object sender, RoutedEventArgs e)
         {
             var spDefinitionWindow = new SPDefinitionWindow { Owner = this, ShowInTaskbar = false };
+            DimmMainWindow();
             spDefinitionWindow.ShowDialog();
+            RestoreMainWindow();
         }
 
         private void Menu_OpenOptions(object sender, RoutedEventArgs e)
