@@ -51,7 +51,7 @@ namespace SPCode.UI
         {
             // Checks if the program is compiling to avoid doing it again, and checks if the editor is from the templates window
             var ee = GetCurrentEditorElement();
-            if (InCompiling || (ee != null && ee.IsTemplateEditor))
+            if (ee == null || InCompiling || ee.IsTemplateEditor)
             {
                 return;
             }
@@ -229,9 +229,20 @@ namespace SPCode.UI
 
                         switch (process.ExitCode)
                         {
-                            // Successful compilation
+                            // Successful compilation (could have warnings)
                             case 0:
                             {
+                                var matches = _errorFilterRegex.Matches(sb.ToString());
+                                foreach (Match match in matches)
+                                {
+                                    TotalWarnings++;
+                                    var item = new ErrorDataGridRow(match);
+                                    if (!HideWarnings)
+                                    {
+                                        ErrorResultGrid.Items.Add(item);
+                                    }
+                                    CurrentWarnings.Add(item);
+                                }
                                 LoggingControl.LogAction($"{fileInfo.Name}{(TotalWarnings > 0 ? $" ({TotalWarnings} warnings)" : "")}");
                                 compiledSuccess++;
                                 break;
@@ -244,32 +255,19 @@ namespace SPCode.UI
                                 var matches = _errorFilterRegex.Matches(sb.ToString());
                                 foreach (Match match in matches)
                                 {
-                                    if (match.Groups["Type"].Value.Contains("error"))
+                                    var item = new ErrorDataGridRow(match);
+                                    if (item.IsError)
                                     {
                                         TotalErrors++;
-                                        var item = new ErrorDataGridRow
-                                        {
-                                            File = match.Groups["File"].Value.Trim(),
-                                            Line = match.Groups["Line"].Value.Trim(),
-                                            Type = match.Groups["Type"].Value.Trim(),
-                                            Details = match.Groups["Details"].Value.Trim()
-                                        };
                                         if (!HideErrors)
                                         {
                                             ErrorResultGrid.Items.Add(item);
                                         }
                                         CurrentErrors.Add(item);
                                     }
-                                    if (match.Groups["Type"].Value.Contains("warning"))
+                                    if (item.IsWarning)
                                     {
                                         TotalWarnings++;
-                                        var item = new ErrorDataGridRow
-                                        {
-                                            File = match.Groups["File"].Value.Trim(),
-                                            Line = match.Groups["Line"].Value.Trim(),
-                                            Type = match.Groups["Type"].Value.Trim(),
-                                            Details = match.Groups["Details"].Value.Trim()
-                                        };
                                         if (!HideWarnings)
                                         {
                                             ErrorResultGrid.Items.Add(item);
@@ -348,10 +346,11 @@ namespace SPCode.UI
                         ProgressTask.SetProgress(1.0);
                     }
 
-                    if (CompileOutputRow.Height.Value < 11.0)
-                    {
-                        CompileOutputRow.Height = new GridLength(200.0);
-                    }
+                }
+
+                if (CompileOutputRow.Height.Value < 11.0)
+                {
+                    CompileOutputRow.Height = new GridLength(200.0);
                 }
 
                 await ProgressTask.CloseAsync();
