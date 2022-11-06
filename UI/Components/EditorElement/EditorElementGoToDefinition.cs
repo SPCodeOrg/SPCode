@@ -45,7 +45,7 @@ namespace SPCode.UI.Components
                         }
 
                         await Task.Delay(100);
-                        if (Program.MainWindow.TryLoadSourceFile(file, out var newEditor, true, false, true) && newEditor != null)
+                        if (Program.MainWindow.TryLoadSourceFile(file, out var newEditor, false, true) && newEditor != null)
                         {
                             newEditor.editor.TextArea.Caret.Offset = sm.Index;
                             newEditor.editor.TextArea.Caret.BringCaretToView();

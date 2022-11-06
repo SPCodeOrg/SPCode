@@ -454,7 +454,7 @@ namespace SPCode.UI
             // Set the click callback to open the file
             mi.Click += delegate
             {
-                TryLoadSourceFile(fInfo.FullName, out _, true, false, true);
+                TryLoadSourceFile(fInfo.FullName, out _, false, true);
             };
 
             // Return the MenuItem

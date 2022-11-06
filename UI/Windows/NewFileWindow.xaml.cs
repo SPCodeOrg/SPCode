@@ -380,7 +380,7 @@ namespace SPCode.UI.Windows
                 if ((TemplateListBox.SelectedItem as ListBoxItem)?.Tag is TemplateInfo templateInfo)
                 {
                     File.Copy(templateInfo.Path, destFile.FullName, true);
-                    Program.MainWindow.TryLoadSourceFile(destFile.FullName, out _, true, true, true);
+                    Program.MainWindow.TryLoadSourceFile(destFile.FullName, out _, true, true);
                 }
 
                 Close();
