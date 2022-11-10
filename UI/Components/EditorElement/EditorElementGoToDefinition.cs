@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +14,6 @@ namespace SPCode.UI.Components
 {
     public partial class EditorElement
     {
-
         private SMDefinition _currentSMDef;
 
         private async Task GoToDefinition(MouseButtonEventArgs e)
@@ -45,11 +45,13 @@ namespace SPCode.UI.Components
                         }
 
                         await Task.Delay(100);
-                        if (Program.MainWindow.TryLoadSourceFile(file, out var newEditor, true, false, true) && newEditor != null)
+                        if (Program.MainWindow.TryLoadSourceFile(file, out var newEditor, true, false, true) &&
+                            newEditor != null)
                         {
                             newEditor.editor.TextArea.Caret.Offset = sm.Index;
                             newEditor.editor.TextArea.Caret.BringCaretToView();
-                            newEditor.editor.TextArea.Selection = Selection.Create(newEditor.editor.TextArea, sm.Index, sm.Index + sm.Length);
+                            newEditor.editor.TextArea.Selection = Selection.Create(newEditor.editor.TextArea, sm.Index,
+                                sm.Index + sm.Length);
                             return;
                         }
                     }
@@ -69,11 +71,11 @@ namespace SPCode.UI.Components
             catch (Exception ex)
             {
                 LoggingControl.LogAction($"Exception caught on go to definition: {ex.Message}. Report this bug!");
-                return;
             }
         }
 
-        private SMBaseDefinition MatchDefinition(SMDefinition smDef, string word, MouseButtonEventArgs e, bool currentFile = false)
+        private SMBaseDefinition MatchDefinition(SMDefinition smDef, string word, MouseButtonEventArgs e,
+            bool currentFile = false)
         {
             if (smDef == null)
             {
@@ -100,8 +102,8 @@ namespace SPCode.UI.Components
             if (currentFile)
             {
                 sm ??= smDef.Functions.FirstOrDefault(
-                    func => func.Index <= offset &&
-                            offset <= func.EndPos)
+                        func => func.Index <= offset &&
+                                offset <= func.EndPos)
                     ?.FuncVariables?.FirstOrDefault(
                         i => i.Name.Equals(word));
             }
@@ -135,24 +137,28 @@ namespace SPCode.UI.Components
             }
 
             // enum structs
-            sm ??= smDef.EnumStructs.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+            sm ??= smDef.EnumStructs.FirstOrDefault(i =>
+                i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
             sm ??= smDef.EnumStructs.FirstOrDefault(i => i.Fields.Any(j => j.Name == word));
 
             sm ??= smDef.EnumStructs.FirstOrDefault(i => i.Methods.Any(j => j.Name == word));
 
             // methodmaps
-            sm ??= smDef.Methodmaps.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+            sm ??= smDef.Methodmaps.FirstOrDefault(i =>
+                i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
             sm ??= smDef.Methodmaps.FirstOrDefault(i => i.Fields.Any(j => j.Name == word));
 
             sm ??= smDef.Methodmaps.FirstOrDefault(i => i.Methods.Any(j => j.Name == word));
 
             // structs?
-            sm ??= smDef.Structs.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+            sm ??= smDef.Structs.FirstOrDefault(i =>
+                i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
             // typedefs
-            sm ??= smDef.Typedefs.FirstOrDefault(i => i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
+            sm ??= smDef.Typedefs.FirstOrDefault(i =>
+                i.Name.Equals(word, StringComparison.InvariantCultureIgnoreCase));
 
             return sm;
         }
@@ -187,7 +193,9 @@ namespace SPCode.UI.Components
 
             var currentChar = editor.TextArea.Document.GetText(offset, 1);
 
-            return string.IsNullOrWhiteSpace(currentChar) ? string.Empty : editor.TextArea.Document.GetText(offsetStart, offsetEnd - offsetStart);
+            return string.IsNullOrWhiteSpace(currentChar)
+                ? string.Empty
+                : editor.TextArea.Document.GetText(offsetStart, offsetEnd - offsetStart);
         }
     }
 }

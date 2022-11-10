@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using MahApps.Metro.Controls;
 using SPCode.Interop;
 using SPCode.UI.Components;
 using SPCode.UI.Windows;
@@ -23,13 +26,12 @@ namespace SPCode.UI
             {
                 var item = new MenuItem
                 {
-                    Header = Program.Configs[i].Name,
-                    IsCheckable = true,
-                    IsChecked = i == Program.SelectedConfig
+                    Header = Program.Configs[i].Name, IsCheckable = true, IsChecked = i == Program.SelectedConfig
                 };
                 item.Click += Item_Click;
                 ConfigMenu.Items.Add(item);
             }
+
             ConfigMenu.Items.Add(new Separator());
             var editItem = new MenuItem() { Header = Translate("EditConfig") };
             editItem.Click += EditItem_Click;
@@ -61,16 +63,21 @@ namespace SPCode.UI
             {
                 return;
             }
-
-            await Dispatcher.InvokeAsync(() =>
+            var config = Program.Configs[index];
+            
+            await Task.Run(() =>
             {
-                Program.Configs[index].LoadSMDef();
-
-                if (Program.Configs[index].RejectedPaths.Any())
+                config.LoadSMDef();
+            });
+            
+            this.Invoke(() =>
+            {
+                if (config.RejectedPaths.Any())
                 {
                     var sb = new StringBuilder();
-                    sb.Append("SPCode was unauthorized to access the following directories to parse their includes: \n");
-                    foreach (var path in Program.Configs[index].RejectedPaths)
+                    sb.Append(
+                        "SPCode was unauthorized to access the following directories to parse their includes: \n");
+                    foreach (var path in config.RejectedPaths)
                     {
                         sb.Append($"  - {path}\n");
                     }
@@ -78,15 +85,16 @@ namespace SPCode.UI
                     LoggingControl.LogAction(sb.ToString());
                 }
 
-                var name = Program.Configs[index].Name;
+                var name = config.Name;
                 for (var i = 0; i < ConfigMenu.Items.Count - 2; ++i)
                 {
-                    ((MenuItem)ConfigMenu.Items[i]).IsChecked = name == (string)((MenuItem)ConfigMenu.Items[i]).Header;
+                    var item = (MenuItem)ConfigMenu.Items[i];
+                    item.IsChecked = name == (string)item.Header;
                 }
 
                 Program.SelectedConfig = index;
-                Program.OptionsObject.Program_SelectedConfig = Program.Configs[Program.SelectedConfig].Name;
-
+                Program.OptionsObject.Program_SelectedConfig = config.Name;
+                
                 if (EditorReferences.Any())
                 {
                     foreach (var editor in EditorReferences)
@@ -96,8 +104,8 @@ namespace SPCode.UI
                         editor.InvalidateVisual();
                     }
                 }
-
-                OBDirList.ItemsSource = Program.Configs[index].SMDirectories;
+                
+                OBDirList.ItemsSource = Program.Configs[index].SMDirectories; // very slow
                 OBDirList.Items.Refresh();
                 OBDirList.SelectedIndex = 0;
             });
@@ -118,6 +126,5 @@ namespace SPCode.UI
                 }
             }
         }
-
     }
 }

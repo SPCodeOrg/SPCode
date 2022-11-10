@@ -12,20 +12,20 @@ namespace SourcepawnCondenser
         private int ConsumeSMFunction()
         {
             var kind = SMFunctionKind.Unknown;
-            var startPosition = position;
+            var startPosition = _position;
             var iteratePosition = startPosition + 1;
             var functionReturnType = string.Empty;
             var functionName = string.Empty;
 
-            switch (t[startPosition].Value)
+            switch (_tokens[startPosition].Value)
             {
                 case "stock":
                 {
-                    if (startPosition + 1 < length)
+                    if (startPosition + 1 < _length)
                     {
-                        if (t[startPosition + 1].Kind == TokenKind.FunctionIndicator)
+                        if (_tokens[startPosition + 1].Kind == TokenKind.FunctionIndicator)
                         {
-                            if (t[startPosition + 1].Value == "static")
+                            if (_tokens[startPosition + 1].Value == "static")
                             {
                                 kind = SMFunctionKind.StockStatic;
                                 ++iteratePosition;
@@ -49,11 +49,11 @@ namespace SourcepawnCondenser
                 }
                 case "public":
                 {
-                    if (startPosition + 1 < length)
+                    if (startPosition + 1 < _length)
                     {
-                        if (t[startPosition + 1].Kind == TokenKind.FunctionIndicator)
+                        if (_tokens[startPosition + 1].Kind == TokenKind.FunctionIndicator)
                         {
-                            if (t[startPosition + 1].Value == "native")
+                            if (_tokens[startPosition + 1].Value == "native")
                             {
                                 kind = SMFunctionKind.PublicNative;
                                 ++iteratePosition;
@@ -77,7 +77,7 @@ namespace SourcepawnCondenser
                 }
                 default:
                 {
-                    functionReturnType = t[startPosition].Value;
+                    functionReturnType = _tokens[startPosition].Value;
                     break;
                 }
             }
@@ -89,13 +89,13 @@ namespace SourcepawnCondenser
                 commentTokenIndex = BacktraceTestForToken(startPosition - 1, TokenKind.SingleLineComment, true, false);
                 if (commentTokenIndex != -1)
                 {
-                    var strBuilder = new StringBuilder(t[commentTokenIndex].Value);
+                    var strBuilder = new StringBuilder(_tokens[commentTokenIndex].Value);
                     while ((commentTokenIndex =
                         BacktraceTestForToken(commentTokenIndex - 1, TokenKind.SingleLineComment, true,
                             false)) != -1)
                     {
                         strBuilder.Insert(0, Environment.NewLine);
-                        strBuilder.Insert(0, t[commentTokenIndex].Value);
+                        strBuilder.Insert(0, _tokens[commentTokenIndex].Value);
                     }
 
                     functionCommentString = strBuilder.ToString();
@@ -103,31 +103,31 @@ namespace SourcepawnCondenser
             }
             else
             {
-                functionCommentString = t[commentTokenIndex].Value;
+                functionCommentString = _tokens[commentTokenIndex].Value;
             }
 
             for (; iteratePosition < startPosition + 5; ++iteratePosition)
             {
-                if (t.Length > iteratePosition + 1)
+                if (_tokens.Length > iteratePosition + 1)
                 {
-                    if (t[iteratePosition].Kind == TokenKind.Identifier)
+                    if (_tokens[iteratePosition].Kind == TokenKind.Identifier)
                     {
-                        if (t[iteratePosition + 1].Kind == TokenKind.ParenthesisOpen)
+                        if (_tokens[iteratePosition + 1].Kind == TokenKind.ParenthesisOpen)
                         {
-                            functionName = t[iteratePosition].Value;
+                            functionName = _tokens[iteratePosition].Value;
                             break;
                         }
 
-                        functionReturnType = t[iteratePosition].Value;
+                        functionReturnType = _tokens[iteratePosition].Value;
                         continue;
                     }
 
-                    if (t[iteratePosition].Kind == TokenKind.Character)
+                    if (_tokens[iteratePosition].Kind == TokenKind.Character)
                     {
-                        if (t[iteratePosition].Value.Length > 0)
+                        if (_tokens[iteratePosition].Value.Length > 0)
                         {
-                            var testChar = t[iteratePosition].Value[0];
-                            if (testChar == ':' || testChar == '[' || testChar == ']')
+                            var testChar = _tokens[iteratePosition].Value[0];
+                            if (testChar is ':' or '[' or ']')
                             {
                                 continue;
                             }
@@ -147,38 +147,38 @@ namespace SourcepawnCondenser
 
             ++iteratePosition;
             var functionParameters = new List<string>();
-            var parameterDeclIndexStart = t[iteratePosition].Index;
+            var parameterDeclIndexStart = _tokens[iteratePosition].Index;
             var parameterDeclIndexEnd = -1;
             var lastParameterIndex = parameterDeclIndexStart;
             var parenthesisCounter = 0;
             var gotCommaBreak = false;
             var outTokenIndex = -1;
             var braceState = 0;
-            for (; iteratePosition < length; ++iteratePosition)
+            for (; iteratePosition < _length; ++iteratePosition)
             {
-                if (t[iteratePosition].Kind == TokenKind.ParenthesisOpen)
+                if (_tokens[iteratePosition].Kind == TokenKind.ParenthesisOpen)
                 {
                     ++parenthesisCounter;
                     continue;
                 }
 
-                if (t[iteratePosition].Kind == TokenKind.ParenthesisClose)
+                if (_tokens[iteratePosition].Kind == TokenKind.ParenthesisClose)
                 {
                     --parenthesisCounter;
                     if (parenthesisCounter == 0)
                     {
                         outTokenIndex = iteratePosition;
-                        parameterDeclIndexEnd = t[iteratePosition].Index;
-                        var length = t[iteratePosition].Index - 1 - (lastParameterIndex + 1);
+                        parameterDeclIndexEnd = _tokens[iteratePosition].Index;
+                        var length = _tokens[iteratePosition].Index - 1 - (lastParameterIndex + 1);
                         if (gotCommaBreak)
                         {
                             functionParameters.Add(length == 0
                                 ? string.Empty
-                                : source.Substring(lastParameterIndex + 1, length + 1).Trim());
+                                : _source.Substring(lastParameterIndex + 1, length + 1).Trim());
                         }
                         else if (length > 0)
                         {
-                            var singleParameterString = source.Substring(lastParameterIndex + 1, length + 1);
+                            var singleParameterString = _source.Substring(lastParameterIndex + 1, length + 1);
                             if (!string.IsNullOrWhiteSpace(singleParameterString))
                             {
                                 functionParameters.Add(singleParameterString);
@@ -191,24 +191,24 @@ namespace SourcepawnCondenser
                     continue;
                 }
 
-                if (t[iteratePosition].Kind == TokenKind.BraceOpen)
+                if (_tokens[iteratePosition].Kind == TokenKind.BraceOpen)
                 {
                     ++braceState;
                 }
 
-                if (t[iteratePosition].Kind == TokenKind.BraceClose)
+                if (_tokens[iteratePosition].Kind == TokenKind.BraceClose)
                 {
                     --braceState;
                 }
 
-                if (t[iteratePosition].Kind == TokenKind.Comma && braceState == 0)
+                if (_tokens[iteratePosition].Kind == TokenKind.Comma && braceState == 0)
                 {
                     gotCommaBreak = true;
-                    var length = t[iteratePosition].Index - 1 - (lastParameterIndex + 1);
+                    var length = _tokens[iteratePosition].Index - 1 - (lastParameterIndex + 1);
                     functionParameters.Add(length == 0
                         ? string.Empty
-                        : source.Substring(lastParameterIndex + 1, length + 1).Trim());
-                    lastParameterIndex = t[iteratePosition].Index;
+                        : _source.Substring(lastParameterIndex + 1, length + 1).Trim());
+                    lastParameterIndex = _tokens[iteratePosition].Index;
                 }
             }
 
@@ -219,20 +219,20 @@ namespace SourcepawnCondenser
 
             var localVars = new List<SMVariable>();
 
-            if (outTokenIndex + 1 < length)
+            if (outTokenIndex + 1 < _length)
             {
-                if (t[outTokenIndex + 1].Kind == TokenKind.Semicolon)
+                if (_tokens[outTokenIndex + 1].Kind == TokenKind.Semicolon)
                 {
-                    def.Functions.Add(new SMFunction
+                    _def.Functions.Add(new SMFunction
                     {
                         FunctionKind = kind,
-                        Index = t[startPosition].Index,
+                        Index = _tokens[startPosition].Index,
                         EndPos = parameterDeclIndexEnd,
-                        File = FileName,
-                        Length = parameterDeclIndexEnd - t[startPosition].Index + 1,
+                        File = _fileName,
+                        Length = parameterDeclIndexEnd - _tokens[startPosition].Index + 1,
                         Name = functionName,
-                        FullName = TrimFullname(source.Substring(t[startPosition].Index,
-                            parameterDeclIndexEnd - t[startPosition].Index + 1)),
+                        FullName = TrimFullname(_source.Substring(_tokens[startPosition].Index,
+                            parameterDeclIndexEnd - _tokens[startPosition].Index + 1)),
                         ReturnType = functionReturnType,
                         CommentString = TrimComments(functionCommentString),
                         Parameters = functionParameters.ToArray(),
@@ -244,30 +244,30 @@ namespace SourcepawnCondenser
                 if (nextOpenBraceTokenIndex != -1)
                 {
                     braceState = 0;
-                    for (var i = nextOpenBraceTokenIndex; i < length; ++i)
+                    for (var i = nextOpenBraceTokenIndex; i < _length; ++i)
                     {
-                        if (t[i].Kind == TokenKind.BraceOpen)
+                        if (_tokens[i].Kind == TokenKind.BraceOpen)
                         {
                             ++braceState;
                         }
-                        else if (t[i].Kind == TokenKind.BraceClose)
+                        else if (_tokens[i].Kind == TokenKind.BraceClose)
                         {
                             --braceState;
                             if (braceState == 0)
                             {
-                                var segment = new ArraySegment<Token>(t, nextOpenBraceTokenIndex,
+                                var segment = new ArraySegment<Token>(_tokens, nextOpenBraceTokenIndex,
                                     i - nextOpenBraceTokenIndex);
-                                localVars = LocalVars.ConsumeSMVariableLocal(segment.ToArray(), FileName);
-                                def.Functions.Add(new SMFunction
+                                localVars = LocalVars.ConsumeSMVariableLocal(segment.ToArray(), _fileName);
+                                _def.Functions.Add(new SMFunction
                                 {
-                                    EndPos = t[nextOpenBraceTokenIndex + (i - nextOpenBraceTokenIndex) + 1].Index,
+                                    EndPos = _tokens[nextOpenBraceTokenIndex + (i - nextOpenBraceTokenIndex) + 1].Index,
                                     FunctionKind = kind,
-                                    Index = t[startPosition].Index,
-                                    File = FileName,
-                                    Length = parameterDeclIndexEnd - t[startPosition].Index + 1,
+                                    Index = _tokens[startPosition].Index,
+                                    File = _fileName,
+                                    Length = parameterDeclIndexEnd - _tokens[startPosition].Index + 1,
                                     Name = functionName,
-                                    FullName = TrimFullname(source.Substring(t[startPosition].Index,
-                                        parameterDeclIndexEnd - t[startPosition].Index + 1)),
+                                    FullName = TrimFullname(_source.Substring(_tokens[startPosition].Index,
+                                        parameterDeclIndexEnd - _tokens[startPosition].Index + 1)),
                                     ReturnType = functionReturnType,
                                     CommentString = TrimComments(functionCommentString),
                                     Parameters = functionParameters.ToArray(),
@@ -280,16 +280,16 @@ namespace SourcepawnCondenser
                 }
             }
 
-            def.Functions.Add(new SMFunction
+            _def.Functions.Add(new SMFunction
             {
                 EndPos = parameterDeclIndexEnd,
                 FunctionKind = kind,
-                Index = t[startPosition].Index,
-                File = FileName,
-                Length = parameterDeclIndexEnd - t[startPosition].Index + 1,
+                Index = _tokens[startPosition].Index,
+                File = _fileName,
+                Length = parameterDeclIndexEnd - _tokens[startPosition].Index + 1,
                 Name = functionName,
-                FullName = TrimFullname(source.Substring(t[startPosition].Index,
-                    parameterDeclIndexEnd - t[startPosition].Index + 1)),
+                FullName = TrimFullname(_source.Substring(_tokens[startPosition].Index,
+                    parameterDeclIndexEnd - _tokens[startPosition].Index + 1)),
                 ReturnType = functionReturnType,
                 CommentString = TrimComments(functionCommentString),
                 Parameters = functionParameters.ToArray(),

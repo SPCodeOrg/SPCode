@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BenchmarkDotNet">
+        <Version>0.13.2</Version>
+      </PackageReference> 
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SourcepawnCondenser\SourcepawnCondenser\SourcepawnCondenser.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+	  <Content Include="sourcepawn\**">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content> 
+    </ItemGroup>
+	
+
+</Project>
