@@ -8,16 +8,16 @@ namespace SourcepawnCondenser
     {
         private int ConsumeSMEnum()
         {
-            var startIndex = t[position].Index;
-            if ((position + 1) < length)
+            var startIndex = _tokens[_position].Index;
+            if ((_position + 1) < _length)
             {
-                var iteratePosition = position;
+                var iteratePosition = _position;
                 var enumName = string.Empty;
-                while ((iteratePosition + 1) < length && t[iteratePosition].Kind != TokenKind.BraceOpen)
+                while ((iteratePosition + 1) < _length && _tokens[iteratePosition].Kind != TokenKind.BraceOpen)
                 {
-                    if (t[iteratePosition].Kind == TokenKind.Identifier)
+                    if (_tokens[iteratePosition].Kind == TokenKind.Identifier)
                     {
-                        enumName = t[iteratePosition].Value;
+                        enumName = _tokens[iteratePosition].Value;
                     }
                     ++iteratePosition;
                 }
@@ -25,14 +25,14 @@ namespace SourcepawnCondenser
                 var inIgnoreMode = false;
                 var endTokenIndex = -1;
                 var entries = new List<string>();
-                for (; iteratePosition < length; ++iteratePosition)
+                for (; iteratePosition < _length; ++iteratePosition)
                 {
-                    if (t[iteratePosition].Kind == TokenKind.BraceOpen)
+                    if (_tokens[iteratePosition].Kind == TokenKind.BraceOpen)
                     {
                         ++braceState;
                         continue;
                     }
-                    if (t[iteratePosition].Kind == TokenKind.BraceClose)
+                    if (_tokens[iteratePosition].Kind == TokenKind.BraceClose)
                     {
                         --braceState;
                         if (braceState == 0)
@@ -44,15 +44,15 @@ namespace SourcepawnCondenser
                     }
                     if (inIgnoreMode)
                     {
-                        if (t[iteratePosition].Kind == TokenKind.Comma)
+                        if (_tokens[iteratePosition].Kind == TokenKind.Comma)
                         {
                             inIgnoreMode = false;
                         }
                         continue;
                     }
-                    if (t[iteratePosition].Kind == TokenKind.Identifier)
+                    if (_tokens[iteratePosition].Kind == TokenKind.Identifier)
                     {
-                        entries.Add(t[iteratePosition].Value);
+                        entries.Add(_tokens[iteratePosition].Value);
                         inIgnoreMode = true;
                     }
                 }
@@ -60,11 +60,11 @@ namespace SourcepawnCondenser
                 {
                     return -1;
                 }
-                def.Enums.Add(new SMEnum()
+                _def.Enums.Add(new SMEnum()
                 {
                     Index = startIndex,
-                    Length = t[endTokenIndex].Index - startIndex + 1,
-                    File = FileName,
+                    Length = _tokens[endTokenIndex].Index - startIndex + 1,
+                    File = _fileName,
                     Entries = entries.ToArray(),
                     Name = enumName
                 });

@@ -38,10 +38,9 @@ namespace SPCode.UI
 
         private string CurrentErrorString;
 
-        private static readonly Encoding _ansi = Encoding.GetEncoding(1251);
+        private const RegexOptions ErrorFilterOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline;
 
-        private static readonly RegexOptions _regexOptions = RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Multiline;
-        private readonly Regex _errorFilterRegex = new(Constants.ErrorFilterRegex, _regexOptions);
+        private readonly Regex _errorFilterRegex = new(Constants.ErrorFilterRegex, ErrorFilterOptions);
 
         /// <summary>
         /// Compiles the specified scripts.
@@ -123,12 +122,6 @@ namespace SPCode.UI
             }
             else
             {
-                if (ee == null)
-                {
-                    InCompiling = false;
-                    return;
-                }
-
                 if (ee.FullFilePath.EndsWith(".sp"))
                 {
                     ScriptsCompiled.Add(ee.FullFilePath);
@@ -144,8 +137,6 @@ namespace SPCode.UI
                 ProgressTask = await this.ShowProgressAsync(Translate("Compiling"), "",
                     false, MetroDialogOptions);
                 ProgressTask.SetProgress(0.0);
-
-                var stringOutput = new StringBuilder();
 
                 var compiledSuccess = 0;
 
@@ -164,7 +155,8 @@ namespace SPCode.UI
                     var fileInfo = new FileInfo(file);
                     if (fileInfo.Exists)
                     {
-                        dontCreateFile = ee.DontCreateFileBox.IsChecked.HasValue && ee.DontCreateFileBox.IsChecked.Value;
+                        dontCreateFile = ee.DontCreateFileBox.IsChecked.HasValue &&
+                                         ee.DontCreateFileBox.IsChecked.Value;
                         string outFile;
                         string destinationFileName;
                         if (dontCreateFile)
@@ -180,8 +172,10 @@ namespace SPCode.UI
                             {
                                 File.Delete(outFile);
                             }
-                            ExecuteCommandLine(currentConfig.PreCmd, fileInfo.DirectoryName, currentConfig.CopyDirectory,
-                            fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
+
+                            ExecuteCommandLine(currentConfig.PreCmd, fileInfo.DirectoryName,
+                                currentConfig.CopyDirectory,
+                                fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
                         }
 
                         var includeDirectories = new StringBuilder();
@@ -202,7 +196,8 @@ namespace SPCode.UI
                             WindowStyle = ProcessWindowStyle.Hidden,
                             CreateNoWindow = true,
                             FileName = spCompInfo.FullName,
-                            Arguments = $"\"{fileInfo.FullName}\" -o=\"{outFile}\" {includeStr} -O={currentConfig.OptimizeLevel} -v={currentConfig.VerboseLevel}"
+                            Arguments =
+                                $"\"{fileInfo.FullName}\" -o=\"{outFile}\" {includeStr} -O={currentConfig.OptimizeLevel} -v={currentConfig.VerboseLevel}"
                         };
 
                         var sb = new StringBuilder();
@@ -241,9 +236,12 @@ namespace SPCode.UI
                                     {
                                         ErrorResultGrid.Items.Add(item);
                                     }
+
                                     CurrentWarnings.Add(item);
                                 }
-                                LoggingControl.LogAction($"{fileInfo.Name}{(TotalWarnings > 0 ? $" ({TotalWarnings} warnings)" : "")}");
+
+                                LoggingControl.LogAction(
+                                    $"{fileInfo.Name}{(TotalWarnings > 0 ? $" ({TotalWarnings} warnings)" : "")}");
                                 compiledSuccess++;
                                 break;
                             }
@@ -263,8 +261,10 @@ namespace SPCode.UI
                                         {
                                             ErrorResultGrid.Items.Add(item);
                                         }
+
                                         CurrentErrors.Add(item);
                                     }
+
                                     if (item.IsWarning)
                                     {
                                         TotalWarnings++;
@@ -272,9 +272,11 @@ namespace SPCode.UI
                                         {
                                             ErrorResultGrid.Items.Add(item);
                                         }
+
                                         CurrentWarnings.Add(item);
                                     }
                                 }
+
                                 break;
                             }
 
@@ -293,17 +295,18 @@ namespace SPCode.UI
                             }
                         }
 
-                        if (!dontCreateFile && File.Exists(outFile))
-                        {
-                            CompiledFiles.Add(outFile);
-                            NonUploadedFiles.Add(outFile);
-                            CompiledFileNames.Add(destinationFileName);
-                        }
-
                         if (!dontCreateFile)
                         {
+                            if (File.Exists(outFile))
+                            {
+                                CompiledFiles.Add(outFile);
+                                NonUploadedFiles.Add(outFile);
+                                CompiledFileNames.Add(destinationFileName);
+                            }
+
                             ExecuteCommandLine(currentConfig.PostCmd, fileInfo.DirectoryName,
-                                currentConfig.CopyDirectory, fileInfo.FullName, fileInfo.Name, outFile, destinationFileName);
+                                currentConfig.CopyDirectory, fileInfo.FullName, fileInfo.Name, outFile,
+                                destinationFileName);
                         }
 
                         ProgressTask.SetProgress((double)(i + 1) / compileCount);
@@ -313,39 +316,48 @@ namespace SPCode.UI
 
                 if (compiledSuccess > 0)
                 {
-                    LoggingControl.LogAction($"Compiled {compiledSuccess} {(compiledSuccess > 1 ? "plugins" : "plugin")}.", 2);
+                    LoggingControl.LogAction(
+                        $"Compiled {compiledSuccess} {(compiledSuccess > 1 ? "plugins" : "plugin")}.", 2);
                 }
 
-                Status_ErrorText.Text = (TotalErrors == 1 ? string.Format(Translate("status_error"), "1") : string.Format(Translate("status_errors"), TotalErrors)).ToLowerInvariant();
-                Status_WarningText.Text = (TotalWarnings == 1 ? string.Format(Translate("status_warning"), "1") : string.Format(Translate("status_warnings"), TotalWarnings)).ToLowerInvariant();
+                Status_ErrorText.Text =
+                    (TotalErrors == 1
+                        ? string.Format(Translate("status_error"), "1")
+                        : string.Format(Translate("status_errors"), TotalErrors)).ToLowerInvariant();
+                Status_WarningText.Text =
+                    (TotalWarnings == 1
+                        ? string.Format(Translate("status_warning"), "1")
+                        : string.Format(Translate("status_warnings"), TotalWarnings)).ToLowerInvariant();
 
                 if (!PressedEscape && compiledSuccess > 0)
                 {
                     ProgressTask.SetProgress(1.0);
-                    if (currentConfig.AutoCopy && !dontCreateFile)
+                    if (!dontCreateFile)
                     {
-                        ProgressTask.SetTitle(Translate("CopyingFiles") + "...");
-                        ProgressTask.SetIndeterminate();
-                        await Task.Run(() => Copy_Plugins());
-                        ProgressTask.SetProgress(1.0);
-                    }
+                        if (currentConfig.AutoCopy)
+                        {
+                            ProgressTask.SetTitle(Translate("CopyingFiles") + "...");
+                            ProgressTask.SetIndeterminate();
+                            await Task.Run(Copy_Plugins);
+                            ProgressTask.SetProgress(1.0);
+                        }
 
-                    if (currentConfig.AutoUpload && !dontCreateFile)
-                    {
-                        ProgressTask.SetTitle(Translate("FTPUploading") + "...");
-                        ProgressTask.SetIndeterminate();
-                        await Task.Run(FTPUpload_Plugins);
-                        ProgressTask.SetProgress(1.0);
-                    }
+                        if (currentConfig.AutoUpload)
+                        {
+                            ProgressTask.SetTitle(Translate("FTPUploading") + "...");
+                            ProgressTask.SetIndeterminate();
+                            await Task.Run(FTPUpload_Plugins);
+                            ProgressTask.SetProgress(1.0);
+                        }
 
-                    if (currentConfig.AutoRCON && !dontCreateFile)
-                    {
-                        ProgressTask.SetTitle(Translate("RCONCommand") + "...");
-                        ProgressTask.SetIndeterminate();
-                        await Task.Run(Server_Query);
-                        ProgressTask.SetProgress(1.0);
+                        if (currentConfig.AutoRCON)
+                        {
+                            ProgressTask.SetTitle(Translate("RCONCommand") + "...");
+                            ProgressTask.SetIndeterminate();
+                            await Task.Run(Server_Query);
+                            ProgressTask.SetProgress(1.0);
+                        }
                     }
-
                 }
 
                 if (CompileOutputRow.Height.Value < 11.0)
@@ -355,6 +367,7 @@ namespace SPCode.UI
 
                 await ProgressTask.CloseAsync();
             }
+
             InCompiling = false;
         }
 
@@ -369,6 +382,7 @@ namespace SPCode.UI
                 LoggingControl.LogAction("No plugins found to copy.", 2);
                 return;
             }
+
             var copyCount = 0;
             var c = Program.Configs[Program.SelectedConfig];
             if (string.IsNullOrWhiteSpace(c.CopyDirectory))
@@ -376,14 +390,15 @@ namespace SPCode.UI
                 output.Add($"Copy directory is empty.");
                 goto Dispatcher;
             }
+
             if (!Directory.Exists(c.CopyDirectory))
             {
                 output.Add("The specified Copy Directory was not found.");
                 goto Dispatcher;
             }
+
             output.Add($"Copying plugin(s)...");
             NonUploadedFiles.Clear();
-            var stringOutput = new StringBuilder();
             foreach (var file in CompiledFiles)
             {
                 var destFile = new FileInfo(file);
@@ -416,7 +431,7 @@ namespace SPCode.UI
                 output.Add($"{Translate("NoFilesCopy")}");
             }
 
-        Dispatcher:
+            Dispatcher:
 
             Dispatcher.Invoke(() =>
             {
@@ -487,7 +502,7 @@ namespace SPCode.UI
                 output.Add($"{Translate("Details")}: " + e.Message);
             }
 
-        Dispatcher:
+            Dispatcher:
 
             Dispatcher.Invoke(() =>
             {
@@ -509,6 +524,7 @@ namespace SPCode.UI
                 LoggingControl.LogAction("The server is already running!", 2);
                 return;
             }
+
             var c = Program.Configs[Program.SelectedConfig];
             var serverOptionsPath = c.ServerFile;
             if (string.IsNullOrWhiteSpace(serverOptionsPath))
@@ -599,7 +615,10 @@ namespace SPCode.UI
                 return null;
             }
 
-            var batchFile = new FileInfo(@$"{PathsHelper.TempDirectory}\{Environment.TickCount}_{(uint)code.GetHashCode() ^ (uint)directory.GetHashCode()}_temp.bat").FullName;
+            var batchFile =
+                new FileInfo(
+                        @$"{PathsHelper.TempDirectory}\{Environment.TickCount}_{(uint)code.GetHashCode() ^ (uint)directory.GetHashCode()}_temp.bat")
+                    .FullName;
             File.WriteAllText(batchFile, code);
             string result;
             using (var process = new Process())

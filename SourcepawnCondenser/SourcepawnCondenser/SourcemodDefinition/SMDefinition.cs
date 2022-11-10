@@ -9,25 +9,27 @@ namespace SourcepawnCondenser.SourcemodDefinition
 {
     public class SMDefinition
     {
+        private static readonly SMMethodmap HandleMethodmap = new()
+        {
+            Name = "Handle",
+            Methods =
+            {
+                new SMObjectMethod
+                {
+                    FullName = "(external) void Close()",
+                    ClassName = "Name",
+                    Name = "Close",
+                    CommentString =
+                        "Closes a Handle. If the handle has multiple copies open, it is not destroyed unless all copies are closed.",
+                    ReturnType = "void"
+                }
+            }
+        };
+
         public SMDefinition()
         {
             if (Methodmaps.Count == 0)
-                Methodmaps.Add(new SMMethodmap()
-                {
-                    Name = "Handle",
-                    Methods =
-                    {
-                        new SMObjectMethod()
-                        {
-                            FullName = "(external) void Close()",
-                            ClassName = "Name",
-                            Name = "Close",
-                            CommentString =
-                                "Closes a Handle. If the handle has multiple copies open, it is not destroyed unless all copies are closed.",
-                            ReturnType = "void"
-                        }
-                    }
-                });
+                Methodmaps.Add(HandleMethodmap);
         }
 
         // This contains Enum values, Constant variables, Defines.
@@ -47,7 +49,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public readonly List<SMEnumStruct> EnumStructs = new();
         public readonly List<SMMethodmap> Methodmaps = new();
 
-        public string[] FunctionStrings = new string[0];
+        public string[] FunctionStrings = Array.Empty<string>();
 
 
         // This contains method map and enum structs' methods.
@@ -93,11 +95,10 @@ namespace SourcepawnCondenser.SourcemodDefinition
                 {
                     try
                     {
-                        var files = Directory.GetFiles(path, "*.inc", SearchOption.AllDirectories);
+                        var files = Directory.EnumerateFiles(path, "*.inc", SearchOption.AllDirectories);
                         foreach (var file in files)
                         {
-                            var fInfo = new FileInfo(file);
-                            var subCondenser = new Condenser(File.ReadAllText(fInfo.FullName), fInfo.FullName);
+                            var subCondenser = new Condenser(File.ReadAllText(file), file);
                             var subDefinition = subCondenser.Condense();
                             Functions.AddRange(subDefinition.Functions);
                             Enums.AddRange(subDefinition.Enums);
@@ -182,7 +183,6 @@ namespace SourcepawnCondenser.SourcemodDefinition
 
         public List<ACNode> ProduceACNodes()
         {
-            
             var nodes = new List<ACNode>
             {
                 Capacity = Enums.Count + Structs.Count + ConstVariables.Count + Functions.Count
@@ -354,7 +354,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
             for (var i = 0; i < length; ++i)
             {
                 nodeList.Add(
-                    new ACNode {Prefix = prefix, EntryName = strings[i], IsExecutable = executable});
+                    new ACNode { Prefix = prefix, EntryName = strings[i], IsExecutable = executable });
             }
 
             return nodeList;
@@ -363,7 +363,7 @@ namespace SourcepawnCondenser.SourcemodDefinition
         public static IEnumerable<ACNode> ConvertFromStringList(IEnumerable<string> strings, bool executable,
             string prefix = "", bool addSpace = false)
         {
-            return strings.Select(e => new ACNode {Prefix = prefix, EntryName = e, IsExecutable = executable});
+            return strings.Select(e => new ACNode { Prefix = prefix, EntryName = e, IsExecutable = executable });
         }
 
         public override string ToString() => Prefix + EntryName;
