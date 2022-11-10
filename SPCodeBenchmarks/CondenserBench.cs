@@ -3,6 +3,7 @@ using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Toolchains.InProcess.NoEmit;
 using SourcepawnCondenser;
+using static SPCode.Utils.SPSyntaxTidy.SPSyntaxTidy;
 
 namespace SPCodeBenchmarks;
 
@@ -24,8 +25,11 @@ public class CondenserBench
     [Benchmark]
     public void Condense()
     {
+        var text = File.ReadAllText("sourcepawn/nativevotes.inc");
+
         var condenser =
-            new Condenser(File.ReadAllText("sourcepawn/nativevotes.inc"), "test"); // The biggest thing I found
+            new Condenser(text, "test"); // The biggest thing I found
+
         condenser.Condense();
     }
 }
