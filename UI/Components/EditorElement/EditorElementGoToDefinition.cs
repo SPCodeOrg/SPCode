@@ -46,7 +46,7 @@ public partial class EditorElement
 
                     await Task.Delay(100);
 
-                    if (Program.MainWindow.TryLoadSourceFile(file, out var newEditor, true, false, true) &&
+                    if (Program.MainWindow.TryLoadSourceFile(file, out var newEditor, false, true) &&
                         newEditor != null)
                     {
                         newEditor.editor.TextArea.Caret.Offset = sm.Index;
