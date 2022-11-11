@@ -2,17 +2,16 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace SPCode.UI
+namespace SPCode.UI;
+
+public partial class MainWindow
 {
-    public partial class MainWindow
+    private void LogTextbox_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
-        private void LogTextbox_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            LogTextbox.ContextMenu = LogTextbox.Resources["LogContextMenu"] as ContextMenu;
-        }
-        private void ClearLogs_Click(object sender, RoutedEventArgs e)
-        {
-            LogTextbox.Clear();
-        }
+        LogTextbox.ContextMenu = LogTextbox.Resources["LogContextMenu"] as ContextMenu;
+    }
+    private void ClearLogs_Click(object sender, RoutedEventArgs e)
+    {
+        LogTextbox.Clear();
     }
 }

@@ -8,62 +8,61 @@ using System.Windows.Controls.Primitives;
 using SPCode.Interop;
 using SPCode.Utils;
 
-namespace SPCode.UI
+namespace SPCode.UI;
+
+public partial class MainWindow
 {
-    public partial class MainWindow
+    public bool HideErrors = false;
+    public bool HideWarnings = false;
+
+    private void Status_ErrorButton_Clicked(object sender, RoutedEventArgs e)
     {
-        public bool HideErrors = false;
-        public bool HideWarnings = false;
-
-        private void Status_ErrorButton_Clicked(object sender, RoutedEventArgs e)
+        var isChecked = (sender as ToggleButton).IsChecked.Value;
+        HideErrors = !isChecked;
+        if (CurrentErrors.Count == 0 && CurrentWarnings.Count == 0)
         {
-            var isChecked = (sender as ToggleButton).IsChecked.Value;
-            HideErrors = !isChecked;
-            if (CurrentErrors.Count == 0 && CurrentWarnings.Count == 0)
-            {
-                return;
-            }
-
-            UpdateErrorGrid();
+            return;
         }
 
-        private void Status_WarningButton_Clicked(object sender, RoutedEventArgs e)
+        UpdateErrorGrid();
+    }
+
+    private void Status_WarningButton_Clicked(object sender, RoutedEventArgs e)
+    {
+        var isChecked = (sender as ToggleButton).IsChecked.Value;
+        HideWarnings = !isChecked;
+
+        if (CurrentErrors.Count == 0 && CurrentWarnings.Count == 0)
         {
-            var isChecked = (sender as ToggleButton).IsChecked.Value;
-            HideWarnings = !isChecked;
-
-            if (CurrentErrors.Count == 0 && CurrentWarnings.Count == 0)
-            {
-                return;
-            }
-
-            UpdateErrorGrid();
+            return;
         }
 
-        private void Status_CopyErrorsButton_Click(object sender, RoutedEventArgs e)
+        UpdateErrorGrid();
+    }
+
+    private void Status_CopyErrorsButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (!string.IsNullOrEmpty(CurrentErrorString))
         {
-            if (!string.IsNullOrEmpty(CurrentErrorString))
-            {
-                Clipboard.SetText(CurrentErrorString);
-            }
+            Clipboard.SetText(CurrentErrorString);
+        }
+    }
+
+    private void UpdateErrorGrid()
+    {
+        ErrorResultGrid.Items.Clear();
+        var listBuffer = new List<ErrorDataGridRow>();
+
+        if (!HideWarnings)
+        {
+            listBuffer.AddRange(CurrentWarnings);
         }
 
-        private void UpdateErrorGrid()
+        if (!HideErrors)
         {
-            ErrorResultGrid.Items.Clear();
-            var listBuffer = new List<ErrorDataGridRow>();
-
-            if (!HideWarnings)
-            {
-                listBuffer.AddRange(CurrentWarnings);
-            }
-
-            if (!HideErrors)
-            {
-                listBuffer.AddRange(CurrentErrors);
-            }
-
-            listBuffer.OrderBy(x => int.Parse(x.Line)).ToList().ForEach(y => ErrorResultGrid.Items.Add(y));
+            listBuffer.AddRange(CurrentErrors);
         }
+
+        listBuffer.OrderBy(x => int.Parse(x.Line)).ToList().ForEach(y => ErrorResultGrid.Items.Add(y));
     }
 }

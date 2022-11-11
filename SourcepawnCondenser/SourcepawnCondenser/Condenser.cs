@@ -37,44 +37,20 @@ public partial class Condenser
         Token ct;
         while ((ct = _tokens[_position]).Kind != TokenKind.EOF)
         {
-            int index;
-            switch (ct.Kind)
+            var index = ct.Kind switch
             {
-                case TokenKind.FunctionIndicator:
-                    index = ConsumeSMFunction();
-                    break;
-                case TokenKind.EnumStruct:
-                    index = ConsumeSMEnumStruct();
-                    break;
-                case TokenKind.Enum:
-                    index = ConsumeSMEnum();
-                    break;
-                case TokenKind.Struct:
-                    index = ConsumeSMStruct();
-                    break;
-                case TokenKind.PreprocessorDirective:
-                    index = ConsumeSMPPDirective();
-                    break;
-                case TokenKind.Constant:
-                    index = ConsumeSMConstant();
-                    break;
-                case TokenKind.MethodMap:
-                    index = ConsumeSMMethodmap();
-                    break;
-                case TokenKind.TypeSet:
-                    index = ConsumeSMTypeset();
-                    break;
-                case TokenKind.TypeDef:
-                    index = ConsumeSMTypedef();
-                    break;
-                case TokenKind.Identifier:
-                    index = ConsumeSMIdentifier();
-                    break;
-                default:
-                    index = -1;
-                    break;
-            }
-
+                TokenKind.FunctionIndicator => ConsumeSMFunction(),
+                TokenKind.EnumStruct => ConsumeSMEnumStruct(),
+                TokenKind.Enum => ConsumeSMEnum(),
+                TokenKind.Struct => ConsumeSMStruct(),
+                TokenKind.PreprocessorDirective => ConsumeSMPPDirective(),
+                TokenKind.Constant => ConsumeSMConstant(),
+                TokenKind.MethodMap => ConsumeSMMethodmap(),
+                TokenKind.TypeSet => ConsumeSMTypeset(),
+                TokenKind.TypeDef => ConsumeSMTypedef(),
+                TokenKind.Identifier => ConsumeSMIdentifier(),
+                _ => -1,
+            };
             if (index != -1)
             {
                 _position = index + 1;

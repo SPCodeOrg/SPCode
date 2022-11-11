@@ -1,6 +1,5 @@
-﻿namespace SourcepawnCondenser.SourcemodDefinition
+﻿namespace SourcepawnCondenser.SourcemodDefinition;
+
+public class SMStruct : SMBaseDefinition
 {
-    public class SMStruct : SMBaseDefinition
-    {
-    }
 }

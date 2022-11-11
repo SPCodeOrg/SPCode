@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SourcepawnCondenser.SourcemodDefinition
+namespace SourcepawnCondenser.SourcemodDefinition;
+
+public class SMEnumStruct : SMClasslike
 {
-    public class SMEnumStruct : SMClasslike
-    {
-    }
 }
