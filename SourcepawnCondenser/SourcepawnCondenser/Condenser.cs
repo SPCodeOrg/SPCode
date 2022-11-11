@@ -68,22 +68,15 @@ public partial class Condenser
     {
         for (var i = startPosition; i >= 0; --i)
         {
+            if (ignoreOtherTokens || (_tokens[i].Kind == TokenKind.EOL && ignoreEol))
+            {
+                continue;
+            }
+
             if (_tokens[i].Kind == testKind)
             {
                 return i;
             }
-
-            if (ignoreOtherTokens)
-            {
-                continue;
-            }
-
-            if (_tokens[i].Kind == TokenKind.EOL && ignoreEol)
-            {
-                continue;
-            }
-
-            return -1;
         }
 
         return -1;
@@ -93,22 +86,15 @@ public partial class Condenser
     {
         for (var i = startPosition; i < _length; ++i)
         {
+            if (ignoreOtherTokens || (_tokens[i].Kind == TokenKind.EOL && ignoreEol))
+            {
+                continue;
+            }
+
             if (_tokens[i].Kind == testKind)
             {
                 return i;
             }
-
-            if (ignoreOtherTokens)
-            {
-                continue;
-            }
-
-            if (_tokens[i].Kind == TokenKind.EOL && ignoreEol)
-            {
-                continue;
-            }
-
-            return -1;
         }
 
         return -1;
