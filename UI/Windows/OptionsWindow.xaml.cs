@@ -434,6 +434,16 @@ namespace SPCode.UI.Windows
             Program.MakeRCCKAlert();
         }
 
+        private void UseBlendEffect_Changed(object sender, RoutedEventArgs e)
+        {
+            if (!AllowChanging)
+            {
+                return;
+            }
+
+            Program.OptionsObject.Editor_UseBlendEffect = UseBlendEffect.IsChecked.Value;
+        }
+
         private void DiscordPresence_Changed(object sender, RoutedEventArgs e)
         {
             if (!AllowChanging)
@@ -664,6 +674,7 @@ namespace SPCode.UI.Windows
             FontFamilyCB.SelectedValue = new FontFamily(Program.OptionsObject.Editor_FontFamily);
             IndentationSize.Value = Program.OptionsObject.Editor_IndentationSize;
             HardwareSalts.IsChecked = Program.OptionsObject.Program_UseHardwareSalts;
+            UseBlendEffect.IsChecked = Program.OptionsObject.Editor_UseBlendEffect;
             DiscordPresence.IsChecked = Program.OptionsObject.Program_DiscordPresence;
             DiscordPresenceTime.IsChecked = Program.OptionsObject.Program_DiscordPresenceTime;
             DiscordPresenceFile.IsChecked = Program.OptionsObject.Program_DiscordPresenceFile;
@@ -690,6 +701,7 @@ namespace SPCode.UI.Windows
         {
             Title = Translate("Options");
             HardwareSalts.Content = Translate("HardwareEncryption");
+            UseBlendEffect.Content = Translate("UseBlendEffect");
             ProgramHeader.Header = Translate("Program");
             HardwareAcc.Content = Translate("HardwareAcc");
             UIAnimation.Content = Translate("UIAnim");

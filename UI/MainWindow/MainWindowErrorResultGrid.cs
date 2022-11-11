@@ -70,7 +70,7 @@ namespace SPCode.UI
                 }
 
                 // If it's not opened, open it and go to the error line
-                if (TryLoadSourceFile(fInfo.FullName, out var editor, true, false, true) && editor != null)
+                if (TryLoadSourceFile(fInfo.FullName, out var editor, false, true) && editor != null)
                 {
                     await Task.Delay(50);
                     GoToErrorLine(editor, row);

@@ -45,6 +45,7 @@ namespace SPCode.UI.Components
                         }
 
                         await Task.Delay(100);
+
                         if (Program.MainWindow.TryLoadSourceFile(file, out var newEditor, true, false, true) &&
                             newEditor != null)
                         {

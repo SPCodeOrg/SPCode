@@ -157,7 +157,7 @@ namespace SPCode.UI
                     {
                         for (var i = 0; i < ofd.FileNames.Length; ++i)
                         {
-                            AnyFileLoaded |= TryLoadSourceFile(ofd.FileNames[i], out _, i == 0, true, i == 0);
+                            AnyFileLoaded |= TryLoadSourceFile(ofd.FileNames[i], out _, true, i == 0);
                         }
 
                         if (!AnyFileLoaded)
@@ -189,7 +189,7 @@ namespace SPCode.UI
                 if (ee != null && !ee.IsTemplateEditor)
                 {
                     ee.Save(true);
-                    BlendOverEffect.Begin();
+                    BlendEffect();
                 }
             }
             catch (Exception ex)
@@ -214,7 +214,7 @@ namespace SPCode.UI
                     {
                         ee.FullFilePath = sfd.FileName;
                         ee.Save(true);
-                        BlendOverEffect.Begin();
+                        BlendEffect();
                     }
                 }
             }
@@ -304,7 +304,7 @@ namespace SPCode.UI
         {
             try
             {
-                if (!EditorReferences.Any()|| GetCurrentEditorElement().IsTemplateEditor)
+                if (!EditorReferences.Any() || GetCurrentEditorElement().IsTemplateEditor)
                 {
                     return;
                 }
@@ -316,7 +316,7 @@ namespace SPCode.UI
                         editor.Save();
                     }
 
-                    BlendOverEffect.Begin();
+                    BlendEffect();
                 }
             }
             catch (Exception ex)
@@ -642,7 +642,7 @@ namespace SPCode.UI
             {
                 if (Program.RecentFilesStack.Count > 0)
                 {
-                    TryLoadSourceFile(Program.RecentFilesStack.Pop(), out _, true, false, true);
+                    TryLoadSourceFile(Program.RecentFilesStack.Pop(), out _, false, true);
                 }
 
                 MenuI_ReopenLastClosedTab.IsEnabled = Program.RecentFilesStack.Count > 0;

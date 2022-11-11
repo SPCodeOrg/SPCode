@@ -287,7 +287,7 @@ namespace SPCode.UI.Windows
 
             foreach (var cfg in config)
             {
-                if (Program.MainWindow.TryLoadSourceFile(Path.GetFullPath(Path.Combine(cfg, "include", sm.File)) + ".inc", out var ee, true, false, true) && ee != null)
+                if (Program.MainWindow.TryLoadSourceFile(Path.GetFullPath(Path.Combine(cfg, "include", sm.File)) + ".inc", out var ee, false, true) && ee != null)
                 {
                     ee.editor.TextArea.Caret.Offset = sm.Index;
                     ee.editor.TextArea.Caret.BringCaretToView();

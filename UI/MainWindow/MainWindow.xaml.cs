@@ -159,7 +159,7 @@ namespace SPCode.UI
             {
                 if (!args[i].EndsWith("exe"))
                 {
-                    TryLoadSourceFile(args[i], out _, false, true, i == 0);
+                    TryLoadSourceFile(args[i], out _, true, i == 0);
                 }
                 if (args[i].ToLowerInvariant() == "--updateok")
                 {
@@ -315,7 +315,7 @@ namespace SPCode.UI
                 Debug.Assert(files != null, nameof(files) + " != null");
                 for (var i = 0; i < files.Length; ++i)
                 {
-                    TryLoadSourceFile(files[i], out _, i == 0, true, i == 0);
+                    TryLoadSourceFile(files[i], out _, true, i == 0);
                 }
             }
         }
@@ -340,7 +340,7 @@ namespace SPCode.UI
         /// <param name="TryOpenIncludes">Whether to open the includes associated with that file</param>
         /// <param name="SelectMe">Whether to focus the editor element once the file gets opened</param>
         /// <returns>If the file opening was successful or not</returns>
-        public bool TryLoadSourceFile(string filePath, out EditorElement outEditor, bool UseBlendoverEffect = true, bool TryOpenIncludes = true, bool SelectMe = false)
+        public bool TryLoadSourceFile(string filePath, out EditorElement outEditor, bool TryOpenIncludes = true, bool SelectMe = false)
         {
             outEditor = null;
             var fileInfo = new FileInfo(filePath);
@@ -430,10 +430,7 @@ namespace SPCode.UI
                 return false;
             }
 
-            if (UseBlendoverEffect)
-            {
-                BlendOverEffect.Begin();
-            }
+            BlendEffect();
 
             return true;
         }
@@ -581,6 +578,17 @@ namespace SPCode.UI
             {
                 var updateWin = new UpdateWindow(Program.UpdateStatus) { Owner = this };
                 updateWin.ShowDialog();
+            }
+        }
+
+        /// <summary>
+        /// Begin blend effect if enabled
+        /// </summary>
+        private void BlendEffect()
+        {
+            if (Program.OptionsObject.Editor_UseBlendEffect)
+            {
+                BlendOverEffect.Begin();
             }
         }
 

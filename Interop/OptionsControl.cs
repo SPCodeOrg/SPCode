@@ -11,7 +11,8 @@ namespace SPCode
     [Serializable]
     public class OptionsControl
     {
-        public static int SVersion = 15;
+        public static int SVersion = 16;
+
         public bool Editor_AgressiveIndentation = true;
         public bool Editor_AutoCloseBrackets = true;
         public bool Editor_AutoCloseStringChars = true;
@@ -89,6 +90,9 @@ namespace SPCode
 
         // Version 15
         public int TranslationsVersion;
+
+        // Version 16
+        public bool Editor_UseBlendEffect;
 
         public int Version = 11;
 
@@ -180,6 +184,10 @@ namespace SPCode
                 if (Version < 14)
                 {
                     TranslationsVersion = 0;
+                }
+                if (Version < 15)
+                {
+                    Editor_UseBlendEffect = true;
                 }
 
                 //new Optionsversion - reset new fields to default
