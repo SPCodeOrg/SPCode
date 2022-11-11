@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace SourcepawnCondenser.Tokenizer
@@ -451,7 +452,7 @@ namespace SourcepawnCondenser.Tokenizer
                                         name.Append(sArray[j]);
                                     }
 
-                                    if (name.ToString().Trim() != "")
+                                    if (name.ToString().Trim().Length != 0)
                                     {
                                         token.Add(
                                             new Token(name.ToString(), TokenKind.Identifier, endIndex + 1));
@@ -481,6 +482,8 @@ namespace SourcepawnCondenser.Tokenizer
             }
 
             token.Add(new Token("", TokenKind.EOF, sArrayLength));
+            
+            
             return token;
         }
 

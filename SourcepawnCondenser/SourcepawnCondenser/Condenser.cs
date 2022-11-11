@@ -1,276 +1,206 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using SourcepawnCondenser.SourcemodDefinition;
 using SourcepawnCondenser.Tokenizer;
 
-namespace SourcepawnCondenser
+namespace SourcepawnCondenser;
+
+public partial class Condenser
 {
-    public partial class Condenser
+    private readonly SMDefinition _def;
+
+    private readonly string _fileName;
+    private readonly int _length;
+    private readonly string _source;
+
+    private readonly Token[] _tokens;
+    private int _position;
+
+    public Condenser(string sourceCode, string fileName)
     {
-        private readonly SMDefinition def;
-
-        private readonly string FileName;
-        private readonly int length;
-        private readonly string source;
-        private readonly Token[] t;
-        private int position;
-
-        public Condenser(string sourceCode, string fileName)
+        _tokens = Tokenizer.Tokenizer.TokenizeString(sourceCode, true).ToArray();
+        _position = 0;
+        _length = _tokens.Length;
+        _def = new SMDefinition();
+        _source = sourceCode;
+        if (fileName.EndsWith(".inc", StringComparison.InvariantCultureIgnoreCase))
         {
-            t = Tokenizer.Tokenizer.TokenizeString(sourceCode, true).ToArray();
-            position = 0;
-            length = t.Length;
-            def = new SMDefinition();
-            source = sourceCode;
-            if (fileName.EndsWith(".inc", StringComparison.InvariantCultureIgnoreCase))
-            {
-                fileName = fileName.Substring(0, fileName.Length - 4);
-            }
-
-            FileName = fileName;
+            fileName = fileName.Substring(0, fileName.Length - 4);
         }
 
-        public SMDefinition Condense()
+        _fileName = fileName;
+    }
+
+    public SMDefinition Condense()
+    {
+        Token ct;
+        while ((ct = _tokens[_position]).Kind != TokenKind.EOF)
         {
-            Token ct;
-            while ((ct = t[position]).Kind != TokenKind.EOF)
+            int index;
+            switch (ct.Kind)
             {
-                switch (ct.Kind)
-                {
-                    case TokenKind.FunctionIndicator:
-                    {
-                        var newIndex = ConsumeSMFunction();
-                        if (newIndex != -1)
-                        {
-                            position = newIndex + 1;
-                            continue;
-                        }
-
-                        break;
-                    }
-                    case TokenKind.EnumStruct:
-                    {
-                        var newIndex = ConsumeSMEnumStruct();
-                        if (newIndex != -1)
-                        {
-                            position = newIndex + 1;
-                            continue;
-                        }
-
-                        break;
-                    }
-                    case TokenKind.Enum:
-                    {
-                        var newIndex = ConsumeSMEnum();
-                        if (newIndex != -1)
-                        {
-                            position = newIndex + 1;
-                            continue;
-                        }
-
-                        break;
-                    }
-                    case TokenKind.Struct:
-                    {
-                        var newIndex = ConsumeSMStruct();
-                        if (newIndex != -1)
-                        {
-                            position = newIndex + 1;
-                            continue;
-                        }
-
-                        break;
-                    }
-                    case TokenKind.PreprocessorDirective:
-                    {
-                        var newIndex = ConsumeSMPPDirective();
-                        if (newIndex != -1)
-                        {
-                            position = newIndex + 1;
-                            continue;
-                        }
-
-                        break;
-                    }
-                    case TokenKind.Constant:
-                    {
-                        var newIndex = ConsumeSMConstant();
-                        if (newIndex != -1)
-                        {
-                            position = newIndex + 1;
-                            continue;
-                        }
-
-                        break;
-                    }
-                    case TokenKind.MethodMap:
-                    {
-                        var newIndex = ConsumeSMMethodmap();
-                        if (newIndex != -1)
-                        {
-                            position = newIndex + 1;
-                            continue;
-                        }
-
-                        break;
-                    }
-                    case TokenKind.TypeSet:
-                    {
-                        var newIndex = ConsumeSMTypeset();
-                        if (newIndex != -1)
-                        {
-                            position = newIndex + 1;
-                            continue;
-                        }
-
-                        break;
-                    }
-                    case TokenKind.TypeDef:
-                    {
-                        var newIndex = ConsumeSMTypedef();
-                        if (newIndex != -1)
-                        {
-                            position = newIndex + 1;
-                            continue;
-                        }
-
-                        break;
-                    }
-                    case TokenKind.Identifier:
-                    {
-                        var newIndex = ConsumeSMVariable();
-                        if (newIndex != -1)
-                        {
-                            position = newIndex + 1;
-                            continue;
-                        }
-
-                        // If Variable is not found try function
-                        newIndex = ConsumeSMFunction();
-                        if (newIndex != -1)
-                        {
-                            position = newIndex + 1;
-                            continue;
-                        }
-                    }
+                case TokenKind.FunctionIndicator:
+                    index = ConsumeSMFunction();
                     break;
-                }
-
-                ++position;
+                case TokenKind.EnumStruct:
+                    index = ConsumeSMEnumStruct();
+                    break;
+                case TokenKind.Enum:
+                    index = ConsumeSMEnum();
+                    break;
+                case TokenKind.Struct:
+                    index = ConsumeSMStruct();
+                    break;
+                case TokenKind.PreprocessorDirective:
+                    index = ConsumeSMPPDirective();
+                    break;
+                case TokenKind.Constant:
+                    index = ConsumeSMConstant();
+                    break;
+                case TokenKind.MethodMap:
+                    index = ConsumeSMMethodmap();
+                    break;
+                case TokenKind.TypeSet:
+                    index = ConsumeSMTypeset();
+                    break;
+                case TokenKind.TypeDef:
+                    index = ConsumeSMTypedef();
+                    break;
+                case TokenKind.Identifier:
+                    index = ConsumeSMIdentifier();
+                    break;
+                default:
+                    index = -1;
+                    break;
             }
 
-            def.Sort();
-            return def;
+            if (index != -1)
+            {
+                _position = index + 1;
+                continue;
+            }
+
+            ++_position;
         }
 
-        private int BacktraceTestForToken(int StartPosition, TokenKind TestKind, bool IgnoreEOL, bool IgnoreOtherTokens)
+        _def.Sort();
+        return _def;
+    }
+
+    private int BacktraceTestForToken(int startPosition, TokenKind testKind, bool ignoreEol, bool ignoreOtherTokens)
+    {
+        for (var i = startPosition; i >= 0; --i)
         {
-            for (var i = StartPosition; i >= 0; --i)
+            if (_tokens[i].Kind == testKind)
             {
-                if (t[i].Kind == TestKind)
-                {
-                    return i;
-                }
+                return i;
+            }
 
-                if (IgnoreOtherTokens)
-                {
-                    continue;
-                }
+            if (ignoreOtherTokens)
+            {
+                continue;
+            }
 
-                if (t[i].Kind == TokenKind.EOL && IgnoreEOL)
-                {
-                    continue;
-                }
-
-                return -1;
+            if (_tokens[i].Kind == TokenKind.EOL && ignoreEol)
+            {
+                continue;
             }
 
             return -1;
         }
 
-        private int FortraceTestForToken(int StartPosition, TokenKind TestKind, bool IgnoreEOL, bool IgnoreOtherTokens)
+        return -1;
+    }
+
+    private int FortraceTestForToken(int startPosition, TokenKind testKind, bool ignoreEol, bool ignoreOtherTokens)
+    {
+        for (var i = startPosition; i < _length; ++i)
         {
-            for (var i = StartPosition; i < length; ++i)
+            if (_tokens[i].Kind == testKind)
             {
-                if (t[i].Kind == TestKind)
-                {
-                    return i;
-                }
+                return i;
+            }
 
-                if (IgnoreOtherTokens)
-                {
-                    continue;
-                }
+            if (ignoreOtherTokens)
+            {
+                continue;
+            }
 
-                if (t[i].Kind == TokenKind.EOL && IgnoreEOL)
-                {
-                    continue;
-                }
-
-                return -1;
+            if (_tokens[i].Kind == TokenKind.EOL && ignoreEol)
+            {
+                continue;
             }
 
             return -1;
         }
 
-        public static string TrimComments(string comment)
-        {
-            var outString = new StringBuilder();
-            var lines = comment.Split('\r', '\n');
-            string line;
-            for (var i = 0; i < lines.Length; ++i)
-            {
-                line = lines[i].Trim().TrimStart('/', '*', ' ', '\t');
-                if (!string.IsNullOrWhiteSpace(line))
-                {
-                    if (i > 0)
-                    {
-                        outString.AppendLine();
-                    }
+        return -1;
+    }
 
-                    if (line.StartsWith("@param"))
-                    {
-                        outString.Append(FormatParamLineString(line));
-                    }
-                    else
-                    {
-                        outString.Append(line);
-                    }
+    private static string TrimComments(string comment)
+    {
+        var outString = new StringBuilder();
+        var lines = comment.Split('\r', '\n');
+
+        for (var i = 0; i < lines.Length; ++i)
+        {
+            var line = lines[i].Trim().TrimStart('/', '*', ' ', '\t');
+            if (!string.IsNullOrWhiteSpace(line))
+            {
+                if (i > 0)
+                {
+                    outString.AppendLine();
+                }
+
+                if (line.StartsWith("@param"))
+                {
+                    outString.Append(FormatParamLineString(line));
+                }
+                else
+                {
+                    outString.Append(line);
                 }
             }
-
-            return outString.ToString().Trim();
         }
 
-        public static string TrimFullname(string name)
+        return outString.ToString().Trim();
+    }
+
+    private static string TrimFullname(string name)
+    {
+        var outString = new StringBuilder();
+        var lines = name.Split('\r', '\n');
+        for (var i = 0; i < lines.Length; ++i)
         {
-            var outString = new StringBuilder();
-            var lines = name.Split('\r', '\n');
-            for (var i = 0; i < lines.Length; ++i)
+            if (!string.IsNullOrWhiteSpace(lines[i]))
             {
-                if (!string.IsNullOrWhiteSpace(lines[i]))
+                if (i > 0)
                 {
-                    if (i > 0)
-                    {
-                        outString.Append(" ");
-                    }
-
-                    outString.Append(lines[i].Trim(' ', '\t'));
+                    outString.Append(" ");
                 }
-            }
 
-            return outString.ToString();
+                outString.Append(lines[i].Trim(' ', '\t'));
+            }
         }
 
-        private static string FormatParamLineString(string line)
+        return outString.ToString();
+    }
+
+    private static string FormatParamLineString(string line)
+    {
+        var split = line.Replace('\t', ' ').Split(new[] { ' ' }, 3);
+        if (split.Length > 2)
         {
-            var split = line.Replace('\t', ' ').Split(new[] { ' ' }, 3);
-            if (split.Length > 2)
-            {
-                return ("@param " + split[1]).PadRight(24, ' ') + " " + split[2].Trim(' ', '\t');
-            }
-
-            return line;
+            return ("@param " + split[1]).PadRight(24, ' ') + " " + split[2].Trim(' ', '\t');
         }
+
+        return line;
+    }
+
+    private int ConsumeSMIdentifier()
+    {
+        var index = ConsumeSMVariable();
+        return index == -1 ? ConsumeSMFunction() : index;
     }
 }

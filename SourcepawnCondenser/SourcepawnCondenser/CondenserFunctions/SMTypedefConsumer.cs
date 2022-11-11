@@ -7,24 +7,24 @@ namespace SourcepawnCondenser
     {
         private int ConsumeSMTypedef()
         {
-            var startIndex = t[position].Index;
-            if ((position + 2) < length)
+            var startIndex = _tokens[_position].Index;
+            if ((_position + 2) < _length)
             {
-                ++position;
-                if (t[position].Kind == TokenKind.Identifier)
+                ++_position;
+                if (_tokens[_position].Kind == TokenKind.Identifier)
                 {
-                    var name = t[position].Value;
-                    for (var iteratePosition = position + 1; iteratePosition < length; ++iteratePosition)
+                    var name = _tokens[_position].Value;
+                    for (var iteratePosition = _position + 1; iteratePosition < _length; ++iteratePosition)
                     {
-                        if (t[iteratePosition].Kind == TokenKind.Semicolon)
+                        if (_tokens[iteratePosition].Kind == TokenKind.Semicolon)
                         {
-                            def.Typedefs.Add(new SMTypedef()
+                            _def.Typedefs.Add(new SMTypedef()
                             {
                                 Index = startIndex,
-                                Length = t[iteratePosition].Index - startIndex + 1,
-                                File = FileName,
+                                Length = _tokens[iteratePosition].Index - startIndex + 1,
+                                File = _fileName,
                                 Name = name,
-                                FullName = source.Substring(startIndex, t[iteratePosition].Index - startIndex + 1)
+                                FullName = _source.Substring(startIndex, _tokens[iteratePosition].Index - startIndex + 1)
                             });
                             return iteratePosition;
                         }
@@ -36,33 +36,33 @@ namespace SourcepawnCondenser
 
         private int ConsumeSMTypeset()
         {
-            var startIndex = t[position].Index;
-            if ((position + 2) < length)
+            var startIndex = _tokens[_position].Index;
+            if ((_position + 2) < _length)
             {
-                ++position;
-                if (t[position].Kind == TokenKind.Identifier)
+                ++_position;
+                if (_tokens[_position].Kind == TokenKind.Identifier)
                 {
-                    var name = t[position].Value;
+                    var name = _tokens[_position].Value;
                     var bracketIndex = 0;
-                    for (var iteratePosition = position + 1; iteratePosition < length; ++iteratePosition)
+                    for (var iteratePosition = _position + 1; iteratePosition < _length; ++iteratePosition)
                     {
-                        if (t[iteratePosition].Kind == TokenKind.BraceClose)
+                        if (_tokens[iteratePosition].Kind == TokenKind.BraceClose)
                         {
                             --bracketIndex;
                             if (bracketIndex == 0)
                             {
-                                def.Typedefs.Add(new SMTypedef()
+                                _def.Typedefs.Add(new SMTypedef()
                                 {
                                     Index = startIndex,
-                                    Length = t[iteratePosition].Index - startIndex + 1,
-                                    File = FileName,
+                                    Length = _tokens[iteratePosition].Index - startIndex + 1,
+                                    File = _fileName,
                                     Name = name,
-                                    FullName = source.Substring(startIndex, t[iteratePosition].Index - startIndex + 1)
+                                    FullName = _source.Substring(startIndex, _tokens[iteratePosition].Index - startIndex + 1)
                                 });
                                 return iteratePosition;
                             }
                         }
-                        else if (t[iteratePosition].Kind == TokenKind.BraceOpen)
+                        else if (_tokens[iteratePosition].Kind == TokenKind.BraceOpen)
                         {
                             ++bracketIndex;
                         }
