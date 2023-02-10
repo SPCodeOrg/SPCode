@@ -16,8 +16,8 @@ public static class PathsHelper
     {
         get
         {
-            var appDataPath = SPCodeAppDataPath + @"\sourcepawn\configs\sm_1_10_0_6509";
-            var localPath = @".\sourcepawn\configs\sm_1_10_0_6509";
+            var appDataPath = SPCodeAppDataPath + @"\sourcepawn\configs\sm_1_11_0_6930";
+            var localPath = @".\sourcepawn\configs\sm_1_11_0_6930";
             return LocalInstallation ? localPath : appDataPath;
         }
     }

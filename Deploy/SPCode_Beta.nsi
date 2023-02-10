@@ -46,7 +46,7 @@ CreateDirectory "$APPDATA\spcodebeta\sourcepawn\errorfiles"
 CreateDirectory "$APPDATA\spcodebeta\sourcepawn\temp"
 CreateDirectory "$APPDATA\spcodebeta\sourcepawn\templates"
 CreateDirectory "$APPDATA\spcodebeta\sourcepawn\configs"
-CreateDirectory "$APPDATA\spcodebeta\sourcepawn\configs\sm_1_10_0_6509"
+CreateDirectory "$APPDATA\spcodebeta\sourcepawn\configs\sm_1_11_0_6930"
 
 SetOutPath $APPDATA\spcodebeta
 File /r ".\sourcepawn"
