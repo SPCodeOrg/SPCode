@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net48</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SourcepawnCondenser\SourcepawnCondenser\SourcepawnCondenser.csproj" />
+      <ProjectReference Include="..\SPCode.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+	  <Content Include="sourcepawn\**">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content> 
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BenchmarkDotNet">
+        <Version>0.13.2</Version>
+      </PackageReference>
+    </ItemGroup>
+	
+
+</Project>

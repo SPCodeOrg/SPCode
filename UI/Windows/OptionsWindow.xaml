@@ -105,6 +105,7 @@
               <CheckBox Name="DynamicISAC" Checked="DynamicISAC_Changed" Unchecked="DynamicISAC_Changed" />
               <CheckBox Name="DarkTheme" Checked="DarkTheme_Changed" Unchecked="DarkTheme_Changed" />
               <CheckBox Name="HardwareSalts" Checked="HardwareSalts_Changed" Unchecked="HardwareSalts_Changed" />
+              <CheckBox Name="UseBlendEffect" Checked="UseBlendEffect_Changed" Unchecked="UseBlendEffect_Changed" />
               <CheckBox Name="DiscordPresence" Checked="DiscordPresence_Changed" Unchecked="DiscordPresence_Changed" />
               <CheckBox Name="DiscordPresenceTime" Style="{StaticResource IndentedCheckBox}" Checked="DiscordPresenceTime_Changed" Unchecked="DiscordPresenceTime_Changed" />
               <CheckBox Name="DiscordPresenceFile" Style="{StaticResource IndentedCheckBox}" Checked="DiscordPresenceFile_Changed" Unchecked="DiscordPresenceFile_Changed" />

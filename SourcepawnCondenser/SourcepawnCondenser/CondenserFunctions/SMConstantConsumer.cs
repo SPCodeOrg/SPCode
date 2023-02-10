@@ -1,71 +1,70 @@
 ﻿using SourcepawnCondenser.SourcemodDefinition;
 using SourcepawnCondenser.Tokenizer;
 
-namespace SourcepawnCondenser
+namespace SourcepawnCondenser;
+
+public partial class Condenser
 {
-    public partial class Condenser
+    private int ConsumeSMConstant()
     {
-        private int ConsumeSMConstant()
+        if (_position + 2 < _length)
         {
-            if (position + 2 < length)
+            var startIndex = _tokens[_position].Index;
+            var foundIdentifier = false;
+            var foundAssignment = false;
+            var constantName = string.Empty;
+            for (var i = _position + 2; i < _length; ++i)
             {
-                var startIndex = t[position].Index;
-                var foundIdentifier = false;
-                var foundAssignment = false;
-                var constantName = string.Empty;
-                for (var i = position + 2; i < length; ++i)
+                if (_tokens[i].Kind == TokenKind.Semicolon)
                 {
-                    if (t[i].Kind == TokenKind.Semicolon)
+                    if (!foundIdentifier)
                     {
-                        if (!foundIdentifier)
+                        if (_tokens[i - 1].Kind == TokenKind.Identifier)
                         {
-                            if (t[i - 1].Kind == TokenKind.Identifier)
-                            {
-                                constantName = t[i - 1].Value;
-                            }
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(constantName))
-                        {
-                            def.ConstVariables.Add(new SMConstant
-                            {
-                                Index = startIndex,
-                                Length = t[i].Index - startIndex,
-                                File = FileName,
-                                Name = constantName
-                            });
-                        }
-
-                        return i;
-                    }
-
-                    if (t[i].Kind == TokenKind.Assignment)
-                    {
-                        foundAssignment = true;
-                        if (t[i - 1].Kind == TokenKind.Identifier)
-                        {
-                            foundIdentifier = true;
-                            constantName = t[i - 1].Value;
+                            constantName = _tokens[i - 1].Value;
                         }
                     }
-                    else if (t[i].Kind == TokenKind.Character && !foundAssignment)
+
+                    if (!string.IsNullOrWhiteSpace(constantName))
                     {
-                        if (t[i].Value == "[")
+                        _def.ConstVariables.Add(new SMConstant
                         {
-                            if (t[i - 1].Kind == TokenKind.Identifier)
-                            {
-                                foundIdentifier = true;
-                                constantName = t[i - 1].Value;
-                            }
-                        }
+                            Index = startIndex,
+                            Length = _tokens[i].Index - startIndex,
+                            File = _fileName,
+                            Name = constantName
+                        });
                     }
-                    else if (t[i].Kind == TokenKind.EOL) //failsafe
+
+                    return i;
+                }
+
+                if (_tokens[i].Kind == TokenKind.Assignment)
+                {
+                    foundAssignment = true;
+                    if (_tokens[i - 1].Kind == TokenKind.Identifier)
                     {
-                        return i;
+                        foundIdentifier = true;
+                        constantName = _tokens[i - 1].Value;
                     }
                 }
+                else if (_tokens[i].Kind == TokenKind.Character && !foundAssignment)
+                {
+                    if (_tokens[i].Value == "[")
+                    {
+                        if (_tokens[i - 1].Kind == TokenKind.Identifier)
+                        {
+                            foundIdentifier = true;
+                            constantName = _tokens[i - 1].Value;
+                        }
+                    }
+                }
+                else if (_tokens[i].Kind == TokenKind.EOL) //failsafe
+                {
+                    return i;
+                }
             }
-            return -1;
         }
+        return -1;
     }
 }

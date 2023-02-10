@@ -8,69 +8,68 @@ using MahApps.Metro;
 using SPCode.Utils;
 using static SPCode.Interop.TranslationProvider;
 
-namespace SPCode.UI.Windows
+namespace SPCode.UI.Windows;
+
+public partial class AboutWindow
 {
-    public partial class AboutWindow
+    public AboutWindow()
     {
-        public AboutWindow()
+        InitializeComponent();
+        Language_Translate();
+        EvaluateRTL();
+        if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
         {
-            InitializeComponent();
-            Language_Translate();
-            EvaluateRTL();
-            if (Program.OptionsObject.Program_AccentColor != "Red" || Program.OptionsObject.Program_Theme != "BaseDark")
-            {
-                ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
-                    ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
-            }
-
-            Brush gridBrush = Program.OptionsObject.Program_Theme == "BaseDark" ?
-              new SolidColorBrush(Color.FromArgb(0xC0, 0x10, 0x10, 0x10)) :
-              new SolidColorBrush(Color.FromArgb(0xC0, 0xE0, 0xE0, 0xE0));
-
-            gridBrush.Freeze();
-
-            foreach (var c in ContentStackPanel.Children)
-            {
-                if (c is Grid g)
-                {
-                    g.Background = gridBrush;
-                }
-            }
-            TitleBox.Text = $"SPCode {NamesHelper.VersionString} - {Translate("SPCodeCap")}";
-            if (File.Exists(Constants.LicenseFile))
-            {
-                FlyoutTextBox.Text = File.ReadAllText(Constants.LicenseFile);
-            }
+            ThemeManager.ChangeAppStyle(this, ThemeManager.GetAccent(Program.OptionsObject.Program_AccentColor),
+                ThemeManager.GetAppTheme(Program.OptionsObject.Program_Theme));
         }
 
-        private void OpenLicenseFlyout(object sender, RoutedEventArgs e)
-        {
-            LicenseFlyout.IsOpen = true;
-        }
+        Brush gridBrush = Program.OptionsObject.Program_Theme == "BaseDark" ?
+          new SolidColorBrush(Color.FromArgb(0xC0, 0x10, 0x10, 0x10)) :
+          new SolidColorBrush(Color.FromArgb(0xC0, 0xE0, 0xE0, 0xE0));
 
-        private void HyperlinkRequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-            e.Handled = true;
-        }
+        gridBrush.Freeze();
 
-        private void Language_Translate()
+        foreach (var c in ContentStackPanel.Children)
         {
-            Title = Translate("About");
-            OpenLicenseButton.Content = Translate("License");
-            PeopleInvolvedBlock.Text = Translate("PeopleInv");
-        }
-
-        private void EvaluateRTL()
-        {
-            if (Program.IsRTL)
+            if (c is Grid g)
             {
-                FlowDirection = FlowDirection.RightToLeft;
+                g.Background = gridBrush;
             }
-            else
-            {
-                FlowDirection = FlowDirection.LeftToRight;
-            }
+        }
+        TitleBox.Text = $"SPCode {NamesHelper.VersionString} - {Translate("SPCodeCap")}";
+        if (File.Exists(Constants.LicenseFile))
+        {
+            FlyoutTextBox.Text = File.ReadAllText(Constants.LicenseFile);
+        }
+    }
+
+    private void OpenLicenseFlyout(object sender, RoutedEventArgs e)
+    {
+        LicenseFlyout.IsOpen = true;
+    }
+
+    private void HyperlinkRequestNavigate(object sender, RequestNavigateEventArgs e)
+    {
+        Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+        e.Handled = true;
+    }
+
+    private void Language_Translate()
+    {
+        Title = Translate("About");
+        OpenLicenseButton.Content = Translate("License");
+        PeopleInvolvedBlock.Text = Translate("PeopleInv");
+    }
+
+    private void EvaluateRTL()
+    {
+        if (Program.IsRTL)
+        {
+            FlowDirection = FlowDirection.RightToLeft;
+        }
+        else
+        {
+            FlowDirection = FlowDirection.LeftToRight;
         }
     }
 }

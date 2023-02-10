@@ -6,98 +6,97 @@ using Renci.SshNet;
 using Renci.SshNet.Common;
 using static SPCode.Interop.TranslationProvider;
 
-namespace SPCode.Utils
+namespace SPCode.Utils;
+
+public class FTP
 {
-    public class FTP
+    private readonly string _host;
+    private readonly string _user;
+    private readonly string _pass;
+
+    public string ErrorMessage;
+
+    public FTP(string host, string user, string password) { _host = host; _user = user; _pass = password; }
+
+    public void Upload(string remoteFile, string localFile)
     {
-        private readonly string _host;
-        private readonly string _user;
-        private readonly string _pass;
+        var requestUri = new UriBuilder(_host) { Path = remoteFile }.Uri;
 
-        public string ErrorMessage;
-
-        public FTP(string host, string user, string password) { _host = host; _user = user; _pass = password; }
-
-        public void Upload(string remoteFile, string localFile)
+        if (requestUri.Scheme == "sftp")
         {
-            var requestUri = new UriBuilder(_host) { Path = remoteFile }.Uri;
+            var connectionInfo = new ConnectionInfo(requestUri.Host, requestUri.Port == -1 ? 22 : requestUri.Port, _user, new PasswordAuthenticationMethod(_user, _pass));
+            using var sftp = new SftpClient(connectionInfo);
+            sftp.Connect();
 
-            if (requestUri.Scheme == "sftp")
+            using (var stream = File.OpenRead(localFile))
             {
-                var connectionInfo = new ConnectionInfo(requestUri.Host, requestUri.Port == -1 ? 22 : requestUri.Port, _user, new PasswordAuthenticationMethod(_user, _pass));
-                using var sftp = new SftpClient(connectionInfo);
-                sftp.Connect();
-
-                using (var stream = File.OpenRead(localFile))
-                {
-                    sftp.UploadFile(stream, remoteFile, true);
-                }
-
-                sftp.Disconnect();
+                sftp.UploadFile(stream, remoteFile, true);
             }
-            else
-            {
-                using var client = new WebClient
-                {
-                    Credentials = new NetworkCredential(_user, _pass)
-                };
-                client.UploadFile(requestUri, WebRequestMethods.Ftp.UploadFile, localFile);
-            }
+
+            sftp.Disconnect();
         }
-
-        /// <summary>
-        /// Returns whether the specified credentials in the Configs Window can be used for a valid FTP/SFTP connection.
-        /// </summary>
-        public async Task<bool> TestConnection()
+        else
         {
-            var requestUri = new UriBuilder(_host).Uri;
-            var success = true;
-            if (requestUri.Scheme == "sftp")
+            using var client = new WebClient
             {
-                var connectionInfo = new ConnectionInfo(requestUri.Host, requestUri.Port == -1 ? 22 : requestUri.Port, _user, new PasswordAuthenticationMethod(_user, _pass));
-                using var sftp = new SftpClient(connectionInfo);
-                sftp.OperationTimeout = TimeSpan.FromSeconds(5);
-                try
-                {
-                    await Task.Run(() => sftp.Connect());
-                }
-                catch (SshAuthenticationException)
-                {
-                    success = false;
-                    ErrorMessage = Translate("InvalidCredentials");
-                }
-                catch (Exception ex)
-                {
-                    success = false;
-                    ErrorMessage = ex.Message;
-                }
-                finally
-                {
-                    sftp.Disconnect();
-                    sftp.Dispose();
-                }
-            }
-            else if (requestUri.Scheme == "ftp")
+                Credentials = new NetworkCredential(_user, _pass)
+            };
+            client.UploadFile(requestUri, WebRequestMethods.Ftp.UploadFile, localFile);
+        }
+    }
+
+    /// <summary>
+    /// Returns whether the specified credentials in the Configs Window can be used for a valid FTP/SFTP connection.
+    /// </summary>
+    public async Task<bool> TestConnection()
+    {
+        var requestUri = new UriBuilder(_host).Uri;
+        var success = true;
+        if (requestUri.Scheme == "sftp")
+        {
+            var connectionInfo = new ConnectionInfo(requestUri.Host, requestUri.Port == -1 ? 22 : requestUri.Port, _user, new PasswordAuthenticationMethod(_user, _pass));
+            using var sftp = new SftpClient(connectionInfo);
+            sftp.OperationTimeout = TimeSpan.FromSeconds(5);
+            try
             {
-                var requestDir = WebRequest.Create(requestUri);
-                requestDir.Credentials = new NetworkCredential(_user, _pass);
-                requestDir.Timeout = 5000;
-                try
-                {
-                    var response = await requestDir.GetResponseAsync();
-                }
-                catch (Exception ex)
-                {
-                    success = false;
-                    ErrorMessage = ex.Message;
-                }
+                await Task.Run(() => sftp.Connect());
             }
-            else
+            catch (SshAuthenticationException)
             {
                 success = false;
-                ErrorMessage = Translate("InvalidFTPSchema");
+                ErrorMessage = Translate("InvalidCredentials");
             }
-            return success;
+            catch (Exception ex)
+            {
+                success = false;
+                ErrorMessage = ex.Message;
+            }
+            finally
+            {
+                sftp.Disconnect();
+                sftp.Dispose();
+            }
         }
+        else if (requestUri.Scheme == "ftp")
+        {
+            var requestDir = WebRequest.Create(requestUri);
+            requestDir.Credentials = new NetworkCredential(_user, _pass);
+            requestDir.Timeout = 5000;
+            try
+            {
+                var response = await requestDir.GetResponseAsync();
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                ErrorMessage = ex.Message;
+            }
+        }
+        else
+        {
+            success = false;
+            ErrorMessage = Translate("InvalidFTPSchema");
+        }
+        return success;
     }
 }

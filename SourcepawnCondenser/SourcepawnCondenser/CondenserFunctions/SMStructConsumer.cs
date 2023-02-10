@@ -1,53 +1,52 @@
 ﻿using SourcepawnCondenser.SourcemodDefinition;
 using SourcepawnCondenser.Tokenizer;
 
-namespace SourcepawnCondenser
+namespace SourcepawnCondenser;
+
+public partial class Condenser
 {
-    public partial class Condenser
+    private int ConsumeSMStruct()
     {
-        private int ConsumeSMStruct()
+        var startIndex = _tokens[_position].Index;
+        if ((_position + 1) < _length)
         {
-            var startIndex = t[position].Index;
-            if ((position + 1) < length)
+            var iteratePosition = _position;
+            var structName = string.Empty;
+            while ((iteratePosition + 1) < _length && _tokens[iteratePosition].Kind != TokenKind.BraceOpen)
             {
-                var iteratePosition = position;
-                var structName = string.Empty;
-                while ((iteratePosition + 1) < length && t[iteratePosition].Kind != TokenKind.BraceOpen)
+                if (_tokens[iteratePosition].Kind == TokenKind.Identifier)
                 {
-                    if (t[iteratePosition].Kind == TokenKind.Identifier)
-                    {
-                        structName = t[iteratePosition].Value;
-                    }
-                    ++iteratePosition;
+                    structName = _tokens[iteratePosition].Value;
                 }
-                var braceState = 0;
-                var endTokenIndex = -1;
-                for (; iteratePosition < length; ++iteratePosition)
-                {
-                    if (t[iteratePosition].Kind == TokenKind.BraceOpen)
-                    {
-                        ++braceState;
-                        continue;
-                    }
-                    if (t[iteratePosition].Kind == TokenKind.BraceClose)
-                    {
-                        --braceState;
-                        if (braceState == 0)
-                        {
-                            endTokenIndex = iteratePosition;
-                            break;
-                        }
-                        continue;
-                    }
-                }
-                if (endTokenIndex == -1)
-                {
-                    return -1;
-                }
-                def.Structs.Add(new SMStruct() { Index = startIndex, Length = t[endTokenIndex].Index - startIndex + 1, File = FileName, Name = structName });
-                return endTokenIndex;
+                ++iteratePosition;
             }
-            return -1;
+            var braceState = 0;
+            var endTokenIndex = -1;
+            for (; iteratePosition < _length; ++iteratePosition)
+            {
+                if (_tokens[iteratePosition].Kind == TokenKind.BraceOpen)
+                {
+                    ++braceState;
+                    continue;
+                }
+                if (_tokens[iteratePosition].Kind == TokenKind.BraceClose)
+                {
+                    --braceState;
+                    if (braceState == 0)
+                    {
+                        endTokenIndex = iteratePosition;
+                        break;
+                    }
+                    continue;
+                }
+            }
+            if (endTokenIndex == -1)
+            {
+                return -1;
+            }
+            _def.Structs.Add(new SMStruct() { Index = startIndex, Length = _tokens[endTokenIndex].Index - startIndex + 1, File = _fileName, Name = structName });
+            return endTokenIndex;
         }
+        return -1;
     }
 }

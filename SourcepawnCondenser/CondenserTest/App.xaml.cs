@@ -1,8 +1,7 @@
 ﻿using System.Windows;
 
-namespace CondenserTest
+namespace CondenserTest;
+
+public partial class App : Application
 {
-    public partial class App : Application
-    {
-    }
 }
