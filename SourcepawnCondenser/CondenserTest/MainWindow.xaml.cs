@@ -365,6 +365,8 @@ public partial class MainWindow : Window
         {
             TokenKind.BraceClose or
             TokenKind.BraceOpen => Brushes.LightGray,
+            TokenKind.BracketOpen or
+            TokenKind.BracketClose => Brushes.DarkKhaki,
             TokenKind.Character => Brushes.LightSalmon,
             TokenKind.EOF => Brushes.LimeGreen,
             TokenKind.Identifier => Brushes.LightSteelBlue,

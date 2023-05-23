@@ -7,6 +7,8 @@ public enum TokenKind
     Character,              //d
     BraceOpen,              //d
     BraceClose,             //d
+    BracketOpen,
+    BracketClose,
     ParenthesisOpen,        //d
     ParenthesisClose,       //d
     Quote,                  //d

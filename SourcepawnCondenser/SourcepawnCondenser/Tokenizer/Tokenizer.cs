@@ -57,25 +57,31 @@ public static class Tokenizer
                     continue;
                 }
                 case '{':
-                    token.Add(new Token("{", TokenKind.BraceOpen, i));
+                    token.Add(new Token(c, TokenKind.BraceOpen, i));
                     continue;
                 case '}':
-                    token.Add(new Token("}", TokenKind.BraceClose, i));
+                    token.Add(new Token(c, TokenKind.BraceClose, i));
+                    continue;
+                case '[':
+                    token.Add(new Token(c, TokenKind.BracketOpen, i));
+                    continue;
+                case ']':
+                    token.Add(new Token(c, TokenKind.BracketClose, i));
                     continue;
                 case '(':
-                    token.Add(new Token("(", TokenKind.ParenthesisOpen, i));
+                    token.Add(new Token(c, TokenKind.ParenthesisOpen, i));
                     continue;
                 case ')':
-                    token.Add(new Token(")", TokenKind.ParenthesisClose, i));
+                    token.Add(new Token(c, TokenKind.ParenthesisClose, i));
                     continue;
                 case ';':
-                    token.Add(new Token(";", TokenKind.Semicolon, i));
+                    token.Add(new Token(c, TokenKind.Semicolon, i));
                     continue;
                 case ',':
-                    token.Add(new Token(",", TokenKind.Comma, i));
+                    token.Add(new Token(c, TokenKind.Comma, i));
                     continue;
                 case '=':
-                    token.Add(new Token("=", TokenKind.Assignment, i));
+                    token.Add(new Token(c, TokenKind.Assignment, i));
                     continue;
                 case '/':
                 {
@@ -482,8 +488,8 @@ public static class Tokenizer
         }
 
         token.Add(new Token("", TokenKind.EOF, sArrayLength));
-        
-        
+
+
         return token;
     }
 

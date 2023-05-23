@@ -2,18 +2,18 @@
 
 public class Token
 {
-    public Token(string Value_, TokenKind Kind_, int Index_)
+    public Token(string value, TokenKind kind, int index)
     {
-        Value = Value_;
-        Kind = Kind_;
-        Index = Index_;
-        Length = Value_.Length;
+        Value = value;
+        Kind = kind;
+        Index = index;
+        Length = value.Length;
     }
-    public Token(char Value_, TokenKind Kind_, int Index_)
+    public Token(char value, TokenKind kind, int index)
     {
-        Value = Value_.ToString();
-        Kind = Kind_;
-        Index = Index_;
+        Value = value.ToString();
+        Kind = kind;
+        Index = index;
         Length = 1;
     }
     public string Value;
