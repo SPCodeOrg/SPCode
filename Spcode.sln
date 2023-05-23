@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31612.314
@@ -12,12 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPCodeUpdater", "Deploy\Spc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourcepawnCondenser", "SourcepawnCondenser\SourcepawnCondenser\SourcepawnCondenser.csproj", "{B4E00F2D-DD73-42C7-A0CA-BA92B2A05850}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CondenserTest", "SourcepawnCondenser\CondenserTest\CondenserTest.csproj", "{B1E03089-FD98-4C01-828F-8CB05F87462F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CondenserTest", "SourcepawnCondenser\CondenserTest\CondenserTest.csproj", "{B1E03089-FD98-4C01-828F-8CB05F87462F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{B4E00F2D-DD73-42C7-A0CA-BA92B2A05850} = {B4E00F2D-DD73-42C7-A0CA-BA92B2A05850}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPCodeBenchmarks", "SPCodeBenchmarks\SPCodeBenchmarks.csproj", "{590A7837-3804-4B8B-A9C8-2F270A55522A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SPCodeBenchmarks", "SPCodeBenchmarks\SPCodeBenchmarks.csproj", "{590A7837-3804-4B8B-A9C8-2F270A55522A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -143,8 +142,8 @@ Global
 		{B1E03089-FD98-4C01-828F-8CB05F87462F}.Debug|x64.Build.0 = Debug|Any CPU
 		{B1E03089-FD98-4C01-828F-8CB05F87462F}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{B1E03089-FD98-4C01-828F-8CB05F87462F}.Debug|x86.Build.0 = Debug|Any CPU
-		{B1E03089-FD98-4C01-828F-8CB05F87462F}.Debug-Beta|Any CPU.ActiveCfg = Debug-Beta|Any CPU
-		{B1E03089-FD98-4C01-828F-8CB05F87462F}.Debug-Beta|Any CPU.Build.0 = Debug-Beta|Any CPU
+		{B1E03089-FD98-4C01-828F-8CB05F87462F}.Debug-Beta|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1E03089-FD98-4C01-828F-8CB05F87462F}.Debug-Beta|Any CPU.Build.0 = Debug|Any CPU
 		{B1E03089-FD98-4C01-828F-8CB05F87462F}.Debug-Beta|ARM.ActiveCfg = Debug-Beta|Any CPU
 		{B1E03089-FD98-4C01-828F-8CB05F87462F}.Debug-Beta|ARM.Build.0 = Debug-Beta|Any CPU
 		{B1E03089-FD98-4C01-828F-8CB05F87462F}.Debug-Beta|x64.ActiveCfg = Debug-Beta|Any CPU

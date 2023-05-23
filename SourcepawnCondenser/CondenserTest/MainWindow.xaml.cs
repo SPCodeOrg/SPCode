@@ -49,8 +49,11 @@ public partial class MainWindow : Window
             foreach (var token in t)
             {
                 ++i;
-                var g = new Grid() { Background = ChooseBackgroundFromTokenKind(token.Kind) };
-                g.Tag = token;
+                var g = new Grid
+                {
+                    Background = ChooseBackgroundFromTokenKind(token.Kind),
+                    Tag = token
+                };
                 g.MouseLeftButtonUp += G_MouseLeftButtonUp;
                 g.HorizontalAlignment = HorizontalAlignment.Stretch;
                 g.Children.Add(new TextBlock() { Text = token.Kind + " - '" + token.Value + "'", IsHitTestVisible = false });
@@ -69,8 +72,12 @@ public partial class MainWindow : Window
         var functionItem = new TreeViewItem() { Header = "functions (" + def.Functions.Count + ")", IsExpanded = expand };
         foreach (var f in def.Functions)
         {
-            var item = new TreeViewItem() { Header = f.Name, IsExpanded = expand };
-            item.Tag = f;
+            var item = new TreeViewItem
+            {
+                Header = f.Name,
+                IsExpanded = expand,
+                Tag = f
+            };
             item.MouseLeftButtonUp += ItemFunc_MouseLeftButtonUp;
             item.Items.Add(new TreeViewItem() { Header = "Index: " + f.Index, Background = Brushes.LightGray });
             item.Items.Add(new TreeViewItem() { Header = "Length: " + f.Length });
@@ -88,8 +95,12 @@ public partial class MainWindow : Window
         var enumItem = new TreeViewItem() { Header = "enums (" + def.Enums.Count + ")", IsExpanded = expand };
         foreach (var en in def.Enums)
         {
-            var item = new TreeViewItem() { Header = string.IsNullOrWhiteSpace(en.Name) ? "no name" : en.Name, IsExpanded = expand };
-            item.Tag = en;
+            var item = new TreeViewItem
+            {
+                Header = string.IsNullOrWhiteSpace(en.Name) ? "no name" : en.Name,
+                IsExpanded = expand,
+                Tag = en
+            };
             item.MouseLeftButtonUp += ItemEnum_MouseLeftButtonUp;
             item.Items.Add(new TreeViewItem() { Header = "Index: " + en.Index, Background = Brushes.LightGray });
             item.Items.Add(new TreeViewItem() { Header = "Length: " + en.Length });
@@ -104,8 +115,12 @@ public partial class MainWindow : Window
         var structItem = new TreeViewItem() { Header = "structs (" + def.Structs.Count + ")", IsExpanded = expand };
         foreach (var s in def.Structs)
         {
-            var item = new TreeViewItem() { Header = string.IsNullOrWhiteSpace(s.Name) ? "no name" : s.Name, IsExpanded = expand };
-            item.Tag = s;
+            var item = new TreeViewItem
+            {
+                Header = string.IsNullOrWhiteSpace(s.Name) ? "no name" : s.Name,
+                IsExpanded = expand,
+                Tag = s
+            };
             item.MouseLeftButtonUp += ItemStruct_MouseLeftButtonUp;
             item.Items.Add(new TreeViewItem() { Header = "Index: " + s.Index, Background = Brushes.LightGray });
             item.Items.Add(new TreeViewItem() { Header = "Length: " + s.Length });
@@ -116,8 +131,12 @@ public partial class MainWindow : Window
         var dItem = new TreeViewItem() { Header = "defines (" + def.Defines.Count + ")", IsExpanded = expand };
         foreach (var d in def.Defines)
         {
-            var item = new TreeViewItem() { Header = d.Name, IsExpanded = expand };
-            item.Tag = d;
+            var item = new TreeViewItem
+            {
+                Header = d.Name,
+                IsExpanded = expand,
+                Tag = d
+            };
             item.MouseLeftButtonUp += Itemppd_MouseLeftButtonUp;
             item.Items.Add(new TreeViewItem() { Header = "Index: " + d.Index, Background = Brushes.LightGray });
             item.Items.Add(new TreeViewItem() { Header = "Length: " + d.Length });
@@ -128,8 +147,12 @@ public partial class MainWindow : Window
         var cItem = new TreeViewItem() { Header = "constants (" + def.ConstVariables.Count + ")", IsExpanded = expand };
         foreach (var cn in def.ConstVariables)
         {
-            var item = new TreeViewItem() { Header = cn.Name, IsExpanded = expand };
-            item.Tag = cn;
+            var item = new TreeViewItem
+            {
+                Header = cn.Name,
+                IsExpanded = expand,
+                Tag = cn
+            };
             item.MouseLeftButtonUp += Itemc_MouseLeftButtonUp;
             item.Items.Add(new TreeViewItem() { Header = "Index: " + cn.Index, Background = Brushes.LightGray });
             item.Items.Add(new TreeViewItem() { Header = "Length: " + cn.Length });
@@ -140,8 +163,12 @@ public partial class MainWindow : Window
         var mItem = new TreeViewItem() { Header = "methodmaps (" + def.Methodmaps.Count + ")", IsExpanded = expand };
         foreach (var m in def.Methodmaps)
         {
-            var item = new TreeViewItem() { Header = m.Name, IsExpanded = expand };
-            item.Tag = m;
+            var item = new TreeViewItem
+            {
+                Header = m.Name,
+                IsExpanded = expand,
+                Tag = m
+            };
             item.MouseLeftButtonUp += ItemMM_MouseLeftButtonUp;
             item.Items.Add(new TreeViewItem() { Header = "Index: " + m.Index, Background = Brushes.LightGray });
             item.Items.Add(new TreeViewItem() { Header = "Length: " + m.Length });
@@ -174,8 +201,12 @@ public partial class MainWindow : Window
         var eItem = new TreeViewItem() { Header = "EnumStructs (" + def.EnumStructs.Count + ")", IsExpanded = expand };
         foreach (var m in def.EnumStructs)
         {
-            var item = new TreeViewItem() { Header = m.Name, IsExpanded = expand };
-            item.Tag = m;
+            var item = new TreeViewItem
+            {
+                Header = m.Name,
+                IsExpanded = expand,
+                Tag = m
+            };
             item.MouseLeftButtonUp += ItemMM_MouseLeftButtonUp;
             item.Items.Add(new TreeViewItem() { Header = "Index: " + m.Index, Background = Brushes.LightGray });
             item.Items.Add(new TreeViewItem() { Header = "Length: " + m.Length });
@@ -219,8 +250,12 @@ public partial class MainWindow : Window
         var vItem = new TreeViewItem() { Header = "Variables (" + def.ConstVariables.Count + ")", IsExpanded = expand };
         foreach (var v in def.Variables)
         {
-            var item = new TreeViewItem() { Header = v.Name, IsExpanded = expand };
-            item.Tag = v;
+            var item = new TreeViewItem
+            {
+                Header = v.Name,
+                IsExpanded = expand,
+                Tag = v
+            };
             item.MouseLeftButtonUp += Itemc_MouseLeftButtonUp;
             item.Items.Add(new TreeViewItem() { Header = "Index: " + v.Index, Background = Brushes.LightGray });
             item.Items.Add(new TreeViewItem() { Header = "Length: " + v.Length });
@@ -324,7 +359,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private Brush ChooseBackgroundFromTokenKind(TokenKind kind)
+    private static Brush ChooseBackgroundFromTokenKind(TokenKind kind)
     {
         return kind switch
         {
