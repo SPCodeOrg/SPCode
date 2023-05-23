@@ -232,6 +232,11 @@ public partial class Condenser
                         {
                             if (_tokens[j].Kind == TokenKind.Identifier && !InPureSemicolonSearch)
                             {
+                                // Don't take constant sizes as the field name
+                                if (_tokens[j - 1].Kind == TokenKind.BracketOpen)
+                                {
+                                    continue;
+                                }
                                 fieldName = _tokens[j].Value;
                                 continue;
                             }
