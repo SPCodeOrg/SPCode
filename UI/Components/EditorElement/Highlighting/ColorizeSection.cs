@@ -30,8 +30,8 @@ public class ColorizeSelection : DocumentColorizingTransformer
                     lineStartOffset + index + SelectionString.Length,
                     element =>
                     {
-                        element.BackgroundBrush = new SolidColorBrush(Color.FromArgb(80, 11, 95, 188));
-                        //element.TextRunProperties.SetForegroundBrush(new SolidColorBrush(Colors.White));
+                        element.BackgroundBrush = new SolidColorBrush(Colors.CornflowerBlue);
+                        element.TextRunProperties.SetForegroundBrush(new SolidColorBrush(Colors.White));
                     });
                 start = index + 1;
             }
