@@ -100,7 +100,7 @@ public partial class UpdateWindow
             foreach (var release in _updateInfo.AllReleases)
             {
                 releasesBody.Append($"**%{{color:{GetAccentHex()}}}Version {release.TagName}%** ");
-                releasesBody.AppendLine($"*%{{color:gray}}({MonthToTitlecase(release.CreatedAt)})% *\r\n");
+                releasesBody.AppendLine($"*%{{color:gray}}({MonthToTitlecase(release.CreatedAt)})%*\r\n");
                 releasesBody.AppendLine(release.Body + "\r\n");
             }
         }
