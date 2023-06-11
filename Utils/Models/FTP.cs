@@ -79,12 +79,13 @@ public class FTP
         }
         else if (requestUri.Scheme == "ftp")
         {
-            var requestDir = WebRequest.Create(requestUri);
-            requestDir.Credentials = new NetworkCredential(_user, _pass);
-            requestDir.Timeout = 5000;
+            var request = WebRequest.Create(requestUri);
+            request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
+            request.Credentials = new NetworkCredential(_user, _pass);
+            request.Timeout = 5000;
             try
             {
-                var response = await requestDir.GetResponseAsync();
+                var response = await request.GetResponseAsync();
             }
             catch (Exception ex)
             {
